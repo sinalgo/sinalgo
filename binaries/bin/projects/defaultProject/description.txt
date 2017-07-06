@@ -1,0 +1,19 @@
+Default Project
+
+This project contains some often used models, including
+ - Connectivity Models: UDG, QUDG, StaticUDG, Static Connectivity
+ - Distribution Models: Random, Grid2D, Line2d
+ - Interference Models: NoInterference, Signal to Interference
+ - Message Transmission Model: Constant Time
+ - Mobility Model: NoMobility, RWP, Random Direction
+ - Reliability Model: Reliable Delivery, Drop Rate
+
+Please read the comments in the models for details.
+
+These models are available for all other projects. For use in your
+own project, you can use them directly from within this default project.
+(There is no need to copy them in your own project, unless you wish 
+to adapt a model.)
+
+The models included in this project might also inspire you on how 
+to write your own models.

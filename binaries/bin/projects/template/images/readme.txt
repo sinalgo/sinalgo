@@ -1,0 +1,1 @@
+This folder contains the images for the user-defined buttons. 

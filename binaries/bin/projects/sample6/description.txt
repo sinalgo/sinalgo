@@ -1,0 +1,91 @@
+This project demonstrates the construction of a static network topology
+at the example of a balanced tree. 
+
+1  How to run this sample
+-----------------------------------------------------------------------------------
+
+ a) Run this project in GUI mode. In contrast to other projects, do not
+    create the network nodes with the framework methods, but press the 
+    project specific button 'Build Tree'. Specify the number of leaf-nodes 
+    (e.g. 200), and the max. number of children any node may have (e.g. 2 for 
+    a binary tree).
+    
+ b) Select any tree-node, and select to 'Color children' from its drop-down
+    menu to send a message to all its children. Upon receipt of the message, 
+    the children color themselves. 
+    
+ c) Press the 'unmark' to remove the marking of all nodes. 
+
+2  Description
+-----------------------------------------------------------------------------------
+
+ In order to build  a static network topology (node placement and connection setup)
+ some features of Sinalgo need to be replaced:
+  - Node creation
+  - Placement of nodes (where is a node located?)
+  - Connection setup (which nodes are connected?)
+  
+ a) Node creation
+
+    To create the network nodes you may provide a project specific button 
+    that executes some code written in your CustomGlobal class. In this method, 
+    you may generate node objects, and add them to the network. The creation of 
+    a node consists of four steps:
+
+    1) Create the node object
+
+    2) Assign the models to the node (only mandatory for the non-default models)
+       The node has setter-methods for the Connectivity, Interference, Mobility, 
+       and Reliability models.
+
+    3) Specify where the node is located (this may be revised later on) using the
+       setPosition() method of the node superclass.
+
+    4) Register the node object to the framework. This is easiest done with the 
+       node method finishInitializationWithDefaultModels(true). This method 
+       assigns the default models (as specified in the project configuration file)
+       for all models that have not yet been set, and registers the node object with
+       the framework.
+    
+ b) Node placement
+ 
+    The nodes may be assigned new positions at any time. Use the setPosition() 
+    method of the node object to assign it a new position.
+    
+ c) Connecting the nodes
+ 
+    Remember that by default, Sinalgo works with unidirectional edges. I.e. A 
+    link from node u to node v does not imply a link from u back to v. If your 
+    project only considers bidirectional links, you may set the edge-type in the
+    configuration file to 'BidirectionalEdge'. 
+
+	To add a connection from a given node u to node v, insert an edge to the 
+	list of outgoing connections of u:
+      u.outgoingConnections.add(u, v, true); 
+	If the edge-type is set to be BidirectionalEdge, an edge in both directions
+	is created automatically. Otherwise, only an edge from u to v is created, and
+	v cannot send a message to u, unless you also insert an edge from v to u.
+	
+ d) Configuring Sinalgo
+ 
+    1) Node Storage
+    When working with static networks, sinalgo may be configured slightly 
+    different to reflect the special situation. In particular, Sinalgo needs not
+    storing the network nodes according to their position. Therefore, set the 
+    maximum transmission range of any node to a value larger than the entire 
+    simulation area, e.g. include the following entry in the configuration file:
+        <GeometricNodeCollection rMax="1000000"/>
+        
+    2) Static Connectivity
+    Use the StaticConnectivity model for all nodes, such that the connectivity model
+    does not suddenly kick in and removes the connections you defined. This is 
+    easiest done by setting the DefaultConnectivityModel entry in the configuration
+    file to StaticConnectivity. 
+    
+    3) Mobility 
+    Turn off support for mobility through the project configuration, unless you
+    really want the nodes to use the mobility model to change their position over time.
+    
+    4) Bidirectional Edges
+    If you only consider bidirectional edges, set the 'edgeType' entry of the configuration
+    file to 'sinalgo.nodes.edges.BidirectionalEdge'. 

@@ -1,0 +1,38 @@
+This is a sample project to demonstrate the usage of SINALGO. It implements
+mobile nodes that avoid obstacles placed on the deployment field.
+
+1  How to run this sample
+-----------------------------------------------------------------------------------
+
+ a) Run this project in GUI mode, and start by creating network nodes:
+    - Click on the menu 'Graph' -> 'Generate Nodes', and create 100 nodes. 
+      The selected models should already match.
+     
+ b) Start the simulation by pressing the start button.
+
+
+2  Description
+-----------------------------------------------------------------------------------
+
+ This sample demonstrates the usage of a background map, which is an image that
+ is projected onto the deployment area. The nodes are programmed to move according
+ to a random waypoint model, but cannot cross any colored region. The names of the
+ models stems from the idea that the colored regions describe lakes, which are not
+ traversable. 
+ 
+ While moving, the nodes remember which other nodes they have already seen. The 
+ drawing size grows with the number of neighbors this node once had. The node(s) 
+ which have seen most of the other nodes draw themselves in red.
+ 
+ Remain with the mouse on a node to obtain a tooltip, which says how many of the
+ remaining nodes the selected node has already seen. 
+ 
+ Right-click on a node and select 'Color Neighbors' to color all nodes that the
+ selected nodes has seen so far. 
+ 
+4  Diverse
+-----------------------------------------------------------------------------------
+
+ To generate an initial point-sent from the command-line, the following parameters
+ can be used:
+   -project sample2 -gen 100 sample2:S2Node sample2:LakeAvoidRandomDistribution sample2:LakeAvoid

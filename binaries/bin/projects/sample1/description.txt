@@ -1,0 +1,48 @@
+This is a sample project to demonstrate the basic usage of SINALGO. Mobile nodes
+are placed in a 3D cuboid, where they move around and send messages.
+
+1  How to run this sample
+-----------------------------------------------------------------------------------
+
+ a) Run this project in GUI mode, and start by creating network nodes:
+    - Click on the menu 'Graph' -> 'Generate Nodes', and create 500 nodes. 
+      The selected models should already match.
+     
+ b) Right-click on at least one node, and select 'start' from the popup-menu. 
+    This schedules the selected node to send an initial message.
+
+ c) Start the simulation by pressing the start button.
+
+
+2  Behavior
+-----------------------------------------------------------------------------------
+
+ Each S1Node behaves as an infinite, but delayed repeater of messages it receives.
+ This works as following: Whenever an S1Node receives a S1Message (whose content is
+ an int value), it starts a timer to forward the message. When the timer fires, the 
+ node selects its neighbor with the smallest ID and forwards the message to this 
+ node. Then, the timer is reset and the process is repeated forever.
+
+ The delay is determined by the int value of the message, and an increment value, 
+ specified in the config file. 
+  
+ Note: This is a rather academic example and not intended to represent any 
+       realistic algorithm!
+
+
+3  GIU
+-----------------------------------------------------------------------------------
+
+ The nodes are drawn as circles with two numbers: The total number of messages 
+ sent by the node, and the number of messages sent in this round. 
+  
+
+4  Diverse
+-----------------------------------------------------------------------------------
+
+ Note that the project uses a log file and accesses custom entries of the 
+ project configuration file.
+  
+ To generate an initial point-sent from the command-line, the following parameters
+ can be used:
+    -project sample1 -gen 500 sample1:S1Node Random RandomDirection

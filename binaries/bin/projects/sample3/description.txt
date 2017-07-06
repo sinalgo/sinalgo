@@ -1,0 +1,50 @@
+This is a sample project to demonstrate the usage of SINALGO. It implements a small
+cellular network consisting of fixed antenna nodes and mobile nodes. 
+
+1  How to run this sample
+-----------------------------------------------------------------------------------
+
+ a) This project is easiest to launch from the command-line, where you can specify
+    that SINALGO creates an initial set of nodes with the following arguments:
+    
+    -project sample3 
+    -gen 49 sample3:Antenna sample3:GridDistribution NoMobility
+    -gen 2000 sample3:MobileNode Random RandomDirection
+ 
+    This will create a set of 49 antennas, distributed on a grid, and connected
+    according to the AntennaConnection distribution model. Also, it creates a set
+    of 2000 mobile nodes, which are randomly distributed and will move according to the
+    random way point mobility model.
+
+ b) Run the simulation for a couple of rounds
+ 
+ c) Right-click on one of the mobile nodes and select to send an SMS to anohter 
+    node, pick a node and continue with the simulation. The SMS is then sent over the
+    antenna network to the selected node.
+
+
+2  Behavior
+-----------------------------------------------------------------------------------
+
+ The antennas form a backbone of the network through which all traffic (SMS) is sent.
+ The antennas are mutually connected - they communicate with each other via the 
+ sendDirect method, which does not require a connection between the two nodes.
+ 
+ The mobile nodes constantly move, and listen to the invite messages sent by the antennas.
+ Whenever a node is invited by an antenna that is closer than the antenna the node is currently
+ registered with, it registers with the new antenna.
+ 
+ The mobile nodes may send messages (SMS) that are routed over the antennas. The mobile
+ node sends the SMS to its antenna. If the antenna knows the receiver, the antenna forwards
+ the SMS directly to the receiver. Otherwise, the antenna sends the message to all other 
+ antennas, which deliver the SMS, if the receiver is registered with them.
+ 
+ Upon receiving an SMS, a mobile node sends back an acknowledgement message. When the sender 
+ does not receive such an ACK within a given time (currently 8 rounds), it resends the SMS.
+
+3  GIU
+-----------------------------------------------------------------------------------
+
+ This project demonstrates how you may provide a customized appearance of nodes and
+ edges. Note the circle around each antenna, which indicates its coverage radius, and
+ the differently colored edges.

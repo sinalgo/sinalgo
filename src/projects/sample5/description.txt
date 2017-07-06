@@ -1,0 +1,45 @@
+This is a sample project to demonstrate the usage of SINALGO. The network nodes 
+implement a flooding technique to find routing paths. The provided algorithm is 
+not very robust, even very small mobility (or other perturbation of the network)
+causes the routing algorithm to fail. 
+
+1  How to run this sample
+-----------------------------------------------------------------------------------
+
+ a) Run this project in GUI mode, and start by creating network nodes:
+    - Click on the menu 'Graph' -> 'Generate Nodes', and create 10000 nodes. 
+      The selected models should already match. (Initially, mobility is 
+      turned off, which generates a warning message.)
+      
+ b) Right-click on a node and select 'Send Message To...', and select another node
+    to which a route should be established. Run the simulation for some rounds, 
+    until the message was routed and acknowledged. 
+ 
+ c) Restart the simulation, and reconfigure the project to allow for mobility by
+    setting the 'mobility' entry of the configuration file to 'true'. By default,
+    this triggers a very moderate mobility of the nodes. Again, start a route 
+    discovery request, and observe that the routing algorithm gets a hard time to
+    establish a route. (The sender node will try forever, with exponentially 
+    increasing search radius and wait time.)
+  
+ d) Restart the simulation, but this time, run it in asynchronous mode (without
+    mobility - mobility is not supported in the asynchronous mode.) Now, it is 
+    important that you increase the 'Refresh Rate' such that the network is not
+    redrawn after each event, which would slow down the simulation tremendously.
+ 
+2  Description
+-----------------------------------------------------------------------------------
+
+ The nodes implement a flooding-based route-discovery algorithm. Each node carries
+ a routing table, which stores the neighbor which lies on the path to a given node. 
+ Whenever a node s needs to send a message to a node t, it forwards to the neighbor
+ specified in the routing table. If there is no such entry, the sender s starts a 
+ broadcast search for t. The broadcasts are performed with exponentially increasing
+ TTL. 
+
+ The provided implementation is quite simple. In particular, the routing entries
+ have no expiration time, and the nodes do not ensure that the link to the neighbor 
+ node specified in the routing table does still exist. Also, there are many other 
+ aspects not covered by this implementation.
+ 
+ 

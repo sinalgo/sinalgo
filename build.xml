@@ -1,0 +1,278 @@
+<?xml version='1.0'?>
+<!--
+ Copyright (c) 2007, Distributed Computing Group (DCG)
+                    ETH Zurich
+                    Switzerland
+                    dcg.ethz.ch
+
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+
+ - Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+ - Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the
+   distribution.
+
+ - Neither the name 'Sinalgo' nor the names of its contributors may be
+   used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<project name="SINALGO" default="compile" basedir=".">
+	<!-- USAGE: 
+		Type 'ant compile' to compile the framework
+		Type 'ant docs'    to generate the java-doc of the framework
+	 	Type 'ant all'     to first clean the current compilation, then compile
+	                       the project and finally generate the docs.
+	     -->
+	
+	<!-- The directory structure-->
+	<property name="binDir" value="binaries/bin"/>
+
+	<!-- Source-dirs -->
+	<property name="srcDir" value="src"/>
+	<property name="jarPath"  value="binaries"/>
+	<property name="distBase"  value="dist/"/>
+	<property name="toyReleasePath"  value="${distBase}toyRelease"/>
+	<property name="regularReleasePath"  value="${distBase}regularRelease"/>
+	<property name="additionalProjects" value="dist/additionalProjects"/>
+	<property name="jdomPath"  value="${jarPath}/jdom.jar"/>
+
+	<!-- set global properties for this build -->
+  	<property name="SINALGOversion" value="0.75.3"/> <!-- Change also in Configuration.java -->
+	<property name="targetJVM"  value="1.5"/>
+	<property name="docsDir"  value="doc"/>
+	
+    <!-- Create the binary directory structure -->
+	<target name="init">
+		<mkdir dir="${binDir}"/>
+	</target>
+
+	<!-- Create the framework jar (sinalgo.jar) file -->
+	<target name="jar" depends="compile, jarclean">
+		<jar destfile="${jarPath}/sinalgo.jar" basedir="${binDir}" includes="sinalgo/">
+			<manifest>
+				<attribute name="Main-Class" value="sinalgo.runtime.Main"/>
+				<attribute name="Class-Path" value="binaries/bin/jdom.jar . binaries/bin/"/>
+		    </manifest>	
+		</jar>
+	</target>
+	
+	<target name="jarclean">
+		<delete file="${jarPath}/sinalgo.jar"/>
+	</target>
+			
+	<target name="dist" depends="distclean, compile, jar">
+		<!-- creates the distribution tree -->
+		<mkdir dir="${distBase}"/>
+		
+		<!-- TOY RELEASE -->
+		<copy file="${jarPath}/jdom.jar" todir="${toyReleasePath}/binaries/bin"/>
+		<copy file="${jarPath}/sinalgo.jar" todir="${toyReleasePath}"/>
+		<copy file="${jarPath}/license.txt" todir="${toyReleasePath}"/>
+		
+		<copy todir="${toyReleasePath}/src/projects/defaultProject">
+		    <fileset dir="${srcDir}/projects/defaultProject"/>
+		</copy>
+		<copy file="appConfig.xml" todir="${toyReleasePath}/src/projects/defaultProject" overwrite="true"/>
+		<copy todir="${toyReleasePath}/binaries/bin/projects/defaultProject">
+		    <fileset dir="${jarPath}/bin/projects/defaultProject"/>
+		</copy>	
+		<copy todir="${toyReleasePath}/src/projects/template">
+		    <fileset dir="${srcDir}/projects/template"/>
+		</copy>
+		<copy todir="${toyReleasePath}/binaries/bin/projects/template">
+		    <fileset dir="${jarPath}/bin/projects/template"/>
+		</copy>	
+		<copy todir="${toyReleasePath}/src/projects/sample1">
+		    <fileset dir="${srcDir}/projects/sample1"/>
+		</copy>
+		<copy todir="${toyReleasePath}/binaries/bin/projects/sample1">
+		    <fileset dir="${jarPath}/bin/projects/sample1"/>
+		</copy>
+		<copy todir="${toyReleasePath}/src/projects/sample2">
+		    <fileset dir="${srcDir}/projects/sample2"/>
+		</copy>
+		<copy todir="${toyReleasePath}/binaries/bin/projects/sample2">
+		    <fileset dir="${jarPath}/bin/projects/sample2"/>
+		</copy>
+		<copy todir="${toyReleasePath}/src/projects/sample3">
+		    <fileset dir="${srcDir}/projects/sample3"/>
+		</copy>
+		<copy todir="${toyReleasePath}/binaries/bin/projects/sample3">
+		    <fileset dir="${jarPath}/bin/projects/sample3"/>
+		</copy>
+		<copy todir="${toyReleasePath}/src/projects/sample4">
+		    <fileset dir="${srcDir}/projects/sample4"/>
+		</copy>
+		<copy todir="${toyReleasePath}/binaries/bin/projects/sample4">
+		    <fileset dir="${jarPath}/bin/projects/sample4"/>
+		</copy>
+		<copy todir="${toyReleasePath}/src/projects/sample5">
+		    <fileset dir="${srcDir}/projects/sample5"/>
+		</copy>
+		<copy todir="${toyReleasePath}/binaries/bin/projects/sample5">
+		    <fileset dir="${jarPath}/bin/projects/sample5"/>
+		</copy>
+		<copy todir="${toyReleasePath}/src/projects/sample6">
+		    <fileset dir="${srcDir}/projects/sample6"/>
+		</copy>
+		<copy todir="${toyReleasePath}/binaries/bin/projects/sample6">
+		    <fileset dir="${jarPath}/bin/projects/sample6"/>
+		</copy>
+		<delete dir="${toyReleasePath}/src/sinalgo"/>
+		<delete dir="${toyReleasePath}/binaries/bin/sinalgo"/>
+		
+		<!-- Add the source of the whole projects -->
+		<copy toDir="${distBase}/srcDistribution/src">
+			<fileset dir="${srcDir}"/>
+		</copy>
+		
+		<!-- REGULAR RELEASE -->
+		<copy toDir="${regularReleasePath}/binaries">
+			<fileset dir="binaries"/>
+		</copy>
+		<delete file="${regularReleasePath}/binaries/sinalgo.jar"/>
+		
+		<copy toDir="${regularReleasePath}/src/sinalgo">
+			<fileset dir="${srcDir}/sinalgo"/>
+		</copy>
+
+		<delete dir="${regularReleasePath}/src/projects" />
+		<delete dir="${regularReleasePath}/binaries/bin/projects" />
+		
+		<copy todir="${regularReleasePath}/src/projects/defaultProject">
+		    <fileset dir="${srcDir}/projects/defaultProject"/>
+		</copy>
+		<copy file="appConfig.xml" todir="${regularReleasePath}/src/projects/defaultProject" overwrite="true"/>
+		<copy todir="${regularReleasePath}/src/projects/template">
+		    <fileset dir="${srcDir}/projects/template"/>
+		</copy>
+		<copy todir="${regularReleasePath}/binaries/bin/projects/defaultProject">
+		    <fileset dir="${jarPath}/bin/projects/defaultProject"/>
+		</copy>	
+		<copy todir="${regularReleasePath}/binaries/bin/projects/template">
+		    <fileset dir="${jarPath}/bin/projects/template"/>
+		</copy>
+		<copy todir="${regularReleasePath}/src/projects/sample1">
+		    <fileset dir="${srcDir}/projects/sample1"/>
+		</copy>
+		<copy todir="${regularReleasePath}/binaries/bin/projects/sample1">
+		    <fileset dir="${jarPath}/bin/projects/sample1"/>
+		</copy>	
+		<copy todir="${regularReleasePath}/src/projects/sample2">
+		    <fileset dir="${srcDir}/projects/sample2"/>
+		</copy>
+		<copy todir="${regularReleasePath}/binaries/bin/projects/sample2">
+		    <fileset dir="${jarPath}/bin/projects/sample2"/>
+		</copy>
+		<copy todir="${regularReleasePath}/src/projects/sample3">
+		    <fileset dir="${srcDir}/projects/sample3"/>
+		</copy>
+		<copy todir="${regularReleasePath}/binaries/bin/projects/sample3">
+		    <fileset dir="${jarPath}/bin/projects/sample3"/>
+		</copy>
+		<copy todir="${regularReleasePath}/src/projects/sample4">
+		    <fileset dir="${srcDir}/projects/sample4"/>
+		</copy>
+		<copy todir="${regularReleasePath}/binaries/bin/projects/sample4">
+		    <fileset dir="${jarPath}/bin/projects/sample4"/>
+		</copy>
+		<copy todir="${regularReleasePath}/src/projects/sample5">
+		    <fileset dir="${srcDir}/projects/sample5"/>
+		</copy>
+		<copy todir="${regularReleasePath}/binaries/bin/projects/sample5">
+		    <fileset dir="${jarPath}/bin/projects/sample5"/>
+		</copy>
+		<copy todir="${regularReleasePath}/src/projects/sample6">
+		    <fileset dir="${srcDir}/projects/sample6"/>
+		</copy>
+		<copy todir="${regularReleasePath}/binaries/bin/projects/sample6">
+		    <fileset dir="${jarPath}/bin/projects/sample6"/>
+		</copy>
+		
+		<!-- Copy additional stuff to the distribution -->
+		<copy file=".classpath" todir="${regularReleasePath}" />
+		<copy file="build.xml" todir="${regularReleasePath}" />
+		<copy file="license.txt" todir="${regularReleasePath}" />
+		<copy file="sinalgo.bat" todir="${regularReleasePath}" />
+		<copy file="sinalgo" todir="${regularReleasePath}" />
+
+		
+		<!-- Create the Zip-files to distribute -->
+		<mkdir dir="dist/zips"/>
+		<zip destfile="dist/zips/sinalgo-${SINALGOversion}-regularRelease.zip" basedir="${regularReleasePath}"></zip>
+		<zip destfile="dist/zips/sinalgo-${SINALGOversion}-toyRelease.zip" basedir="${toyReleasePath}"></zip>
+		<!--zip destfile="dist/zips/documentation.zip" basedir="dist/doc"></zip-->
+	</target>
+	
+	
+	<!-- Cleans out the dist folder -->
+    <target name="distclean">
+    	<delete dir="${distBase}"/>
+		<delete dir="${binDir}"/> <!-- Need to recompile entire source to ensure that all code has been compiled with the correct compiler flags -->
+    </target>
+
+	
+	<!-- Compile the framework & projects -->
+	<target name="compile" depends="init">
+	    <javac 
+	    	srcdir="${srcDir}" 
+	    	destdir="${binDir}"
+			classpath = "${jdomPath}"
+	    	target = "${targetJVM}"
+			debug = "on"
+			debuglevel = "lines,vars,source"
+			source = "1.5"
+		>
+		</javac>
+		<copy todir="${binDir}/sinalgo/images">
+		    <fileset dir="${srcDir}/sinalgo/images"/>
+		</copy>
+	</target>
+
+	<target name="docs" depends="compile">
+		<!-- create javadocs for the framework and the defaultProject -->
+		<javadoc 
+		    destdir="${docsDir}/sinalgo/"
+		    use="true"
+		    windowtitle="SINALGO API Documentation Version: ${SINALGOversion}"
+			Verbose="false"
+			classpath="${jdomPath};${binDir}" 
+            linksource="true"
+		>
+			<fileset dir="${srcDir}/sinalgo/" defaultexcludes="yes">
+			      <include name="**/*.java"/>
+		    </fileset>
+			<fileset dir="${srcDir}/projects/defaultProject/" defaultexcludes="yes">
+			      <include name="**/*.java"/>
+		    </fileset>
+			<arg value="-quiet"/>
+		</javadoc>
+	</target>
+
+	<target name="all" depends="clean, compile, jar, docs, dist"/>
+	
+	<target name="clean">
+		<!-- Delete the output directories -->
+		<delete dir="${binDir}"/>
+		<delete dir="${docsDir}"/>
+	</target>
+</project>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sinalgo>
+	<ProjectSelector windowWidth="800" windowHeight="600" lastChosenProject="sample1" windowPosX="200" windowPosY="100" isMaximized="false" />
+	<GUI windowWidth="800" windowHeight="700" windowPosX="100" windowPosY="100" isMaximized="false" ControlPanelShowFullViewPanel="false" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" />
+	<RandomSeed seedFromPreviousRun="4322076561695980776" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="false"/>
+</sinalgo>
+

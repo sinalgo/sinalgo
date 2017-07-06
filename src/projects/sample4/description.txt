@@ -1,0 +1,36 @@
+This is a sample project to demonstrate the usage of SINALGO, in particular the 
+asynchronous simulation mode.
+
+1  How to run this sample
+-----------------------------------------------------------------------------------
+
+ a) Run this project in GUI mode, and start by creating network nodes:
+    - Click on the menu 'Graph' -> 'Generate Nodes', and create 100 nodes. 
+      The selected models should already match.
+      
+ b) This project demonstrates the asynchronous mode, where the connections of the
+    nodes are not updated automatically. However, the configuration of this project
+    is set such that prior to the very first step, the connections are updated. Thus, 
+    press once on the run-button to evaluate the connections. Alternatively, select 
+    'Graph' -> 'Reevaluate Connections' to obtain the same result.
+ 
+ c) The asynchronous mode is event-based. Before anything can happen, a first event 
+    needs to be generated. The nodes implement several methods that you can trigger 
+    through their popup-menu: Right-click on a node and select one of the methods. 
+    Then, note that one or several events are added in the event queue. Execute the 
+    events by clicking on the run button. 
+  
+ d) You may issue several parallel events that overlap each other.
+ 
+ e) Note that redrawing the network after each step is quite slow. Increase the 
+    refresh rate to not repaint the network after each event.
+ 
+2  Description
+-----------------------------------------------------------------------------------
+
+ This project also demonstrates the usage of user defined interactions through the GUI: 
+   - custom methods for the nodes from the popup menu
+   - globally visible custom methods from the drop-down menu
+   - globally visible custom methods with a button
+   - Node-selection
+

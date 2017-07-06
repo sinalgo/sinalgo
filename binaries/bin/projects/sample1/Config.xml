@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document>
+	<Framework>
+		<!--***********************************************************************-->
+		<!--  Simulation Area                                                      -->
+		<!--***********************************************************************-->
+		<!--Number of dimensions (2 for 2D, 3 for 3D)-->
+		<dimensions value="3" />
+
+		<!--Length of the deployment field along the x-axis.-->
+		<dimX value="1000" />
+
+		<!--Length of the deployment field along the y-axis.-->
+		<dimY value="800" />
+
+		<!--Length of the deployment field along the z-axis.-->
+		<dimZ value="500" />
+
+		<!--***********************************************************************-->
+		<!--  Simulation                                                           -->
+		<!--***********************************************************************-->
+		<!--Switches between synchronous and asynchronous mode.-->
+		<asynchronousMode value="false" />
+
+		<!--If set to true, the runtime obtains for each node a new position from the mobility model at the beginning of each round. This flag needs to be turned on if the chosen  mobility model of any node may change the node's position. Set this flag to FALSE for static graphs whose nodes do never change their position to increase performance.-->
+		<mobility value="true" />
+
+		<!--If set to true, the chosen interference model is called at the end of every round to test for interferring packets. To increase performance, set this flag to FALSE if you do not consider interference.-->
+		<interference value="false" />
+
+		<!--Set this flag to true if interference only decreases if fewer messages are being sent and increases if more messages are being sent. If this flag is NOT set, interference for all messages currently being sent is reevaluated whenever a new message is being sent, and whenever a message stops being sent. When this flag is set, interference tests are reduced to a minimum, using the additivity property. This flag only affects the asynchronous mode. In synchronous mode, interference is checked exactly once for every message in every round.-->
+		<interferenceIsAdditive value="true" />
+
+		<!--Set this flag to true if a node can receive messages while it is sending messages itself, otherwise to false. This flag is only relevant if interference is turned on, and it must be handled properly in the used interference model.-->
+		<canReceiveWhileSending value="true" />
+
+		<!--Set this flag to true if a node can receive multiple messages in parallel, otherwise to false. When set to false, concurrent packets are all dropped. This flag is only relevant if interference is turned on, and it must be handled properly in the used interference model.-->
+		<canReceiveMultiplePacketsInParallel value="true" />
+
+		<!--The default type of edges to be used-->
+		<edgeType value="Edge" />
+
+		<!--If set to true, the application exits as soon as the termination criteria is met. This flag only affects the GUI mode.-->
+		<exitOnTerminationInGUI value="false" />
+
+		<!--If set true, in asynchronous mode the connections are initialized before the first event executes. Note that this flag is useless in synchronous mode as the connections are updated in every step anyway.-->
+		<initializeConnectionsOnStartup value="false" />
+
+		<!--Defines how often the GUI is updated. The GUI is redrawn after every refreshRate-th round.-->
+		<refreshRate value="1" />
+
+		<!--If set to true, the framework will inform a sender whenever  a unicast message is dropped. In synchronous mode, the sender  is informed in the round after the message should have arrived, and  immediately upon arrival in asynchronous mode.-->
+		<generateNAckMessages value="false" />
+
+		<!--This flag only affects the asynchronous simulation mode.  When set to true, the framework calls handleEmptyEventQueue  on the project specific CustomGlobal whenever the event queue  becomes empty.-->
+		<handleEmptyEventQueue value="true" />
+
+		<!--The java-command used to start the simulation process. E.g. 'java', 'nice -n 19 java', 'time java' This command should NOT contain the -Xmx flag, nor set the classpath of java.-->
+		<javaCmd value="java" />
+
+		<!--Maximum memory the Java VM is allowed to use (in MB)-->
+		<javaVMmaxMem value="500" />
+
+		<!--***********************************************************************-->
+		<!--  Random number generators                                             -->
+		<!--***********************************************************************-->
+		<!--If set to true, the random number generators of the framework use the same seed as in the previous run.-->
+		<useSameSeedAsInPreviousRun value="false" />
+
+		<!--If set to true, and useSameSeedAsInPreviousRun is set to false,  the random number generators of the framework uses the specified fixed seed.-->
+		<useFixedSeed value="false" />
+
+		<!--The seed to be used by the random number generators if useFixedSeed is set to true.-->
+		<fixedSeed value="77654767" />
+
+		<!--***********************************************************************-->
+		<!--  Logging                                                              -->
+		<!--***********************************************************************-->
+		<!--Name of the default log file, used by the system, but also for use by the end-user. (This log file is stored under sinalgo.runtime.Global.log.)-->
+		<logFileName value="logfile.txt" />
+
+		<!--Redirects the default log file to the console. No logfile will be created if set to true.-->
+		<outputToConsole value="true" />
+
+		<!--Indicates whether all log-files of the current simulation  are stored in a new directory. The name of the new directory is given by the string-representation of the date when the simulation starts.-->
+		<logToTimeDirectory value="true" />
+
+		<!--If set to true, the system configuration is written to the default log file after the application has been started.-->
+		<logConfiguration value="true" />
+
+		<!--If set to true, the log files are flushed every time a new log is added.-->
+		<eagerFlush value="false" />
+
+		<!--***********************************************************************-->
+		<!--  GUI                                                                  -->
+		<!--***********************************************************************-->
+		<!--If true, the application shows an extended control panel.-->
+		<extendedControl value="true" />
+
+		<!--If true, the graph edges are drawn as directed arrows,  otherwise simple lines.-->
+		<drawArrows value="false" />
+
+		<!--Fraction of the old and new zoom values for a zoom step.-->
+		<zoomStep value="1.2" />
+
+		<!--Fraction of the old and new zoom values for a zoom  step when zooming with the mouse wheel.-->
+		<wheelZoomStep value="1.05" />
+
+		<!--The minimum required zoom-->
+		<minZoomFactor value="0.05" />
+
+		<!--If set to true, the nodes are ordered according to their  elevation before drawing, such that nodes closer to the  viewer are drawn on top. This setting only applies to 3D.-->
+		<draw3DGraphNodesInProperOrder value="true" />
+
+		<!--If set to true and in 3D mode, the cube is drawn with perspective.-->
+		<usePerspectiveView value="true" />
+
+		<!--Factor that defines the distance of the observer from the cube when useing the perspective view in 3D. Default: 30-->
+		<perspectiveViewDistance value="30" />
+
+		<!--***********************************************************************-->
+		<!--  Background map in 2D                                                 -->
+		<!--***********************************************************************-->
+		<!--If set to true, the background of a 2D simulation is colored according to a map, specified in a map-file, specified by the field map-->
+		<useMap value="false" />
+
+		<!--In 2D, the background can be colored depending on a map file. This field contains the file name for this map, which is supposed to be located in the source folder of the current project. The map is only painted if useMap is set to true.-->
+		<map value="" />
+
+		<!--***********************************************************************-->
+		<!--  Models                                                               -->
+		<!--***********************************************************************-->
+		<!--The message transmission model used when none is specified-->
+		<DefaultMessageTransmissionModel value="RandomTime" />
+
+		<!--Default connectivity model used when none is specified-->
+		<DefaultConnectivityModel value="UDG" />
+
+		<!--Default distribution model used when none is specified-->
+		<DefaultDistributionModel value="Random" />
+
+		<!--Default interference model used when none is specified-->
+		<DefaultInterferenceModel value="NoInterference" />
+
+		<!--Default mobility model used when none is specified-->
+		<DefaultMobilityModel value="RandomDirection" />
+
+		<!--Default reliability model used when none is specified-->
+		<DefaultReliabilityModel value="ReliableDelivery" />
+
+		<!--Default node implementation used when none is specified-->
+		<DefaultNodeImplementation value="sample1:S1Node" />
+
+		<!--Show the models implemented by all projects in the drop down options. When set to false, only the models by the selected project and the default project are shown.-->
+		<showModelsOfAllProjects value="false" />
+
+		<!--***********************************************************************-->
+		<!--  Node storage, position transformation                                -->
+		<!--***********************************************************************-->
+		<!--Transformation implementation for 2D. (This is used to translate between the logic positions used by the simulation to the 2D coordinate system used by the GUI to display the graph)-->
+		<guiPositionTransformation2D value="sinalgo.gui.transformation.Transformation2D" />
+
+		<!--Transformation implementation for 3D. (This is used to translate between the logic positions used by the simulation to the 2D coordinate system used by the GUI to display the graph)-->
+		<guiPositionTransformation3D value="sinalgo.gui.transformation.Transformation3D" />
+
+		<!--Node collection implementation for 2D.-->
+		<nodeCollection2D value="sinalgo.runtime.nodeCollection.Geometric2DNodeCollection" />
+
+		<!--Node collection implementation for 3D.-->
+		<nodeCollection3D value="sinalgo.runtime.nodeCollection.Geometric3DNodeCollection" />
+
+		<!--***********************************************************************-->
+		<!--  Diverse Settings                                                     -->
+		<!--***********************************************************************-->
+		<!--Show hints on how to further optimize the simulation when some parameters seem not to be set optimally.-->
+		<showOptimizationHints value="true" />
+
+		<!--Indicates whether the edges are drawn in the default draw implementation for the graph.-->
+		<drawEdges value="true" />
+
+		<!--Indicates whether the nodes are drawn in the default draw implementation for the graph.-->
+		<drawNodes value="true" />
+
+		<!--The number of future events that are shown in the control panel-->
+		<shownEventQueueSize value="10" />
+
+		<!--Height of the output text field in pixels.-->
+		<outputTextFieldHeight value="200" />
+
+		<!--The length of the arrows. This length is multiplied by the current zoomLevel.-->
+		<arrowLength value="8" />
+
+		<!--The width of the arrows. This width is multiplied by the current zoomLevel.-->
+		<arrowWidth value="1" />
+
+		<!--The dsfault value of the rounds field.-->
+		<defaultRoundNumber value="1" />
+
+		<!--EPS 2 PDF command: This is the command that is used to convert an EPS file  into a PDF file. You can use the following parameters:   %s is the complete path from the root folder of the      framework to the SOURCE file (the eps)   %t is the complete path from the root folder of the      framework to the TARGET file (the pdf) These placeholders are set by the framework. Example:   'epstopdf %s')-->
+		<epsToPdfCommand value="epstopdf %s" />
+
+		<!--Enables the drawing of the bounding box of the deployment to EPS/PDF.-->
+		<epsDrawDeploymentAreaBoundingBox value="true" />
+
+		<!--Indicates whether the background in the ps should be  white or gray.  The gray version is easier to understand (especially in 3D) but the white one should be more useful to be imported in reports.-->
+		<epsDrawBackgroundWhite value="true" />
+
+	</Framework>
+	<Custom>
+<GeometricNodeCollection rMax="100"/>
+<UDG rMax="100"/>
+
+<AutoStart value="false"/>
+<ExitAfter value="false" rounds="100"/>
+
+<MessageTransmission constantTime="1"/>
+<RandomMessageTransmission distribution="Uniform" min="1" max="5"/>
+
+<RandomDirection>
+	<NodeSpeed distribution="Gaussian" mean="10" variance="20" />
+	<WaitingTime distribution="Poisson" lambda="10" />
+	<MoveTime distribution="Uniform" min="5" max="20" />
+</RandomDirection>
+
+<RandomWayPoint>
+	<Speed distribution="Gaussian" mean="10" variance="20" />
+	<WaitingTime distribution="Poisson" lambda="10" />
+</RandomWayPoint>
+
+<Node defaultSize="2" />
+
+<S1Node increment="5" />
+
+<QUDG rMin="30" rMax="50" ProbabilityType="constant" connectionProbability="0.6"/>				</Custom>
+</Document>
+
