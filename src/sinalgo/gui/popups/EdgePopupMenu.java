@@ -51,7 +51,7 @@ import sinalgo.runtime.Runtime;
  * The PopupMenu which pops up upon a right-click on an Edge
  */
 
-@SuppressWarnings("serial")
+
 public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
 
 	private Edge edge = null;

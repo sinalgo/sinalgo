@@ -96,7 +96,7 @@ import sinalgo.tools.storage.SortableVector;
 /**
  * The parent frame for the whole gui. It contains two children: the graph panel and the control panel.
  */
-@SuppressWarnings("serial")
+
 public class GUI extends JFrame implements ActionListener{
 
 	private JMenuBar menuBar;

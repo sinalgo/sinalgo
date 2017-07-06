@@ -49,7 +49,7 @@ import sinalgo.nodes.NotYetImplementedException;
  * This is a class implementing a special form of a Text Field. It is just used to abbreviate the writing
  * effort for all the Dialogs.
  */
-@SuppressWarnings("serial")
+
 public class UnborderedJTextField extends MultiLineToolTipJTextField {
 	
 	private static Font boldHelvetica12 = new Font("Helvetica", Font.BOLD, 12);

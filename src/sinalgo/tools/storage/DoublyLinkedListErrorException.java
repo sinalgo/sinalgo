@@ -39,7 +39,7 @@ package sinalgo.tools.storage;
 /**
  * Thrown by the linked list implementation upon failure. 
  */
-@SuppressWarnings("serial")
+
 public class DoublyLinkedListErrorException extends Exception {
 
 	/**

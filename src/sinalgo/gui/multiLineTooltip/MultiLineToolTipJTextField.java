@@ -45,7 +45,7 @@ import javax.swing.text.Document;
  * This class extends the JTextField class and overwrites the createToolTip method to add the class 
  * a multiline tooltip instead of the normal single line tooltip.
  */
-@SuppressWarnings("serial")
+
 public class MultiLineToolTipJTextField extends JTextField {
 	
 	/**

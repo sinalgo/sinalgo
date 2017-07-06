@@ -39,7 +39,7 @@ package sinalgo.nodes;
 /**
  * The exception that is thrown when a method is called that is not yet implemented.
  */
-@SuppressWarnings("serial")
+
 public class NotYetImplementedException extends RuntimeException {
 	/**
 	 * The one and only constructor of this Exception.

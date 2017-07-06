@@ -37,24 +37,30 @@
 package sinalgo.configuration;
 
 /**
- * An Exception to indicate that there is something wrong witch the configuration.
+ * An Exception to indicate that there is something wrong witch the
+ * configuration.
  */
-@SuppressWarnings("serial")
 public class WrongConfigurationException extends RuntimeException {
-	
+
+	private static final long serialVersionUID = 8134105692334478150L;
+
 	/**
 	 * The constructor for the WrongConfigurationException class.
 	 *
-	 * @param s The message for the Exception.
+	 * @param s
+	 *            The message for the Exception.
 	 */
-	public WrongConfigurationException(String s){
+	public WrongConfigurationException(String s) {
 		super(s);
 	}
-	
+
 	/**
 	 * The constructor for the CorruptConfigurationEntryException class.
-	 * @param cause The exception causing this exception.
-	 * @param msg The message of this exception.
+	 * 
+	 * @param cause
+	 *            The exception causing this exception.
+	 * @param msg
+	 *            The message of this exception.
 	 */
 	public WrongConfigurationException(Throwable cause, String msg) {
 		super(msg);

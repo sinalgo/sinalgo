@@ -53,7 +53,7 @@ import sinalgo.runtime.events.Event;
  * @author rflury
  *
  */
-@SuppressWarnings("serial")
+
 public class EventPopupMenu extends JPopupMenu implements ActionListener {
 	Event event;
 	JList list;

@@ -87,7 +87,7 @@ import sinalgo.tools.logging.Logging;
 /**
  * A panel where the Graph is painted into.
  */
-@SuppressWarnings("serial")
+
 public class GraphPanel extends JPanel {
 	private Image offscreen = null;
 	// needs to be set to true whenever offscreen has been assigned a new object

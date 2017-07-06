@@ -40,7 +40,7 @@ package sinalgo.nodes;
  * This Exception is thrown, if a user tried to send a message to a node, to which the 
  * source-node has no connection.
  */
-@SuppressWarnings("serial")
+
 public class NoConnectionException extends Exception {
 
 	/**

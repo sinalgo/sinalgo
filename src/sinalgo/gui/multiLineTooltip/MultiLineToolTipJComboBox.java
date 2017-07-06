@@ -47,7 +47,7 @@ import javax.swing.JToolTip;
  * This class extends the JComboBox class and overwrites the createToolTip method to add the class 
  * a multiline tooltip instead of the normal single line tooltip.
  */
-@SuppressWarnings("serial")
+
 public class MultiLineToolTipJComboBox extends JComboBox {
 	/**
 	 * Creates a <code>MultiLineToolTipJComboBox</code> that takes it's items from an

@@ -105,7 +105,7 @@ import sinalgo.runtime.Main;
 /**
  * This class provides a dialog to let the user select a project.
  */
-@SuppressWarnings("serial")
+
 public class ProjectSelector extends JFrame implements ActionListener, ListSelectionListener{
 	private JPanel listPanel = new JPanel();
 	private JList selection = new JList();

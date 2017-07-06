@@ -51,7 +51,7 @@ import javax.swing.plaf.basic.BasicToolTipUI;
  * The Tooltip to display if the user stops with the mouse over the graph panel. Displays information about
  * the edge or node under the current position.
  */
-@SuppressWarnings("serial")
+
 public class MultiLineToolTip extends JToolTip
 {
 	String tipText;

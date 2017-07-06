@@ -64,7 +64,7 @@ import sinalgo.io.versionTest.VersionTester;
 /**
  * Dialog that shows the global settings of the current simulation. 
  */
-@SuppressWarnings("serial")
+
 public class GlobalSettingsDialog extends JDialog implements ActionListener {
 
 	private JButton close = new JButton("Close");

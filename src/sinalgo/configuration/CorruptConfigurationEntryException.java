@@ -37,24 +37,30 @@
 package sinalgo.configuration;
 
 /**
- * The exception, that is thrown if there is no field in the configuration with the name you specified.
+ * The exception, that is thrown if there is no field in the configuration with
+ * the name you specified.
  */
-@SuppressWarnings("serial")
 public class CorruptConfigurationEntryException extends SimulationException {
+
+	private static final long serialVersionUID = 7079477129643894979L;
 
 	/**
 	 * The constructor for the CorruptConfigurationEntryException class.
 	 *
-	 * @param msg The message for the Exception.
+	 * @param msg
+	 *            The message for the Exception.
 	 */
 	public CorruptConfigurationEntryException(String msg) {
 		super(msg);
 	}
-	
+
 	/**
 	 * The constructor for the CorruptConfigurationEntryException class.
-	 * @param cause The exception causing this exception.
-	 * @param msg The message of this exception.
+	 *
+	 * @param cause
+	 *            The exception causing this exception.
+	 * @param msg
+	 *            The message of this exception.
 	 */
 	public CorruptConfigurationEntryException(Throwable cause, String msg) {
 		super(msg);

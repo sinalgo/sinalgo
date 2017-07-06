@@ -40,7 +40,7 @@ package sinalgo.runtime;
  * An exception that is thrown when the application was started in gui mode, 
  * but some code expects it to be running in batch mode. 
  */
-@SuppressWarnings("serial")
+
 public class NotInBatchModeException extends Exception {
 
 	/**

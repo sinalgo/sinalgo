@@ -38,28 +38,28 @@ package projects.defaultProject.nodes.messages;
 
 import sinalgo.nodes.messages.Message;
 
-
-
 /**
  * A standard message type consisting only of a integer as payload.
  */
 public class IntMessage extends Message {
-	
+
 	/**
 	 * The payload of the Message: an integer.
 	 */
-	public int value = 0; 
-	
+	public int value = 0;
+
 	/**
 	 * The constructor for the IntMessage class.
 	 *
-	 * @param i The integer the payload has to be set to.
+	 * @param i
+	 *            The integer the payload has to be set to.
 	 */
-	public IntMessage(int i){
+	public IntMessage(int i) {
 		value = i;
 	}
-	
-	public Message clone(){
+
+	@Override
+	public Message clone() {
 		return new IntMessage(this.value);
 	}
 }

@@ -77,7 +77,7 @@ import sinalgo.runtime.Runtime;
 /**
  * The class for the dialog displaying information about a node.
  */
-@SuppressWarnings("serial")
+
 public class NodeInfoDialog extends JDialog implements ActionListener, PropertyChangeListener{
 	
 	GUI parent = null;

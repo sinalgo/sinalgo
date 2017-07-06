@@ -51,17 +51,19 @@ import sinalgo.runtime.Global;
 import sinalgo.tools.statistics.Distribution;
 
 /**
- * A config file that stores application wide settings for the user, such as
- * the size of the windows and the selected project. 
+ * A config file that stores application wide settings for the user, such as the
+ * size of the windows and the selected project.
  */
 public class AppConfig {
-	String configFile = Configuration.sourceDirPrefix+"/"+Configuration.projectDirInSourceFolder+"/defaultProject/appConfig.xml";
+
+	String configFile = Configuration.sourceDirPrefix + "/" + Configuration.projectDirInSourceFolder
+			+ "/defaultProject/appConfig.xml";
 	boolean configExists = false;
 
 	public int projectSelectorWindowWidth = 600;
-	public int projectSelectorWindowHeight= 400;
-	public int projectSelectorWindowPosX= 50;
-	public int projectSelectorWindowPosY= 50;
+	public int projectSelectorWindowHeight = 400;
+	public int projectSelectorWindowPosX = 50;
+	public int projectSelectorWindowPosY = 50;
 	public boolean projectSelectorIsMaximized = false;
 	public int projectSelectorSelectedTab = 1; // 1 = description, 2 = config
 	public String lastChosenProject = "";
@@ -77,265 +79,262 @@ public class AppConfig {
 	public int helpWindowPosX = 200;
 	public int helpWindowPosY = 200;
 	public boolean helpWindowIsMaximized = false;
-	
+
 	public boolean guiControlPanelExpandSimulation = true;
 	public boolean guiControlPanelShowFullViewPanel = true;
 	public boolean guiControlPanelShowTextPanel = true;
 	public boolean guiControlPanelShowProjectControl = true;
 
-	
 	public boolean guiRunOperationIsLimited = true; // infinite many (rounds/events) or the specified amount?
-	
+
 	public String lastSelectedFileDirectory = ""; // where the user pointed last to open a file
-	
+
 	public boolean checkForSinalgoUpdate = true; // check for updates
 	public long timeStampOfLastUpdateCheck = 0; // machine time when Sinalgo checked last for an update
-	
+
 	public int generateNodesDlgNumNodes = 100; // # of nodes to generate
-	
+
 	public String previousRunCmdLineArgs = ""; // cmd line args of the previous call to 'Run'
-	
-	
+
 	private static AppConfig singletonInstance = null; // the singleton instance
-	
+
 	/**
 	 * @return The singleton instance of AppConfig.
 	 */
 	public static AppConfig getAppConfig() {
-		if(singletonInstance == null) {
+		if (singletonInstance == null) {
 			singletonInstance = new AppConfig();
 		}
 		return singletonInstance;
 	}
 
 	/**
-	 * @return A file describing the directory that was chosen last, 
-	 * if this directory does not exist anymore, the directory of the
-	 * current project.
+	 * @return A file describing the directory that was chosen last, if this
+	 *         directory does not exist anymore, the directory of the current
+	 *         project.
 	 */
 	public File getLastSelectedFileDirectory() {
 		File f = new File(lastSelectedFileDirectory);
-		if(!f.exists()) {
+		if (!f.exists()) {
 			f = new File(Global.getProjectSrcDir());
 		}
 		return f;
 	}
-	
+
 	/**
-	 * Singleton constructor 
+	 * Singleton constructor
 	 */
 	private AppConfig() {
-		File file= new File(configFile);
-		if(file.exists()){
+		File file = new File(configFile);
+		if (file.exists()) {
 			configExists = true;
 		} else {
 			return;
 		}
-		
+
 		try {
 			Document doc = new SAXBuilder().build(configFile);
 			Element root = doc.getRootElement();
 
-			// Read the entries for the Project Selector 
+			// Read the entries for the Project Selector
 			Element e = root.getChild("ProjectSelector");
-			if(e != null) {
+			if (e != null) {
 				String v = e.getAttributeValue("windowWidth");
-				if(v != null) {
+				if (v != null) {
 					try {
 						projectSelectorWindowWidth = Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
-				
+
 				v = e.getAttributeValue("windowHeight");
-				if(v != null) {
+				if (v != null) {
 					try {
-						projectSelectorWindowHeight= Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+						projectSelectorWindowHeight = Integer.parseInt(v);
+					} catch (NumberFormatException ex) {
 					}
 				}
 				v = e.getAttributeValue("windowPosX");
-				if(v != null) {
+				if (v != null) {
 					try {
-						projectSelectorWindowPosX= Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+						projectSelectorWindowPosX = Integer.parseInt(v);
+					} catch (NumberFormatException ex) {
 					}
 				}
 				v = e.getAttributeValue("windowPosY");
-				if(v != null) {
+				if (v != null) {
 					try {
-						projectSelectorWindowPosY= Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+						projectSelectorWindowPosY = Integer.parseInt(v);
+					} catch (NumberFormatException ex) {
 					}
 				}
-				
+
 				v = e.getAttributeValue("lastChosenProject");
-				if(v != null) {
+				if (v != null) {
 					lastChosenProject = v;
 				}
-				
+
 				v = e.getAttributeValue("isMaximized");
-				if(v != null) {
+				if (v != null) {
 					projectSelectorIsMaximized = v.equals("true");
 				}
-				
+
 				v = e.getAttributeValue("selectedTab");
-				if(v != null) {
+				if (v != null) {
 					try {
 						projectSelectorSelectedTab = Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
 			}
 
 			// Read the entries for the GUI
 			e = root.getChild("GUI");
-			if(e != null) {
+			if (e != null) {
 				String v = e.getAttributeValue("windowWidth");
-				if(v != null) {
+				if (v != null) {
 					try {
 						guiWindowWidth = Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
-				
+
 				v = e.getAttributeValue("windowHeight");
-				if(v != null) {
+				if (v != null) {
 					try {
 						guiWindowHeight = Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
 				v = e.getAttributeValue("windowPosX");
-				if(v != null) {
+				if (v != null) {
 					try {
 						guiWindowPosX = Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
 				v = e.getAttributeValue("windowPosY");
-				if(v != null) {
+				if (v != null) {
 					try {
 						guiWindowPosY = Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
-				
+
 				v = e.getAttributeValue("isMaximized");
-				if(v != null) {
+				if (v != null) {
 					guiIsMaximized = v.equals("true");
 				}
-				
+
 				v = e.getAttributeValue("ControlPanelExpandSimulation");
-				if(v != null) {
+				if (v != null) {
 					guiControlPanelExpandSimulation = v.equals("true");
 				}
-				
+
 				v = e.getAttributeValue("ControlPanelShowFullViewPanel");
-				if(v != null) {
+				if (v != null) {
 					guiControlPanelShowFullViewPanel = v.equals("true");
 				}
 
 				v = e.getAttributeValue("ControlPanelShowTextPanel");
-				if(v != null) {				
+				if (v != null) {
 					guiControlPanelShowTextPanel = v.equals("true");
 				}
-				
+
 				v = e.getAttributeValue("ControlPanelShowProjectControl");
-				if(v != null) {
+				if (v != null) {
 					guiControlPanelShowProjectControl = v.equals("true");
 				}
 
 				v = e.getAttributeValue("RunOperationIsLimited");
-				if(v != null) {
+				if (v != null) {
 					guiRunOperationIsLimited = v.equals("true");
 				}
-				
+
 				v = e.getAttributeValue("helpWindowWidth");
-				if(v != null) {
+				if (v != null) {
 					try {
 						helpWindowWidth = Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
 				v = e.getAttributeValue("helpWindowHeight");
-				if(v != null) {
+				if (v != null) {
 					try {
-						helpWindowHeight= Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+						helpWindowHeight = Integer.parseInt(v);
+					} catch (NumberFormatException ex) {
 					}
 				}
 				v = e.getAttributeValue("helpWindowPosX");
-				if(v != null) {
+				if (v != null) {
 					try {
 						helpWindowPosX = Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
 				v = e.getAttributeValue("helpWindowPosY");
-				if(v != null) {
+				if (v != null) {
 					try {
 						helpWindowPosY = Integer.parseInt(v);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
 				v = e.getAttributeValue("helpWindowIsMaximized");
-				if(v != null) {
+				if (v != null) {
 					try {
 						helpWindowIsMaximized = v.equals("true");
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
 			}
-			
+
 			// read the seed from the last run
 			e = root.getChild("RandomSeed");
-			if(e != null) {
+			if (e != null) {
 				String s = e.getAttributeValue("seedFromPreviousRun");
-				if(s != null) {
+				if (s != null) {
 					try {
 						seedFromLastRun = Long.parseLong(s);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
 			}
-			
+
 			// Diverse App specific configs
 			e = root.getChild("App");
-			if(e != null) {
+			if (e != null) {
 				String s = e.getAttributeValue("lastSelectedFileDirectory");
-				if(s != null) {
+				if (s != null) {
 					lastSelectedFileDirectory = s;
 				}
-				
+
 				s = e.getAttributeValue("checkForUpdatesAtStartup");
-				if(s != null) {
+				if (s != null) {
 					checkForSinalgoUpdate = s.equals("true");
 				}
 
 				s = e.getAttributeValue("updateCheckTimeStamp");
-				if(s != null) {
+				if (s != null) {
 					try {
 						timeStampOfLastUpdateCheck = Long.parseLong(s);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
 
-				
 				s = e.getAttributeValue("runCmdLineArgs");
-				if(s != null) {
+				if (s != null) {
 					previousRunCmdLineArgs = s;
 				}
 			}
 
 			// Generate Nodes Dlg
 			e = root.getChild("GenNodesDlg");
-			if(e != null) {
+			if (e != null) {
 				String s = e.getAttributeValue("numNodes");
-				if(s != null) {
+				if (s != null) {
 					try {
 						generateNodesDlgNumNodes = Integer.parseInt(s);
-					} catch(NumberFormatException ex) {
+					} catch (NumberFormatException ex) {
 					}
 				}
 			}
@@ -346,10 +345,10 @@ public class AppConfig {
 	} // end of constructor
 
 	/**
-	 * Writes the application wide config  
+	 * Writes the application wide config
 	 */
 	public void writeConfig() {
-		File file= new File(configFile);		
+		File file = new File(configFile);
 
 		Document doc = new Document();
 		Element root = new Element("sinalgo");
@@ -364,7 +363,7 @@ public class AppConfig {
 		ps.setAttribute("windowPosY", Integer.toString(projectSelectorWindowPosY));
 		ps.setAttribute("isMaximized", projectSelectorIsMaximized ? "true" : "false");
 		ps.setAttribute("selectedTab", Integer.toString(projectSelectorSelectedTab));
-		
+
 		Element gui = new Element("GUI");
 		root.addContent(gui);
 		gui.setAttribute("windowWidth", Integer.toString(guiWindowWidth));
@@ -382,28 +381,28 @@ public class AppConfig {
 		gui.setAttribute("helpWindowPosX", Integer.toString(helpWindowPosX));
 		gui.setAttribute("helpWindowPosY", Integer.toString(helpWindowPosY));
 		gui.setAttribute("helpWindowIsMaximized", helpWindowIsMaximized ? "true" : "false");
-		
+
 		Element seed = new Element("RandomSeed");
 		root.addContent(seed);
 		seed.setAttribute("seedFromPreviousRun", Long.toString(Distribution.getSeed()));
-		
-		Element app= new Element("App");
+
+		Element app = new Element("App");
 		root.addContent(app);
 		app.setAttribute("lastSelectedFileDirectory", lastSelectedFileDirectory);
 		app.setAttribute("checkForUpdatesAtStartup", checkForSinalgoUpdate ? "true" : "false");
 		app.setAttribute("updateCheckTimeStamp", Long.toString(timeStampOfLastUpdateCheck));
 		app.setAttribute("runCmdLineArgs", previousRunCmdLineArgs);
-		
+
 		Element genNodes = new Element("GenNodesDlg");
 		root.addContent(genNodes);
 		genNodes.setAttribute("numNodes", Integer.toString(generateNodesDlgNumNodes));
-		
-		//write the xml
+
+		// write the xml
 		XMLOutputter outputter = new XMLOutputter();
 		Format f = Format.getPrettyFormat();
 		f.setIndent("\t");
 		outputter.setFormat(f);
-		
+
 		try {
 			FileWriter fW = new FileWriter(file);
 			outputter.output(doc, fW);

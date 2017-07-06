@@ -44,7 +44,7 @@ import java.util.Vector;
  * to sort the content of the vector efficiently.  
  * @param <T>
  */
-@SuppressWarnings("serial")
+
 public class SortableVector<T> extends Vector<T> {
 
 	/**

@@ -136,7 +136,7 @@ public class PositionFileIO {
 	}
 	
 	
-	@SuppressWarnings("serial")
+	
 	public static class PositionFileException extends WrongConfigurationException { // needs not be caught
 		public PositionFileException(String msg) {
 			super(msg);

@@ -50,7 +50,7 @@ import sinalgo.nodes.edges.Edge;
  * The queue that stores the events of the asynchronous mode. The entries (events) are sorted according to 
  * their execution time so that the first node in the list is the next to execute.
  */
-@SuppressWarnings("serial")
+
 public class EventQueue extends TreeSet<Event> {
 	
 	private Vector<EventQueueListener> listeners = new Vector<EventQueueListener>(5);

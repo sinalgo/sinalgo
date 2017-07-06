@@ -48,7 +48,7 @@ import sinalgo.tools.storage.SortableVector;
  * The iterator-method now returns a reusable iterator over the vertor. This helps reducing the amount of
  * objects that are allocated and garbage collected.
  */
-@SuppressWarnings("serial")
+
 public class PacketCollection extends SortableVector<Packet>{
 	
 	/**

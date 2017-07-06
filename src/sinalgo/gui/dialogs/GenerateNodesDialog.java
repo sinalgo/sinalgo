@@ -81,7 +81,7 @@ import sinalgo.tools.Tools;
 /**
  * The Dialog to generate a number of new Nodes.
  */
-@SuppressWarnings("serial")
+
 public class GenerateNodesDialog extends JDialog implements ActionListener, ProgressBarUser{
 
 	private static JTextField number = new JTextField(6); { // static: keep the value for subsequent calls

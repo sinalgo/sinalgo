@@ -36,7 +36,6 @@
 */
 package sinalgo.gui.controlPanel;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -59,23 +58,26 @@ import sinalgo.runtime.events.Event;
 /**
  * The minimized version of the control panel.
  */
-@SuppressWarnings("serial")
 public class MinimizedControlPanel extends ControlPanel {
+
+	private static final long serialVersionUID = 6500416722163812886L;
+
 	JPanel buttonPanel = null;
-	
+
 	/**
 	 * Creates a MinimizedControlPanel for the specified GUI instance.
 	 *
-	 * @param p The Gui instance to create the MinimizedControlPanel for.
+	 * @param p
+	 *            The Gui instance to create the MinimizedControlPanel for.
 	 */
-	public MinimizedControlPanel(GUI p){
+	public MinimizedControlPanel(GUI p) {
 		parent = p;
-		int controlPanelHeight= 25;
+		int controlPanelHeight = 25;
 		this.setMaximumSize(new Dimension(20000, controlPanelHeight));
 		this.setMinimumSize(new Dimension(20000, controlPanelHeight));
 		this.setLayout(new BorderLayout());
 		this.setBorder(BorderFactory.createRaisedBevelBorder());
-		
+
 		buttonPanel = new JPanel();
 		FlowLayout buttonLayout = new FlowLayout(FlowLayout.LEFT, 2, 0);
 		buttonPanel.setLayout(buttonLayout);
@@ -83,7 +85,7 @@ public class MinimizedControlPanel extends ControlPanel {
 		JButton button = createFrameworkIconButton("clearGraph", "cleargraph.gif", "Clear Graph");
 		buttonPanel.add(button);
 		addToDisabledButtonList(button);
-		
+
 		button = createFrameworkIconButton("addNodes", "addnodes.gif", "Add Nodes");
 		buttonPanel.add(button);
 		addToDisabledButtonList(button);
@@ -92,7 +94,6 @@ public class MinimizedControlPanel extends ControlPanel {
 		buttonPanel.add(button);
 		addToDisabledButtonList(button);
 
-		
 		addSeparator(buttonPanel);
 
 		button = createFrameworkIconButton("zoomIn", "zoominimage.png", "Zoom In");
@@ -106,26 +107,25 @@ public class MinimizedControlPanel extends ControlPanel {
 		button = createFrameworkIconButton("zoomToFit", "zoomtofit.gif", "Zoom To Fit");
 		buttonPanel.add(button);
 		addToDisabledButtonList(button);
-		
-		if(parent.getTransformator() instanceof Transformation3D) {
+
+		if (parent.getTransformator() instanceof Transformation3D) {
 			button = createFrameworkIconButton("zoomToFit3D", "zoomtofit3d.gif", "Default View");
 			buttonPanel.add(button);
 			addToDisabledButtonList(button);
 		}
-		
+
 		addSeparator(buttonPanel);
 		addSpacer(buttonPanel, 5);
-		
+
 		// The two text fields to enter number of rounds and refresh rate
-		//roundNumber.setText(String.valueOf(Configuration.defaultRoundNumber));
-		if(Configuration.asynchronousMode){
+		// roundNumber.setText(String.valueOf(Configuration.defaultRoundNumber));
+		if (Configuration.asynchronousMode) {
 			roundsToPerform.setToolTipText("Number of Events to perform");
-		}
-		else{
+		} else {
 			roundsToPerform.setToolTipText("Number of Rounds to perform");
 		}
 		buttonPanel.add(roundsToPerform);
-		
+
 		refreshRate.setText(String.valueOf(Configuration.refreshRate));
 		refreshRate.setToolTipText("Refresh Rate");
 		buttonPanel.add(refreshRate);
@@ -133,7 +133,7 @@ public class MinimizedControlPanel extends ControlPanel {
 		JPanel startButtonPanel = new JPanel();
 		startButtonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		startButtonPanel.add(start);
-			
+
 		// the run-selection button
 		runMenuButton = createFrameworkIconButton("RunMenu", "maximize.gif", "Run Options");
 		runMenuButton.setPreferredSize(new Dimension(13, 29));
@@ -141,37 +141,47 @@ public class MinimizedControlPanel extends ControlPanel {
 		startButtonPanel.add(runMenuButton);
 		// raise the 'run' menu whenever the mouse idles over this button
 		runMenuButton.addMouseListener(new MouseListener() {
-			public void mouseClicked(MouseEvent e) {}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			@Override
 			public void mouseEntered(MouseEvent e) {
-				if(runMenuButton.isEnabled()) {
+				if (runMenuButton.isEnabled()) {
 					start.setBorderPainted(true);
 				}
 			}
+
+			@Override
 			public void mouseExited(MouseEvent e) {
-				if(runMenuButton.isEnabled()) {
+				if (runMenuButton.isEnabled()) {
 					start.setBorderPainted(false);
 				}
 			}
-			public void mousePressed(MouseEvent e) {}
-			public void mouseReleased(MouseEvent e) {}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
 		});
 		buttonPanel.add(startButtonPanel);
-		
-		
+
 		abort = createFrameworkIconButton("Abort", "abort.gif", "Abort Simulation");
 		abort.setEnabled(false);
 		buttonPanel.add(abort);
-		
+
 		addSpacer(buttonPanel, 5);
-		
+
 		JLabel doneRoundsLabel;
-		if(Global.isAsynchronousMode){
+		if (Global.isAsynchronousMode) {
 			doneRoundsLabel = new JLabel("Time: ");
 			roundsPerformed.setText(String.valueOf(round(sinalgo.runtime.Global.currentTime, 2)));
-		}
-		else{
+		} else {
 			doneRoundsLabel = new JLabel("Round: ");
-			roundsPerformed.setText(String.valueOf((int)round(sinalgo.runtime.Global.currentTime, 2)));
+			roundsPerformed.setText(String.valueOf((int) round(sinalgo.runtime.Global.currentTime, 2)));
 		}
 		buttonPanel.add(doneRoundsLabel);
 		roundsPerformed.setEditable(false);
@@ -181,18 +191,18 @@ public class MinimizedControlPanel extends ControlPanel {
 
 		// Add the user-defined buttons
 		Vector<JButton> customButtons = super.createCustomButtons();
-		if(customButtons.size() > 0) {
+		if (customButtons.size() > 0) {
 			addSpacer(buttonPanel, 5);
 			addSeparator(buttonPanel);
 			addSpacer(buttonPanel, 5);
 
-			for(JButton b : customButtons) {
+			for (JButton b : customButtons) {
 				buttonPanel.add(b);
 				addToDisabledButtonList(b);
 			}
 			addSpacer(buttonPanel, 4); // strange, but the last button is sometimes not painted...
 		}
-		
+
 		JButton changeButton = createFrameworkIconButton("extendPanel", "maximize.gif", "Extend");
 		changeButton.setPreferredSize(new Dimension(13, 29));
 		addToDisabledButtonList(changeButton);
@@ -201,41 +211,48 @@ public class MinimizedControlPanel extends ControlPanel {
 
 		this.setVisible(true);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sinalgo.gui.controlPanel.ControlPanel#setRoundsPerformed(double)
 	 */
-	public void setRoundsPerformed(double time, int eventNumber){
+	@Override
+	public void setRoundsPerformed(double time, int eventNumber) {
 		roundsPerformed.setText(String.valueOf(round(time, 2)));
 		buttonPanel.doLayout();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sinalgo.gui.controlPanel.ControlPanel#setRoundsPerformed(double)
 	 */
-	public void setRoundsPerformed(int i){
+	@Override
+	public void setRoundsPerformed(int i) {
 		roundsPerformed.setText(String.valueOf(i));
 		buttonPanel.doLayout();
 	}
-	
-	public void setCurrentEvent(Event e){
+
+	@Override
+	public void setCurrentEvent(Event e) {
 		setStringsForCurrentEvent(e);
-		Vector<String> v = new Vector<String>(1);
+		Vector<String> v = new Vector<>(1);
 		v.add(currentEventString);
 		eventJList.setListData(v);
 	}
-	
+
 	private void addSeparator(JPanel buttonPanel) {
 		JPanel separator = new JPanel();
 		separator.setPreferredSize(new Dimension(1, 23));
 		separator.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		buttonPanel.add(separator);
 	}
-	
+
 	private void addSpacer(JPanel buttonPanel, int width) {
 		JPanel spacer = new JPanel();
 		spacer.setPreferredSize(new Dimension(width, 20));
 		buttonPanel.add(spacer);
 	}
-	
+
 }

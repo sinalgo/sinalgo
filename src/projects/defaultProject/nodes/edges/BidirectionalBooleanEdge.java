@@ -40,20 +40,20 @@ import sinalgo.nodes.edges.Edge;
 
 /**
  * A bidirectional edge that also implements the boolean flag.
+ *
  * @see sinalgo.nodes.edges.BidirectionalEdge
- * @see BooleanEdge 
+ * @see BooleanEdge
  */
 public class BidirectionalBooleanEdge extends BooleanEdge {
 
-	/* (non-Javadoc)
-	 * @see sinalgo.nodes.edges.Edge#initializeEdge()
-	 */
-	public void initializeEdge(){
-		if(oppositeEdge == null){
-			//this is a hack to ensure that this edge is already in the outgoing ot the start node. Otherwise the two edges would 
-			//end in an infinite loop
+	@Override
+	public void initializeEdge() {
+		if (oppositeEdge == null) {
+			// this is a hack to ensure that this edge is already in the outgoing ot the
+			// start node. Otherwise the two edges would
+			// end in an infinite loop
 			startNode.outgoingConnections.hackyAppend(this);
-			
+
 			endNode.outgoingConnections.add(endNode, startNode, true);
 			findOppositeEdge();
 		}
@@ -61,8 +61,8 @@ public class BidirectionalBooleanEdge extends BooleanEdge {
 
 	@Override
 	public void cleanUp() {
-		if(this.oppositeEdge != null){
-			//there is a related edge to this one.
+		if (this.oppositeEdge != null) {
+			// there is a related edge to this one.
 			Edge oe = this.oppositeEdge;
 			this.oppositeEdge = null;
 			oe.oppositeEdge = null; // set unlink oppositeEdges to avoid loops

@@ -39,7 +39,7 @@ package sinalgo.io.mapIO;
 /**
  * The Exception, that is thrown when the map is corrupt.
  */
-@SuppressWarnings("serial")
+
 public class MapCorruptException extends Exception {
 	
 	/**

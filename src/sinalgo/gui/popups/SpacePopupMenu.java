@@ -51,7 +51,7 @@ import sinalgo.nodes.Position;
  * The class for the popupmenus displayed on the graph panel when the user presses the right mouse button
  * over a place, where there is no node and no edge.
  */
-@SuppressWarnings("serial")
+
 public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener{
 	
 	private Point pos = null;

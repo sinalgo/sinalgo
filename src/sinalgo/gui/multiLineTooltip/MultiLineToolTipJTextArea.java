@@ -10,7 +10,7 @@ import javax.swing.text.Document;
  * A JTextArea that implements a multi line tool tip.
  * Furthermore, it returns as its preferred with always the value 0.
  */
-@SuppressWarnings("serial")
+
 public class MultiLineToolTipJTextArea extends JTextArea {
 
 	/* (non-Javadoc)

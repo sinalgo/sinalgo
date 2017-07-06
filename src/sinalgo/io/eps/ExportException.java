@@ -39,7 +39,7 @@ package sinalgo.io.eps;
 /**
  * This is the exception that is thrown when an error happend during the export process.
  */
-@SuppressWarnings("serial")
+
 public class ExportException extends Exception{
 	/**
 	 * Creates a ExportException with the given message.

@@ -57,7 +57,7 @@ import sinalgo.runtime.Runtime;
  * The class for the popupmenus displayed on the graph panel when the user presses the right mouse button
  * over a node.
  */
-@SuppressWarnings("serial")
+
 public class NodePopupMenu extends AbstractPopupMenu implements ActionListener{
 
 	private HashMap<String, Method> methodsAndDescriptions = new HashMap<String, Method>();

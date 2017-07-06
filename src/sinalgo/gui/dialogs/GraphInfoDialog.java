@@ -67,7 +67,7 @@ import sinalgo.tools.Tools;
  * The Dialog to show the informations about the actual Graph. It is showing the number of 
  * nodes, the number of edges and the type of the created edges.
  */
-@SuppressWarnings("serial")
+
 public class GraphInfoDialog extends JDialog implements ActionListener{
 	
 	private JTextField numberOfNodes = new JTextField(6);

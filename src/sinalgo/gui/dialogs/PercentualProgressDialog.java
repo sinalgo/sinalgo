@@ -52,7 +52,7 @@ import sinalgo.gui.GuiHelper;
 /**
  * This is a JDialog that shows the percentual progress of a action.
  */
-@SuppressWarnings("serial")
+
 public class PercentualProgressDialog extends JDialog{
 
 	private ProgressBarUser pBU;

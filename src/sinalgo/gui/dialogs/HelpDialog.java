@@ -68,7 +68,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import sinalgo.configuration.AppConfig;
 import sinalgo.gui.GuiHelper;
 
-@SuppressWarnings("serial")
+
 public class HelpDialog extends JFrame implements ActionListener, WindowListener {
 
   JEditorPane html;

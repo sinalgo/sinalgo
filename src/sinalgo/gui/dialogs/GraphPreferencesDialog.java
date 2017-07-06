@@ -68,7 +68,7 @@ import sinalgo.runtime.Global;
 /**
  * The Class for the dialog for the Graph preferences.
  */
-@SuppressWarnings("serial")
+
 public class GraphPreferencesDialog extends JDialog implements ActionListener{
 	
 	private JCheckBox drawArrowsCB = new JCheckBox("Draw the links as arrows");

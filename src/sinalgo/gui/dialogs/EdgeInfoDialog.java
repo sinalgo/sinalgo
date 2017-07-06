@@ -36,7 +36,6 @@
 */
 package sinalgo.gui.dialogs;
 
-
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.KeyEventPostProcessor;
@@ -59,57 +58,59 @@ import sinalgo.gui.helper.UnborderedJTextField;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.runtime.Global;
 
-
-
 /**
  * The Dialog to be shown, when someone is requesting information about an Edge.
  */
-@SuppressWarnings("serial")
-public class EdgeInfoDialog extends JDialog implements ActionListener{
-	
+public class EdgeInfoDialog extends JDialog implements ActionListener {
+
+	private static final long serialVersionUID = -4741386655977255004L;
+
 	private JButton ok = new JButton("OK");
-	
+
 	/**
 	 * The Constructor for the EdgeInfoDialog class.
-	 * 
-	 * @param p The Parent Frame to add the Dialog to.
-	 * @param e The Edge to get the Information about.
+	 *
+	 * @param p
+	 *            The Parent Frame to add the Dialog to.
+	 * @param e
+	 *            The Edge to get the Information about.
 	 */
-	public EdgeInfoDialog(JFrame p, Edge e){
-		super(p, "Edge from "+e.startNode.ID+" to "+e.endNode.ID, true);
+	public EdgeInfoDialog(JFrame p, Edge e) {
+		super(p, "Edge from " + e.startNode.ID + " to " + e.endNode.ID, true);
 		GuiHelper.setWindowIcon(this);
 
 		this.setLayout(new BorderLayout());
-		
+
 		JPanel info = new JPanel();
 		info.setBorder(BorderFactory.createTitledBorder("Edge Info"));
 		info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
 		this.add(BorderLayout.CENTER, info);
-		
+
 		JPanel infoGrid = new JPanel();
 		NonRegularGridLayout nrgl = new NonRegularGridLayout(4, 2, 5, 5);
 		nrgl.setAlignToLeft(true);
 		infoGrid.setLayout(nrgl);
 		info.add(infoGrid);
-		
+
 		UnborderedJTextField startLabel = new UnborderedJTextField("Start Node:", Font.BOLD);
 		infoGrid.add(startLabel);
 		UnborderedJTextField startNode = new UnborderedJTextField(Integer.toString(e.startNode.ID), Font.PLAIN);
 		startNode.setEditable(false);
 		infoGrid.add(startNode);
-		
+
 		UnborderedJTextField endLabel = new UnborderedJTextField("End Node:", Font.BOLD);
 		infoGrid.add(endLabel);
 		UnborderedJTextField endNode = new UnborderedJTextField(Integer.toString(e.endNode.ID), Font.PLAIN);
 		endNode.setEditable(false);
 		infoGrid.add(endNode);
-		
+
 		UnborderedJTextField typeLabel = new UnborderedJTextField("Edge Type:", Font.BOLD);
 		infoGrid.add(typeLabel);
-		UnborderedJTextField typeField = new UnborderedJTextField(Global.toShortName(e.getClass().getName()), Font.PLAIN);
+		UnborderedJTextField typeField = new UnborderedJTextField(Global.toShortName(e.getClass().getName()),
+				Font.PLAIN);
 		typeField.setEditable(false);
 		infoGrid.add(typeField);
-		
+
 		UnborderedJTextField toStringLabel = new UnborderedJTextField("Edge Info:", Font.BOLD);
 		infoGrid.add(toStringLabel);
 		JTextArea toStringArea = new JTextArea(e.toString());
@@ -121,29 +122,34 @@ public class EdgeInfoDialog extends JDialog implements ActionListener{
 		ok.addActionListener(this);
 		buttons.add(ok);
 		this.add(BorderLayout.SOUTH, buttons);
-		
+
 		// Detect ESCAPE button
 		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		focusManager.addKeyEventPostProcessor(new KeyEventPostProcessor() {
+			@Override
 			public boolean postProcessKeyEvent(KeyEvent e) {
-				if(!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					EdgeInfoDialog.this.setVisible(false);
 				}
 				return false;
 			}
 		});
-		
+
 		this.getRootPane().setDefaultButton(ok);
-		this.setResizable(true);		
+		this.setResizable(true);
 		this.pack();
 		this.setLocationRelativeTo(p);
 		this.setVisible(true);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
-	public void actionPerformed(ActionEvent event) {	
+	@Override
+	public void actionPerformed(ActionEvent event) {
 		this.setVisible(false);
 	}
 

@@ -45,7 +45,7 @@ import java.awt.Insets;
 /**
  * Grid Layout which allows components of differrent sizes. 
  */
-@SuppressWarnings("serial")
+
 public class NonRegularGridLayout extends GridLayout {
 
 	/**

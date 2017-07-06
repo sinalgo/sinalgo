@@ -36,7 +36,6 @@
 */
 package projects.defaultProject.nodes.nodeImplementations;
 
-
 import java.util.Iterator;
 
 import sinalgo.configuration.WrongConfigurationException;
@@ -45,38 +44,45 @@ import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.messages.Inbox;
 
 /**
- * The absolute dummy node. Does not do anything. Good for testing network topologies.
+ * The absolute dummy node. Does not do anything. Good for testing network
+ * topologies.
  */
 public class DummyNode extends Node {
-	
-	@Override
-	public void handleMessages(Inbox inbox) {}
 
 	@Override
-	public void preStep() {}
+	public void handleMessages(Inbox inbox) {
+	}
 
 	@Override
-	public void init() {}
+	public void preStep() {
+	}
 
 	@Override
-	public void neighborhoodChange() {}
+	public void init() {
+	}
 
 	@Override
-	public void postStep() {}
-	
+	public void neighborhoodChange() {
+	}
+
+	@Override
+	public void postStep() {
+	}
+
 	@Override
 	public String toString() {
 		String s = "Node(" + this.ID + ") [";
 		Iterator<Edge> edgeIter = this.outgoingConnections.iterator();
-		while(edgeIter.hasNext()){
+		while (edgeIter.hasNext()) {
 			Edge e = edgeIter.next();
 			Node n = e.endNode;
-			s+=n.ID+" ";
+			s += n.ID + " ";
 		}
 		return s + "]";
 	}
 
 	@Override
-	public void checkRequirements() throws WrongConfigurationException {}
+	public void checkRequirements() throws WrongConfigurationException {
+	}
 
 }

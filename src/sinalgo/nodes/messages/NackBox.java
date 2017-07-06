@@ -48,7 +48,7 @@ package sinalgo.nodes.messages;
  * needs not to be informed about dropped messages, you should turn off
  * this feature to save computing power. 
  */
-@SuppressWarnings("serial")
+
 public class NackBox extends Inbox {
 
 	/**

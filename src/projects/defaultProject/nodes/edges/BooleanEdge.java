@@ -42,47 +42,41 @@ import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.nodes.edges.Edge;
 
-
 /**
- * An edge that carries a boolean flag that can be used freely
- * by the project programmer. 
+ * An edge that carries a boolean flag that can be used freely by the project
+ * programmer.
  */
 public class BooleanEdge extends Edge {
 
 	/**
-	 * The flag of this edge, per default set to true.  
+	 * The flag of this edge, per default set to true.
 	 */
 	public boolean flag = true;
-	
+
 	/**
-	 * Set this memeber to true to draw only the boolean edges whose flag is 
-	 * set to true. 
+	 * Set this memeber to true to draw only the boolean edges whose flag is set to
+	 * true.
 	 */
 	public static boolean onlyUseFlagedEdges = false;
-	
+
 	/**
 	 * @return Whether this edge is drawn on the GUI or to PostScript.
 	 */
 	public boolean isDrawn() {
 		return !onlyUseFlagedEdges || flag;
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.nodes.edges.Edge#draw(java.awt.Graphics, sinalgo.gui.transformation.PositionTransformation)
-	 */
+
+	@Override
 	public void draw(Graphics g, PositionTransformation pt) {
-		if(isDrawn()) {
+		if (isDrawn()) {
 			super.draw(g, pt);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.nodes.edges.Edge#drawToPostScript(sinalgo.io.eps.EPSOutputPrintStream, sinalgo.gui.transformation.PositionTransformation)
-	 */
+
+	@Override
 	public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-		if(isDrawn()) {
+		if (isDrawn()) {
 			super.drawToPostScript(pw, pt);
 		}
 	}
 }
-

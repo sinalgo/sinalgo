@@ -42,7 +42,7 @@ import javax.swing.JToolTip;
 /**
  * A JList having a Tooltip which can have more than one line.
  */
-@SuppressWarnings("serial")
+
 public class MultilineToolTipJList extends JList {
 
 	public JToolTip createToolTip(){
