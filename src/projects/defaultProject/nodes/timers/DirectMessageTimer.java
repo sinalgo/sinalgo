@@ -12,6 +12,7 @@ import sinalgo.nodes.timers.Timer;
  * The message is sent by the node who starts the timer.
  */
 public class DirectMessageTimer extends Timer {
+
 	Message msg; // the msg to send
 	Node target; // the node to send the msg to
 

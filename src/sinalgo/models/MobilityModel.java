@@ -42,44 +42,51 @@ import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
 
 /**
- * The superclass for all the MobilityModels. Extend it to implement a concrete mobility model.
+ * The superclass for all the MobilityModels. Extend it to implement a concrete
+ * mobility model.
  */
 public abstract class MobilityModel extends Model {
+
 	private static boolean firstTime = true;
-	
+
 	/**
-	 * This method returns the next position of a node. It is called from the system to update the
-	 * position of the nodes during the update pass of a round.
+	 * This method returns the next position of a node. It is called from the system
+	 * to update the position of the nodes during the update pass of a round.
 	 *
-	 * @param n The node to get the next position for.
+	 * @param n
+	 *            The node to get the next position for.
 	 * @return The next position oth the given node.
 	 */
-	public abstract Position getNextPos(Node n); 
+	public abstract Position getNextPos(Node n);
 
-	/* (non-Javadoc)
-	 * @see models.Model#getType()
-	 */
+	@Override
 	public final ModelType getType() {
 		return ModelType.MobilityModel;
 	}
-	
+
 	/**
-	 * The default constructor tests that mobility is enabled. 
+	 * The default constructor tests that mobility is enabled.
 	 */
 	protected MobilityModel() {
-		if(firstTime && !Configuration.mobility) {
-			Main.warning("Some nodes are using a mobility model even though mobility is explicitly turned off in the XML Configuration file.");
-			firstTime = false; // important to only have one message. 
+		if (firstTime && !Configuration.mobility) {
+			Main.warning(
+					"Some nodes are using a mobility model even though mobility is explicitly turned off in the XML Configuration file.");
+			firstTime = false; // important to only have one message.
 		}
 	}
-	
+
 	/**
-	 * This constructor only tests whether mobility is enabled if check is set to true. 
-	 * @param check Check that mobility is turned on if true. No check is performed if false.
+	 * This constructor only tests whether mobility is enabled if check is set to
+	 * true.
+	 *
+	 * @param check
+	 *            Check that mobility is turned on if true. No check is performed if
+	 *            false.
 	 */
 	protected MobilityModel(boolean check) {
-		if(check && firstTime && !Configuration.mobility) {
-			Main.warning("Some nodes are using an mobility model even though mobility is explicitly turned off in the XML Configuration file.");
+		if (check && firstTime && !Configuration.mobility) {
+			Main.warning(
+					"Some nodes are using an mobility model even though mobility is explicitly turned off in the XML Configuration file.");
 			firstTime = false;
 		}
 	}

@@ -42,10 +42,12 @@ import javax.swing.JToolTip;
 /**
  * A JList having a Tooltip which can have more than one line.
  */
-
 public class MultilineToolTipJList extends JList {
 
-	public JToolTip createToolTip(){
+	private static final long serialVersionUID = -1778917939929406346L;
+
+	@Override
+	public JToolTip createToolTip() {
 		return new MultiLineToolTip();
 	}
 }

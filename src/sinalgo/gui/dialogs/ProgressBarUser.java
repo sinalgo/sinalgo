@@ -40,14 +40,17 @@ package sinalgo.gui.dialogs;
  * This is the interface for all the users of the ProgressBar.
  */
 public interface ProgressBarUser {
+
 	/**
-	 * This method gets invoked by the ProgressBar when the user clicked on the cancel-button of the ProgressBar
+	 * This method gets invoked by the ProgressBar when the user clicked on the
+	 * cancel-button of the ProgressBar
 	 */
 	public void cancelClicked();
-	
+
 	/**
-	 * This method gets invoked by the ProgressBar to generate the process shown by the progressbar. Somewhere in this method you should
-	 * execute the progressBar.setPercentage() method to reset the value of the progressbar.
+	 * This method gets invoked by the ProgressBar to generate the process shown by
+	 * the progressbar. Somewhere in this method you should execute the
+	 * progressBar.setPercentage() method to reset the value of the progressbar.
 	 */
 	public void performMethod();
 }

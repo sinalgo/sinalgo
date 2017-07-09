@@ -43,21 +43,20 @@ import sinalgo.runtime.Main;
 import sinalgo.tools.statistics.Distribution;
 
 /**
- * A distribution model that randomly distributes the nodes in the
- * entire simulation area. 
+ * A distribution model that randomly distributes the nodes in the entire
+ * simulation area.
  */
 public class Random extends DistributionModel {
+
 	// The random-number generator
 	private java.util.Random rand = Distribution.getRandom();
-	
-	/* (non-Javadoc)
-	 * @see distributionModels.DistributionModelInterface#getOnePosition()
-	 */
+
+	@Override
 	public Position getNextPosition() {
 		double randomPosX = rand.nextDouble() * Configuration.dimX;
 		double randomPosY = rand.nextDouble() * Configuration.dimY;
 		double randomPosZ = 0;
-		if(Main.getRuntime().getTransformator().getNumberOfDimensions() == 3) {
+		if (Main.getRuntime().getTransformator().getNumberOfDimensions() == 3) {
 			randomPosZ = rand.nextDouble() * Configuration.dimZ;
 		}
 		return new Position(randomPosX, randomPosY, randomPosZ);

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import projects.sample6.nodes.messages.MarkMessage;
-
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.messages.Inbox;
@@ -18,20 +17,20 @@ public class LeafNode extends TreeNode {
 	// A counter that may be reset by the user
 	public static int smallIdCounter = 0;
 	public int smallID;
-	
+
 	public LeafNode() {
 		smallID = ++smallIdCounter;
 	}
-	
+
 	@Override
 	public void checkRequirements() throws WrongConfigurationException {
 	}
 
 	@Override
 	public void handleMessages(Inbox inbox) {
-		while(inbox.hasNext()) {
+		while (inbox.hasNext()) {
 			Message m = inbox.next();
-			if(m instanceof MarkMessage) {
+			if (m instanceof MarkMessage) {
 				this.setColor(Color.GREEN);
 			}
 		}
@@ -52,11 +51,13 @@ public class LeafNode extends TreeNode {
 	@Override
 	public void postStep() {
 	}
-	
-	public void draw(Graphics g, PositionTransformation pt, boolean highlight){
+
+	@Override
+	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
 		super.drawNodeAsDiskWithText(g, pt, highlight, Integer.toString(this.smallID), 15, Color.YELLOW);
 	}
-	
+
+	@Override
 	public String toString() {
 		return smallID + " (" + ID + ")";
 	}

@@ -96,6 +96,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		this.add(html);
 
 		html.addHyperlinkListener(new HyperlinkListener() {
+
 			@Override
 			public void hyperlinkUpdate(HyperlinkEvent e) {
 				if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
@@ -129,6 +130,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 		// Detect ESCAPE button
 		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		focusManager.addKeyEventPostProcessor(new KeyEventPostProcessor() {
+
 			@Override
 			public boolean postProcessKeyEvent(KeyEvent e) {
 				if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -146,12 +148,6 @@ public class AboutDialog extends JDialog implements ActionListener {
 		this.setVisible(true);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		this.setVisible(false);

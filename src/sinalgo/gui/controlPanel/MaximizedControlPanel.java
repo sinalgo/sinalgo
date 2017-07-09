@@ -62,6 +62,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolTip;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.Scrollable;
 
 import sinalgo.configuration.AppConfig;
@@ -111,53 +112,26 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
 		private static final long serialVersionUID = -7907252727026293260L;
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see javax.swing.Scrollable#getPreferredScrollableViewportSize()
-		 */
 		@Override
 		public Dimension getPreferredScrollableViewportSize() {
 			return new Dimension(controlPanelWidth, parent.getHeight() - 60); // hand-crafted :(
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see javax.swing.Scrollable#getScrollableBlockIncrement(java.awt.Rectangle,
-		 * int, int)
-		 */
 		@Override
 		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
 			return 0;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see javax.swing.Scrollable#getScrollableTracksViewportHeight()
-		 */
 		@Override
 		public boolean getScrollableTracksViewportHeight() {
 			return false;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see javax.swing.Scrollable#getScrollableTracksViewportWidth()
-		 */
 		@Override
 		public boolean getScrollableTracksViewportWidth() {
 			return true;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see javax.swing.Scrollable#getScrollableUnitIncrement(java.awt.Rectangle,
-		 * int, int)
-		 */
 		@Override
 		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
 			return 0;
@@ -225,8 +199,8 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 		textContent.add(textPanel, JLayeredPane.DEFAULT_LAYER);
 
 		if (appConfig.guiControlPanelShowTextPanel) {
-			JScrollPane sp = new JScrollPane(textField, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			JScrollPane sp = new JScrollPane(textField, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			sp.setPreferredSize(new Dimension(controlPanelWidth, Configuration.outputTextFieldHeight));
 			textField.setEditable(false);
 			textField.setLineWrap(true);
@@ -345,6 +319,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 		buttons.add(runMenuButton);
 		// raise the 'run' menu whenever the mouse idles over this button
 		runMenuButton.addMouseListener(new MouseListener() {
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 			}
@@ -392,6 +367,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 					"The last Event that has been executed.\nDouble click the event to get more information.");
 			eventJList.setCellRenderer(new NonColoringNonBorderingCellRenderer());
 			MouseListener mouseListener = new MouseAdapter() {
+
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					if (e.getButton() == MouseEvent.BUTTON1) {
@@ -755,6 +731,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 		private EventQueueList(Object[] data) {
 			super(data);
 			MouseListener mouseListener = new MouseAdapter() {
+
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {

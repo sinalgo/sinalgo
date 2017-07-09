@@ -46,23 +46,22 @@ import sinalgo.tools.statistics.Distribution;
 /**
  * A loossy reliability model that drops messages with a constant probability.
  * <p>
- * The percentage of dropped messages has to be specified in the configuration file:
+ * The percentage of dropped messages has to be specified in the configuration
+ * file:
  * <p>
  * &lt;LossyDelivery dropRate="..."/&gt;
  */
 public class LossyDelivery extends ReliabilityModel {
+
 	java.util.Random rand = Distribution.getRandom();
 	private double dropRate = 0;
-	
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.models.ReliabilityModel#reachesDestination(sinalgo.nodes.messages.Packet)
-	 */
-	public boolean reachesDestination(Packet p){ 
+
+	@Override
+	public boolean reachesDestination(Packet p) {
 		double r = rand.nextDouble();
-		return(r > dropRate);
+		return (r > dropRate);
 	}
-	
+
 	/**
 	 * Creates a new Drop Rate Reliability Model instance.
 	 */

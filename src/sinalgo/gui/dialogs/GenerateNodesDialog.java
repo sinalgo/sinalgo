@@ -36,7 +36,6 @@
 */
 package sinalgo.gui.dialogs;
 
-
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.KeyEventPostProcessor;
@@ -77,70 +76,73 @@ import sinalgo.runtime.Main;
 import sinalgo.runtime.Runtime;
 import sinalgo.tools.Tools;
 
-
 /**
  * The Dialog to generate a number of new Nodes.
  */
+public class GenerateNodesDialog extends JDialog implements ActionListener, ProgressBarUser {
 
-public class GenerateNodesDialog extends JDialog implements ActionListener, ProgressBarUser{
+	private static final long serialVersionUID = -8080111497886244380L;
 
-	private static JTextField number = new JTextField(6); { // static: keep the value for subsequent calls
+	private static JTextField number = new JTextField(6);
+	{ // static: keep the value for subsequent calls
 		number.setText(Integer.toString(AppConfig.getAppConfig().generateNodesDlgNumNodes));
-	} 
-	int numberOfNodes; // 'number' field translated to an int, set after a call to readSelection() 
+
+	}
+	int numberOfNodes; // 'number' field translated to an int, set after a call to readSelection()
 	private JButton ok = new JButton("Ok");
 	private JButton cancel = new JButton("Cancel");
-	
+
 	private JComboBox distributionModelComboBox = new JComboBox();
 	private String distributionSel = Configuration.DefaultDistributionModel;
 	private JTextField distributionParam = new JTextField(20);
 	private String distributionParamDefString = "";
-	
+
 	private JComboBox nodeTypeComboBox = new JComboBox();
 	private String nodeTypeSel = Configuration.DefaultNodeImplementation;
 	private JTextField nodeTypeParam = new JTextField(20);
-	
+
 	private JComboBox connectivityModelComboBox = new JComboBox();
 	private String connectivitySel = Configuration.DefaultConnectivityModel;
 	private JTextField connectivityParam = new JTextField(20);
 	private String connectivityDefString = "";
-	
+
 	private JComboBox interferenceModelComboBox = new JComboBox();
 	private String interferenceSel = Configuration.DefaultInterferenceModel;
 	private String interferenceDefString = "";
 	private JTextField interferenceParam = new JTextField(20);
-	
+
 	private JComboBox mobilityModelComboBox = new JComboBox();
 	private String mobilitySel = Configuration.DefaultMobilityModel;
 	private String mobilityDefString = "";
 	private JTextField mobilityParam = new JTextField(20);
-	
+
 	private JComboBox reliabilityModelComboBox = new JComboBox();
 	private String reliabilitySel = Configuration.DefaultReliabilityModel;
 	private String reliabilityDefString = "";
 	private JTextField reliabilityParam = new JTextField(20);
-	
+
 	JCheckBox allModelsCheckBox;
-	
+
 	private PercentualProgressDialog pf = null;
-	private Vector<Node> addedNodes = new Vector<Node>();
+	private Vector<Node> addedNodes = new Vector<>();
 	private boolean canceled = false;
-	
+
 	private GUI parent;
-	
+
 	private Position singleNodePosition; // null if the dialgo was created for several nodes
-	
+
 	/**
 	 * The constructor for the GenerateNodesDialog class.
 	 *
-	 * @param p The parent Frame to add the Dialog to.
+	 * @param p
+	 *            The parent Frame to add the Dialog to.
 	 */
-	public GenerateNodesDialog(GUI p){
+	public GenerateNodesDialog(GUI p) {
 		super(p, "Create new Nodes", true);
 		GuiHelper.setWindowIcon(this);
 		cancel.addActionListener(this);
 		ok.addActionListener(this);
-		
+
 		Font f = distributionModelComboBox.getFont().deriveFont(Font.PLAIN);
 		distributionModelComboBox.setFont(f);
 		nodeTypeComboBox.setFont(f);
@@ -152,41 +154,45 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		// Detect ESCAPE button
 		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		focusManager.addKeyEventPostProcessor(new KeyEventPostProcessor() {
+
+			@Override
 			public boolean postProcessKeyEvent(KeyEvent e) {
-				if(!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					GenerateNodesDialog.this.setVisible(false);
 				}
 				return false;
 			}
 		});
-		
+
 		this.setLocationRelativeTo(p);
 		this.parent = p;
 	}
-	
+
 	/**
-	 *  The method to generate an GenerateNodesDialog.
-	 *  @param singleNodePos If the dialog is for a single node, this parameter
-	 *  contains the position where the node should be placed. For displaying the
-	 *  dialog for several nodes, set this parameter to null.  
+	 * The method to generate an GenerateNodesDialog.
+	 *
+	 * @param singleNodePos
+	 *            If the dialog is for a single node, this parameter contains the
+	 *            position where the node should be placed. For displaying the
+	 *            dialog for several nodes, set this parameter to null.
 	 */
-	public void compose(Position singleNodePos){
+	public void compose(Position singleNodePos) {
 		singleNodePosition = singleNodePos;
 		JPanel cp = new JPanel();
-		
+
 		cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
-		cp.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
-		
+		cp.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+
 		JPanel dist = new JPanel();
 		dist.setBorder(BorderFactory.createTitledBorder("Node Distribution"));
 		dist.setLayout(new BoxLayout(dist, BoxLayout.Y_AXIS));
-		if(singleNodePos == null) {
+		if (singleNodePos == null) {
 			cp.add(dist);
 		}
 		JPanel distSel = new JPanel();
-		distSel.setBorder(BorderFactory.createEmptyBorder(0,3,3,3));
+		distSel.setBorder(BorderFactory.createEmptyBorder(0, 3, 3, 3));
 		distSel.setLayout(new NonRegularGridLayout(2, 3, 5, 2));
-		
+
 		// Number of nodes
 		// ----------------------------
 		UnborderedJTextField numSelLabel = new UnborderedJTextField("Number of Nodes:", Font.BOLD);
@@ -195,7 +201,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		JTextField dummy = new JTextField();
 		dummy.setVisible(false);
 		distSel.add(dummy);
-		
+
 		// the available distrubutions
 		// ----------------------------
 		UnborderedJTextField distSelLabel = new UnborderedJTextField("Distribution Model:", Font.BOLD);
@@ -204,18 +210,17 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		distSel.add(distributionModelComboBox);
 		distributionParam.setText(distributionParamDefString);
 		distSel.add(distributionParam);
-		dist.add(distSel);		
+		dist.add(distSel);
 
 		JPanel propertyPanel = new JPanel();
 		propertyPanel.setBorder(BorderFactory.createTitledBorder("Node Properties"));
 		propertyPanel.setLayout(new BoxLayout(propertyPanel, BoxLayout.Y_AXIS));
 		cp.add(propertyPanel);
 		JPanel props = new JPanel();
-		props.setBorder(BorderFactory.createEmptyBorder(0,3,3,3));
-		props.setLayout(new NonRegularGridLayout(5,3, 5, 2));
+		props.setBorder(BorderFactory.createEmptyBorder(0, 3, 3, 3));
+		props.setLayout(new NonRegularGridLayout(5, 3, 5, 2));
 		propertyPanel.add(props);
-		
-		
+
 		// the available node implementations
 		// ----------------------------
 		UnborderedJTextField propSelLabel = new UnborderedJTextField("Node Implementation:", Font.BOLD);
@@ -226,7 +231,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		nodeTypeParam.setVisible(false);
 		props.add(nodeTypeParam);
 
-		//the available connectivities
+		// the available connectivities
 		// ----------------------------
 		UnborderedJTextField connSelLabel = new UnborderedJTextField("Connectivity Model:", Font.BOLD);
 		props.add(connSelLabel);
@@ -234,17 +239,17 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		props.add(connectivityModelComboBox);
 		connectivityParam.setText(connectivityDefString);
 		props.add(connectivityParam);
-		
-		//the available interferences
+
+		// the available interferences
 		// ----------------------------
 		UnborderedJTextField interSelLabel = new UnborderedJTextField("Interference Model:", Font.BOLD);
 		props.add(interSelLabel);
 		fillChoice(interferenceModelComboBox, "models/interferenceModels", interferenceSel);
-		props.add(interferenceModelComboBox);	
+		props.add(interferenceModelComboBox);
 		interferenceParam.setText(interferenceDefString);
 		props.add(interferenceParam);
-		
-		//the available mobility
+
+		// the available mobility
 		// ----------------------------
 		UnborderedJTextField mobSelLabel = new UnborderedJTextField("Mobility Model:", Font.BOLD);
 		props.add(mobSelLabel);
@@ -252,8 +257,8 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		props.add(mobilityModelComboBox);
 		mobilityParam.setText(mobilityDefString);
 		props.add(mobilityParam);
-		
-		//the available reliability models
+
+		// the available reliability models
 		// ----------------------------
 		UnborderedJTextField reliSelLabel = new UnborderedJTextField("Reliability Model:", Font.BOLD);
 		props.add(reliSelLabel);
@@ -261,24 +266,26 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		props.add(reliabilityModelComboBox);
 		reliabilityParam.setText(reliabilityDefString);
 		props.add(reliabilityParam);
-		
 
-		// add a button to change whether all implementations are contained in the drop down fields
+		// add a button to change whether all implementations are contained in the drop
+		// down fields
 		JPanel allModelsPanel = new JPanel();
 		allModelsPanel.setLayout(new BorderLayout());
 		allModelsCheckBox = new JCheckBox("Show all implementations");
 		allModelsCheckBox.setSelected(Configuration.showModelsOfAllProjects);
 		allModelsCheckBox.addChangeListener(new ChangeListener() {
+
+			@Override
 			public void stateChanged(ChangeEvent e) {
-				if(Configuration.showModelsOfAllProjects != allModelsCheckBox.isSelected()) {
+				if (Configuration.showModelsOfAllProjects != allModelsCheckBox.isSelected()) {
 					Configuration.showModelsOfAllProjects = allModelsCheckBox.isSelected();
 					// reload the contents of the drop down fields
 					fillChoice(distributionModelComboBox, "models/distributionModels", distributionSel);
-					fillChoice(nodeTypeComboBox, "nodes/nodeImplementations", nodeTypeSel);			
+					fillChoice(nodeTypeComboBox, "nodes/nodeImplementations", nodeTypeSel);
 					fillChoice(connectivityModelComboBox, "models/connectivityModels", connectivitySel);
-					fillChoice(interferenceModelComboBox, "models/interferenceModels", interferenceSel);			
-					fillChoice(mobilityModelComboBox, "models/mobilityModels", mobilitySel);			
-					fillChoice(reliabilityModelComboBox, "models/reliabilityModels", reliabilitySel);		
+					fillChoice(interferenceModelComboBox, "models/interferenceModels", interferenceSel);
+					fillChoice(mobilityModelComboBox, "models/mobilityModels", mobilitySel);
+					fillChoice(reliabilityModelComboBox, "models/reliabilityModels", reliabilitySel);
 					GenerateNodesDialog.this.pack();
 				}
 			}
@@ -289,53 +296,52 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		// the buttons OK / CANCEL
 		JPanel buttons = new JPanel();
 		ok.setMnemonic(java.awt.event.KeyEvent.VK_O);
-		buttons.add(ok);		
+		buttons.add(ok);
 		cancel.setMnemonic(java.awt.event.KeyEvent.VK_C);
 		buttons.add(cancel);
-		
+
 		cp.add(buttons);
-		
+
 		this.setContentPane(cp);
 
-		//this.setResizable(false);
+		// this.setResizable(false);
 		this.getRootPane().setDefaultButton(ok);
 		this.pack();
 		this.setLocationRelativeTo(parent);
 		number.grabFocus();
 		this.setVisible(true);
 	}
-	
+
 	private void fillChoice(JComboBox c, String implDir, String selection) {
 		c.removeAllItems();
 		Vector<String> names = Global.getImplementations(implDir);
-		if(!names.contains(selection)) {
+		if (!names.contains(selection)) {
 			names.add(selection);
 		}
-		for(String s : names) {
+		for (String s : names) {
 			c.addItem(s);
 		}
 		c.setSelectedItem(selection);
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
+
+	@Override
 	public void actionPerformed(ActionEvent event) {
-		if(event.getActionCommand().equals(ok.getActionCommand())){
-			if(singleNodePosition == null) try {
-				int num = Integer.parseInt(number.getText());
-				if(num <= 0){
-					throw new NumberFormatException();
+		if (event.getActionCommand().equals(ok.getActionCommand())) {
+			if (singleNodePosition == null) {
+				try {
+					int num = Integer.parseInt(number.getText());
+					if (num <= 0) {
+						throw new NumberFormatException();
+					}
+					AppConfig.getAppConfig().generateNodesDlgNumNodes = num;
+					pf = new PercentualProgressDialog(this, this, "Creating new Nodes...");
+					canceled = false;
+					pf.init();
+				} catch (NumberFormatException nfE) {
+					Main.minorError(
+							"Please specify a correct number of nodes to generate. This number has to be an integer greater than zero.");
 				}
-				AppConfig.getAppConfig().generateNodesDlgNumNodes = num;
-				pf = new PercentualProgressDialog(this, this, "Creating new Nodes...");
-				canceled = false;
-				pf.init();
-			}	catch(NumberFormatException nfE){
-				Main.minorError("Please specify a correct number of nodes to generate. This number has to be an integer greater than zero.");
-			} 
-			else { // only for a single node
+			} else { // only for a single node
 				readSelection();
 				Node n = generateNode(singleNodePosition);
 				n.finishInitializationWithDefaultModels(true);
@@ -344,21 +350,18 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 				Tools.getGraphPanel().repaint();
 				this.setVisible(false);
 			}
-		}
-		else if(event.getActionCommand().equals(cancel.getActionCommand())){
+		} else if (event.getActionCommand().equals(cancel.getActionCommand())) {
 			this.setVisible(false);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see sinalgo.gui.dialogs.ProgressBarUser#cancelClicked()
-	 */
+	@Override
 	public void cancelClicked() {
 		this.canceled = true;
 	}
-	
+
 	/**
-	 * Reads and stores the selction the user made 
+	 * Reads and stores the selction the user made
 	 */
 	private void readSelection() {
 		numberOfNodes = Integer.parseInt(number.getText());
@@ -368,14 +371,14 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		mobilitySel = mobilityModelComboBox.getSelectedItem().toString();
 		reliabilitySel = reliabilityModelComboBox.getSelectedItem().toString();
 		connectivitySel = connectivityModelComboBox.getSelectedItem().toString();
-		
+
 		distributionParamDefString = distributionParam.getText();
 		interferenceDefString = interferenceParam.getText();
 		mobilityDefString = mobilityParam.getText();
 		reliabilityDefString = reliabilityParam.getText();
 		connectivityDefString = connectivityParam.getText();
 	}
-	
+
 	private Node generateNode(Position pos) {
 		Node node = Node.createNodeByClassname(nodeTypeSel);
 		node.setPosition(pos);
@@ -383,24 +386,26 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		InterferenceModel im = Model.getInterferenceModelInstance(interferenceSel);
 		im.setParamString(interferenceDefString);
 		node.setInterferenceModel(im);
-		
+
 		MobilityModel mm = Model.getMobilityModelInstance(mobilitySel);
 		mm.setParamString(mobilityDefString);
 		node.setMobilityModel(mm);
-		
+
 		ReliabilityModel rm = Model.getReliabilityModelInstance(reliabilitySel);
 		rm.setParamString(reliabilityDefString);
 		node.setReliabilityModel(rm);
-		
+
 		ConnectivityModel cm = Model.getConnectivityModelInstance(connectivitySel);
 		cm.setParamString(connectivityDefString);
 		node.setConnectivityModel(cm);
 		return node;
 	}
-	
+
 	/**
 	 * Creates a node with the default settings.
-	 * @param pos The position of the new node
+	 *
+	 * @param pos
+	 *            The position of the new node
 	 * @return the node.
 	 */
 	public Node generateDefaultNode(Position pos) {
@@ -408,30 +413,28 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 		n.finishInitializationWithDefaultModels(true);
 		return n;
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.gui.dialogs.ProgressBarUser#performMethod()
-	 */
+
+	@Override
 	public void performMethod() {
 		readSelection();
-		try{
+		try {
 			DistributionModel distribution = Model.getDistributionModelInstance(distributionSel);
 			distribution.setParamString(distributionParamDefString);
 			distribution.setNumberOfNodes(numberOfNodes);
 			distribution.initialize();
-			
-			addedNodes = new Vector<Node>();
-			
-			for(int i = 0; i < numberOfNodes; i++){
-				pf.setPercentage(100.0d * ((double)i/(double)numberOfNodes));
-				
+
+			addedNodes = new Vector<>();
+
+			for (int i = 0; i < numberOfNodes; i++) {
+				pf.setPercentage(100.0d * ((double) i / (double) numberOfNodes));
+
 				Node node = generateNode(distribution.getNextPosition());
-				
-				if(canceled){
-					for(Node n:addedNodes){
+
+				if (canceled) {
+					for (Node n : addedNodes) {
 						Runtime.nodes.removeNode(n);
 						i--;
-						pf.setPercentage(100.0d * ((double)i/(double)numberOfNodes));
+						pf.setPercentage(100.0d * ((double) i / (double) numberOfNodes));
 					}
 					pf.finish();
 					addedNodes.clear();
@@ -441,7 +444,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 				node.finishInitializationWithDefaultModels(true);
 				addedNodes.add(node);
 			}
-		} catch(WrongConfigurationException e){
+		} catch (WrongConfigurationException e) {
 			Main.minorError("There was an error while generating the nodes.\n" + e.getMessage());
 		}
 		pf.finish();

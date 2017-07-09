@@ -41,32 +41,38 @@ import sinalgo.tools.storage.DoublyLinkedList;
 import sinalgo.tools.storage.ReusableListIterator;
 
 /**
- * This class implements a NodeList by extending the DoublyLinkedList class. It stores the nodes in a 
- * DoublyLinkedList.
+ * This class implements a NodeList by extending the DoublyLinkedList class. It
+ * stores the nodes in a DoublyLinkedList.
  */
-public class DLLNodeList extends DoublyLinkedList<Node> implements NodeListInterface{
-	
+public class DLLNodeList extends DoublyLinkedList<Node> implements NodeListInterface {
+
 	/**
-	 * The only constructor for the DLLNodeList. It constructs the NodeList according to the parameters.
+	 * The only constructor for the DLLNodeList. It constructs the NodeList
+	 * according to the parameters.
 	 *
-	 * @param keepFinger If set to true, entries keep their finger for later reuse (in this or a different list)
-	 * when they are removed from this list. When set to false, the finger is removed.
+	 * @param keepFinger
+	 *            If set to true, entries keep their finger for later reuse (in this
+	 *            or a different list) when they are removed from this list. When
+	 *            set to false, the finger is removed.
 	 */
-	public DLLNodeList(boolean keepFinger){
+	public DLLNodeList(boolean keepFinger) {
 		super(keepFinger);
 	}
-	
+
+	@Override
 	public void addNode(Node nw) {
 		this.append(nw);
 	}
 
 	private ReusableListIterator<Node> theIteratorInstance = super.iterator();
-	
+
+	@Override
 	public ReusableListIterator<Node> iterator() {
 		theIteratorInstance.reset();
 		return theIteratorInstance;
 	}
 
+	@Override
 	public boolean removeNode(Node nw) {
 		return this.remove(nw);
 	}

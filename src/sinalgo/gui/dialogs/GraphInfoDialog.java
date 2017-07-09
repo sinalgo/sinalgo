@@ -36,7 +36,6 @@
 */
 package sinalgo.gui.dialogs;
 
-
 import java.awt.Font;
 import java.awt.KeyEventPostProcessor;
 import java.awt.KeyboardFocusManager;
@@ -64,66 +63,68 @@ import sinalgo.runtime.Runtime;
 import sinalgo.tools.Tools;
 
 /**
- * The Dialog to show the informations about the actual Graph. It is showing the number of 
- * nodes, the number of edges and the type of the created edges.
+ * The Dialog to show the informations about the actual Graph. It is showing the
+ * number of nodes, the number of edges and the type of the created edges.
  */
+public class GraphInfoDialog extends JDialog implements ActionListener {
 
-public class GraphInfoDialog extends JDialog implements ActionListener{
-	
+	private static final long serialVersionUID = -6814163227290018871L;
+
 	private JTextField numberOfNodes = new JTextField(6);
 	private JTextField numberOfEdges = new JTextField(6);
-	
+
 	private JButton close = new JButton("Close");
-	
+
 	/**
 	 * The constructor for the GraphInfoDialog class.
 	 *
-	 * @param parent The parent frame to attach the Dialog to.
+	 * @param parent
+	 *            The parent frame to attach the Dialog to.
 	 */
-	public GraphInfoDialog(JFrame parent){
+	public GraphInfoDialog(JFrame parent) {
 		super(parent, "Info about the current network", true);
 		GuiHelper.setWindowIcon(this);
-		
+
 		// determine the number of nodes and edges
 		Enumeration<Node> nodeEnumer = Runtime.nodes.getNodeEnumeration();
 		int numNodes = 0;
 		int numEdges = 0;
-		
-		while(nodeEnumer.hasMoreElements()){
+
+		while (nodeEnumer.hasMoreElements()) {
 			numNodes++;
 			Node node = nodeEnumer.nextElement();
 			Iterator<Edge> edgeIter = node.outgoingConnections.iterator();
-			while(edgeIter.hasNext()){
+			while (edgeIter.hasNext()) {
 				numEdges++;
 				edgeIter.next();
 			}
 		}
-		
-		
+
 		JPanel cp = new JPanel();
 		cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
 		cp.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
-		
+
 		JPanel info = new JPanel();
-		NonRegularGridLayout nrgl = new NonRegularGridLayout(5, 2,10, 5);
+		NonRegularGridLayout nrgl = new NonRegularGridLayout(5, 2, 10, 5);
 		nrgl.setAlignToLeft(true);
 		info.setLayout(nrgl);
-		
+
 		UnborderedJTextField numSelLabel = new UnborderedJTextField("  Number of Nodes in this Graph:", Font.BOLD);
 		numberOfNodes.setEditable(false);
 		numberOfNodes.setText(String.valueOf(numNodes));
 		numberOfNodes.setBorder(null);
 		info.add(numSelLabel);
 		info.add(numberOfNodes);
-		
-		UnborderedJTextField edgeSelLabel = new UnborderedJTextField("  Number of (unidirectional) Edges in this Graph:", Font.BOLD);
+
+		UnborderedJTextField edgeSelLabel = new UnborderedJTextField(
+				"  Number of (unidirectional) Edges in this Graph:", Font.BOLD);
 		numberOfEdges.setEditable(false);
 		numberOfEdges.setText(String.valueOf(numEdges));
 		numberOfEdges.setBorder(null);
 		info.add(edgeSelLabel);
 		info.add(numberOfEdges);
 
-		if(Tools.isSimulationInAsynchroneMode()) {
+		if (Tools.isSimulationInAsynchroneMode()) {
 			UnborderedJTextField eventLabel = new UnborderedJTextField("  Number of outstanding events:", Font.BOLD);
 			JTextField numEvents = new JTextField(6);
 			numEvents.setEditable(false);
@@ -132,72 +133,73 @@ public class GraphInfoDialog extends JDialog implements ActionListener{
 			info.add(eventLabel);
 			info.add(numEvents);
 		} else {
-			UnborderedJTextField label = new UnborderedJTextField("  Number of messages sent in this round:", Font.BOLD);
+			UnborderedJTextField label = new UnborderedJTextField("  Number of messages sent in this round:",
+					Font.BOLD);
 			JTextField field = new JTextField(6);
 			field.setEditable(false);
 			field.setBorder(null);
-			field.setText(Integer.toString(Tools.getNumberOfMessagesSentInThisRound())); 
+			field.setText(Integer.toString(Tools.getNumberOfMessagesSentInThisRound()));
 			info.add(label);
 			info.add(field);
 		}
 
-		if(Configuration.interference) { // this is only know if interference is turned on
-			UnborderedJTextField label = new UnborderedJTextField("  Number of messages currently being sent:", Font.BOLD);
+		if (Configuration.interference) { // this is only know if interference is turned on
+			UnborderedJTextField label = new UnborderedJTextField("  Number of messages currently being sent:",
+					Font.BOLD);
 			JTextField field = new JTextField(6);
 			field.setEditable(false);
 			field.setBorder(null);
-			field.setText(Integer.toString(Tools.getPacketsInTheAir().size())); 
+			field.setText(Integer.toString(Tools.getPacketsInTheAir().size()));
 			info.add(label);
 			info.add(field);
 		}
 
-		if(true) { 
+		if (true) {
 			UnborderedJTextField label = new UnborderedJTextField("  Number of messages sent so far:", Font.BOLD);
 			JTextField field = new JTextField(6);
 			field.setEditable(false);
 			field.setBorder(null);
-			field.setText(Integer.toString(Tools.getNumberOfSentMessages())); 
+			field.setText(Integer.toString(Tools.getNumberOfSentMessages()));
 			info.add(label);
 			info.add(field);
 		}
 
 		cp.add(info);
-		
+
 		JPanel buttons = new JPanel();
-		
+
 		close.addActionListener(this);
 		buttons.add(close);
-		
+
 		cp.add(buttons);
-		
+
 		this.setContentPane(cp);
-		
+
 		// Detect ESCAPE button
 		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		focusManager.addKeyEventPostProcessor(new KeyEventPostProcessor() {
+
+			@Override
 			public boolean postProcessKeyEvent(KeyEvent e) {
-				if(!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					GraphInfoDialog.this.setVisible(false);
 				}
 				return false;
 			}
 		});
-		
-		//this.setResizable(false);
+
+		// this.setResizable(false);
 		this.getRootPane().setDefaultButton(close);
 		this.pack();
 		this.setLocationRelativeTo(parent);
 		this.setVisible(true);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
+
+	@Override
 	public void actionPerformed(ActionEvent e) {
-//		if(e.getActionCommand().equals(close.getActionCommand())){
-//		}
+		// if(e.getActionCommand().equals(close.getActionCommand())){
+		// }
 		this.setVisible(false);
 	}
 
 }
-

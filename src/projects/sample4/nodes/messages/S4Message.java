@@ -40,11 +40,10 @@ import java.awt.Color;
 
 import sinalgo.nodes.messages.Message;
 
-
 public class S4Message extends Message {
 
-	public Color color; // the color the receiver should take 
-	
+	public Color color; // the color the receiver should take
+
 	@Override
 	public Message clone() {
 		// This is a read-only message! Receivers may not modify the message

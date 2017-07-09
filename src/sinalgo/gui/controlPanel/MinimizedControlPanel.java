@@ -141,6 +141,7 @@ public class MinimizedControlPanel extends ControlPanel {
 		startButtonPanel.add(runMenuButton);
 		// raise the 'run' menu whenever the mouse idles over this button
 		runMenuButton.addMouseListener(new MouseListener() {
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 			}
@@ -212,22 +213,12 @@ public class MinimizedControlPanel extends ControlPanel {
 		this.setVisible(true);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see sinalgo.gui.controlPanel.ControlPanel#setRoundsPerformed(double)
-	 */
 	@Override
 	public void setRoundsPerformed(double time, int eventNumber) {
 		roundsPerformed.setText(String.valueOf(round(time, 2)));
 		buttonPanel.doLayout();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see sinalgo.gui.controlPanel.ControlPanel#setRoundsPerformed(double)
-	 */
 	@Override
 	public void setRoundsPerformed(int i) {
 		roundsPerformed.setText(String.valueOf(i));

@@ -50,77 +50,73 @@ import sinalgo.tools.storage.ReusableListIterator;
  * A list implementation that holds the messages arriving at a node.
  */
 public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements PacketBuffer {
-//		 the vector of packets that arrive in this step
-	private PacketCollection arrivingPackets = new PacketCollection(); 
+
+	// the vector of packets that arrive in this step
+	private PacketCollection arrivingPackets = new PacketCollection();
 	private ReusableListIterator<Packet> bufferIterator = this.iterator();
-	
+
 	private Inbox inbox = null;
-	
+
 	/**
 	 * The default constructor of the dllPacketBuffer-class.
 	 */
-	public InboxPacketBuffer(){
+	public InboxPacketBuffer() {
 		super();
 	}
-	
+
 	/**
 	 * Creates a new instance of a DLLPacketBuffer.
 	 * <p>
-	 * This method lets you specify whether entries keep their finger-entry 
-	 * when they are removed from this list. This may increase performance if the
-	 * same entries are added and removed several times to/from this list.
-	 * 
-	 * @param keepFinger If set to true, entries keep their finger for for later reuse (in this or a different list)
-	 * when they are removed from this list. When set to false, the finger is removed.
+	 * This method lets you specify whether entries keep their finger-entry when
+	 * they are removed from this list. This may increase performance if the same
+	 * entries are added and removed several times to/from this list.
+	 *
+	 * @param keepFinger
+	 *            If set to true, entries keep their finger for for later reuse (in
+	 *            this or a different list) when they are removed from this list.
+	 *            When set to false, the finger is removed.
 	 */
-	public InboxPacketBuffer(boolean keepFinger){
+	public InboxPacketBuffer(boolean keepFinger) {
 		super(keepFinger);
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see nodes.PacketBuffer#addPacket(nodes.messages.Packet)
-	 */
+
+	@Override
 	public void addPacket(Packet p) {
 		append(p);
 	}
-	
-	/* (non-Javadoc)
-	 * @see nodes.PacketBuffer#removePacket(nodes.messages.Packet)
-	 */
+
+	@Override
 	public void removePacket(Packet p) {
 		remove(p);
-	}	
+	}
 
-	/* (non-Javadoc)
-	 * @see nodes.PacketBuffer#updateMessageBuffer()
-	 */
-	public void updateMessageBuffer(){
+	@Override
+	public void updateMessageBuffer() {
 		// ensure that the list of packets is clean (should already be empty)
 		arrivingPackets.clear();
-		
+
 		bufferIterator.reset();
-		while(bufferIterator.hasNext()){
+		while (bufferIterator.hasNext()) {
 			Packet p = bufferIterator.next();
-			
-			if(p.arrivingTime <= Global.currentTime){
-				
+
+			if (p.arrivingTime <= Global.currentTime) {
+
 				// only if added
-				if(Configuration.interference){
-					//remove it from the global queue
+				if (Configuration.interference) {
+					// remove it from the global queue
 					Runtime.packetsInTheAir.remove(p);
 				}
-				
+
 				bufferIterator.remove();
-				if(p.edge != null) {
+				if (p.edge != null) {
 					p.edge.removeMessageForThisEdge(p.message);
 				}
-				if(p.positiveDelivery){
-					//successful transmission
+				if (p.positiveDelivery) {
+					// successful transmission
 					arrivingPackets.add(p);
 				} else {
 					// failed transmission, drop the package
-					if(Configuration.generateNAckMessages) {
+					if (Configuration.generateNAckMessages) {
 						p.origin.addNackPacket(p); // return the packet to the sender
 					} else {
 						Packet.free(p);
@@ -129,34 +125,28 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
 			}
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see nodes.PacketBuffer#waitingPackets()
-	 */
-	public int waitingPackets(){
+
+	@Override
+	public int waitingPackets() {
 		return arrivingPackets.size();
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.nodes.PacketBuffer#invalidatePacketsSentOverThisEdge(sinalgo.nodes.edges.Edge)
-	 */
-	public void invalidatePacketsSentOverThisEdge(Edge e){
-		for(Packet p : this) {
-			if(p.edge != null && p.edge.getID() == e.getID()){
+
+	@Override
+	public void invalidatePacketsSentOverThisEdge(Edge e) {
+		for (Packet p : this) {
+			if (p.edge != null && p.edge.getID() == e.getID()) {
 				p.positiveDelivery = false;
 				p.edge = null; // the edge may have been removed and should not be refered to anymore
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see sinalgo.nodes.PacketBuffer#getInbox()
-	 */
+	@Override
 	public Inbox getInbox() {
 		arrivingPackets.sort();
-		if(inbox == null){
+		if (inbox == null) {
 			inbox = new Inbox(arrivingPackets);
-		}	else {
+		} else {
 			inbox.resetForList(arrivingPackets);
 		}
 		return inbox;

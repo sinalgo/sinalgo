@@ -48,150 +48,160 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicToolTipUI;
 
 /**
- * The Tooltip to display if the user stops with the mouse over the graph panel. Displays information about
- * the edge or node under the current position.
+ * The Tooltip to display if the user stops with the mouse over the graph panel.
+ * Displays information about the edge or node under the current position.
  */
+public class MultiLineToolTip extends JToolTip {
 
-public class MultiLineToolTip extends JToolTip
-{
+	private static final long serialVersionUID = 1860432832820206556L;
+
 	String tipText;
 	JComponent component;
-	
+
 	/**
 	 * The constructor for the MyToolTip class.
 	 *
 	 */
-	public MultiLineToolTip(){
-	    updateUI();
+	public MultiLineToolTip() {
+		updateUI();
 	}
-	
-	public void updateUI(){
-	    setUI(MultiLineToolTipUI.createUI(this));
+
+	@Override
+	public void updateUI() {
+		setUI(MultiLineToolTipUI.createUI(this));
 	}
-	
+
 	/**
 	 * This method sets the number of colums the tooltip has.
 	 *
-	 * @param columns The number of columns the tooltip has.
+	 * @param columns
+	 *            The number of columns the tooltip has.
 	 */
-	public void setColumns(int columns){
+	public void setColumns(int columns) {
 		this.columns = columns;
 		this.fixedwidth = 0;
 	}
-	
+
 	/**
 	 * This method returns the number of columns the tooltip has.
 	 *
 	 * @return The number of columns the Tooltip has.
 	 */
-	public int getColumns(){
+	public int getColumns() {
 		return columns;
 	}
-	
+
 	/**
 	 * This method sets the fixed width for the tooltip.
 	 *
-	 * @param width The fixed width of the tooltip.
+	 * @param width
+	 *            The fixed width of the tooltip.
 	 */
-	public void setFixedWidth(int width){
+	public void setFixedWidth(int width) {
 		this.fixedwidth = width;
 		this.columns = 0;
 	}
-	
+
 	/**
 	 * This method returns the fixes with of the tooltip.
 	 *
 	 * @return The fixed width of the tooltip.
 	 */
-	public int getFixedWidth(){
+	public int getFixedWidth() {
 		return fixedwidth;
 	}
-	
+
 	protected int columns = 0;
 	protected int fixedwidth = 0;
 }
 
-
 // used such that the tooltip can display several lines of text (e.g. newlines)
 class MultiLineToolTipUI extends BasicToolTipUI {
+
 	static MultiLineToolTipUI sharedInstance = new MultiLineToolTipUI();
-	Font smallFont; 			     
+	Font smallFont;
 	static JToolTip tip;
 	protected CellRendererPane rendererPane;
-	
-	private static JTextArea textArea ;
-	
+
+	private static JTextArea textArea;
+
 	public static ComponentUI createUI(JComponent c) {
-	    return sharedInstance;
+		return sharedInstance;
 	}
-	
+
 	/**
 	 * The constructor for the MultiLineToolTipUI class.
 	 *
 	 */
 	public MultiLineToolTipUI() {
-	    super();
+		super();
 	}
-	
+
+	@Override
 	public void installUI(JComponent c) {
-	    super.installUI(c);
-		tip = (JToolTip)c;
-	    rendererPane = new CellRendererPane();
-	    c.add(rendererPane);
+		super.installUI(c);
+		tip = (JToolTip) c;
+		rendererPane = new CellRendererPane();
+		c.add(rendererPane);
 	}
-	
+
+	@Override
 	public void uninstallUI(JComponent c) {
 		super.uninstallUI(c);
-		
-	    c.remove(rendererPane);
-	    rendererPane = null;
+
+		c.remove(rendererPane);
+		rendererPane = null;
 	}
-	
+
+	@Override
 	public void paint(Graphics g, JComponent c) {
-	    Dimension size = c.getSize();
-	    textArea.setBackground(c.getBackground());
-		rendererPane.paintComponent(g, textArea, c, 1, 1,
-					    size.width - 1, size.height - 1, true);
+		Dimension size = c.getSize();
+		textArea.setBackground(c.getBackground());
+		rendererPane.paintComponent(g, textArea, c, 1, 1, size.width - 1, size.height - 1, true);
 	}
-	
+
+	@Override
 	public Dimension getPreferredSize(JComponent c) {
-		String tipText = ((JToolTip)c).getTipText();
-		if (tipText == null)
-			return new Dimension(0,0);
-		textArea = new JTextArea(tipText );
+		String tipText = ((JToolTip) c).getTipText();
+		if (tipText == null) {
+			return new Dimension(0, 0);
+		}
+		textArea = new JTextArea(tipText);
 		rendererPane.removeAll();
-		rendererPane.add(textArea );
+		rendererPane.add(textArea);
 		textArea.setWrapStyleWord(true);
-		int width = ((MultiLineToolTip)c).getFixedWidth();
-		int columns = ((MultiLineToolTip)c).getColumns();
-		
-		if( columns > 0 ) {
+		int width = ((MultiLineToolTip) c).getFixedWidth();
+		int columns = ((MultiLineToolTip) c).getColumns();
+
+		if (columns > 0) {
 			textArea.setColumns(columns);
-			textArea.setSize(0,0);
+			textArea.setSize(0, 0);
 			textArea.setLineWrap(true);
-			textArea.setSize( textArea.getPreferredSize() );
-		}	else if( width > 0 ) {
+			textArea.setSize(textArea.getPreferredSize());
+		} else if (width > 0) {
 			textArea.setLineWrap(true);
 			Dimension d = textArea.getPreferredSize();
 			d.width = width;
 			d.height++;
 			textArea.setSize(d);
-		}	else {
+		} else {
 			textArea.setLineWrap(false);
 		}
-		
+
 		Dimension dim = textArea.getPreferredSize();
-		
+
 		dim.height += 1;
 		dim.width += 1;
 		return dim;
 	}
-	
+
+	@Override
 	public Dimension getMinimumSize(JComponent c) {
-	    return getPreferredSize(c);
+		return getPreferredSize(c);
 	}
-	
+
+	@Override
 	public Dimension getMaximumSize(JComponent c) {
-	    return getPreferredSize(c);
+		return getPreferredSize(c);
 	}
 }

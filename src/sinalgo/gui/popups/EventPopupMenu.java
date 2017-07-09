@@ -53,15 +53,17 @@ import sinalgo.runtime.events.Event;
  * @author rflury
  *
  */
-
 public class EventPopupMenu extends JPopupMenu implements ActionListener {
+
+	private static final long serialVersionUID = 315706472796346139L;
+
 	Event event;
 	JList list;
 	ListCellRenderer renderer;
 	private JMenuItem info = new JMenuItem("Info About This Event");
 	private JMenuItem delete = new JMenuItem("Delete Event");
 	private JMenuItem deleteAll = new JMenuItem("Delete All Events");
-	
+
 	public EventPopupMenu(Event e, JList l, ListCellRenderer lcr) {
 		this.event = e;
 		this.list = l;
@@ -69,42 +71,48 @@ public class EventPopupMenu extends JPopupMenu implements ActionListener {
 		info.addActionListener(this);
 		delete.addActionListener(this);
 		deleteAll.addActionListener(this);
-		
+
 		this.add(info);
 		this.addSeparator();
 		this.add(delete);
 		this.add(deleteAll);
-		
-		
-		
+
 		this.addComponentListener(new ComponentListener() {
+
+			@Override
 			public void componentHidden(ComponentEvent e) {
 				list.setCellRenderer(renderer);
 				list.repaint();
 			}
 
+			@Override
 			public void componentMoved(ComponentEvent e) {
 			}
 
+			@Override
 			public void componentResized(ComponentEvent e) {
 			}
 
+			@Override
 			public void componentShown(ComponentEvent e) {
 			}
 		});
-		
+
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand().equals(info.getActionCommand())){
-			JOptionPane.showMessageDialog(null, event.getEventListText(false)+"\n"+event.getEventListToolTipText(false), "Information about an Event", JOptionPane.NO_OPTION);
-		} else if(e.getActionCommand().equals(delete.getActionCommand())){
+		if (e.getActionCommand().equals(info.getActionCommand())) {
+			JOptionPane.showMessageDialog(null,
+					event.getEventListText(false) + "\n" + event.getEventListToolTipText(false),
+					"Information about an Event", JOptionPane.NO_OPTION);
+		} else if (e.getActionCommand().equals(delete.getActionCommand())) {
 			sinalgo.runtime.Runtime.removeEvent(event);
-		} else if(e.getActionCommand().equals(deleteAll.getActionCommand())){
+		} else if (e.getActionCommand().equals(deleteAll.getActionCommand())) {
 			sinalgo.runtime.Runtime.removeAllAsynchronousEvents();
 		}
 		list.setCellRenderer(renderer);
 		list.repaint();
 	}
-	
+
 }

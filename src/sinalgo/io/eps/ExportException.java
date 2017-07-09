@@ -37,16 +37,19 @@
 package sinalgo.io.eps;
 
 /**
- * This is the exception that is thrown when an error happend during the export process.
+ * This is the exception that is thrown when an error happend during the export
+ * process.
  */
+public class ExportException extends Exception {
 
-public class ExportException extends Exception{
+	private static final long serialVersionUID = -7301338592343472510L;
+
 	/**
 	 * Creates a ExportException with the given message.
 	 *
 	 * @param message
 	 */
-	public ExportException(String message){
+	public ExportException(String message) {
 		super(message);
 	}
 }

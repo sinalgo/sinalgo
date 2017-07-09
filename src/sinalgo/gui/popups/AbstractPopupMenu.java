@@ -36,7 +36,6 @@
 */
 package sinalgo.gui.popups;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -50,24 +49,26 @@ import sinalgo.gui.GUI;
  */
 public abstract class AbstractPopupMenu extends JPopupMenu {
 
+	private static final long serialVersionUID = 6108642977345194041L;
+
 	protected GUI parent = null;
-	
+
 	protected JMenuItem zoomIn = new JMenuItem("Zoom In");
 	protected JMenuItem zoomOut = new JMenuItem("Zoom Out");
-	
-	
-	protected AbstractPopupMenu(){
+
+	protected AbstractPopupMenu() {
 		zoomIn.addActionListener(new ZoomListener());
 		zoomOut.addActionListener(new ZoomListener());
 	}
-	
-	//Listening to the zoom in and zoom out action events
-	private class ZoomListener implements ActionListener{
+
+	// Listening to the zoom in and zoom out action events
+	private class ZoomListener implements ActionListener {
+
+		@Override
 		public void actionPerformed(ActionEvent event) {
-			if(event.getActionCommand().equals(zoomIn.getActionCommand())){
+			if (event.getActionCommand().equals(zoomIn.getActionCommand())) {
 				parent.zoomIn();
-			}
-			else if(event.getActionCommand().equals(zoomOut.getActionCommand())){
+			} else if (event.getActionCommand().equals(zoomOut.getActionCommand())) {
 				parent.zoomOut();
 			}
 		}

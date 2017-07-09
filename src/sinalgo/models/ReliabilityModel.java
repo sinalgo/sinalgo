@@ -39,22 +39,21 @@ package sinalgo.models;
 import sinalgo.nodes.messages.Packet;
 
 /**
- * The superclass of all the ReliabilityModels. Extend this class to implement your own 
- * ReliabilityModel.
+ * The superclass of all the ReliabilityModels. Extend this class to implement
+ * your own ReliabilityModel.
  */
 public abstract class ReliabilityModel extends Model {
-	
+
 	/**
 	 * This method decides if a packet can be sent from one node to another.
 	 *
-	 * @param p The packet to decide whether it reaches its destination.
+	 * @param p
+	 *            The packet to decide whether it reaches its destination.
 	 * @return A boolean indicating whether the packet can reach the destination.
 	 */
 	public abstract boolean reachesDestination(Packet p);
-	
-	/* (non-Javadoc)
-	 * @see models.Model#getType()
-	 */
+
+	@Override
 	public final ModelType getType() {
 		return ModelType.ReliabilityModel;
 	}

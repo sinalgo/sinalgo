@@ -41,17 +41,13 @@ import java.lang.reflect.Method;
 import javax.swing.JOptionPane;
 
 import projects.sample2.nodes.nodeImplementations.S2Node;
-
 import sinalgo.nodes.Node;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.tools.Tools;
 
-
 /**
- * This class holds customized global state and methods for the framework. 
- * The only mandatory method to overwrite is 
- * <code>hasTerminated</code>
- * <br>
+ * This class holds customized global state and methods for the framework. The
+ * only mandatory method to overwrite is <code>hasTerminated</code> <br>
  * Optional methods to override are
  * <ul>
  * <li><code>customPaint</code></li>
@@ -62,17 +58,15 @@ import sinalgo.tools.Tools;
  * <li><code>postRound</code></li>
  * <li><code>checkProjectRequirements</code></li>
  * </ul>
- * @see sinalgo.runtime.AbstractCustomGlobal for more details.
- * <br>
- * In addition, this class also provides the possibility to extend the framework with
- * custom methods that can be called either through the menu or via a button that is
- * added to the GUI. 
+ *
+ * @see sinalgo.runtime.AbstractCustomGlobal for more details. <br>
+ *      In addition, this class also provides the possibility to extend the
+ *      framework with custom methods that can be called either through the menu
+ *      or via a button that is added to the GUI.
  */
-public class CustomGlobal extends AbstractCustomGlobal{
-	
-	/* (non-Javadoc)
-	 * @see runtime.AbstractCustomGlobal#hasTerminated()
-	 */
+public class CustomGlobal extends AbstractCustomGlobal {
+
+	@Override
 	public boolean hasTerminated() {
 		return false;
 	}
@@ -80,51 +74,46 @@ public class CustomGlobal extends AbstractCustomGlobal{
 	/**
 	 * An example of a method that will be available through the menu of the GUI.
 	 */
-	@AbstractCustomGlobal.GlobalMethod(menuText="Echo")
+	@AbstractCustomGlobal.GlobalMethod(menuText = "Echo")
 	public void echo() {
 		// Query the user for an input
 		String answer = JOptionPane.showInputDialog(null, "This is an example.\nType in any text to echo.");
-		// Show an information message 
-		JOptionPane.showMessageDialog(null, "You typed '" + answer + "'", "Example Echo", JOptionPane.INFORMATION_MESSAGE);
+		// Show an information message
+		JOptionPane.showMessageDialog(null, "You typed '" + answer + "'", "Example Echo",
+				JOptionPane.INFORMATION_MESSAGE);
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.runtime.AbstractCustomGlobal#postRound()
-	 */
+
+	@Override
 	public void postRound() {
-		
+
 	}
-	
-	/* (non-Javadoc)
-	 * @see runtime.AbstractCustomGlobal#preRun()
-	 */
+
+	@Override
 	public void preRun() {
 		// A method called at startup, before the first round is executed.
 	}
-	
+
 	/**
-	 * Reset all nodes, s.t. they forget their history. 
+	 * Reset all nodes, s.t. they forget their history.
 	 */
-	@GlobalMethod(menuText="reset")
+	@GlobalMethod(menuText = "reset")
 	public void reset() {
-		for(Node n : Tools.getNodeList()) {
+		for (Node n : Tools.getNodeList()) {
 			((S2Node) n).reset();
 		}
 		Tools.repaintGUI();
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.runtime.AbstractCustomGlobal#includeGlobalMethodInMenu(java.lang.reflect.Method, java.lang.String)
-	 */
+
+	@Override
 	public String includeGlobalMethodInMenu(Method m, String defaultText) {
-		if(m.getName().equals("reset")) {
+		if (m.getName().equals("reset")) {
 			int size = Tools.getNodeList().size();
-			if(size == 0) {
-				return null; 
+			if (size == 0) {
+				return null;
 			} else {
 				return "Reset all " + Tools.getNodeList().size() + " nodes"; // a context sensitive menu entry
 			}
 		}
-		return defaultText; 
+		return defaultText;
 	}
 }

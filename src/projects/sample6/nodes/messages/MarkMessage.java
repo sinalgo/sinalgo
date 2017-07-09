@@ -9,7 +9,7 @@ public class MarkMessage extends Message {
 
 	@Override
 	public Message clone() {
-		return this; // read-only policy 
+		return this; // read-only policy
 	}
 
 }

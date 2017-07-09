@@ -46,45 +46,48 @@ import sinalgo.runtime.Main;
 import sinalgo.tools.Tools;
 
 /**
- * A MobilityModel to select a random target and walk to this point. But if there is a value on
- * the map in front of the node, that is not 0 the node selects a new target.
+ * A MobilityModel to select a random target and walk to this point. But if
+ * there is a value on the map in front of the node, that is not 0 the node
+ * selects a new target.
  */
-public class LakeAvoid extends RandomWayPoint{
-	
+public class LakeAvoid extends RandomWayPoint {
+
 	/**
 	 * The one and only constructor.
 	 *
-	 * @throws CorruptConfigurationEntryException When a needed configuration entry is missing.
+	 * @throws CorruptConfigurationEntryException
+	 *             When a needed configuration entry is missing.
 	 */
-	public LakeAvoid() throws CorruptConfigurationEntryException{
+	public LakeAvoid() throws CorruptConfigurationEntryException {
 		super();
 	}
-	
-	public Position getNextPos(Node n){
+
+	@Override
+	public Position getNextPos(Node n) {
 		Map map = Tools.getBackgroundMap();
-		
+
 		Position newPos = new Position();
-		
+
 		boolean inLake = false;
-		if(Configuration.useMap){
-			inLake = !map.isWhite(n.getPosition());  //we are already standing in the lake
+		if (Configuration.useMap) {
+			inLake = !map.isWhite(n.getPosition()); // we are already standing in the lake
 		}
-		
-		if(inLake){
+
+		if (inLake) {
 			Main.fatalError("A node is standing in a lake. Cannot find a step outside.");
 		}
-		
-		do{
+
+		do {
 			inLake = false;
 			newPos = super.getNextPos(n);
-			if(Configuration.useMap){
-				if(!map.isWhite(newPos)) {
+			if (Configuration.useMap) {
+				if (!map.isWhite(newPos)) {
 					inLake = true;
-					super.remaining_hops = 0;//this foces the node to search for an other target...
+					super.remaining_hops = 0;// this foces the node to search for an other target...
 				}
 			}
-		}	while(inLake);
-		
+		} while (inLake);
+
 		return newPos;
 	}
 }

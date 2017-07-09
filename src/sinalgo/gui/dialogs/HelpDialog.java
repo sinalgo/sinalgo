@@ -39,6 +39,7 @@ package sinalgo.gui.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.KeyEventPostProcessor;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
@@ -68,21 +69,22 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import sinalgo.configuration.AppConfig;
 import sinalgo.gui.GuiHelper;
 
-
 public class HelpDialog extends JFrame implements ActionListener, WindowListener {
 
-  JEditorPane html;
-  JButton menuButton = new JButton("Menu");
-  
-  URL currentURL = null;
-  URL defaultURL = null;
-	
-  HelpDialog(JFrame parent) { // is private, use showHelp() to create it in a new thread
+	private static final long serialVersionUID = 5648555963120786571L;
+
+	JEditorPane html;
+	JButton menuButton = new JButton("Menu");
+
+	URL currentURL = null;
+	URL defaultURL = null;
+
+	HelpDialog(JFrame parent) { // is private, use showHelp() to create it in a new thread
 		this.setTitle("SINALGO Help  (source: http://dcg.ethz.ch/projects/sinalgo)");
 		GuiHelper.setWindowIcon(this);
 		this.addWindowListener(this);
 		restoreWindowState();
-		
+
 		this.setLayout(new BorderLayout());
 		this.setResizable(true);
 
@@ -92,76 +94,78 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		topPanel.add(menuButton, BorderLayout.WEST);
 		menuButton.addActionListener(this);
-		
 
 		html = new JEditorPane();
-		JScrollPane scroller = new JScrollPane(); 
-		JViewport vp = scroller.getViewport(); 
-		vp.add(html); 
-		this.add(scroller, BorderLayout.CENTER); 
-		
-		try {			
-			defaultURL = new URL("http://dcg.ethz.ch/projects/sinalgo/tutorial/Documentation.html?menu"); 
+		JScrollPane scroller = new JScrollPane();
+		JViewport vp = scroller.getViewport();
+		vp.add(html);
+		this.add(scroller, BorderLayout.CENTER);
+
+		try {
+			defaultURL = new URL("http://dcg.ethz.ch/projects/sinalgo/tutorial/Documentation.html?menu");
 			currentURL = defaultURL;
 			html.setPage(currentURL);
-	    html.setEditable(false); 
-	    html.addHyperlinkListener(getLinkListener());
+			html.setEditable(false);
+			html.addHyperlinkListener(getLinkListener());
 		} catch (MalformedURLException e1) {
 			html.setText("Cannot display the page.\n" + e1.getMessage());
 		} catch (IOException e1) {
 			html.setText("Cannot display the page.\n" + e1.getMessage());
-		}	
-		
+		}
+
 		// Detect ESCAPE button
 		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		focusManager.addKeyEventPostProcessor(new KeyEventPostProcessor() {
+
+			@Override
 			public boolean postProcessKeyEvent(KeyEvent e) {
-				if(!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					HelpDialog.this.setVisible(false);
 				}
 				return false;
 			}
 		});
-		
+
 		this.pack();
 		this.setVisible(true);
 	}
 
-	
 	private HyperlinkListener getLinkListener() {
 		return new HyperlinkListener() {
-			public void hyperlinkUpdate(HyperlinkEvent e) { 
-				if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) { 
-					if (e instanceof HTMLFrameHyperlinkEvent) { 
-						((HTMLDocument)html.getDocument()).processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent)e);  
-					} else { 
-						try { 
+
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+					if (e instanceof HTMLFrameHyperlinkEvent) {
+						((HTMLDocument) html.getDocument()).processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent) e);
+					} else {
+						try {
 							currentURL = e.getURL();
 							String s = currentURL.toString();
 							int offset = s.indexOf(".html");
-							if(offset > 0) { // .html is in the string
+							if (offset > 0) { // .html is in the string
 								s = s.substring(0, offset + 5);
 								s += "?help";
-								if(currentURL.getRef() != null) {
+								if (currentURL.getRef() != null) {
 									s += "#" + currentURL.getRef();
 								}
 								currentURL = new URL(s);
 								HelpDialog.this.setEnabled(true);
-								if(menuDlg != null) {
+								if (menuDlg != null) {
 									menuDlg.setVisible(false);
 									menuDlg = null;
 								}
-						}
-							html.setPage(currentURL); 
-						} catch (IOException e1) { 
+							}
+							html.setPage(currentURL);
+						} catch (IOException e1) {
 							html.setText("Cannot display the page.\n" + e1.getMessage());
-						} 
-					} 
-				} 
+						}
+					}
+				}
 			}
 		};
 	}
-	
+
 	MenuDialog menuDlg = null; // The menu dialog if its currently shown, otherwise null
 
 	private void showMenu() {
@@ -169,44 +173,48 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 		menuDlg = new MenuDialog(this, p);
 		this.setEnabled(false);
 	}
-	
+
+	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource().equals(menuButton)) {
+		if (e.getSource().equals(menuButton)) {
 			showMenu();
 		}
 	}
-	
 
 	class MenuDialog extends JWindow implements ActionListener {
+
+		private static final long serialVersionUID = -950395591867596455L;
+
 		JFrame parent;
 
 		JButton closeButton = new JButton("Close");
 		JButton resetButton = new JButton("Reset");
 		JEditorPane ePane;
 		String defaultMenuURL = "http://dcg.ethz.ch/projects/sinalgo/index.html?menu";
-		
+
 		public MenuDialog(JFrame owner, Point pos) {
 			super(owner);
 			parent = owner;
 			this.setLayout(new BorderLayout());
 
 			ePane = new JEditorPane();
-			//ePane.getEditorKit().
+			// ePane.getEditorKit().
 			ePane.setPreferredSize(new Dimension(250, 400));
-	    ePane.setEditable(false);
-	    JScrollPane scroller = new JScrollPane(); 
-	    JViewport vp = scroller.getViewport(); 
-	    vp.add(ePane); 
-	    this.add(scroller, BorderLayout.CENTER); 
+			ePane.setEditable(false);
+			JScrollPane scroller = new JScrollPane();
+			JViewport vp = scroller.getViewport();
+			vp.add(ePane);
+			this.add(scroller, BorderLayout.CENTER);
 
 			try {
-				// create the URL for the menu (ensure that the url still points to a Sinalgo page
+				// create the URL for the menu (ensure that the url still points to a Sinalgo
+				// page
 				String s = (currentURL == null ? defaultMenuURL : currentURL.toString());
 				URL myURL = null;
 				int offset = s.indexOf(".html");
-				if(offset > 0) { // .html is in the string
-					if(s.indexOf("dcg.ethz.ch/projects/sinalgo/") < 0) { // went to a different site
-						myURL = new URL(defaultMenuURL);	
+				if (offset > 0) { // .html is in the string
+					if (s.indexOf("dcg.ethz.ch/projects/sinalgo/") < 0) { // went to a different site
+						myURL = new URL(defaultMenuURL);
 					} else { // add the ?menu option
 						s = s.substring(0, offset + 5);
 						s += "?menu";
@@ -216,12 +224,12 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 					myURL = new URL(defaultMenuURL);
 				}
 				ePane.setPage(myURL); // load the page
-		    ePane.addHyperlinkListener(getLinkListener());
+				ePane.addHyperlinkListener(getLinkListener());
 			} catch (MalformedURLException e1) {
 				ePane.setText("Cannot display the page.\n" + e1.getMessage());
 			} catch (IOException e1) {
 				ePane.setText("Cannot display the page.\n" + e1.getMessage());
-			}	
+			}
 
 			JPanel menuPanel = new JPanel();
 			menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.X_AXIS));
@@ -230,19 +238,20 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 			menuPanel.add(closeButton);
 			resetButton.addActionListener(this);
 			menuPanel.add(resetButton);
-			
+
 			this.setLocation(pos);
 			this.pack();
 			this.setVisible(true);
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getSource().equals(closeButton)) {
+			if (e.getSource().equals(closeButton)) {
 				this.setVisible(false);
 				parent.setEnabled(true);
 				menuDlg = null;
 			}
-			if(e.getSource().equals(resetButton)) {
+			if (e.getSource().equals(resetButton)) {
 				this.setVisible(false);
 				parent.setEnabled(true);
 				menuDlg = null;
@@ -256,9 +265,8 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 				}
 			}
 		}
-		
-	}
 
+	}
 
 	private void saveWindowState() {
 		AppConfig ac = AppConfig.getAppConfig();
@@ -266,53 +274,68 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 		ac.helpWindowWidth = this.getWidth();
 		ac.helpWindowPosX = this.getLocation().x;
 		ac.helpWindowPosY = this.getLocation().y;
-		ac.helpWindowIsMaximized = (this.getExtendedState() == JFrame.MAXIMIZED_BOTH);
+		ac.helpWindowIsMaximized = (this.getExtendedState() == Frame.MAXIMIZED_BOTH);
 		ac.writeConfig();
 	}
-	
+
 	private void restoreWindowState() {
 		AppConfig ac = AppConfig.getAppConfig();
 		this.setPreferredSize(new Dimension(ac.helpWindowWidth, ac.helpWindowHeight));
 		this.setLocation(new Point(ac.helpWindowPosX, ac.helpWindowPosY));
-		if(ac.helpWindowIsMaximized) {
-			this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		if (ac.helpWindowIsMaximized) {
+			this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
 	}
 
+	@Override
 	public void windowClosed(WindowEvent e) {
 		saveWindowState();
 	}
 
+	@Override
 	public void windowActivated(WindowEvent e) {
 	}
+
+	@Override
 	public void windowClosing(WindowEvent e) {
 		saveWindowState();
 	}
+
+	@Override
 	public void windowDeactivated(WindowEvent e) {
 		saveWindowState();
 	}
+
+	@Override
 	public void windowDeiconified(WindowEvent e) {
 	}
+
+	@Override
 	public void windowIconified(WindowEvent e) {
 	}
+
+	@Override
 	public void windowOpened(WindowEvent e) {
 	}
-
 
 	public static void showHelp(JFrame parent) {
 		Runner r = new Runner(parent);
 		r.start();
 	}
-	
-	static class Runner extends Thread  {
+
+	static class Runner extends Thread {
+
 		private JFrame p;
+
 		public Runner(JFrame parent) {
 			p = parent;
 		}
+
+		@Override
 		public void run() {
 			new HelpDialog(p);
 		}
-		
+
 	}
-	
+
 }

@@ -43,35 +43,42 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 
 /**
- * Similar to FlowLayout, but allows to set max width and then
- * starts a new line. 
+ * Similar to FlowLayout, but allows to set max width and then starts a new
+ * line.
  */
 public class MultiLineFlowLayout implements LayoutManager {
+
 	private int maxWidth = -1;
 	private int hGap = 0; // horizontal gap between two elements
 	private int vGap = 0; // vertical gap between two elements
 
 	/**
-	 * @param maxWidth Max. width of the container
-	 * @param hGap the horizontal gap between two elements
-	 * @param vGap the vertical gap between two elements
+	 * @param maxWidth
+	 *            Max. width of the container
+	 * @param hGap
+	 *            the horizontal gap between two elements
+	 * @param vGap
+	 *            the vertical gap between two elements
 	 */
 	public MultiLineFlowLayout(int maxWidth, int hGap, int vGap) {
 		this.maxWidth = maxWidth;
 		this.hGap = hGap;
 		this.vGap = vGap;
 	}
-	
+
 	private int exactLineHeight = -1;
+
 	/**
 	 * Sets the exact Line Hight. Set the height to <= 0 to disable it
-	 * 
-	 * @param height The exact height of the line.
+	 *
+	 * @param height
+	 *            The exact height of the line.
 	 */
 	public void setExactLineHight(int height) {
 		exactLineHeight = height; // set to <= 0 to disable
 	}
-	
+
+	@Override
 	public Dimension preferredLayoutSize(Container parent) {
 		synchronized (parent.getTreeLock()) {
 			Insets insets = parent.getInsets();
@@ -80,16 +87,16 @@ public class MultiLineFlowLayout implements LayoutManager {
 			int height = 0;
 			int width = 0;
 			int maxHeightOfThisLine = 0;
-			
+
 			int componentCount = parent.getComponentCount();
-			for(int i=0; i<componentCount; i++) {
+			for (int i = 0; i < componentCount; i++) {
 				Component c = parent.getComponent(i);
 				Dimension d = c.getPreferredSize();
-				if(width + d.width < totalWidth || width == 0) { // also accept any first component on this line
+				if (width + d.width < totalWidth || width == 0) { // also accept any first component on this line
 					width += d.width + hGap;
 					maxHeightOfThisLine = Math.max(maxHeightOfThisLine, d.height);
 				} else { // this component must go onto the next line
-					if(this.exactLineHeight > 0) {
+					if (this.exactLineHeight > 0) {
 						maxHeightOfThisLine = exactLineHeight;
 					}
 					height += maxHeightOfThisLine + vGap;
@@ -98,34 +105,36 @@ public class MultiLineFlowLayout implements LayoutManager {
 				}
 			}
 			height += maxHeightOfThisLine;
-			return new Dimension(maxWidth, insets.top + insets.bottom + height);			
+			return new Dimension(maxWidth, insets.top + insets.bottom + height);
 		}
 	}
 
+	@Override
 	public Dimension minimumLayoutSize(Container parent) {
 		return preferredLayoutSize(parent);
 	}
 
+	@Override
 	public void layoutContainer(Container parent) {
 		synchronized (parent.getTreeLock()) {
-			Insets insets = parent.getInsets(); 
+			Insets insets = parent.getInsets();
 
 			int totalWidth = maxWidth - insets.left - insets.right;
 			int height = 0;
 			int width = 0;
 			int maxHeightOfThisLine = 0;
-			
+
 			int componentCount = parent.getComponentCount();
-			for(int i=0; i<componentCount; i++) {
+			for (int i = 0; i < componentCount; i++) {
 				Component c = parent.getComponent(i);
 				Dimension d = c.getPreferredSize();
 				c.setSize(d); // we need to set the size of the components
-				if(width + d.width < totalWidth || width == 0) { // also accept any first component on this line
+				if (width + d.width < totalWidth || width == 0) { // also accept any first component on this line
 					c.setLocation(insets.left + width, insets.top + height);
 					width += d.width + hGap;
 					maxHeightOfThisLine = Math.max(maxHeightOfThisLine, d.height);
 				} else { // this component must go onto the next line
-					if(this.exactLineHeight > 0) {
+					if (this.exactLineHeight > 0) {
 						maxHeightOfThisLine = exactLineHeight;
 					}
 					height += maxHeightOfThisLine + vGap;
@@ -137,18 +146,14 @@ public class MultiLineFlowLayout implements LayoutManager {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.LayoutManager#addLayoutComponent(java.lang.String, java.awt.Component)
-	 */
+	@Override
 	public void addLayoutComponent(String name, Component comp) {
 		// not used by this class
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.LayoutManager#removeLayoutComponent(java.awt.Component)
-	 */
+	@Override
 	public void removeLayoutComponent(Component comp) {
-		// not used by this class		
+		// not used by this class
 	}
 
 }

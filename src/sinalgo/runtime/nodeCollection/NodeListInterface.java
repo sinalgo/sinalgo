@@ -36,7 +36,6 @@
 */
 package sinalgo.runtime.nodeCollection;
 
-
 import java.util.Iterator;
 
 import sinalgo.nodes.Node;
@@ -45,20 +44,24 @@ import sinalgo.nodes.Node;
  * The abstract class for a collection of nodes.
  */
 public interface NodeListInterface {
+
 	/**
 	 * This method adds a Node to the Collection.
 	 *
-	 * @param nw The node to add. 
+	 * @param nw
+	 *            The node to add.
 	 */
 	public abstract void addNode(Node nw);
+
 	/**
 	 * This method removes a node from the Collection.
 	 *
-	 * @param nw The node to remove from the Collection.
-	 * @return True when when the node was removed successfully, otherwise false 
+	 * @param nw
+	 *            The node to remove from the Collection.
+	 * @return True when when the node was removed successfully, otherwise false
 	 */
 	public abstract boolean removeNode(Node nw);
-	
+
 	/**
 	 * This method returns an iterator to traverse all the nodes in the collection.
 	 *

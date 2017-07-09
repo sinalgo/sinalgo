@@ -47,21 +47,24 @@ public abstract class MessageTransmissionModel extends Model {
 	/**
 	 * Determines the time a message takes to arrive at its destination.
 	 * <p>
-	 * When the message is sent via broadcast, and interference is turned on, and the sender
-	 * node has no neighbor, the sender sends the message to itself. In that case, the 
-	 * startNode and the endNode are identical.
+	 * When the message is sent via broadcast, and interference is turned on, and
+	 * the sender node has no neighbor, the sender sends the message to itself. In
+	 * that case, the startNode and the endNode are identical.
 	 * <p>
-	 * For most simulation scenarios, this method should return a constant time.   
-	 * @param startNode The start node of the time calculation
-	 * @param endNode The end node of the time calculation. 
-	 * @param msg The message to send
-	 * @return The time it takes the message to travel from the source to the destination.
+	 * For most simulation scenarios, this method should return a constant time.
+	 *
+	 * @param startNode
+	 *            The start node of the time calculation
+	 * @param endNode
+	 *            The end node of the time calculation.
+	 * @param msg
+	 *            The message to send
+	 * @return The time it takes the message to travel from the source to the
+	 *         destination.
 	 */
 	public abstract double timeToReach(Node startNode, Node endNode, Message msg);
 
-	/* (non-Javadoc)
-	 * @see models.Model#getType()
-	 */
+	@Override
 	public final ModelType getType() {
 		return ModelType.MessageTransmissionModel;
 	}

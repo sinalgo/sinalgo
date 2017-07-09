@@ -43,35 +43,42 @@ import sinalgo.configuration.CorruptConfigurationEntryException;
  * A constant distribution that always returns the same value.
  * <p>
  * If the distribution is specified in the xml configuration file, an entry like
+ *
  * <pre>
    &lt;mainTagName distribution="Constant" constant="xxx"/&gt;
- </pre> 
- * is expected. 
+ * </pre>
+ *
+ * is expected.
  */
 public class ConstantDistribution extends Distribution {
-	private double value; // the value of this distribution 
-	
+
+	private double value; // the value of this distribution
+
 	/**
 	 * Constructs a new ConstantDistribution object that returns always a constant.
-	 * @param value The value to be returned by this distribution.
+	 *
+	 * @param value
+	 *            The value to be returned by this distribution.
 	 */
 	public ConstantDistribution(double value) {
 		this.value = value;
 	}
-	
+
 	/**
-	 * Creates a new constant distribution and initializes it from the XML configuration file.
-	 * @param mainTagPath The entry-path which points to the entry in the XML configuration 
-	 * file which contains the specifications for this distribution.
-	 * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
+	 * Creates a new constant distribution and initializes it from the XML
+	 * configuration file.
+	 *
+	 * @param mainTagPath
+	 *            The entry-path which points to the entry in the XML configuration
+	 *            file which contains the specifications for this distribution.
+	 * @throws CorruptConfigurationEntryException
+	 *             If the configuration file is corrupt.
 	 */
 	public ConstantDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
 		value = Configuration.getDoubleParameter(mainTagPath + "/constant");
 	}
-	
-	/* (non-Javadoc)
-	 * @see tools.statistics.Distribution#nextSample()
-	 */
+
+	@Override
 	public double nextSample() {
 		return value;
 	}

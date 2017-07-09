@@ -40,15 +40,13 @@ import sinalgo.models.ConnectivityModel;
 import sinalgo.nodes.Node;
 
 /**
- * This is a Class implementing a ConnectivityModel. It overrides the updeateConnections
- * method of the ConnectivityModel class. This is a ConnectivityModel to implement 
- * connections that do not change over time.
+ * This is a Class implementing a ConnectivityModel. It overrides the
+ * updeateConnections method of the ConnectivityModel class. This is a
+ * ConnectivityModel to implement connections that do not change over time.
  */
 public class StaticConnectivity extends ConnectivityModel {
-	
-	/* (non-Javadoc)
-	 * @see connectivityModels.ConnectivityModelInterface#updateConnections(nodes.Node)
-	 */
+
+	@Override
 	public boolean updateConnections(Node n) {
 		return false;
 	}

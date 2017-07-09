@@ -40,44 +40,50 @@ import java.util.Comparator;
 import java.util.Vector;
 
 /**
- * An extension of the java.util.Vector implementation that allows
- * to sort the content of the vector efficiently.  
+ * An extension of the java.util.Vector implementation that allows to sort the
+ * content of the vector efficiently.
+ *
  * @param <T>
  */
-
 public class SortableVector<T> extends Vector<T> {
+
+	private static final long serialVersionUID = 2685289788493437402L;
 
 	/**
 	 * Constructor specifing the initial size of the data-array
-	 * @param size Initial size of the array
+	 *
+	 * @param size
+	 *            Initial size of the array
 	 */
 	public SortableVector(int size) {
 		super(size);
 	}
 
 	/**
-	 * Default constructor. 
+	 * Default constructor.
 	 */
 	public SortableVector() {
 		super();
 	}
-	
+
 	/**
-	 * Sorts the contents of this vector. The elements contained
-	 * in the vector may not be null, and need to implement the Comparable 
-	 * interface.  
+	 * Sorts the contents of this vector. The elements contained in the vector may
+	 * not be null, and need to implement the Comparable interface.
 	 * <p>
 	 * Note: T needs to extend Comparable<T>
 	 */
 	public void sort() {
 		java.util.Arrays.sort(super.elementData, 0, this.size());
 	}
-	
+
 	/**
-	 * Sorts the contents of this vector. The elements contained
-	 * in the vector may not be null.
-	 * @param c The comparator to compare any two elements in the vector.
+	 * Sorts the contents of this vector. The elements contained in the vector may
+	 * not be null.
+	 *
+	 * @param c
+	 *            The comparator to compare any two elements in the vector.
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public void sort(Comparator<? super T> c) {
 		java.util.Arrays.sort((T[]) super.elementData, 0, this.size(), c);

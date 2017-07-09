@@ -41,29 +41,33 @@ import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.nodes.Node;
 
 /**
- * A UDG connectivity model for static network. The connections are only evaluated
- * the very first time according to the UDG connectivity model, and then reused all 
- * over again.
+ * A UDG connectivity model for static network. The connections are only
+ * evaluated the very first time according to the UDG connectivity model, and
+ * then reused all over again.
+ *
  * @see projects.defaultProject.models.connectivityModels.UDG
  */
 public class StaticUDG extends UDG {
+
 	private boolean firstTime = true; // detect when the connections are evaluated for the first time
-	
+
+	@Override
 	public boolean updateConnections(Node n) throws WrongConfigurationException {
-		if(firstTime) {
+		if (firstTime) {
 			firstTime = false;
 			return super.updateConnections(n); // let UDG do its work
 		} else {
 			return false; // keep all existing connections
 		}
 	}
-	
+
 	/**
-	 * The default constructor for this class.  
-	 * @throws CorruptConfigurationEntryException If one of the initialization steps fails.
+	 * The default constructor for this class.
+	 *
+	 * @throws CorruptConfigurationEntryException
+	 *             If one of the initialization steps fails.
 	 */
 	public StaticUDG() throws CorruptConfigurationEntryException {
 		// all done in UDG.
 	}
 }
-

@@ -21,34 +21,34 @@ import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
 
 public class Antenna extends Node {
-	
+
 	// a list of all antennas
-	private static Vector<Antenna> antennaList = new Vector<Antenna>();
-	
+	private static Vector<Antenna> antennaList = new Vector<>();
+
 	@Override
 	public void checkRequirements() throws WrongConfigurationException {
 	}
 
 	@Override
 	public void handleMessages(Inbox inbox) {
-		while(inbox.hasNext()) {
+		while (inbox.hasNext()) {
 			Message msg = inbox.next();
 			// -----------------------------------------------------------------------------
-			if(msg instanceof SubscirbeMessage) {
+			if (msg instanceof SubscirbeMessage) {
 				neighbors.add(inbox.getSender());
 			}
 			// -----------------------------------------------------------------------------
-			else if(msg instanceof ByeBye) { 
+			else if (msg instanceof ByeBye) {
 				neighbors.remove(inbox.getSender());
 			}
 			// -----------------------------------------------------------------------------
-			else if(msg instanceof SmsMessage) {
+			else if (msg instanceof SmsMessage) {
 				SmsMessage sms = (SmsMessage) msg;
-				if(isNeighbor(sms.receiver)) {
+				if (isNeighbor(sms.receiver)) {
 					this.send(sms, sms.receiver); // forward the message to the destination
-				} else if(inbox.getSender() instanceof MobileNode) {
-					for(Antenna a : antennaList) {
-						if(!a.equals(this)) {
+				} else if (inbox.getSender() instanceof MobileNode) {
+					for (Antenna a : antennaList) {
+						if (!a.equals(this)) {
 							this.sendDirect(msg, a); // send the msg to all antennas
 						}
 					}
@@ -56,27 +56,28 @@ public class Antenna extends Node {
 			}
 		}
 	}
-	
+
 	private boolean isNeighbor(Node aNode) {
-		if(neighbors.contains(aNode)) {
+		if (neighbors.contains(aNode)) {
 			return true;
 		}
-		if(oldNeighborhood.contains(aNode)) {
+		if (oldNeighborhood.contains(aNode)) {
 			return true;
-		} 
+		}
 		return false;
 	}
-	
-	TreeSet<Node> neighbors = new TreeSet<Node>(new NodeComparer());
-	TreeSet<Node> oldNeighborhood = new TreeSet<Node>(new NodeComparer());
-	
+
+	TreeSet<Node> neighbors = new TreeSet<>(new NodeComparer());
+	TreeSet<Node> oldNeighborhood = new TreeSet<>(new NodeComparer());
+
 	/**
-	 * In the same round as calling this method, this antenna should broadcast
-	 * an invitation that requires resubscription.
-	 * Until these new subscriptions arrived, the old neighborhood list is still used. 
+	 * In the same round as calling this method, this antenna should broadcast an
+	 * invitation that requires resubscription. Until these new subscriptions
+	 * arrived, the old neighborhood list is still used.
 	 */
 	public void resetNeighborhood() {
-		// switch the two neighborhoods, s.t. the old neighborhood is the current neighborhood
+		// switch the two neighborhoods, s.t. the old neighborhood is the current
+		// neighborhood
 		// and the new neighborhood becomes empty
 		TreeSet<Node> temp = oldNeighborhood;
 		oldNeighborhood = neighbors;
@@ -86,15 +87,15 @@ public class Antenna extends Node {
 		AntennaNeighborhoodClearTimer t = new AntennaNeighborhoodClearTimer(oldNeighborhood);
 		t.startRelative(3, this);
 	}
-	
+
 	@Override
 	public void init() {
-		// start a msg timer to periodically send the invite msg 
+		// start a msg timer to periodically send the invite msg
 		InviteMsgTimer timer = new InviteMsgTimer();
 		timer.startRelative(1, this);
 		antennaList.add(this);
 	}
-	
+
 	@Override
 	public void neighborhoodChange() {
 	}
@@ -107,18 +108,16 @@ public class Antenna extends Node {
 	public void postStep() {
 	}
 
-	/* (non-Javadoc)
-	 * @see sinalgo.nodes.Node#toString()
-	 */
+	@Override
 	public String toString() {
 		// show the list of subscribed nodes
 		String list = "";
-		for(Node n : neighbors) {
+		for (Node n : neighbors) {
 			list += " " + n.ID;
 		}
-		if(oldNeighborhood.size() > 0) {
+		if (oldNeighborhood.size() > 0) {
 			list += "\n(";
-			for(Node n : oldNeighborhood) {
+			for (Node n : oldNeighborhood) {
 				list += " " + n.ID;
 			}
 			list += ")";
@@ -127,13 +126,16 @@ public class Antenna extends Node {
 	}
 
 	private static int radius;
-	{ try {
-		radius = Configuration.getIntegerParameter("GeometricNodeCollection/rMax");
-	} catch(CorruptConfigurationEntryException e) {
-		Tools.fatalError(e.getMessage());
-	}}
-	
-	public void draw(Graphics g, PositionTransformation pt, boolean highlight){
+	{
+		try {
+			radius = Configuration.getIntegerParameter("GeometricNodeCollection/rMax");
+		} catch (CorruptConfigurationEntryException e) {
+			Tools.fatalError(e.getMessage());
+		}
+	}
+
+	@Override
+	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
 		Color bckup = g.getColor();
 		g.setColor(Color.BLACK);
 		this.drawingSizeInPixels = (int) (defaultDrawingSizeInPixels * pt.getZoomFactor());
@@ -141,7 +143,7 @@ public class Antenna extends Node {
 		g.setColor(Color.LIGHT_GRAY);
 		pt.translateToGUIPosition(this.getPosition());
 		int r = (int) (radius * pt.getZoomFactor());
-		g.drawOval(pt.guiX - r, pt.guiY - r, r*2, r*2);
+		g.drawOval(pt.guiX - r, pt.guiY - r, r * 2, r * 2);
 		g.setColor(bckup);
 	}
 
@@ -153,13 +155,14 @@ public class Antenna extends Node {
 		}
 	}
 
-	
 	/**
 	 * Helper class to compare two nodes by their ID
 	 */
 	class NodeComparer implements Comparator<Node> {
+
+		@Override
 		public int compare(Node n1, Node n2) {
-			return n1.ID < n2.ID ? -1 : n1.ID == n2.ID ? 0 : 1;   
+			return n1.ID < n2.ID ? -1 : n1.ID == n2.ID ? 0 : 1;
 		}
 	}
 

@@ -37,30 +37,29 @@
 package sinalgo.nodes.edges;
 
 /**
- * This is an implementation of a bidirectional edge. Actually it is not a bidirectional edge
- * but it is a unidirectional edge that gaurantees that the edge in the opposite direction 
- * exists as well.
+ * This is an implementation of a bidirectional edge. Actually it is not a
+ * bidirectional edge but it is a unidirectional edge that gaurantees that the
+ * edge in the opposite direction exists as well.
  */
-public class BidirectionalEdge extends Edge{
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.nodes.edges.Edge#initializeEdge()
-	 */
-	public void initializeEdge(){
-		if(oppositeEdge == null){
-			//this is a hack to ensure that this edge is already in the outgoing ot the start node. Otherwise the two edges would 
-			//end in an infinite loop
+public class BidirectionalEdge extends Edge {
+
+	@Override
+	public void initializeEdge() {
+		if (oppositeEdge == null) {
+			// this is a hack to ensure that this edge is already in the outgoing ot the
+			// start node. Otherwise the two edges would
+			// end in an infinite loop
 			startNode.outgoingConnections.hackyAppend(this);
-			
+
 			endNode.outgoingConnections.add(endNode, startNode, true);
 			findOppositeEdge();
 		}
 	}
-	
+
 	@Override
 	public void cleanUp() {
-		if(this.oppositeEdge != null){
-			//there is a related edge to this one.
+		if (this.oppositeEdge != null) {
+			// there is a related edge to this one.
 			Edge oe = this.oppositeEdge;
 			this.oppositeEdge = null;
 			oe.oppositeEdge = null; // set unlink oppositeEdges to avoid loops

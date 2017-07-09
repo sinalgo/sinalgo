@@ -40,14 +40,15 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Message;
 
 public class S4SendDirectTimer extends sinalgo.nodes.timers.Timer {
+
 	private Message msg; // the msg to send
 	private Node dest; // the node to send the msg to
-	
+
 	public S4SendDirectTimer(Message msg, Node destination) {
 		this.msg = msg;
 		this.dest = destination;
 	}
-	
+
 	@Override
 	public void fire() {
 		this.node.sendDirect(msg, dest);

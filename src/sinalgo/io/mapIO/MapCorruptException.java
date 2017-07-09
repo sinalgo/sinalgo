@@ -39,15 +39,17 @@ package sinalgo.io.mapIO;
 /**
  * The Exception, that is thrown when the map is corrupt.
  */
-
 public class MapCorruptException extends Exception {
-	
+
+	private static final long serialVersionUID = -6333440361800645781L;
+
 	/**
 	 * The constructor for the MapCorruptException class.
 	 *
-	 * @param msg The Message for the exception.
+	 * @param msg
+	 *            The Message for the exception.
 	 */
-	public MapCorruptException(String msg){
+	public MapCorruptException(String msg) {
 		super(msg);
 	}
 }

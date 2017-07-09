@@ -36,21 +36,17 @@
 */
 package projects.sample3;
 
-
 import java.awt.Color;
 
 import projects.sample3.nodes.nodeImplementations.MobileNode;
 import projects.sample3.nodes.timers.SmsTimer;
-
 import sinalgo.nodes.Node;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.tools.Tools;
 
 /**
- * This class holds customized global state and methods for the framework. 
- * The only mandatory method to overwrite is 
- * <code>hasTerminated</code>
- * <br>
+ * This class holds customized global state and methods for the framework. The
+ * only mandatory method to overwrite is <code>hasTerminated</code> <br>
  * Optional methods to override are
  * <ul>
  * <li><code>customPaint</code></li>
@@ -61,17 +57,15 @@ import sinalgo.tools.Tools;
  * <li><code>postRound</code></li>
  * <li><code>checkProjectRequirements</code></li>
  * </ul>
- * @see sinalgo.runtime.AbstractCustomGlobal for more details.
- * <br>
- * In addition, this class also provides the possibility to extend the framework with
- * custom methods that can be called either through the menu or via a button that is
- * added to the GUI. 
+ *
+ * @see sinalgo.runtime.AbstractCustomGlobal for more details. <br>
+ *      In addition, this class also provides the possibility to extend the
+ *      framework with custom methods that can be called either through the menu
+ *      or via a button that is added to the GUI.
  */
-public class CustomGlobal extends AbstractCustomGlobal{
-	
-	/* (non-Javadoc)
-	 * @see runtime.AbstractCustomGlobal#hasTerminated()
-	 */
+public class CustomGlobal extends AbstractCustomGlobal {
+
+	@Override
 	public boolean hasTerminated() {
 		return false;
 	}
@@ -79,26 +73,23 @@ public class CustomGlobal extends AbstractCustomGlobal{
 	/**
 	 * An example of a method that will be available through the menu of the GUI.
 	 */
-	@AbstractCustomGlobal.GlobalMethod(menuText="Reset Color")
+	@AbstractCustomGlobal.GlobalMethod(menuText = "Reset Color")
 	public void resetColor() {
-		for(Node n : Tools.getNodeList()){
+		for (Node n : Tools.getNodeList()) {
 			n.setColor(Color.black);
 		}
 	}
 
-
 	private boolean automaticSMS = false;
 
-	@AbstractCustomGlobal.GlobalMethod(menuText="Toggle Automatic SMS")
+	@AbstractCustomGlobal.GlobalMethod(menuText = "Toggle Automatic SMS")
 	public void toggleAutomaticSMS() {
 		automaticSMS = !automaticSMS;
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.runtime.AbstractCustomGlobal#postRound()
-	 */
+
+	@Override
 	public void postRound() {
-		if(automaticSMS) {
+		if (automaticSMS) {
 			Node sender = getRandomMobileNode();
 			Node receiver = getRandomMobileNode();
 			SmsTimer t = new SmsTimer("Automatic SMS", receiver);
@@ -107,18 +98,16 @@ public class CustomGlobal extends AbstractCustomGlobal{
 			receiver.setColor(Color.BLUE);
 		}
 	}
-	
+
 	private MobileNode getRandomMobileNode() {
 		Node n = Tools.getNodeList().getRandomNode();
-		while(!(n instanceof MobileNode)) {
+		while (!(n instanceof MobileNode)) {
 			n = Tools.getNodeList().getRandomNode();
 		}
 		return (MobileNode) n;
 	}
-	
-	/* (non-Javadoc)
-	 * @see runtime.AbstractCustomGlobal#preRun()
-	 */
+
+	@Override
 	public void preRun() {
 		// A method called at startup, before the first round is executed.
 	}

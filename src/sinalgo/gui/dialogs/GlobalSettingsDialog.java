@@ -36,7 +36,6 @@
 */
 package sinalgo.gui.dialogs;
 
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.KeyEventPostProcessor;
@@ -60,41 +59,43 @@ import sinalgo.configuration.Configuration;
 import sinalgo.gui.GuiHelper;
 import sinalgo.io.versionTest.VersionTester;
 
-
 /**
- * Dialog that shows the global settings of the current simulation. 
+ * Dialog that shows the global settings of the current simulation.
  */
-
 public class GlobalSettingsDialog extends JDialog implements ActionListener {
+
+	private static final long serialVersionUID = -9208723898830546097L;
 
 	private JButton close = new JButton("Close");
 	private JButton versionTest = new JButton("Test now");
-	private JCheckBox testForUpdatesAtStartup = new JCheckBox("Test for a more recent version of Sinalgo at startup (once per day)");
-	
+	private JCheckBox testForUpdatesAtStartup = new JCheckBox(
+			"Test for a more recent version of Sinalgo at startup (once per day)");
+
 	/**
 	 * The constructor for the GlobalSettingsDialog class.
 	 *
-	 * @param parent The parent Frame to attach the dialog to.
+	 * @param parent
+	 *            The parent Frame to attach the dialog to.
 	 */
-	public GlobalSettingsDialog(JFrame parent){
+	public GlobalSettingsDialog(JFrame parent) {
 		super(parent, "Global Settings", true);
 		GuiHelper.setWindowIcon(this);
-		
+
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(650, 500));
-		
+
 		JTextArea text = new JTextArea();
 		text.setEditable(false);
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		Configuration.printConfiguration(new PrintStream(os));
 		text.setText(os.toString());
-		text.setCaretPosition(0); // ensure that the top of the text is shown 
+		text.setCaretPosition(0); // ensure that the top of the text is shown
 		JScrollPane spane = new JScrollPane(text);
 		this.add(spane);
-		
+
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BorderLayout());
-		
+
 		JPanel settingsPanel = new JPanel();
 		settingsPanel.setLayout(new BorderLayout());
 
@@ -111,14 +112,16 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
 		JPanel closePanel = new JPanel();
 		closePanel.add(close);
 		buttonPanel.add(BorderLayout.SOUTH, closePanel);
-		
+
 		this.add(BorderLayout.SOUTH, buttonPanel);
-	
+
 		// Detect ESCAPE button
 		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		focusManager.addKeyEventPostProcessor(new KeyEventPostProcessor() {
+
+			@Override
 			public boolean postProcessKeyEvent(KeyEvent e) {
-				if(!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					GlobalSettingsDialog.this.setVisible(false);
 				}
 				return false;
@@ -126,24 +129,21 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
 		});
 
 		this.getRootPane().setDefaultButton(close);
-		
+
 		this.pack();
 		this.setLocationRelativeTo(parent);
 		this.setVisible(true);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	public void actionPerformed(ActionEvent event) {	
-		if(event.getSource().equals(close)) {
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		if (event.getSource().equals(close)) {
 			this.setVisible(false);
-		} else if(event.getSource().equals(versionTest)) {
+		} else if (event.getSource().equals(versionTest)) {
 			VersionTester.testVersion(false, true);
-		} else if(event.getSource().equals(testForUpdatesAtStartup)) {
+		} else if (event.getSource().equals(testForUpdatesAtStartup)) {
 			AppConfig.getAppConfig().checkForSinalgoUpdate = testForUpdatesAtStartup.isSelected();
 			AppConfig.getAppConfig().writeConfig();
 		}
 	}
 }
-

@@ -36,7 +36,6 @@
 */
 package sinalgo.runtime.events;
 
-
 import java.util.Stack;
 
 import sinalgo.configuration.Configuration;
@@ -54,120 +53,126 @@ import sinalgo.tools.logging.Logging;
  * The event that represents that a message is reaching its destination.
  */
 public class PacketEvent extends Event {
-	
-	private static Stack<PacketEvent> unusedPacketEvents = new Stack<PacketEvent>();
+
+	private static Stack<PacketEvent> unusedPacketEvents = new Stack<>();
 	public static int numPacketEventsOnTheFly = 0;
-	
+
 	public static int getNumFreedPacketEvents() {
 		return unusedPacketEvents.size();
 	}
-	
+
 	public static void clearUnusedPacketEvents() {
 		unusedPacketEvents.clear();
 	}
-	
+
 	/**
-	 * The packet this event was generated for. This packet (or to be precisely its message) reaches at the time
-	 * this event is scheduled.
+	 * The packet this event was generated for. This packet (or to be precisely its
+	 * message) reaches at the time this event is scheduled.
 	 */
 	public Packet packet;
-	
+
 	/**
-	 * Creates a new PacketEvent for a given packet, a given time and a given node. This event
-	 * represents that the packet reaches eventNode at time. 
+	 * Creates a new PacketEvent for a given packet, a given time and a given node.
+	 * This event represents that the packet reaches eventNode at time.
 	 *
-	 * @param packet The packet that reaches its target.
-	 * @param time The time the packet reaches its target.
-	 * @param eventNode The node the packet reaches.
+	 * @param packet
+	 *            The packet that reaches its target.
+	 * @param time
+	 *            The time the packet reaches its target.
+	 * @param eventNode
+	 *            The node the packet reaches.
 	 */
-	private PacketEvent(Packet packet, double time){
+	private PacketEvent(Packet packet, double time) {
 		super(time);
 		this.packet = packet;
 	}
-	
+
 	/**
-	 * Creates a new packetEvent. Takes it from the eventPool if it contains one and creates a new one otherwise.
-	 * 
-	 * @param packet The packet that arrives when this event fires.
-	 * @param time The time this event is scheduled to.
+	 * Creates a new packetEvent. Takes it from the eventPool if it contains one and
+	 * creates a new one otherwise.
+	 *
+	 * @param packet
+	 *            The packet that arrives when this event fires.
+	 * @param time
+	 *            The time this event is scheduled to.
 	 * @return An instance of PacketEvent
 	 */
-	public static PacketEvent getNewPacketEvent(Packet packet, double time){
+	public static PacketEvent getNewPacketEvent(Packet packet, double time) {
 		PacketEvent pe = null;
-		if(unusedPacketEvents.size() > 0){
+		if (unusedPacketEvents.size() > 0) {
 			pe = unusedPacketEvents.pop();
-			if(pe.packet != null) { // sanity check
-				Main.fatalError(Logging.getCodePosition() + " PacketEvent factory failed! About to return a packet-event that was already returned. (Probably, free() was called > 1 on this packet event.)");
+			if (pe.packet != null) { // sanity check
+				Main.fatalError(Logging.getCodePosition()
+						+ " PacketEvent factory failed! About to return a packet-event that was already returned. (Probably, free() was called > 1 on this packet event.)");
 			}
 			pe.packet = packet;
 			pe.time = time;
-			pe.id = nextId++; //implicit increment
+			pe.id = nextId++; // implicit increment
 		} else {
 			pe = new PacketEvent(packet, time);
 		}
 		numPacketEventsOnTheFly++;
 		return pe;
 	}
-	
+
 	/**
-	 * Frees the this event and the corresponding packet. Puts it into the event pool.
+	 * Frees the this event and the corresponding packet. Puts it into the event
+	 * pool.
 	 */
-	public void free(){
-		if(packet != null) {
+	@Override
+	public void free() {
+		if (packet != null) {
 			Packet.free(packet);
 			this.packet = null;
 		}
 		unusedPacketEvents.push(this);
 		numPacketEventsOnTheFly--;
 	}
-	
+
 	// Two static objects to prevent from allocating them all over again
 	private static Inbox inbox = new Inbox();
 	private static NackBox nAckBox = new NackBox();
-	
+
 	@Override
 	public void handle() {
 		// the arrival of a packet in the asynchronous case
-		if(Configuration.interference){
+		if (Configuration.interference) {
 			Runtime.packetsInTheAir.performInterferenceTestBeforeRemove();
 			Runtime.packetsInTheAir.remove(packet);
 		}
-		if(packet.edge != null){
+		if (packet.edge != null) {
 			packet.edge.removeMessageForThisEdge(packet.message);
 		}
-		if(packet.positiveDelivery){
+		if (packet.positiveDelivery) {
 			packet.destination.handleMessages(inbox.resetForPacket(packet));
 		} else {
-			if(Configuration.generateNAckMessages && packet.type == PacketType.UNICAST) {
+			if (Configuration.generateNAckMessages && packet.type == PacketType.UNICAST) {
 				packet.origin.handleNAckMessages(nAckBox.resetForPacket(packet));
 			}
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.runtime.events.Event#drop()
-	 */
+
+	@Override
 	public void drop() {
 		// similar to the arrival of a packet in the asynchronous case
-		if(Configuration.interference){
+		if (Configuration.interference) {
 			Runtime.packetsInTheAir.remove(packet);
 		}
-		if(packet.edge != null){
+		if (packet.edge != null) {
 			packet.edge.removeMessageForThisEdge(packet.message);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString(){
+
+	@Override
+	public String toString() {
 		return "PacketEvent";
 	}
 
 	@Override
 	public String getEventListText(boolean hasExecuted) {
-		if(hasExecuted) {
-			return "Packet at node " + packet.destination.ID + (packet.positiveDelivery ? " (delivered)" : " (dropped)"); 
+		if (hasExecuted) {
+			return "Packet at node " + packet.destination.ID
+					+ (packet.positiveDelivery ? " (delivered)" : " (dropped)");
 		} else {
 			return "PE (Node:" + packet.destination.ID + ", Time:" + getExecutionTimeString(4) + ")";
 		}
@@ -175,13 +180,14 @@ public class PacketEvent extends Event {
 
 	@Override
 	public String getEventListToolTipText(boolean hasExecuted) {
-		if(hasExecuted) {
-			return "The type of the message is: " + Global.toShortName(packet.message.getClass().getName()) + "\n" +
-			(packet.positiveDelivery ? "The message was delivered" : "The message was dropped.");
+		if (hasExecuted) {
+			return "The type of the message is: " + Global.toShortName(packet.message.getClass().getName()) + "\n"
+					+ (packet.positiveDelivery ? "The message was delivered" : "The message was dropped.");
 		} else {
-			return "At time " + time + " a message reaches node " + packet.destination.ID + "\n" +
-			"The type of the message is: " + Global.toShortName(packet.message.getClass().getName()) + "\n" +
-			(packet.positiveDelivery ? "Until now it seems that the message will reach its destination." : "The message has already been disturbed and will not reach its destination.");
+			return "At time " + time + " a message reaches node " + packet.destination.ID + "\n"
+					+ "The type of the message is: " + Global.toShortName(packet.message.getClass().getName()) + "\n"
+					+ (packet.positiveDelivery ? "Until now it seems that the message will reach its destination."
+							: "The message has already been disturbed and will not reach its destination.");
 		}
 	}
 

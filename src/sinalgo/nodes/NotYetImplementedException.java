@@ -37,16 +37,20 @@
 package sinalgo.nodes;
 
 /**
- * The exception that is thrown when a method is called that is not yet implemented.
+ * The exception that is thrown when a method is called that is not yet
+ * implemented.
  */
-
 public class NotYetImplementedException extends RuntimeException {
+
+	private static final long serialVersionUID = -3878647966455920675L;
+
 	/**
 	 * The one and only constructor of this Exception.
-	 * 
-	 * @param s The message this exception has to be constructed for.
+	 *
+	 * @param s
+	 *            The message this exception has to be constructed for.
 	 */
-	public NotYetImplementedException(String s){
+	public NotYetImplementedException(String s) {
 		super(s);
 	}
 }

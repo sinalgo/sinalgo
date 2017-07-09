@@ -37,13 +37,14 @@
 package sinalgo.runtime.nodeCollection;
 
 /**
- * A two dimensional integer point with (x,y)-coordinates.  
+ * A two dimensional integer point with (x,y)-coordinates.
  * <p>
- * This information makes it easier and faster to find a node in the 
- * NodeCollection datastructure and to check whether the node has changed
- * its position in the NodeColleciton. 
+ * This information makes it easier and faster to find a node in the
+ * NodeCollection datastructure and to check whether the node has changed its
+ * position in the NodeColleciton.
  * <p>
- * This class is used to indicate in which square of the GeometricNodeCollection a node is contained. 
+ * This class is used to indicate in which square of the GeometricNodeCollection
+ * a node is contained.
  */
 public class SquarePos implements NodeCollectionInfoInterface {
 
@@ -56,12 +57,14 @@ public class SquarePos implements NodeCollectionInfoInterface {
 	 * The y coordinate of the square in the whole datastructure.
 	 */
 	public int y;
-	
+
 	/**
 	 * The constructor for the SquarePos class.
 	 *
-	 * @param x The x coordinate of this object in the datastructure.
-	 * @param y The y coordinate of this object in the datastructure.
+	 * @param x
+	 *            The x coordinate of this object in the datastructure.
+	 * @param y
+	 *            The y coordinate of this object in the datastructure.
 	 */
 	public SquarePos(int x, int y) {
 		this.x = x;

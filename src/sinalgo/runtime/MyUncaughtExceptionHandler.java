@@ -36,44 +36,38 @@
 */
 package sinalgo.runtime;
 
-
-
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-
 /**
- * This class implements a UncoughtExceptionHandler. It is used to catch all the uncaught exceptions
- * and forward it to the Main as a fatal error.
+ * This class implements a UncoughtExceptionHandler. It is used to catch all the
+ * uncaught exceptions and forward it to the Main as a fatal error.
  */
-public class MyUncaughtExceptionHandler implements UncaughtExceptionHandler{
+public class MyUncaughtExceptionHandler implements UncaughtExceptionHandler {
 
+	@Override
 	public void uncaughtException(Thread t, Throwable e) {
-		
-		if(e.getClass().equals(java.lang.OutOfMemoryError.class)){
+
+		if (e.getClass().equals(java.lang.OutOfMemoryError.class)) {
 			Runtime.nodes = null;
 			Tools.disposeRecycledObjects(Logging.getLogger().getOutputStream());
 			System.gc();
 			java.lang.Runtime r = java.lang.Runtime.getRuntime();
 			long maxMem = r.maxMemory() / 1048576;
-			Main.fatalError("Sinalgo ran out of memory. (" + maxMem + " MB is not enough). \n" +
-			                "To allow the VM to use more memory, modify the javaVMmaxMem entry of the config file."
-			                );
+			Main.fatalError("Sinalgo ran out of memory. (" + maxMem + " MB is not enough). \n"
+					+ "To allow the VM to use more memory, modify the javaVMmaxMem entry of the config file.");
 			return;
 		}
-		
+
 		String st = "    ";
 		StackTraceElement[] ste = e.getStackTrace();
-		for(StackTraceElement element : ste){
-			st+= element.toString()+"\n    ";
+		for (StackTraceElement element : ste) {
+			st += element.toString() + "\n    ";
 		}
-		Main.fatalError("There was an Exception in Thread "+t+" \n\n" + 
-		                "Exception: " + e + ": \n\n" + 
-		                "Message: " + e.getMessage() + "\n\n" +
-		                "Cause: " + e.getCause() + "\n\n" + 
-		                "StackTrace: " + st);
+		Main.fatalError("There was an Exception in Thread " + t + " \n\n" + "Exception: " + e + ": \n\n" + "Message: "
+				+ e.getMessage() + "\n\n" + "Cause: " + e.getCause() + "\n\n" + "StackTrace: " + st);
 	}
-	
+
 }

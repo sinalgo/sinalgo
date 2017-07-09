@@ -3,8 +3,8 @@ package projects.sample5.nodes.nodeImplementations;
 import java.awt.Color;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Vector;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import projects.defaultProject.models.messageTransmissionModels.ConstantTime;
 import projects.sample5.nodes.messages.AckPayload;
@@ -27,14 +27,14 @@ import sinalgo.tools.logging.Logging;
  */
 public class FNode extends Node {
 
-
 	/**
 	 * A routing table entry
 	 */
 	public class RoutingEntry {
+
 		public int sequenceNumber; // sequence number used when this entry was created
 		public int numHops; // number of hops to reach destination
-		public Node nextHop; // next hop to take  
+		public Node nextHop; // next hop to take
 
 		public RoutingEntry(int seqNumber, int hops, Node hop) {
 			this.sequenceNumber = seqNumber;
@@ -42,54 +42,56 @@ public class FNode extends Node {
 			this.nextHop = hop;
 		}
 	}
-	
+
 	// counter, incremented and added for each msg sent (not forwarded) by this node
 	public int seqID = 0; // an ID used to distinguish successive msg
-	
+
 	// The routing table of this node, maps destination node to a routing entry
-	Hashtable<Node, RoutingEntry> routingTable = new Hashtable<Node, RoutingEntry>();
-	
+	Hashtable<Node, RoutingEntry> routingTable = new Hashtable<>();
+
 	// messages that could not be sent so far, because no route is known
-	Vector<PayloadMsg> messagesOnHold = new Vector<PayloadMsg>();
-	
+	Vector<PayloadMsg> messagesOnHold = new Vector<>();
+
 	/**
-	 * Method to clear this node's routing table 
+	 * Method to clear this node's routing table
 	 */
 	public void clearRoutingTable() {
 		routingTable.clear();
 	}
-	
+
 	@Override
 	public void checkRequirements() throws WrongConfigurationException {
 		// The message delivery time must be constant, this allows the project
 		// to easily predict the waiting times
-		if(!(Tools.getMessageTransmissionModel() instanceof ConstantTime)) {
-			Tools.fatalError("This project requires that messages are sent with the ConstantTime MessageTransmissionModel.");
+		if (!(Tools.getMessageTransmissionModel() instanceof ConstantTime)) {
+			Tools.fatalError(
+					"This project requires that messages are sent with the ConstantTime MessageTransmissionModel.");
 		}
 	}
 
 	@Override
 	public void handleMessages(Inbox inbox) {
-		while(inbox.hasNext()) {
+		while (inbox.hasNext()) {
 			Message msg = inbox.next();
-			
+
 			// ---------------------------------------------------------------
-			if(msg instanceof FloodFindMsg) { // This node received a flooding message. 
+			if (msg instanceof FloodFindMsg) { // This node received a flooding message.
 				// ---------------------------------------------------------------
 				FloodFindMsg m = (FloodFindMsg) msg;
-				if(m.isFindMessage) { 
-					// forward the message, it's a find-message that has to be 
+				if (m.isFindMessage) {
+					// forward the message, it's a find-message that has to be
 					// forwarded if the TTL allows. At the same time, update this node's routing
 					// table s.t. it knows how to route to the sender of the flooding-msg.
 					boolean forward = true;
-					if(m.sender.equals(this)) { // the message bounced back - discard the msg
-						forward = false; 
+					if (m.sender.equals(this)) { // the message bounced back - discard the msg
+						forward = false;
 					} else { // update routing table to the sender of this node
 						RoutingEntry re = routingTable.get(m.sender);
-						if(re == null) { // add a new routing entry 
-							routingTable.put(m.sender, new RoutingEntry(m.sequenceID, m.hopsToSender, inbox.getSender()));
+						if (re == null) { // add a new routing entry
+							routingTable.put(m.sender,
+									new RoutingEntry(m.sequenceID, m.hopsToSender, inbox.getSender()));
 							useNewRoutingInfo(m.destination, inbox.getSender());
-						} else if(re.sequenceNumber < m.sequenceID) { // update the existing entry 
+						} else if (re.sequenceNumber < m.sequenceID) { // update the existing entry
 							re.numHops = m.hopsToSender;
 							re.sequenceNumber = m.sequenceID;
 							re.nextHop = inbox.getSender();
@@ -97,7 +99,7 @@ public class FNode extends Node {
 							forward = false; // we've already seen this message once - don't forward it a 2nd time
 						}
 					}
-					if(m.destination.equals(this)) { // the lookup has succeeded, this is the node that was searched
+					if (m.destination.equals(this)) { // the lookup has succeeded, this is the node that was searched
 						this.setColor(Color.BLUE);
 						FloodFindMsg copy = m.getRealClone();
 						copy.hopsToSender = 1; // now, this field contains the hops to the destination
@@ -107,7 +109,7 @@ public class FNode extends Node {
 						forward = false;
 					}
 
-					if(forward && m.ttl > 1) { // forward the flooding request
+					if (forward && m.ttl > 1) { // forward the flooding request
 						FloodFindMsg copy = m.getRealClone();
 						copy.ttl--;
 						copy.hopsToSender++;
@@ -118,33 +120,34 @@ public class FNode extends Node {
 					boolean forward = true;
 					this.setColor(Color.GREEN);
 					RoutingEntry re = routingTable.get(m.destination);
-					if(re == null) { // add a new routing entry 
-						routingTable.put(m.destination, new RoutingEntry(m.sequenceID, m.hopsToSender, inbox.getSender()));
+					if (re == null) { // add a new routing entry
+						routingTable.put(m.destination,
+								new RoutingEntry(m.sequenceID, m.hopsToSender, inbox.getSender()));
 						useNewRoutingInfo(m.destination, inbox.getSender());
-					} else if(re.sequenceNumber < m.sequenceID) { // update the existing entry 
+					} else if (re.sequenceNumber < m.sequenceID) { // update the existing entry
 						re.numHops = m.hopsToSender;
 						re.sequenceNumber = m.sequenceID;
 						re.nextHop = inbox.getSender();
 					} else {
-						forward = false; 
+						forward = false;
 					}
-					if(m.sender.equals(this)) {
+					if (m.sender.equals(this)) {
 						// this node sent the request - remove timers
 						m.retryTimer.deactivate();
-					} else if(forward) {
+					} else if (forward) {
 						re = routingTable.get(m.sender);
-						if(re != null) {
+						if (re != null) {
 							m.hopsToSender++; // we can modify the message, its a unicast
 							send(m, re.nextHop);
 						}
 					}
 				}
-			} 
+			}
 			// ---------------------------------------------------------------
-			if(msg instanceof PayloadMsg) {
+			if (msg instanceof PayloadMsg) {
 				PayloadMsg m = (PayloadMsg) msg;
-				if(m.destination.equals(this)) { // the message was for this node
-					if(msg instanceof AckPayload) { // it is an ACK message
+				if (m.destination.equals(this)) { // the message was for this node
+					if (msg instanceof AckPayload) { // it is an ACK message
 						m.ackTimer.deactivate();
 						this.setColor(Color.ORANGE);
 					} else { // it is a Payload Msg
@@ -159,26 +162,26 @@ public class FNode extends Node {
 				} else { // the message was not for this node -> forward
 					sendPayloadMessage(m);
 				}
-			} 
+			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see sinalgo.nodes.Node#handleNAckMessages(sinalgo.nodes.messages.NackBox)
-	 */
+	@Override
 	public void handleNAckMessages(NackBox nackBox) {
 		Logging log = Logging.getLogger();
-		while(nackBox.hasNext()) {
+		while (nackBox.hasNext()) {
 			nackBox.next();
 			log.logln("Node " + this.ID + " could not send a message to " + nackBox.getReceiver().ID);
 		}
 	}
-	
+
 	@NodePopupMethod(menuText = "Send Message To...")
 	public void sendMessageTo() {
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
+
+			@Override
 			public void handleNodeSelectedEvent(Node n) {
-				if(n == null) {
+				if (n == null) {
 					return; // aborted
 				}
 				PayloadMsg msg = new PayloadMsg(n, FNode.this);
@@ -191,61 +194,65 @@ public class FNode extends Node {
 	}
 
 	/**
-	 * Tries to send a message if there is a routing entry. 
-	 * If there is no routing entry, a search is started, and the
-	 * message is put in a buffer of messages on hold.
+	 * Tries to send a message if there is a routing entry. If there is no routing
+	 * entry, a search is started, and the message is put in a buffer of messages on
+	 * hold.
+	 *
 	 * @param msg
 	 * @param to
 	 */
 	public void sendPayloadMessage(PayloadMsg msg) {
 		RoutingEntry re = routingTable.get(msg.destination);
-		if(re != null) {
-			if(msg.sender.equals(this) && msg.requireACK) { // this node wants to have the message sent - it waits for an ack
+		if (re != null) {
+			if (msg.sender.equals(this) && msg.requireACK) { // this node wants to have the message sent - it waits for
+																// an ack
 				RetryPayloadMessageTimer rpmt = new RetryPayloadMessageTimer(msg);
 				rpmt.startRelative(re.numHops * 3, this); // We wait a bit longer than necessary
-				if(msg.ackTimer != null){
+				if (msg.ackTimer != null) {
 					msg.ackTimer.deactivate();
 				}
 				msg.ackTimer = rpmt;
 			}
 			send(msg, re.nextHop);
-			return ;
+			return;
 		} else {
 			lookForNode(msg.destination, 4);
 			messagesOnHold.add(msg);
 		}
 	}
-	
+
 	/**
 	 * Starts a search for a given node with the given TTL
+	 *
 	 * @param destination
 	 * @param ttl
 	 */
 	public void lookForNode(Node destination, int ttl) {
-		if(ttl > 10000000) { // this limits to graphs of diameter 10^7 ....
-			return; // we've already searched too far - there is probably no connection! 
+		if (ttl > 10000000) { // this limits to graphs of diameter 10^7 ....
+			return; // we've already searched too far - there is probably no connection!
 		}
 
 		FloodFindMsg m = new FloodFindMsg(++this.seqID, this, destination);
 		m.ttl = ttl;
 		RetryFloodingTimer rft = new RetryFloodingTimer(destination, m.ttl);
-		// The TTL must depend on the message transmission time. We assume here a constant msg. transm. time of 1 unit.
-		rft.startRelative(m.ttl * 2 + 1, this); 
+		// The TTL must depend on the message transmission time. We assume here a
+		// constant msg. transm. time of 1 unit.
+		rft.startRelative(m.ttl * 2 + 1, this);
 		m.retryTimer = rft;
 		this.broadcast(m);
 	}
-	
+
 	private void useNewRoutingInfo(Node destination, Node nextHop) {
 		Iterator<PayloadMsg> it = messagesOnHold.iterator();
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			PayloadMsg m = it.next();
-			if(m.destination.equals(destination)) {
+			if (m.destination.equals(destination)) {
 				this.sendPayloadMessage(m);
 				it.remove();
 			}
 		}
 	}
-	
+
 	@Override
 	public void init() {
 	}
@@ -262,15 +269,13 @@ public class FNode extends Node {
 	@Override
 	public void postStep() {
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.nodes.Node#toString()
-	 */
+
+	@Override
 	public String toString() {
 		// show the routing table entries
 		String r = "";
-		for(Entry<Node, RoutingEntry> e : routingTable.entrySet()) {
-			r += e.getKey().ID + " => " + e.getValue().nextHop.ID + " (" + e.getValue().numHops+ ")"+ "\n";
+		for (Entry<Node, RoutingEntry> e : routingTable.entrySet()) {
+			r += e.getKey().ID + " => " + e.getValue().nextHop.ID + " (" + e.getValue().numHops + ")" + "\n";
 		}
 		return "\n" + r;
 	}

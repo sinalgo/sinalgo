@@ -36,7 +36,6 @@
 */
 package sinalgo.tools.statistics;
 
-
 import java.util.Random;
 
 import sinalgo.configuration.Configuration;
@@ -46,19 +45,25 @@ import sinalgo.configuration.CorruptConfigurationEntryException;
  * A gaussian distribution sample generator.
  * <p>
  * If the distribution is specified in the xml configuration file, an entry like
+ *
  * <pre>
    &lt;mainTagName distribution="Gaussian" mean="xxx" variance="yyy"/&gt;
- </pre>
-  * is expected. 
+ * </pre>
+ *
+ * is expected.
  */
 public class GaussianDistribution extends Distribution {
+
 	private double mean; // the mean of the distribution
 	private double var; // the variance of the distribution
-	
+
 	/**
 	 * Creates a new gaussian distribution sample generator.
-	 * @param mean The mean of the distribution.
-	 * @param var The variance of the distribution.
+	 *
+	 * @param mean
+	 *            The mean of the distribution.
+	 * @param var
+	 *            The variance of the distribution.
 	 */
 	public GaussianDistribution(double mean, double var) {
 		this.mean = mean;
@@ -66,26 +71,35 @@ public class GaussianDistribution extends Distribution {
 	}
 
 	/**
-	 * Creates a new Gaussian distribution and initializes it from the XML configuration file.
-	 * @param mainTagPath The entry-path which points to the entry in the XML configuration 
-	 * file which contains the specifications for this distribution.
-	 * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
+	 * Creates a new Gaussian distribution and initializes it from the XML
+	 * configuration file.
+	 *
+	 * @param mainTagPath
+	 *            The entry-path which points to the entry in the XML configuration
+	 *            file which contains the specifications for this distribution.
+	 * @throws CorruptConfigurationEntryException
+	 *             If the configuration file is corrupt.
 	 */
 	public GaussianDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
 		mean = Configuration.getDoubleParameter(mainTagPath + "/mean");
 		var = Configuration.getDoubleParameter(mainTagPath + "/variance");
 	}
-	
+
 	@Override
 	public double nextSample() {
 		return mean + randomGenerator.nextGaussian() * Math.sqrt(var);
 	}
 
 	/**
-	 * Creates a random sample drawn from an gaussian distribution with given mean and variance.
-	 * @param mean The mean of the gaussian distribution
-	 * @param variance The variance of the gaussian distribution
-	 * @return a random sample drawn from an gaussian distribution with given mean and variance.
+	 * Creates a random sample drawn from an gaussian distribution with given mean
+	 * and variance.
+	 *
+	 * @param mean
+	 *            The mean of the gaussian distribution
+	 * @param variance
+	 *            The variance of the gaussian distribution
+	 * @return a random sample drawn from an gaussian distribution with given mean
+	 *         and variance.
 	 */
 	public static double nextGaussian(double mean, double variance) {
 		Random r = Distribution.getRandom();

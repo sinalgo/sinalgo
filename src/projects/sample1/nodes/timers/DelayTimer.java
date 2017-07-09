@@ -42,42 +42,46 @@ import sinalgo.nodes.timers.Timer;
 import sinalgo.tools.logging.Logging;
 
 /**
- * A timer that sends a message repeatedly with some delay. The method
- * stops sending the message when the connection to the receiver is broken up. 
- * <p> 
- * Note that the timer object knows the node which has started this
- * timer. However, this information is only set while the timer is started
- * and therefore may only be accessed in the <code>fire</code> method. 
+ * A timer that sends a message repeatedly with some delay. The method stops
+ * sending the message when the connection to the receiver is broken up.
+ * <p>
+ * Note that the timer object knows the node which has started this timer.
+ * However, this information is only set while the timer is started and
+ * therefore may only be accessed in the <code>fire</code> method.
  */
 public class DelayTimer extends Timer {
+
 	Message msg;
 	S1Node sender;
 	Logging log = Logging.getLogger("s1_log");
 	int interval;
-	
+
 	/**
-	 * Creates a new Timer object which will send the message repeatedly 
-	 * to the receiver. The delay between the successive firings of the timer
-	 * is indicated by interval. The timer needs to be started initially, with
-	 * an arbitrary delay, after which the first message is sent. All subsequent
-	 * messages are sent with the given interval. 
+	 * Creates a new Timer object which will send the message repeatedly to the
+	 * receiver. The delay between the successive firings of the timer is indicated
+	 * by interval. The timer needs to be started initially, with an arbitrary
+	 * delay, after which the first message is sent. All subsequent messages are
+	 * sent with the given interval.
 	 *
-	 * @param msg Message to be sent. 
-	 * @param sender The sender of the message.
-	 * @param interval Interval between subsequent firings of the timer.
+	 * @param msg
+	 *            Message to be sent.
+	 * @param sender
+	 *            The sender of the message.
+	 * @param interval
+	 *            Interval between subsequent firings of the timer.
 	 */
 	public DelayTimer(Message msg, S1Node sender, int interval) {
 		this.msg = msg;
 		this.sender = sender;
 		this.interval = interval;
 	}
-	
+
 	@Override
 	public void fire() {
-		if(!S1Node.isSending) {
+		if (!S1Node.isSending) {
 			return;
 		}
-		if(sender.next != null) {
+		if (sender.next != null) {
 			node.send(msg, sender.next);
 			((S1Node) node).msgSentInThisRound++;
 		}

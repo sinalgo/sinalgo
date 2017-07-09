@@ -56,7 +56,7 @@ public class WrongConfigurationException extends RuntimeException {
 
 	/**
 	 * The constructor for the CorruptConfigurationEntryException class.
-	 * 
+	 *
 	 * @param cause
 	 *            The exception causing this exception.
 	 * @param msg

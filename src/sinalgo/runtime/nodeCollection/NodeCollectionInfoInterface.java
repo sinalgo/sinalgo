@@ -37,16 +37,15 @@
 package sinalgo.runtime.nodeCollection;
 
 /**
- * Each node object contains a member variable in which the 
- * NodeCollection may store some information. This member implements
- * this NodeCollectionInfo interface, such that different NodeCollection
- * impelementations may store different information.  
+ * Each node object contains a member variable in which the NodeCollection may
+ * store some information. This member implements this NodeCollectionInfo
+ * interface, such that different NodeCollection impelementations may store
+ * different information.
  * <p>
- * Example: The GeometricNodeCollection stores the nodes in a 
- * matrix based on the position of the node. The node itself
- * stores in the nodeCollectionInfo field in which cell of the array
- * it is stored. This helps the GeometricNodeCollection to 
- * faster access the node, given a node. 
+ * Example: The GeometricNodeCollection stores the nodes in a matrix based on
+ * the position of the node. The node itself stores in the nodeCollectionInfo
+ * field in which cell of the array it is stored. This helps the
+ * GeometricNodeCollection to faster access the node, given a node.
  */
 public interface NodeCollectionInfoInterface {
 }

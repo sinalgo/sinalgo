@@ -37,10 +37,12 @@
 package sinalgo.io.mapIO;
 
 /**
- * The class for the maprectangles to draw the map with. The whole field is partitioned into rectangles 
- * according to the size of the map. Each rectangle corresponds to a value in the map-file.
+ * The class for the maprectangles to draw the map with. The whole field is
+ * partitioned into rectangles according to the size of the map. Each rectangle
+ * corresponds to a value in the map-file.
  */
 public class Rectangle {
+
 	/**
 	 * The x position of top left corner of the rectangle.
 	 */
@@ -49,7 +51,7 @@ public class Rectangle {
 	 * The y position of top left corner of the rectangle.
 	 */
 	public int y;
-	
+
 	/**
 	 * The height of the rectangle.
 	 */

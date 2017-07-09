@@ -36,99 +36,104 @@
 */
 package sinalgo.runtime.nodeCollection;
 
-
 import java.util.Enumeration;
 
 import sinalgo.tools.storage.ReusableEnumeration;
 
 /**
- * This class stores the SquarePositions and provides the methods to enumerate them with a reusable 
- * enumeration.
+ * This class stores the SquarePositions and provides the methods to enumerate
+ * them with a reusable enumeration.
  */
 public class SquarePositionCollection {
 
-	private SquarePositionCollectionEnumeration enumeration= null;
+	private SquarePositionCollectionEnumeration enumeration = null;
+
 	/**
-	 * The storage for the SquarePos. This storage is an array and always has the same size(9)
+	 * The storage for the SquarePos. This storage is an array and always has the
+	 * same size(9)
 	 */
 	private SquarePos[] squares = new SquarePos[9];
 	private boolean[] used = new boolean[9];
 	private int nextUnused = 0;
-	
+
 	/**
-	 * The only constructor for the SquarePositionCollection. It fills the data array with empty 
-	 * instances.
+	 * The only constructor for the SquarePositionCollection. It fills the data
+	 * array with empty instances.
 	 */
-	public SquarePositionCollection(){
-		for(int i = 0; i < 9; i++){
+	public SquarePositionCollection() {
+		for (int i = 0; i < 9; i++) {
 			squares[i] = new SquarePos(0, 0);
 		}
 	}
-	
+
 	/**
-	 * This method adds a SquarePos to the collection. This means: it fills the next unused slot in the data
-	 * array with the parameter values.
-	 * 
-	 * @param x The x parameter of the SquarePos to add.
-	 * @param y The y parameter of the SquarePos to add.
+	 * This method adds a SquarePos to the collection. This means: it fills the next
+	 * unused slot in the data array with the parameter values.
+	 *
+	 * @param x
+	 *            The x parameter of the SquarePos to add.
+	 * @param y
+	 *            The y parameter of the SquarePos to add.
 	 */
-	public void add(int x, int y){
-		if(nextUnused == squares.length){
-			throw new ArrayIndexOutOfBoundsException("You tried to add more than the possible elements to the SquarePositionCollection");
+	public void add(int x, int y) {
+		if (nextUnused == squares.length) {
+			throw new ArrayIndexOutOfBoundsException(
+					"You tried to add more than the possible elements to the SquarePositionCollection");
 		}
 		used[nextUnused] = true;
 		squares[nextUnused].x = x;
 		squares[nextUnused].y = y;
 		nextUnused++;
 	}
-	
+
 	/**
-	 * This method clears the data array. This means that it sets all the used flags of the elements
-	 * in the array to false.
+	 * This method clears the data array. This means that it sets all the used flags
+	 * of the elements in the array to false.
 	 */
-	public void clear(){
-		for(int i = 0; i < 9; i++){
+	public void clear() {
+		for (int i = 0; i < 9; i++) {
 			used[i] = false;
 		}
 		nextUnused = 0;
 	}
-	
+
 	/**
-	 * This method returns an enumeration over the elements in the data array. This enumeration is
-	 * either a new instance or the resetted old one.
-	 * 
+	 * This method returns an enumeration over the elements in the data array. This
+	 * enumeration is either a new instance or the resetted old one.
+	 *
 	 * @return A reusable Enumeration over the collection.
 	 */
-	public Enumeration<SquarePos> elements(){
-		if(enumeration == null){
+	public Enumeration<SquarePos> elements() {
+		if (enumeration == null) {
 			enumeration = new SquarePositionCollectionEnumeration();
-		}
-		else{
+		} else {
 			enumeration.reset();
 		}
 		return enumeration;
 	}
-	
-	private class SquarePositionCollectionEnumeration implements ReusableEnumeration<SquarePos>{
+
+	private class SquarePositionCollectionEnumeration implements ReusableEnumeration<SquarePos> {
 
 		private int position = 0;
-		
-		public void reset(){
+
+		@Override
+		public void reset() {
 			position = 0;
 		}
-		
+
+		@Override
 		public boolean hasMoreElements() {
-			if(position < squares.length){
+			if (position < squares.length) {
 				return (used[position]);
-			}
-			else{
+			} else {
 				return false;
 			}
 		}
 
+		@Override
 		public SquarePos nextElement() {
-			return squares[position++];//increment the position inline
+			return squares[position++];// increment the position inline
 		}
-		
+
 	}
 }

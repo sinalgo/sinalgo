@@ -37,10 +37,10 @@
 package sinalgo.tools.logging;
 
 /**
- * Lists the log-levels. Levels set to true will be included 
- * in the log-file. 
+ * Lists the log-levels. Levels set to true will be included in the log-file.
  */
 public class LogL {
+
 	/**
 	 * Stuff that is always logged. You should not set this to false.
 	 */
@@ -60,9 +60,10 @@ public class LogL {
 	/**
 	 * Prints out all info messages. You should not set this to false.
 	 */
-	public static final boolean INFO = true; 
+	public static final boolean INFO = true;
 	/**
-	 * Hints about strange behaviour, that perhaps wasn't intended. You should not set this to false.
+	 * Hints about strange behaviour, that perhaps wasn't intended. You should not
+	 * set this to false.
 	 */
 	public static final boolean HINTS = true;
 	/**
@@ -98,5 +99,3 @@ public class LogL {
 	 */
 	public static final boolean GUI_ULTRA_DETAIL = false;
 }
-
-

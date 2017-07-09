@@ -36,7 +36,6 @@
 */
 package sinalgo.gui.helper;
 
-
 import java.awt.Dimension;
 import java.awt.Font;
 
@@ -46,27 +45,30 @@ import sinalgo.gui.multiLineTooltip.MultiLineToolTipJTextField;
 import sinalgo.nodes.NotYetImplementedException;
 
 /**
- * This is a class implementing a special form of a Text Field. It is just used to abbreviate the writing
- * effort for all the Dialogs.
+ * This is a class implementing a special form of a Text Field. It is just used
+ * to abbreviate the writing effort for all the Dialogs.
  */
-
 public class UnborderedJTextField extends MultiLineToolTipJTextField {
-	
+
+	private static final long serialVersionUID = 3756769692591270883L;
+
 	private static Font boldHelvetica12 = new Font("Helvetica", Font.BOLD, 12);
 	private static Font plainHelvetica12 = new Font("Helvetica", Font.PLAIN, 12);
-	
+
 	/**
-	 * Creates a Text field having no border that is not editable and that has a font-type according to
-	 * the parameter passed.
+	 * Creates a Text field having no border that is not editable and that has a
+	 * font-type according to the parameter passed.
 	 *
-	 * @param s The String to display in the text field.
-	 * @param type The type of the font. Use Font.BOLD or Font.PLAIN
+	 * @param s
+	 *            The String to display in the text field.
+	 * @param type
+	 *            The type of the font. Use Font.BOLD or Font.PLAIN
 	 */
-	public UnborderedJTextField(String s, int type){
+	public UnborderedJTextField(String s, int type) {
 		super(s);
 		this.setEditable(false);
 		this.setBorder(BorderFactory.createEmptyBorder());
-		switch(type){
+		switch (type) {
 			case Font.BOLD:
 				this.setFont(boldHelvetica12);
 				break;
@@ -78,18 +80,19 @@ public class UnborderedJTextField extends MultiLineToolTipJTextField {
 		}
 		this.revalidate();
 	}
-	
+
 	/**
 	 * Generates a TextField without a border.
 	 */
-	public UnborderedJTextField(){
+	public UnborderedJTextField() {
 		this.setBorder(BorderFactory.createEmptyBorder());
 		this.getPreferredSize();
 	}
-	
-	public Dimension getPreferredSize(){
+
+	@Override
+	public Dimension getPreferredSize() {
 		Dimension d = super.getPreferredSize();
-		//increase the preferred width a bit to avoid cutting the border of the text.
+		// increase the preferred width a bit to avoid cutting the border of the text.
 		d.width += 2;
 		return d;
 	}

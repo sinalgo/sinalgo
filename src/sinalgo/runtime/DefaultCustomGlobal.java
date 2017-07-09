@@ -37,15 +37,13 @@
 package sinalgo.runtime;
 
 /**
- * This is a sample implementation of the AbstractCustomGlobal. Do not add or change this class,
- * because it is part of the framework and is only used if you do not specify a concrete project
- * on startup.
+ * This is a sample implementation of the AbstractCustomGlobal. Do not add or
+ * change this class, because it is part of the framework and is only used if
+ * you do not specify a concrete project on startup.
  */
-public final class DefaultCustomGlobal extends AbstractCustomGlobal{
+public final class DefaultCustomGlobal extends AbstractCustomGlobal {
 
-	/* (non-Javadoc)
-	 * @see runtime.AbstractCustomGlobal#hasTerminated()
-	 */
+	@Override
 	public boolean hasTerminated() {
 		return false;
 	}

@@ -40,13 +40,11 @@ import sinalgo.models.ReliabilityModel;
 import sinalgo.nodes.messages.Packet;
 
 /**
- * A reliability model which never drops a message due to link-failures. 
+ * A reliability model which never drops a message due to link-failures.
  */
 public class ReliableDelivery extends ReliabilityModel {
 
-	/* (non-Javadoc)
-	 * @see models.ReliabilityModel#reachesDestination(nodes.messages.Packet)
-	 */
+	@Override
 	public boolean reachesDestination(Packet p) {
 		return true;
 	}

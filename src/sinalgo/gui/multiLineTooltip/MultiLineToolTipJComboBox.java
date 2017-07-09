@@ -44,61 +44,67 @@ import javax.swing.JComboBox;
 import javax.swing.JToolTip;
 
 /**
- * This class extends the JComboBox class and overwrites the createToolTip method to add the class 
- * a multiline tooltip instead of the normal single line tooltip.
+ * This class extends the JComboBox class and overwrites the createToolTip
+ * method to add the class a multiline tooltip instead of the normal single line
+ * tooltip.
  */
-
 public class MultiLineToolTipJComboBox extends JComboBox {
+
+	private static final long serialVersionUID = -6702876823947329106L;
+
 	/**
-	 * Creates a <code>MultiLineToolTipJComboBox</code> that takes it's items from an
-	 * existing <code>ComboBoxModel</code>.  Since the
-	 * <code>ComboBoxModel</code> is provided, a combo box created using
-	 * this constructor does not create a default combo box model and
-	 * may impact how the insert, remove and add methods behave.
+	 * Creates a <code>MultiLineToolTipJComboBox</code> that takes it's items from
+	 * an existing <code>ComboBoxModel</code>. Since the <code>ComboBoxModel</code>
+	 * is provided, a combo box created using this constructor does not create a
+	 * default combo box model and may impact how the insert, remove and add methods
+	 * behave.
 	 *
-	 * @param aModel the <code>ComboBoxModel</code> that provides the 
-	 * 		displayed list of items
+	 * @param aModel
+	 *            the <code>ComboBoxModel</code> that provides the displayed list of
+	 *            items
 	 */
 	public MultiLineToolTipJComboBox(ComboBoxModel aModel) {
 		super(aModel);
 		this.setFont(this.getFont().deriveFont(Font.PLAIN));
 	}
-	
-	/** 
+
+	/**
 	 * Creates a <code>MultiLineToolTipJComboBox</code> that contains the elements
-	 * in the specified array.  By default the first item in the array
-	 * (and therefore the data model) becomes selected.
+	 * in the specified array. By default the first item in the array (and therefore
+	 * the data model) becomes selected.
 	 *
-	 * @param items  an array of objects to insert into the combo box
+	 * @param items
+	 *            an array of objects to insert into the combo box
 	 */
 	public MultiLineToolTipJComboBox(final Object items[]) {
 		super(items);
 		this.setFont(this.getFont().deriveFont(Font.PLAIN));
 	}
-	
+
 	/**
 	 * Creates a <code>MultiLineToolTipJComboBox</code> that contains the elements
-	 * in the specified Vector.  By default the first item in the vector
-	 * and therefore the data model) becomes selected.
+	 * in the specified Vector. By default the first item in the vector and
+	 * therefore the data model) becomes selected.
 	 *
-	 * @param items  an array of vectors to insert into the combo box
+	 * @param items
+	 *            an array of vectors to insert into the combo box
 	 */
 	public MultiLineToolTipJComboBox(Vector<?> items) {
 		super(items);
 		this.setFont(this.getFont().deriveFont(Font.PLAIN));
 	}
-	
+
 	/**
 	 * Creates a <code>MultiLineToolTipJComboBox</code> with a default data model.
-	 * The default data model is an empty list of objects.
-	 * Use <code>addItem</code> to add items.  By default the first item
-	 * in the data model becomes selected.
+	 * The default data model is an empty list of objects. Use <code>addItem</code>
+	 * to add items. By default the first item in the data model becomes selected.
 	 */
 	public MultiLineToolTipJComboBox() {
 		super();
 	}
-	
-	public JToolTip createToolTip(){
+
+	@Override
+	public JToolTip createToolTip() {
 		return new MultiLineToolTip();
 	}
 }

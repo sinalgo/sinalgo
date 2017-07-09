@@ -304,11 +304,7 @@ public class Run {
 	 * A shutdown hook to kill the simulation process when this process is killed.
 	 */
 	public static class ShutdownThread extends Thread {
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see java.lang.Thread#run()
-		 */
+
 		@Override
 		public void run() {
 			if (mainProcess != null) {

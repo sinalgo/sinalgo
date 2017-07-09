@@ -41,53 +41,61 @@ import sinalgo.nodes.messages.Packet;
 import sinalgo.runtime.Main;
 
 /**
- * The Superclass for all interference models. Extend this class to implement a concrete Interference model.
+ * The Superclass for all interference models. Extend this class to implement a
+ * concrete Interference model.
  * <p>
- * The method <code>isDistrubed(Packet p)</code> is called to determine whether a given message
- * is not received due to interference. 
+ * The method <code>isDistrubed(Packet p)</code> is called to determine whether
+ * a given message is not received due to interference.
  */
 public abstract class InterferenceModel extends Model {
-	private static boolean firstTime = true; 
-	
+
+	private static boolean firstTime = true;
+
 	/**
-	 * The framework calls this method to determine whether a given packet 
-	 * is disturbed (will not be received at the destination). 
+	 * The framework calls this method to determine whether a given packet is
+	 * disturbed (will not be received at the destination).
 	 * <p>
-	 * In the synchronous setting, this test is called for each message not yet delivered
-	 * at the end of each simulation round.
+	 * In the synchronous setting, this test is called for each message not yet
+	 * delivered at the end of each simulation round.
 	 * <p>
-	 * In the asynchronous setting, this test is only performed upon arrival of a message. 
-	 * Note: For 'additive interference', the test is performed only if absolutely needed.
+	 * In the asynchronous setting, this test is only performed upon arrival of a
+	 * message. Note: For 'additive interference', the test is performed only if
+	 * absolutely needed.
 	 *
-	 * @param p The packet to check.
-	 * @return True if the message is disturbed, otherwise false. 
+	 * @param p
+	 *            The packet to check.
+	 * @return True if the message is disturbed, otherwise false.
 	 */
 	public abstract boolean isDisturbed(Packet p);
 
-	/* (non-Javadoc)
-	 * @see models.Model#getType()
-	 */
+	@Override
 	public final ModelType getType() {
 		return ModelType.InterferenceModel;
 	}
-	
+
 	/**
-	 * The default constructor tests that interference is enabled. 
+	 * The default constructor tests that interference is enabled.
 	 */
 	protected InterferenceModel() {
-		if(firstTime && !Configuration.interference) {
-			Main.warning("Some nodes are using an interference model even though interference is explicitly turned off in the XML Configuration file.");
-			firstTime = false; // important to only have one message. 
+		if (firstTime && !Configuration.interference) {
+			Main.warning(
+					"Some nodes are using an interference model even though interference is explicitly turned off in the XML Configuration file.");
+			firstTime = false; // important to only have one message.
 		}
 	}
-	
+
 	/**
-	 * This constructor only tests whether interference is enabled if check is set to true. 
-	 * @param check Check that interference is turned on if true. No check is performed if false.
+	 * This constructor only tests whether interference is enabled if check is set
+	 * to true.
+	 *
+	 * @param check
+	 *            Check that interference is turned on if true. No check is
+	 *            performed if false.
 	 */
 	protected InterferenceModel(boolean check) {
-		if(check && firstTime && !Configuration.interference) {
-			Main.warning("Some nodes are using an interference model even though interference is explicitly turned off in the XML Configuration file.");
+		if (check && firstTime && !Configuration.interference) {
+			Main.warning(
+					"Some nodes are using an interference model even though interference is explicitly turned off in the XML Configuration file.");
 			firstTime = false;
 		}
 	}

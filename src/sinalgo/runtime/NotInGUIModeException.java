@@ -37,15 +37,18 @@
 package sinalgo.runtime;
 
 /**
- * An exception that is thrown when the application was started in batch mode, 
- * but some code expects it to be running in GUI mode. 
+ * An exception that is thrown when the application was started in batch mode,
+ * but some code expects it to be running in GUI mode.
  */
-
 public class NotInGUIModeException extends Exception {
-	
+
+	private static final long serialVersionUID = 487157741357666251L;
+
 	/**
 	 * Constructor.
-	 * @param msg Exception message to be propagated.
+	 *
+	 * @param msg
+	 *            Exception message to be propagated.
 	 */
 	public NotInGUIModeException(String msg) {
 		super(msg);

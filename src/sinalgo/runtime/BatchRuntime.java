@@ -41,47 +41,41 @@ import sinalgo.configuration.Configuration;
 /**
  * The runtime handling the runtime in the batch mode.
  */
-public class BatchRuntime extends Runtime{	
-	
-	public void initConcreteRuntime(){
+public class BatchRuntime extends Runtime {
+
+	@Override
+	public void initConcreteRuntime() {
 	}
-	
-	/* (non-Javadoc)
-	 * @see runtime.Runtime#run(int)
-	 */
+
+	@Override
 	public void run(long rounds, boolean considerInfiniteRunFlag) {
-		if(Global.isRunning) {
-			return; // a simulation thread is still running - don't start a second one! 
+		if (Global.isRunning) {
+			return; // a simulation thread is still running - don't start a second one!
 		}
 		// if the -rounds flag is not set or negative, run as long as possible
-		if(rounds <= 0) {
+		if (rounds <= 0) {
 			rounds = Long.MAX_VALUE;
 		}
-		
-		if(Configuration.asynchronousMode){
+
+		if (Configuration.asynchronousMode) {
 			AsynchronousRuntimeThread arT = new AsynchronousRuntimeThread();
 			arT.numberOfEvents = rounds;
 			Global.isRunning = true;
 			arT.start();
-		}	else {
+		} else {
 			SynchronousRuntimeThread bRT = new SynchronousRuntimeThread();
 			bRT.numberOfRounds = rounds;
 			Global.isRunning = true;
 			bRT.start();
 		}
 	}
-	
 
-	/* (non-Javadoc)
-	 * @see sinalgo.runtime.Runtime#setProgress(double)
-	 */
+	@Override
 	public void setProgress(double percent) {
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.runtime.Runtime#initProgress()
-	 */
-	public void initProgress(){
+
+	@Override
+	public void initProgress() {
 		createNodes();
 	}
 }

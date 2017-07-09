@@ -46,57 +46,60 @@ import sinalgo.gui.dialogs.ProgressBarUser;
  * The runtime handling the runtime in the gui mode.
  */
 public class GUIRuntime extends Runtime implements ProgressBarUser {
+
 	private GUI gui = new GUI(this);
-	
+
 	/**
 	 * This method returns the gui instance.
 	 *
-	 * @return The one and only instance of the gui. 
+	 * @return The one and only instance of the gui.
 	 */
-	public GUI getGUI(){ return gui; }
-	
+	public GUI getGUI() {
+		return gui;
+	}
+
 	private PercentualProgressDialog pf = new PercentualProgressDialog(this, "Initialising the Nodes");
 
-	/* (non-Javadoc)
-	 * @see runtime.Runtime#initConcreteRuntime()
-	 */
-	public void initConcreteRuntime(){
-		
-		//at this point the system has to wait for the initialisation of the nodes to be finished.
-		synchronized(this){
+	@Override
+	public void initConcreteRuntime() {
+
+		// at this point the system has to wait for the initialisation of the nodes to
+		// be finished.
+		synchronized (this) {
 			try {
-				if(!nodeCreationFinished){
+				if (!nodeCreationFinished) {
 					this.wait();
 				}
 			} catch (InterruptedException e) {
 				Main.fatalError(e);
 			}
 		}
-		
+
 		pf.finish();
-		
-		// In async mode, the user may specify to evaluate the connections immediately at startup
-		if(Global.isAsynchronousMode && Configuration.initializeConnectionsOnStartup) {
-			if(Runtime.nodes.size() > 0) {
+
+		// In async mode, the user may specify to evaluate the connections immediately
+		// at startup
+		if (Global.isAsynchronousMode && Configuration.initializeConnectionsOnStartup) {
+			if (Runtime.nodes.size() > 0) {
 				// when there are no nodes created yet, perform the initialization
 				// only during the first step.
 				AsynchronousRuntimeThread.initializeConnectivity();
 			}
 		}
-		
-		//init the gui
+
+		// init the gui
 		gui.init();
-		
-		if(this.numberOfRounds != 0){
+
+		if (this.numberOfRounds != 0) {
 			gui.setStartButtonEnabled(false);
 		}
-		
+
 		// wait until the the GUI has been painted at least once
 		// this ensures that the the entire GUI has been drawn nicely
 		// before any simulation starts
-		while(!GraphPanel.firstTimePainted){
+		while (!GraphPanel.firstTimePainted) {
 			try {
-				synchronized(this){
+				synchronized (this) {
 					wait(100);
 				}
 			} catch (InterruptedException e) {
@@ -104,58 +107,53 @@ public class GUIRuntime extends Runtime implements ProgressBarUser {
 			}
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see runtime.Runtime#run(int)
-	 */
-	public void run(long rounds, boolean considerInfiniteRunFlag){
-		if(Global.isRunning) {
-			return; // a simulation thread is still running - don't start a second one! 
+
+	@Override
+	public void run(long rounds, boolean considerInfiniteRunFlag) {
+		if (Global.isRunning) {
+			return; // a simulation thread is still running - don't start a second one!
 		}
-		if(rounds <= 0) {
+		if (rounds <= 0) {
 			return;// nothing to do
 		}
-		if(considerInfiniteRunFlag && !appConfig.guiRunOperationIsLimited) {
+		if (considerInfiniteRunFlag && !appConfig.guiRunOperationIsLimited) {
 			rounds = Long.MAX_VALUE;
 		}
-		if(Configuration.asynchronousMode){
+		if (Configuration.asynchronousMode) {
 			AsynchronousRuntimeThread arT = new AsynchronousRuntimeThread(this);
 			arT.numberOfEvents = rounds;
 			arT.refreshRate = Configuration.refreshRate;
-			
+
 			Global.isRunning = true;
-			//start the thread
+			// start the thread
 			arT.start();
-		}
-		else{
+		} else {
 			SynchronousRuntimeThread gRT = new SynchronousRuntimeThread(this);
 			gRT.numberOfRounds = rounds;
 			gRT.refreshRate = Configuration.refreshRate;
-			
+
 			Global.isRunning = true;
-			//start the thread
+			// start the thread
 			gRT.start();
 		}
 	}
-	
-	public void initProgress(){
+
+	@Override
+	public void initProgress() {
 		pf.init();
 	}
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.runtime.Runtime#setProgress(double)
-	 */
+
+	@Override
 	public void setProgress(double percent) {
 		pf.setPercentage(percent);
 	}
 
+	@Override
 	public void cancelClicked() {
 		System.exit(1);
 	}
 
-	/* (non-Javadoc)
-	 * @see sinalgo.gui.ProgressBarUser#performMethod()
-	 */
+	@Override
 	public void performMethod() {
 		this.createNodes();
 	}

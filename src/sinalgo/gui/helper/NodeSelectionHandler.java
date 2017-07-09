@@ -39,15 +39,17 @@ package sinalgo.gui.helper;
 import sinalgo.nodes.Node;
 
 /**
- * The framework can ask the user of the GUI interface to select a node
- * by clicking on one of the nodes. This handler implements the action
- * after the user has selected a node. 
+ * The framework can ask the user of the GUI interface to select a node by
+ * clicking on one of the nodes. This handler implements the action after the
+ * user has selected a node.
  */
 public interface NodeSelectionHandler {
 
 	/**
 	 * Called by the framework after the user has selected a node.
-	 * @param n The selected node, null if the user aborted.
+	 *
+	 * @param n
+	 *            The selected node, null if the user aborted.
 	 */
 	public void handleNodeSelectedEvent(Node n);
 }

@@ -322,6 +322,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
 	 * A simple output streamer for the output text field.
 	 */
 	public class TextOutputPrintStream extends PrintStream {
+
 		public TextOutputPrintStream(OutputStream out) {
 			super(out);
 		}
@@ -330,11 +331,6 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
 			textField.setCaretPosition(textField.getText().length());
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see java.io.PrintStream#println(java.lang.String)
-		 */
 		@Override
 		public void println(String s) {
 			textField.append(s);
@@ -342,11 +338,6 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
 			textField.setCaretPosition(textField.getText().length());
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see java.io.PrintStream#print(java.lang.String)
-		 */
 		@Override
 		public void print(String s) {
 			textField.append(s);
@@ -359,6 +350,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
 	 */
 	public TextOutputPrintStream getTextOutputPrintStream() {
 		return new TextOutputPrintStream(new OutputStream() {
+
 			@Override
 			public void write(int b) throws IOException {
 				textField.append(Character.toString((char) b));
@@ -448,12 +440,6 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
 		parent.runtime.abort();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(exit.getActionCommand())) {
@@ -568,29 +554,14 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
 	}

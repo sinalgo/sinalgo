@@ -89,6 +89,7 @@ public class Configuration {
 	@Target(ElementType.FIELD)
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface DefaultInConfigFile {
+
 		/** */
 		String value();
 	}
@@ -101,6 +102,7 @@ public class Configuration {
 	@Target(ElementType.FIELD)
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface OptionalInConfigFile {
+
 		/** */
 		String value();
 	}
@@ -113,6 +115,7 @@ public class Configuration {
 	@Target(ElementType.FIELD)
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface SectionInConfigFile {
+
 		/** */
 		String value();
 	}
@@ -124,6 +127,7 @@ public class Configuration {
 	@Target(ElementType.FIELD)
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface PrivateInConfigFile {
+
 		/** */
 		String value();
 	}
@@ -138,6 +142,7 @@ public class Configuration {
 	@Target(ElementType.FIELD)
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface ImplementationChoiceInConfigFile {
+
 		/** */
 		String value();
 	}

@@ -40,6 +40,7 @@ package sinalgo.runtime.events;
  * A interface for all eventlisteners
  */
 public interface EventQueueListener {
+
 	/**
 	 * Is called whenever something in the eventqueue changed.
 	 */

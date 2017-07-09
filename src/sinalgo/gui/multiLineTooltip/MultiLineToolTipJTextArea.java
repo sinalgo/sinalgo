@@ -7,22 +7,20 @@ import javax.swing.JToolTip;
 import javax.swing.text.Document;
 
 /**
- * A JTextArea that implements a multi line tool tip.
- * Furthermore, it returns as its preferred with always the value 0.
+ * A JTextArea that implements a multi line tool tip. Furthermore, it returns as
+ * its preferred with always the value 0.
  */
-
 public class MultiLineToolTipJTextArea extends JTextArea {
 
-	/* (non-Javadoc)
-	 * @see javax.swing.JTextArea#getPreferredSize()
-	 */
+	private static final long serialVersionUID = -8502823518346846466L;
+
+	@Override
 	public Dimension getPreferredSize() {
 		Dimension d = super.getPreferredSize();
 		d.width = 0;
 		return d;
 	}
 
-	
 	public MultiLineToolTipJTextArea() {
 	}
 
@@ -42,15 +40,12 @@ public class MultiLineToolTipJTextArea extends JTextArea {
 		super(text, rows, columns);
 	}
 
-	public MultiLineToolTipJTextArea(Document doc, String text, int rows,
-																		int columns) {
+	public MultiLineToolTipJTextArea(Document doc, String text, int rows, int columns) {
 		super(doc, text, rows, columns);
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.swing.JComponent#createToolTip()
-	 */
-	public JToolTip createToolTip(){
+	@Override
+	public JToolTip createToolTip() {
 		return new MultiLineToolTip();
 	}
 }

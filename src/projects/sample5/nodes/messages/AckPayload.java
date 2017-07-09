@@ -9,11 +9,14 @@ import sinalgo.nodes.messages.Message;
  * The superclass contains the message that was originally sent to the receiver.
  */
 public class AckPayload extends PayloadMsg {
-	
+
 	/**
 	 * Constructor
-	 * @param destination The node to whom the ACK should be sent
-	 * @param sender The node that acknowledges receipt of a message
+	 *
+	 * @param destination
+	 *            The node to whom the ACK should be sent
+	 * @param sender
+	 *            The node that acknowledges receipt of a message
 	 */
 	public AckPayload(Node destination, Node sender) {
 		super(destination, sender);

@@ -37,51 +37,57 @@
 package sinalgo.nodes.messages;
 
 /**
- * The equivalent to the inbox for the messages that have not reached
- * their destination.
+ * The equivalent to the inbox for the messages that have not reached their
+ * destination.
  * <p>
- * Whenever a message is dropped, the sender is informed through the
- * handle <code>handleNAckMessages()</code> method.
+ * Whenever a message is dropped, the sender is informed through the handle
+ * <code>handleNAckMessages()</code> method.
  * <p>
- * This feature needs to be enabled in the project configuration:
- * set <code>generateNAckMessages</code> to true. If a sender node
- * needs not to be informed about dropped messages, you should turn off
- * this feature to save computing power. 
+ * This feature needs to be enabled in the project configuration: set
+ * <code>generateNAckMessages</code> to true. If a sender node needs not to be
+ * informed about dropped messages, you should turn off this feature to save
+ * computing power.
  */
 
 public class NackBox extends Inbox {
 
 	/**
 	 * Constructor to create a NackBox containing a single packet
+	 *
 	 * @param p
 	 */
-	public NackBox(Packet p){
+	public NackBox(Packet p) {
 		super(p);
 	}
 
 	/**
 	 * Constructor to create a NackBox containing a given list of packets
+	 *
 	 * @param list
 	 */
 	public NackBox(PacketCollection list) {
 		super(list);
 	}
-	
+
 	/**
-	 * Dummy constructor to create empty nackBox.  
+	 * Dummy constructor to create empty nackBox.
 	 */
 	public NackBox() {
 	}
-	
+
 	/**
-	 * <b>This is a framework internal method. Project developers should not need to call this method.</b><br>
+	 * <b>This is a framework internal method. Project developers should not need to
+	 * call this method.</b><br>
 	 * Resets the inbox to contain a single packet.
-	 * @param p The packet to include in this inbox.
+	 *
+	 * @param p
+	 *            The packet to include in this inbox.
 	 * @return This inbox object.
 	 */
+	@Override
 	public NackBox resetForPacket(Packet p) {
 		super.resetForPacket(p);
 		return this;
 	}
-		
+
 }

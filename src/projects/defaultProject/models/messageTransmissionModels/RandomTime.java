@@ -42,34 +42,38 @@ import sinalgo.nodes.messages.Message;
 import sinalgo.tools.statistics.Distribution;
 
 /**
- * Dummy message transmission model whose delivery time is defined
- * through a distribution.
+ * Dummy message transmission model whose delivery time is defined through a
+ * distribution.
  * <p>
- * This class expects an entry in the configuration file that describes
- * the distribution of the delivery time.
+ * This class expects an entry in the configuration file that describes the
+ * distribution of the delivery time.
+ *
  * <pre>
 		&lt;RandomMessageTransmission distribution="Uniform" min="0.1" max="0.8"/&gt;
  * </pre>
+ *
  * If the distribution returns a value smaller or equal to 0, the transmission
- * time is set to the small positive value 1e-9.     
+ * time is set to the small positive value 1e-9.
  */
 public class RandomTime extends sinalgo.models.MessageTransmissionModel {
+
 	Distribution dist;
 	double minTime = 1e-9;
-	
+
 	/**
-	 * Creates a new RandomTime transmission model instance and reads the 
-	 * config for this object from the config file. 
+	 * Creates a new RandomTime transmission model instance and reads the config for
+	 * this object from the config file.
+	 *
 	 * @throws CorruptConfigurationEntryException
 	 */
 	public RandomTime() throws CorruptConfigurationEntryException {
 		dist = Distribution.getDistributionFromConfigFile("RandomMessageTransmission");
 	}
-	
+
 	@Override
 	public double timeToReach(Node startNode, Node endNode, Message msg) {
 		double time = dist.nextSample();
-		if(time <= 0) {
+		if (time <= 0) {
 			time = minTime;
 		}
 		return time;

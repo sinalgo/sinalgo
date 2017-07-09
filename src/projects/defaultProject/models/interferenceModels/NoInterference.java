@@ -42,30 +42,28 @@ import sinalgo.nodes.messages.Packet;
 import sinalgo.runtime.Main;
 
 /**
- * A dummy interference model that does not consider intereference. 
+ * A dummy interference model that does not consider intereference.
  */
 public class NoInterference extends InterferenceModel {
+
 	private static boolean firstTime = true;
-	
-	/* (non-Javadoc)
-	 * @see models.InterferenceModel#isDisturbed(nodes.messages.Packet)
-	 */
+
+	@Override
 	public boolean isDisturbed(Packet p) {
 		return false;
 	}
-	
+
 	/**
-	 * Constructor that prints a warning if interference is turned on 
+	 * Constructor that prints a warning if interference is turned on
 	 */
 	public NoInterference() {
 		super(false);
-		if(firstTime && Configuration.interference && Configuration.showOptimizationHints) {
-			Main.warning("At least some nodes use the 'NoInterference' interfernce model. " +
-			             "If you do not consider interference at all in your project, you can " +
-			             "considerably improve performance by turning off interference in the " +
-			             "XML configuration file."
-			);
-			firstTime = false; // important to only have one message. 
+		if (firstTime && Configuration.interference && Configuration.showOptimizationHints) {
+			Main.warning("At least some nodes use the 'NoInterference' interfernce model. "
+					+ "If you do not consider interference at all in your project, you can "
+					+ "considerably improve performance by turning off interference in the "
+					+ "XML configuration file.");
+			firstTime = false; // important to only have one message.
 		}
 	}
 }

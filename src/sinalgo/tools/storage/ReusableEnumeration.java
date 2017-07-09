@@ -39,14 +39,17 @@ package sinalgo.tools.storage;
 import java.util.Enumeration;
 
 /**
- * This Interface extends the Enumeration Interface by the method reset(). It is used
- * to reset the Enumeration to the initial state without allocating a new Enumeration
- * instance. 
- * @param <E> The generic Type to create the Enumeration for.
+ * This Interface extends the Enumeration Interface by the method reset(). It is
+ * used to reset the Enumeration to the initial state without allocating a new
+ * Enumeration instance.
+ *
+ * @param <E>
+ *            The generic Type to create the Enumeration for.
  */
-public interface ReusableEnumeration<E> extends Enumeration<E>{
+public interface ReusableEnumeration<E> extends Enumeration<E> {
+
 	/**
-	 * This method resets the Enumeration to the initial state without allocating a 
+	 * This method resets the Enumeration to the initial state without allocating a
 	 * new Enumeration instance.
 	 */
 	public void reset();

@@ -44,33 +44,32 @@ import sinalgo.nodes.messages.Message;
 import sinalgo.runtime.Main;
 
 /**
- * A message transmission model implementation that delivers all messages in the following round, 
- * which corresponds to a constant time delay of 1. 
- * <br>
- * This model expects a configuration entry of the form 
- * <code>&lt;MessageTransmission ConstantTime="..."&gt;</code>
- * where ConstantTime specifies the time a message needs to arrive.
+ * A message transmission model implementation that delivers all messages in the
+ * following round, which corresponds to a constant time delay of 1. <br>
+ * This model expects a configuration entry of the form
+ * <code>&lt;MessageTransmission ConstantTime="..."&gt;</code> where
+ * ConstantTime specifies the time a message needs to arrive.
  */
 public class ConstantTime extends MessageTransmissionModel {
 
 	private double time = 1.0;
-	
+
 	/**
-	 * Creates a new Constant time DefaultMessageTransmissionModel. It tries to read the parameter called
-	 * ConstantTime/ConstantValue from the configuration file. You can vary the value there.
+	 * Creates a new Constant time DefaultMessageTransmissionModel. It tries to read
+	 * the parameter called ConstantTime/ConstantValue from the configuration file.
+	 * You can vary the value there.
 	 */
-	public ConstantTime(){
+	public ConstantTime() {
 		try {
 			time = Configuration.getDoubleParameter("MessageTransmission/ConstantTime");
 		} catch (CorruptConfigurationEntryException e) {
-			Main.warning("Missing or wrong entry in the configuration file for the ConstantTime DefaultMessageTransmissionModel:\n" 
-			             + e.getMessage() +	"\n\nDefaulting to constant transmission time of 1 time unit.");
+			Main.warning(
+					"Missing or wrong entry in the configuration file for the ConstantTime DefaultMessageTransmissionModel:\n"
+							+ e.getMessage() + "\n\nDefaulting to constant transmission time of 1 time unit.");
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see models.MessageTransmissionModel#timeToReach(nodes.Node, nodes.Node)
-	 */
+
+	@Override
 	public double timeToReach(Node startNode, Node endNode, Message msg) {
 		return time;
 	}

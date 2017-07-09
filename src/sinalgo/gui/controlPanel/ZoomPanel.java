@@ -98,11 +98,6 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.awt.Component#paint(java.awt.Graphics)
-	 */
 	@Override
 	public void paint(Graphics g) {
 		synchronized (pt) {

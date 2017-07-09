@@ -36,7 +36,6 @@
 */
 package sinalgo.gui.popups;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -50,52 +49,50 @@ import sinalgo.runtime.Runtime;
 /**
  * The PopupMenu which pops up upon a right-click on an Edge
  */
-
-
 public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
+
+	private static final long serialVersionUID = 1879611828353447896L;
 
 	private Edge edge = null;
 	private JMenuItem info = new JMenuItem("Info");
 	private JMenuItem delete = new JMenuItem("Delete");
-	
+
 	/**
 	 * The constructor for the EdgePopupMenu class.
-	 * 
-	 * @param p The parent GUI used to trigger the zooming.
+	 *
+	 * @param p
+	 *            The parent GUI used to trigger the zooming.
 	 */
-	public EdgePopupMenu(GUI p){
+	public EdgePopupMenu(GUI p) {
 		parent = p;
 		info.addActionListener(this);
 		delete.addActionListener(this);
 	}
-	
+
 	/**
 	 * The method to generate an EdgeInformationDialog for the specified Edge.
-	 * 
-	 * @param e The edge the information is about.
+	 *
+	 * @param e
+	 *            The edge the information is about.
 	 */
-	public void compose(Edge e){
+	public void compose(Edge e) {
 		edge = e;
-		
+
 		this.removeAll();
-		
-		
+
 		this.add(info);
 		this.add(delete);
 		this.addSeparator();
-		
+
 		this.add(zoomIn);
 		this.add(zoomOut);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
+
+	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand().equals(info.getActionCommand())){
+		if (e.getActionCommand().equals(info.getActionCommand())) {
 			new EdgeInfoDialog(parent, edge);
-		}
-		else if(e.getActionCommand().equals(delete.getActionCommand())){
+		} else if (e.getActionCommand().equals(delete.getActionCommand())) {
 			Runtime.removeEdge(edge);
 			parent.redrawGUINow();
 		}

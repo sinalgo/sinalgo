@@ -40,20 +40,22 @@ import java.util.ListIterator;
 
 /**
  * An iterator implementation for lists that allows to reuse the same iterator
- * obejct to traverse the list several times. 
+ * obejct to traverse the list several times.
  * <p>
- * The usage of iterators implementing this interface is intended for cases where
- * a list is accessed repetitively by iterating over them. In the standard approach, 
- * a new iterator object is allocated for each iteration. Iterators implementing
- * this interface can be reset and reused such that no allocation of a new iteration
- * object is necessary. 
- * @param <E> The generic parameter to create the ListIterator for.
+ * The usage of iterators implementing this interface is intended for cases
+ * where a list is accessed repetitively by iterating over them. In the standard
+ * approach, a new iterator object is allocated for each iteration. Iterators
+ * implementing this interface can be reset and reused such that no allocation
+ * of a new iteration object is necessary.
+ *
+ * @param <E>
+ *            The generic parameter to create the ListIterator for.
  */
 public interface ReusableListIterator<E> extends ListIterator<E> {
 
 	/**
-	 * Reset the iterator to its initial state, just as if
-	 * a new iterator for the list would have been created.  
+	 * Reset the iterator to its initial state, just as if a new iterator for the
+	 * list would have been created.
 	 */
 	public void reset();
 }

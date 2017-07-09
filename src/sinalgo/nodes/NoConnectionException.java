@@ -37,18 +37,20 @@
 package sinalgo.nodes;
 
 /**
- * This Exception is thrown, if a user tried to send a message to a node, to which the 
- * source-node has no connection.
+ * This Exception is thrown, if a user tried to send a message to a node, to
+ * which the source-node has no connection.
  */
-
 public class NoConnectionException extends Exception {
+
+	private static final long serialVersionUID = 1023865317275420612L;
 
 	/**
 	 * The constructor for the NoConnectionException class.
 	 *
-	 * @param message The message for the Exception.
+	 * @param message
+	 *            The message for the Exception.
 	 */
-	public NoConnectionException(String message){
+	public NoConnectionException(String message) {
 		super(message);
 	}
 }

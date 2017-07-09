@@ -37,56 +37,57 @@
 package sinalgo.io.graphFileIO;
 
 /**
- * This is a concrete Implementation of the GraphFileWriterInterface. It writed the current graph
- * to a File specified by the parameters of the Consturctor.
+ * This is a concrete Implementation of the GraphFileWriterInterface. It writed
+ * the current graph to a File specified by the parameters of the Consturctor.
  */
-public class GraphFileWriter{
-//	private File file;
-//
-//	/**
-//	 * The one and only constructor for the GraphFileWriter class.
-//	 * 
-//	 * @param file The file where to save the informations about the current graph.
-//	 */
-//	public GraphFileWriter(File file)
-//	{
-//		this.file = file;
-//	}
-//	
-//	/**
-//	 * Writes the information about the current graph in the file selected in the
-//	 * constructor. Uses the serialize method of the nodes.
-//	 */
-//	public void write(){
-//		
-//		FileOutputStream fOut;
-//		
-//		try {
-//			
-//			if(file.exists()){
-//				file.delete();
-//			}
-//			
-//			file.createNewFile();
-//			
-//			fOut = new FileOutputStream(file);
-//			
-//			//write the dimension on top of the file
-//			fOut.write(("DIMENSION="+Configuration.dimX+","+Configuration.dimY+";").getBytes());
-//			fOut.write(("EDGETYPE="+Configuration.getEdgeType()+"\n").getBytes());
-//			
-//			Enumeration<Node> nodeEnumer = Runtime.nodes.getNodeEnumeration();
-//			
-//			while(nodeEnumer.hasMoreElements()){
-//				Node node = nodeEnumer.nextElement();
-//				fOut.write((node.serialize()+"\n").toString().getBytes());
-//			}
-//			
-//			fOut.flush();
-//			fOut.close();
-//			
-//		} catch (IOException e) {
-//			Global.log.logln(LogL.ERROR_DETAIL, "Error saving the graph.");
-//		}
-//	}
+public class GraphFileWriter {
+	// private File file;
+	//
+	// /**
+	// * The one and only constructor for the GraphFileWriter class.
+	// *
+	// * @param file The file where to save the informations about the current
+	// graph.
+	// */
+	// public GraphFileWriter(File file)
+	// {
+	// this.file = file;
+	// }
+	//
+	// /**
+	// * Writes the information about the current graph in the file selected in the
+	// * constructor. Uses the serialize method of the nodes.
+	// */
+	// public void write(){
+	//
+	// FileOutputStream fOut;
+	//
+	// try {
+	//
+	// if(file.exists()){
+	// file.delete();
+	// }
+	//
+	// file.createNewFile();
+	//
+	// fOut = new FileOutputStream(file);
+	//
+	// //write the dimension on top of the file
+	// fOut.write(("DIMENSION="+Configuration.dimX+","+Configuration.dimY+";").getBytes());
+	// fOut.write(("EDGETYPE="+Configuration.getEdgeType()+"\n").getBytes());
+	//
+	// Enumeration<Node> nodeEnumer = Runtime.nodes.getNodeEnumeration();
+	//
+	// while(nodeEnumer.hasMoreElements()){
+	// Node node = nodeEnumer.nextElement();
+	// fOut.write((node.serialize()+"\n").toString().getBytes());
+	// }
+	//
+	// fOut.flush();
+	// fOut.close();
+	//
+	// } catch (IOException e) {
+	// Global.log.logln(LogL.ERROR_DETAIL, "Error saving the graph.");
+	// }
+	// }
 }

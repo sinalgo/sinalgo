@@ -42,37 +42,36 @@ import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
 
 /**
- * Aligns the nodes about equally spaced on a gird covering the entire deployment area.
+ * Aligns the nodes about equally spaced on a gird covering the entire
+ * deployment area.
  */
 public class Grid2D extends DistributionModel {
 
 	private double size; // the cell-size of the gird
 	private int numNodesPerLine; // number of nodes on the x-axis
-	private int i,j; // loop counters
-	
-	/* (non-Javadoc)
-	 * @see sinalgo.models.DistributionModel#initialize()
-	 */
+	private int i, j; // loop counters
+
+	@Override
 	public void initialize() {
 		double a = 1 - numberOfNodes;
-		double b = - (Configuration.dimX + Configuration.dimY); // kind of a hack
-		double c =  Configuration.dimX * Configuration.dimY;
+		double b = -(Configuration.dimX + Configuration.dimY); // kind of a hack
+		double c = Configuration.dimX * Configuration.dimY;
 		double tmp = b * b - 4 * a * c;
-		if(tmp < 0) {
+		if (tmp < 0) {
 			Main.fatalError("negative sqrt");
 		}
-		size = (-b - Math.sqrt(tmp)) / (2*a);
+		size = (-b - Math.sqrt(tmp)) / (2 * a);
 		numNodesPerLine = (int) Math.round(Configuration.dimX / size) - 1;
-		i=0; j=1;
+		i = 0;
+		j = 1;
 	}
-	
-	/* (non-Javadoc)
-	 * @see models.DistributionModel#getNextPosition()
-	 */
+
+	@Override
 	public Position getNextPosition() {
-		i ++;
-		if(i > numNodesPerLine) {
-			i=1; j++;
+		i++;
+		if (i > numNodesPerLine) {
+			i = 1;
+			j++;
 		}
 		return new Position(i * size, j * size, 0);
 	}

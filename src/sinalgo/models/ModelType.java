@@ -40,6 +40,7 @@ package sinalgo.models;
  * Enum of the different available models.
  */
 public enum ModelType {
+
 	/**
 	 * The ConnectivityModel
 	 */

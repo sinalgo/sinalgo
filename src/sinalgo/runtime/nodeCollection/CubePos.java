@@ -37,29 +37,35 @@
 package sinalgo.runtime.nodeCollection;
 
 /**
- * A helper class to store in which cell of the matrix
- * a node is stored in the node collection. 
+ * A helper class to store in which cell of the matrix a node is stored in the
+ * node collection.
  */
 public class CubePos implements NodeCollectionInfoInterface {
 
 	/**
-	 *  x-Position in the 3D matrix of the geometric 3D node collection.
+	 * x-Position in the 3D matrix of the geometric 3D node collection.
 	 */
 	public int x;
+
 	/**
 	 * y-Position in the 3D matrix of the geometric 3D node collection.
 	 */
 	public int y;
+
 	/**
 	 * z-Position in the 3D matrix of the geometric 3D node collection.
 	 */
 	public int z;
-	
+
 	/**
 	 * Default constructor
-	 * @param x X offset
-	 * @param y Y offset
-	 * @param z Z offset
+	 *
+	 * @param x
+	 *            X offset
+	 * @param y
+	 *            Y offset
+	 * @param z
+	 *            Z offset
 	 */
 	public CubePos(int x, int y, int z) {
 		this.x = x;

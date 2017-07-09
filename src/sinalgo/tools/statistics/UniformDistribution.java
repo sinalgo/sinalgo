@@ -36,63 +36,79 @@
 */
 package sinalgo.tools.statistics;
 
-
 import java.util.Random;
 
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 
 /**
- * A uniform distribution which returns random values uniformly distributed in the range [min, max].
+ * A uniform distribution which returns random values uniformly distributed in
+ * the range [min, max].
  * <p>
  * If the distribution is specified in the xml configuration file, an entry like
+ *
  * <pre>
    &lt;mainTagName distribution="Uniform" min="xxx" max="yyy"/&gt;
- </pre> 
- * is expected. 
+ * </pre>
+ *
+ * is expected.
  */
 public class UniformDistribution extends Distribution {
+
 	private double min; // the min value of the range to choose a value from
 	private double range; // the size of the range.
-	
+
 	/**
-	 * Creates a new Uniform sample generator which chooses the samples from the range [min, max].
-	 * @param min The minimum value of the range to choose a value from.
-	 * @param max The maximum value of the range to choose a value from.
-	 * @throws NumberFormatException If min > max.
+	 * Creates a new Uniform sample generator which chooses the samples from the
+	 * range [min, max].
+	 *
+	 * @param min
+	 *            The minimum value of the range to choose a value from.
+	 * @param max
+	 *            The maximum value of the range to choose a value from.
+	 * @throws NumberFormatException
+	 *             If min > max.
 	 */
 	public UniformDistribution(double min, double max) throws NumberFormatException {
 		this.min = min;
 		this.range = max - min;
-		if(range < 0) {
-			throw new NumberFormatException("Invalid arguments to create a uniform distribution. The upper bound of the range must be at least as big as the lower bound.");
+		if (range < 0) {
+			throw new NumberFormatException(
+					"Invalid arguments to create a uniform distribution. The upper bound of the range must be at least as big as the lower bound.");
 		}
 	}
-	
+
 	/**
-	 * Creates a new uniform distribution and initializes it from the XML configuration file.
-	 * @param mainTagPath The entry-path which points to the entry in the XML configuration 
-	 * file which contains the specifications for this distribution.
-	 * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
+	 * Creates a new uniform distribution and initializes it from the XML
+	 * configuration file.
+	 *
+	 * @param mainTagPath
+	 *            The entry-path which points to the entry in the XML configuration
+	 *            file which contains the specifications for this distribution.
+	 * @throws CorruptConfigurationEntryException
+	 *             If the configuration file is corrupt.
 	 */
 	public UniformDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
 		this.min = Configuration.getDoubleParameter(mainTagPath + "/min");
 		this.range = Configuration.getDoubleParameter(mainTagPath + "/max") - this.min;
-		if(range < 0) {
-			throw new CorruptConfigurationEntryException("Invalid arguments to create a uniform distribution. The upper bound of the range must be at least as big as the lower bound.");
+		if (range < 0) {
+			throw new CorruptConfigurationEntryException(
+					"Invalid arguments to create a uniform distribution. The upper bound of the range must be at least as big as the lower bound.");
 		}
 	}
-	
-	
+
 	@Override
 	public double nextSample() {
 		return min + range * randomGenerator.nextDouble();
 	}
-	
+
 	/**
 	 * Creates a random sample drawn from a uniform distribution of a given range.
-	 * @param minRange The minimum value of the interval the sample is drawn from
-	 * @param maxRange The maximum value of the interval the sample is drawn from
+	 *
+	 * @param minRange
+	 *            The minimum value of the interval the sample is drawn from
+	 * @param maxRange
+	 *            The maximum value of the interval the sample is drawn from
 	 * @return a random sample drawn from a uniform distribution of a given range.
 	 */
 	public static double nextUniform(double minRange, double maxRange) {

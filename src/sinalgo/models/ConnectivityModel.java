@@ -40,25 +40,27 @@ import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.nodes.Node;
 
 /**
- * The Interface for all Connectivity Models. The updateConnections-Method is the only
- * one to be used by external classes.
+ * The Interface for all Connectivity Models. The updateConnections-Method is
+ * the only one to be used by external classes.
  */
 public abstract class ConnectivityModel extends Model {
-	
-	/* (non-Javadoc)
-	 * @see models.Model#getType()
-	 */
+
+	@Override
 	public final ModelType getType() {
 		return ModelType.ConnectivityModel;
 	}
-	
+
 	/**
-	 * This function updates the connections of a node and returns whether something has changed.
-	 * 
-	 * @param n The node on which the connections have to be updated
-	 * @return True if an edge for this node has been added or removed, otherwise false.
-	 * @throws WrongConfigurationException When the configuration is not correct. This means, that
-	 * the type of edges does not fit the type of nodes.
+	 * This function updates the connections of a node and returns whether something
+	 * has changed.
+	 *
+	 * @param n
+	 *            The node on which the connections have to be updated
+	 * @return True if an edge for this node has been added or removed, otherwise
+	 *         false.
+	 * @throws WrongConfigurationException
+	 *             When the configuration is not correct. This means, that the type
+	 *             of edges does not fit the type of nodes.
 	 */
 	public abstract boolean updateConnections(Node n) throws WrongConfigurationException;
 }

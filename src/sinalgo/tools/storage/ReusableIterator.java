@@ -39,15 +39,18 @@ package sinalgo.tools.storage;
 import java.util.Iterator;
 
 /**
- * This Interface extends the Iterator Interface by the method reset(). It is used
- * to reset the Iterator to the initial state without allocating a new Iterator
- * instance. 
- * @param <E> The generic Type to create the Iterator for.
+ * This Interface extends the Iterator Interface by the method reset(). It is
+ * used to reset the Iterator to the initial state without allocating a new
+ * Iterator instance.
+ *
+ * @param <E>
+ *            The generic Type to create the Iterator for.
  */
 public interface ReusableIterator<E> extends Iterator<E> {
+
 	/**
-	 * This method resets the Iterator to the initial state without allocating a 
-	 * new Iterator instance.
+	 * This method resets the Iterator to the initial state without allocating a new
+	 * Iterator instance.
 	 */
 	public void reset();
 }

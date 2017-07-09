@@ -36,7 +36,6 @@
 */
 package projects.sample3.models.distributionModels;
 
-
 import java.util.Vector;
 
 import sinalgo.configuration.Configuration;
@@ -46,59 +45,62 @@ import sinalgo.nodes.Position;
 import sinalgo.tools.statistics.Distribution;
 
 /**
- * A distribution model that distributes the nodes on a regular grid depending on the geometric node 
- * collections rMax. It choses the postitions so that the field is optimally covered by the nodes.
- * This means that the grid distances are sqrt(2)*rMax. This completely covers the area between the
- * nodes as there is no point between the four nodes having a distance to all the nodes that is bigger
- * than rMax. If there are nodes left after having a node on every grid position the model distributes
- * the other nodes randomly on the field.
+ * A distribution model that distributes the nodes on a regular grid depending
+ * on the geometric node collections rMax. It choses the postitions so that the
+ * field is optimally covered by the nodes. This means that the grid distances
+ * are sqrt(2)*rMax. This completely covers the area between the nodes as there
+ * is no point between the four nodes having a distance to all the nodes that is
+ * bigger than rMax. If there are nodes left after having a node on every grid
+ * position the model distributes the other nodes randomly on the field.
  */
 public class GridDistribution extends DistributionModel {
 
 	private java.util.Random rand = Distribution.getRandom();
-	
+
 	double radius = 0;
 	double horizontalFactor = 0;
 	double verticalFactor = 0;
-	
-	private Vector<Position> positions = new Vector<Position>();
+
+	private Vector<Position> positions = new Vector<>();
 	private int returnNum = 0;
-	
-	public void initialize(){
+
+	@Override
+	public void initialize() {
 		try {
 			radius = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
 		} catch (CorruptConfigurationEntryException e) {
 			e.printStackTrace();
 		}
-		horizontalFactor = (Configuration.dimX - 2*radius)/(radius*1.414);
-		verticalFactor = (Configuration.dimY - 2*radius)/(radius*1.414);
-		
-		int ihF = (int)horizontalFactor;
-		int ivF = (int)verticalFactor;
-		
+		horizontalFactor = (Configuration.dimX - 2 * radius) / (radius * 1.414);
+		verticalFactor = (Configuration.dimY - 2 * radius) / (radius * 1.414);
+
+		int ihF = (int) horizontalFactor;
+		int ivF = (int) verticalFactor;
+
 		int number = 0;
-		
-		for(int i = 0; i < ihF+1; i++){
-			for(int j = 0; j < ivF+1; j++){
-				if(number < numberOfNodes){
-					positions.add(new Position(radius + i*(radius*1.414), radius + j*(radius*1.414), 0));
+
+		for (int i = 0; i < ihF + 1; i++) {
+			for (int j = 0; j < ivF + 1; j++) {
+				if (number < numberOfNodes) {
+					positions.add(new Position(radius + i * (radius * 1.414), radius + j * (radius * 1.414), 0));
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public Position getNextPosition() {
-		if(returnNum < positions.size()){
+		if (returnNum < positions.size()) {
 			return positions.elementAt(returnNum++);
-		}
-		else{
+		} else {
 			double randomPosX = rand.nextDouble() * Configuration.dimX;
 			double randomPosY = rand.nextDouble() * Configuration.dimY;
 			return new Position(randomPosX, randomPosY, 0);
 		}
 	}
-	
-	public void setParamString(String s){}
+
+	@Override
+	public void setParamString(String s) {
+	}
 
 }

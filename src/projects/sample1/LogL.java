@@ -37,14 +37,14 @@
 package projects.sample1;
 
 /**
- * Enumerates the log-levels. Levels above THRESHOLD will be included
- * in the log-file. The levels below (with a higher enumeration value) not.
+ * Enumerates the log-levels. Levels above THRESHOLD will be included in the
+ * log-file. The levels below (with a higher enumeration value) not.
  */
-public class LogL extends sinalgo.tools.logging.LogL{
+public class LogL extends sinalgo.tools.logging.LogL {
+
 	/**
-	 * An additional loglevel to inform about loggings for the sending process of sending.
+	 * An additional loglevel to inform about loggings for the sending process of
+	 * sending.
 	 */
 	public static boolean SEND = true;
 }
-
-
