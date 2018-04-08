@@ -1,1 +1,0 @@
-Place all your custom connectivity models in this folder.

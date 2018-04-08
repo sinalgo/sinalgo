@@ -1,1 +1,0 @@
-Place all your custom message transmission models in this folder.
