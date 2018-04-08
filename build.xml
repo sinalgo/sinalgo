@@ -195,7 +195,9 @@
 		<!-- Copy additional stuff to the distribution -->
 		<copy file=".classpath" todir="${regularReleasePath}" />
 		<copy file="build.xml" todir="${regularReleasePath}" />
-		<copy file="license.txt" todir="${regularReleasePath}" />
+		<copy file="LICENSE" todir="${regularReleasePath}" />
+		<copy file="README.md" todir="${regularReleasePath}" />
+		<copy file="MANUAL.pdf" todir="${regularReleasePath}" />
 		<copy file="sinalgo.bat" todir="${regularReleasePath}" />
 		<copy file="sinalgo" todir="${regularReleasePath}" />
 
@@ -203,9 +205,9 @@
 		<!-- Create the Zip-files to distribute -->
 		<mkdir dir="dist/zips" />
 		<zip destfile="dist/zips/sinalgo-${SINALGOversion}-regularRelease.zip"
-			basedir="${regularReleasePath}"></zip>
+			basedir="${regularReleasePath}"/>
 		<zip destfile="dist/zips/sinalgo-${SINALGOversion}-toyRelease.zip"
-			basedir="${toyReleasePath}"></zip>
+			basedir="${toyReleasePath}"/>
 		<!--zip destfile="dist/zips/documentation.zip" basedir="dist/doc"></zip -->
 	</target>
 
