@@ -59,6 +59,7 @@ import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -168,7 +169,6 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 		for (String s : list) {
 			blocklist.add(s);
 		}
-
 		File file = new File(Configuration.sourceDirPrefix + "/" + Configuration.projectDirInSourceFolder);
 		String[] projects = file.list(new FilenameFilter() {
 
@@ -418,7 +418,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 			b = new JButton(icon);
 		} catch (NullPointerException e) {
 			Main.fatalError("Cannot access the application icon " + imageName + ", which should be stored in\n"
-					+ Configuration.binaryDir + "/" + Configuration.imageDir + imageName + ".");
+					+ "resources/" + Configuration.imageDir + imageName + ".");
 			return null;
 		}
 		// b.setPreferredSize(new Dimension(29, 29));

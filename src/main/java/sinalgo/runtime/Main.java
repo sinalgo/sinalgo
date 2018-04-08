@@ -76,7 +76,6 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		cmdLineArgs = args; // store for later use
-		Run.addJDOMtoClassPath(); // add the jdom library to the classpath, if it's not already there.
 		Main main = new Main();
 		main.go(args);
 	}

@@ -59,10 +59,7 @@ import sinalgo.runtime.Main;
 public class Run {
 
 	public static void main(String args[]) {
-		String classPathSeparator = System.getProperty("path.separator");
-		String dirSeparator = System.getProperty("file.separator");
 		testJavaVersion();
-		addJDOMtoClassPath();
 
 		String command = ""; // the entire command
 		try {
@@ -98,9 +95,8 @@ public class Run {
 			String cp = System.getProperty("user.dir");
 			cmds.add("-Xmx" + Configuration.javaVMmaxMem + "m");
 			cmds.add("-cp");
-			// quite odd: the class path needs not be surrounded by hyphens "" - and it must
-			// not be for some OS...
-			cmds.add("binaries" + dirSeparator + "bin" + classPathSeparator + "binaries" + dirSeparator + "jdom.jar");
+			// Uses the old Class Path as its set by gradle
+			cmds.add(System.getProperty("java.class.path"));
 			cmds.add("sinalgo.runtime.Main");
 
 			if (projectName != null) { // the project was selected through the projectSelector GUI, add it to the cmd
@@ -157,37 +153,6 @@ public class Run {
 		} catch (InterruptedException e) {
 			Main.fatalError("Failed to create the simulation process with the following command:\n" + command + "\n\n"
 					+ e.getMessage());
-		}
-	}
-
-	/**
-	 * Adds jdom.jar to the classpath if it's not already there. This method is
-	 * clearly a hack (only works if the default class loader is a URLClassLoader),
-	 * and may not be portable to more recent versions of java.
-	 */
-	public static void addJDOMtoClassPath() {
-		// add jdom.jar to the classpath, if it's not already there
-		String cp = System.getProperty("java.class.path");
-
-		if (!cp.contains("jdom.jar")) {
-			try {
-				if (!(ClassLoader.getSystemClassLoader() instanceof URLClassLoader)) {
-					Main.fatalError(
-							"Cannot add 'binaries/jdom.jar' to the classpath. Add it manually on the command-line.");
-				}
-				URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-				Class<URLClassLoader> sysclass = URLClassLoader.class;
-				String fileSep = System.getProperty("file.separator");
-				Method method = sysclass.getDeclaredMethod("addURL", URL.class);
-				method.setAccessible(true);
-				method.invoke(sysloader,
-						new Object[] {
-								new File(System.getProperty("user.dir") + fileSep + "binaries" + fileSep + "jdom.jar")
-										.toURI().toURL() });
-			} catch (Exception e) {
-				Main.fatalError(
-						"Could not add 'binaries/jdom.jar' to the classpath. Add it manually on the command-line.");
-			}
 		}
 	}
 

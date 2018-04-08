@@ -44,6 +44,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
@@ -73,9 +75,9 @@ public class Map {
 	 */
 	public Map(String aMapImageFile) throws FileNotFoundException {
 		// Read the image (preferably a bmp file)
-		InputStream in = null;
 		try {
-			in = new FileInputStream(aMapImageFile);
+			ClassLoader cldr = this.getClass().getClassLoader();
+			InputStream in = cldr.getResourceAsStream(aMapImageFile);
 			BufferedImage img = null;
 			if ((img = ImageIO.read(in)) == null) {
 				throw new FileNotFoundException("\n'" + aMapImageFile + "' - This image format is not supported.");

@@ -79,7 +79,7 @@ public class Configuration {
 	/**
 	 * The version of the release - this is needed especially for bug-tracking
 	 */
-	public static final String versionString = "0.75.3"; // also change the value in the build.xml file
+	public static final String versionString = "0.77"; // also change the value in the build.xml file
 
 	/**
 	 * The annotation to be used for fields that are included by default in the
@@ -383,7 +383,7 @@ public class Configuration {
 	/** */
 	@DefaultInConfigFile("In 2D, the background can be colored depending on a map file.\n"
 			+ "This field contains the file name for this map, which is supposed\n"
-			+ "to be located in the source folder of the current project.\n"
+			+ "to be located in the resource folder of the current project.\n"
 			+ "The map is only painted if useMap is set to true.")
 	public static String map = "Map.mp";
 
@@ -920,7 +920,7 @@ public class Configuration {
 	/**
 	 * The directory where the source tree starts.
 	 */
-	public static final String sourceDirPrefix = "src";
+	public static final String sourceDirPrefix = "src/main/java";
 
 	/**
 	 * The directory where the project tree starts in the source dir.
@@ -940,7 +940,7 @@ public class Configuration {
 	/**
 	 * The directory where the class files are located.
 	 */
-	public static final String binaryDir = "binaries/bin";
+	public static final String binaryDir = "build/classes/java/main";
 
 	/**
 	 * The directory where the images are stored. Remember to use the

@@ -135,8 +135,7 @@ public abstract class Runtime {
 	public Runtime() {
 		if (Configuration.useMap) {
 			try {
-				map = new Map(
-						"src/" + Configuration.userProjectDir + "/" + Global.projectName + "/" + Configuration.map);
+				map = new Map("projects/" + Global.projectName + "/" + Configuration.map);
 			} catch (FileNotFoundException e) {
 				Main.fatalError(e);
 			}
