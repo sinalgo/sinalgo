@@ -49,3 +49,28 @@ arrives at its destination.
 
 DISCLAIMER:
 Sinalgo was originally developed by the DCG (Distributed Computing Group) of ETHzürich (https://disco.ethz.ch/)
+
+# Installation and usage
+
+SINALGO has been ported to use the Gradle build system beginning with version 0.77. It uses a Gradle Wrapper so 
+users don't have to download the specific Gradle version that's compatible with SINALGO. Running and building 
+SINALGO is as simple as running:
+
+```
+./gradlew run 
+```
+
+When using Windows, replace ```./gradlew``` with ```gradlew.bat```.
+
+That will downloaded whichever Gradle version SINALGO needs, build the application and run it. That includes 
+all projects.
+
+Gradle includes a ton of functionality. Some plugins being used here provide some nice resources not provided
+by Gradle by default.
+
+Right now, the following commands might be useful:
+
+* ```./gradlew build``` will build a zip for distribution plus a jar with every dependency needed to run SINALGO.
+
+* ```./gradlew javadoc``` will generate a set of HTML documents containing documentation on SINALGO's classes.
+This also includes projects.
