@@ -1,5 +1,6 @@
 /binaries/**/projects/
 /binaries/**/sinalgo/
+/binaries/**/generated
 
 # Eclipse
 .classpath
