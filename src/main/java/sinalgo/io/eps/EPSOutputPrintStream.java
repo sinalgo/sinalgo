@@ -441,7 +441,7 @@ public class EPSOutputPrintStream extends PrintStream {
 		println("%!PS-Adobe-3.0 EPSF-3.0");
 		println("%%BoundingBox: " + boundingBoxX + " " + boundingBoxY + " " + boundingBoxWidth + " "
 				+ boundingBoxHeight);
-		println("%%Creator: SINALGO");
+		println("%%Creator: Sinalgo");
 		println("%%Pages: 1");
 		println("%%EndComments");
 		println("%%Page: 1 1");

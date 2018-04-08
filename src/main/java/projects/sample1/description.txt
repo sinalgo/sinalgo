@@ -1,4 +1,4 @@
-This is a sample project to demonstrate the basic usage of SINALGO. Mobile nodes
+This is a sample project to demonstrate the basic usage of Sinalgo. Mobile nodes
 are placed in a 3D cuboid, where they move around and send messages.
 
 1  How to run this sample

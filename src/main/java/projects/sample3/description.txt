@@ -1,11 +1,11 @@
-This is a sample project to demonstrate the usage of SINALGO. It implements a small
+This is a sample project to demonstrate the usage of Sinalgo. It implements a small
 cellular network consisting of fixed antenna nodes and mobile nodes. 
 
 1  How to run this sample
 -----------------------------------------------------------------------------------
 
  a) This project is easiest to launch from the command-line, where you can specify
-    that SINALGO creates an initial set of nodes with the following arguments:
+    that Sinalgo creates an initial set of nodes with the following arguments:
     
     -project sample3 
     -gen 49 sample3:Antenna sample3:GridDistribution NoMobility

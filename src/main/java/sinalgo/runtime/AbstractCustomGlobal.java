@@ -125,7 +125,7 @@ public abstract class AbstractCustomGlobal {
 	}
 
 	/**
-	 * After every round, SINALGO executes this method to determine whether the
+	 * After every round, Sinalgo executes this method to determine whether the
 	 * simulation should be stopped. This is the preferred way to properly terminate
 	 * a simulation running in batch mode.
 	 * <p>

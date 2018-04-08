@@ -922,7 +922,7 @@ public class Tools {
 	/**
 	 * Calls the garbage collector to remove unused objects. Note that the Java VM
 	 * itself calls the GC whenever it is necessary. This method just provides an
-	 * insight in the memory usage of SINALGO. The old and new memory usage is
+	 * insight in the memory usage of Sinalgo. The old and new memory usage is
 	 * printed to the given stream.
 	 *
 	 * @param ps

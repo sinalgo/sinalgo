@@ -60,7 +60,7 @@ mainClassName = "sinalgo.Run"
 javadoc {
     source = sourceSets.main.allJava
     classpath = configurations.compile
-    title = "SINALGO API Documentation Version: ${version}"
+    title = "Sinalgo API Documentation Version: ${version}"
 }
 
 repositories {

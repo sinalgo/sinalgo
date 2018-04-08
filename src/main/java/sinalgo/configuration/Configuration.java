@@ -894,7 +894,7 @@ public class Configuration {
 	/**
 	 * The name of this application.
 	 */
-	public final static String appName = "SINALGO";
+	public final static String appName = "Sinalgo";
 
 	/**
 	 * The path where the default project is stored.
