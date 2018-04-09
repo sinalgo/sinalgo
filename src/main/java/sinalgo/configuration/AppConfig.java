@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.configuration;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -43,11 +44,16 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import sinalgo.runtime.Global;
+import sinalgo.tools.Tools;
 import sinalgo.tools.statistics.Distribution;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * A config file that stores application wide settings for the user, such as the
@@ -55,8 +61,7 @@ import java.io.IOException;
  */
 public class AppConfig {
 
-    private String configFile = Configuration.sourceDirPrefix + "/" + Configuration.projectDirInSourceFolder
-            + "/defaultProject/appConfig.xml";
+    private final String configFileName = "appConfig.xml";
 
     public int projectSelectorWindowWidth = 600;
     public int projectSelectorWindowHeight = 400;
@@ -123,13 +128,21 @@ public class AppConfig {
      * Singleton constructor
      */
     private AppConfig() {
-        File file = new File(configFile);
-        if (!file.exists()) {
+        Path configFilePath = Paths.get(Configuration.appConfigDir, configFileName);
+        InputStream configInputStream;
+        try {
+            configInputStream = Files.newInputStream(configFilePath);
+        } catch (IOException ignored) {
+            ClassLoader cl = getClass().getClassLoader();
+            configInputStream = cl.getResourceAsStream(Configuration.sinalgoResourceDirPrefix + "/" + configFileName);
+        }
+
+        if(configInputStream == null){
             return;
         }
 
         try {
-            Document doc = new SAXBuilder().build(configFile);
+            Document doc = new SAXBuilder().build(configInputStream);
             Element root = doc.getRootElement();
 
             // Read the entries for the Project Selector
@@ -343,7 +356,10 @@ public class AppConfig {
      * Writes the application wide config
      */
     public void writeConfig() {
-        File file = new File(configFile);
+        String dir = Configuration.appConfigDir;
+        if (StringUtils.isNotEmpty(dir)) {
+            Tools.createDir(dir);
+        }
 
         Document doc = new Document();
         Element root = new Element("sinalgo");
@@ -399,7 +415,7 @@ public class AppConfig {
         outputter.setFormat(f);
 
         try {
-            FileWriter fW = new FileWriter(file);
+            FileWriter fW = new FileWriter(Paths.get(Configuration.appConfigDir, configFileName).toFile());
             outputter.output(doc, fW);
         } catch (IOException ignored) {
         }

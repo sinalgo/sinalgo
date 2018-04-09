@@ -148,12 +148,12 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         ClassLoader cldr = this.getClass().getClassLoader();
         JButton b;
         try {
-            URL url = cldr.getResource(Configuration.imageDir + imageName);
+            URL url = cldr.getResource(Configuration.imageDir + "/" + imageName);
             ImageIcon icon = new ImageIcon(url);
             b = new JButton(icon);
         } catch (NullPointerException e) {
             Main.fatalError("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + Configuration.binaryDir + "/" + Configuration.imageDir + imageName + ".");
+                    + Configuration.imageDir + "/" + imageName + ".");
             return null;
         }
         b.setPreferredSize(new Dimension(29, 29));
@@ -164,11 +164,11 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         // To support jar files, we cannot access the file directly
         ClassLoader cldr = this.getClass().getClassLoader();
         try {
-            URL url = cldr.getResource(Configuration.imageDir + imageName);
+            URL url = cldr.getResource(Configuration.imageDir + "/" + imageName);
             return new ImageIcon(url);
         } catch (NullPointerException e) {
             Main.fatalError("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + Configuration.binaryDir + "/" + Configuration.imageDir + imageName + ".");
+                    + Configuration.imageDir + "/" + imageName + ".");
         }
         return null;
     }
@@ -185,13 +185,23 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      */
     protected JButton createCustomIconButton(String actionCommand, String imageName, String toolTip) {
         JButton b;
-        File f = new File(Global.getProjectSrcDir() + "/images/" + imageName);
-        if (!f.exists()) {
-            Main.fatalError("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
-                    + Global.getProjectSrcDir() + "/images/" + imageName + ".");
+        if(Global.useProject){
+            URL url = getClass().getResource(Global.getProjectResourceDir() + "/images/" + imageName);
+            if (url == null){
+                Main.fatalError("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
+                        + Global.getProjectResourceDir() + "/images/" + imageName + ".");
+            }
+            ImageIcon icon = new ImageIcon(url);
+            b = new JButton(icon);
+        } else {
+            File f = new File(Global.getProjectResourceDir() + "/images/" + imageName);
+            if (!f.exists()) {
+                Main.fatalError("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
+                        + Global.getProjectResourceDir() + "/images/" + imageName + ".");
+            }
+            ImageIcon icon = new ImageIcon(Global.getProjectResourceDir() + "/images/" + imageName);
+            b = new JButton(icon);
         }
-        ImageIcon icon = new ImageIcon(Global.getProjectSrcDir() + "/images/" + imageName);
-        b = new JButton(icon);
         b.setPreferredSize(new Dimension(29, 29));
         return finishButton(b, actionCommand, toolTip);
     }

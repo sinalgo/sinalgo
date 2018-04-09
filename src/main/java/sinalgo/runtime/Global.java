@@ -146,6 +146,17 @@ public class Global {
     public static String projectName = "";
 
     /**
+     * @return The base-directory of the resource-files of the currently used project.
+     */
+    public static String getProjectResourceDir() {
+        if (useProject) {
+            return "/" + Configuration.projectResourceDirPrefix + "/" + projectName;
+        } else {
+            return Configuration.sourceDirPrefix + "/" + Configuration.defaultProjectPath.replace('.', '/');
+        }
+    }
+
+    /**
      * @return The base-directory of the source-files of the currently used project.
      */
     public static String getProjectSrcDir() {

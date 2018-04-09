@@ -872,14 +872,19 @@ public class Configuration {
      ************************************************************************************************/
 
     /**
-     * The directory where the logfiles are stored.
-     */
-    public static final String logFileDirectory = "logs";
-
-    /**
      * The name of this application.
      */
     public final static String appName = "Sinalgo";
+
+    /**
+     * The folder where configurations, logs, etc. will be stored.
+     */
+    public final static String appConfigDir = System.getProperty("user.home", "") + "/" + appName;
+
+    /**
+     * The directory where the logfiles are stored.
+     */
+    public static final String logFileDirectory = appConfigDir + "/logs";
 
     /**
      * The path where the default project is stored.
@@ -896,6 +901,7 @@ public class Configuration {
      * postfixed with the users project name.
      */
     public static final String userProjectsPath = "projects";
+
     /**
      * The directory where user-specific projects are stored. This path has to be
      * postfixed with the users project name.
@@ -906,6 +912,11 @@ public class Configuration {
      * The directory where the source tree starts.
      */
     public static final String sourceDirPrefix = "src/main/java";
+
+    /**
+     * The directory where the resources for sinalgo are stored;
+     */
+    public static final String sinalgoResourceDirPrefix = "sinalgo";
 
     /**
      * The directory where the project tree starts in the source dir.
@@ -932,7 +943,12 @@ public class Configuration {
      * ClassLoader.getResource() method to map the file name to a url, such that the
      * images can be accessed when they are stored in a jar file.
      */
-    public static final String imageDir = "sinalgo/images/";
+    public static final String imageDir = sinalgoResourceDirPrefix + "/images";
+
+    /**
+     * The directory where the resources for the projects are stored
+     */
+    public static final String projectResourceDirPrefix = "projects";
 
     /**
      * A semicolon separated list of folder-names that should not be considered as

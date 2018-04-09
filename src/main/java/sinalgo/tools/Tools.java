@@ -1055,4 +1055,25 @@ public class Tools {
         return new Position(randomPosX, randomPosY, randomPosZ);
     }
 
+    /**
+     * <b>This member is framework internal and should not be used by the project
+     * developer.</b> Creates a directory if it does not already exist.
+     *
+     * @param dir The directory name
+     */
+    public static void createDir(String dir) {
+        File f = new File(dir);
+        if (f.exists() && !f.isDirectory()) {
+            Main.fatalError("Cannot create folder '" + dir + "'. There is a file called the same name.");
+        } else if (!f.exists()) {
+            try {
+                if (!f.mkdirs()) {
+                    Main.fatalError("Could not generate all of the directories '" + dir + "'.");
+                }
+            } catch (SecurityException e) {
+                Main.fatalError("Cannot create folder '" + dir + "':\n" + e);
+            }
+        }
+    }
+
 }

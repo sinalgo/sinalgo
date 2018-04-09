@@ -360,12 +360,12 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         ClassLoader cldr = this.getClass().getClassLoader();
         JButton b;
         try {
-            URL url = cldr.getResource(Configuration.imageDir + imageName);
+            URL url = cldr.getResource(Configuration.imageDir + "/" + imageName);
             ImageIcon icon = new ImageIcon(url);
             b = new JButton(icon);
         } catch (NullPointerException e) {
             Main.fatalError("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + "resources/" + Configuration.imageDir + imageName + ".");
+                    + "resources/" + Configuration.imageDir + "/" + imageName + ".");
             return null;
         }
         // b.setPreferredSize(new Dimension(29, 29));
