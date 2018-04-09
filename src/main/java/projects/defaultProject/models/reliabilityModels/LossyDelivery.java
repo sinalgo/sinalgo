@@ -53,23 +53,23 @@ import sinalgo.tools.statistics.Distribution;
  */
 public class LossyDelivery extends ReliabilityModel {
 
-	java.util.Random rand = Distribution.getRandom();
-	private double dropRate = 0;
+    private java.util.Random rand = Distribution.getRandom();
+    private double dropRate = 0;
 
-	@Override
-	public boolean reachesDestination(Packet p) {
-		double r = rand.nextDouble();
-		return (r > dropRate);
-	}
+    @Override
+    public boolean reachesDestination(Packet p) {
+        double r = rand.nextDouble();
+        return (r > dropRate);
+    }
 
-	/**
-	 * Creates a new Drop Rate Reliability Model instance.
-	 */
-	public LossyDelivery() {
-		try {
-			dropRate = Configuration.getDoubleParameter("LossyDelivery/dropRate");
-		} catch (CorruptConfigurationEntryException e) {
-			Main.fatalError("Missing configuration entry for the Message Transmission Model:\n" + e.getMessage());
-		}
-	}
+    /**
+     * Creates a new Drop Rate Reliability Model instance.
+     */
+    public LossyDelivery() {
+        try {
+            dropRate = Configuration.getDoubleParameter("LossyDelivery/dropRate");
+        } catch (CorruptConfigurationEntryException e) {
+            Main.fatalError("Missing configuration entry for the Message Transmission Model:\n" + e.getMessage());
+        }
+    }
 }

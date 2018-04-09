@@ -36,8 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.multiLineTooltip;
 
-import javax.swing.JTextField;
-import javax.swing.JToolTip;
+import javax.swing.*;
 import javax.swing.text.Document;
 
 /**
@@ -47,75 +46,67 @@ import javax.swing.text.Document;
  */
 public class MultiLineToolTipJTextField extends JTextField {
 
-	private static final long serialVersionUID = -6546404519573955255L;
+    private static final long serialVersionUID = -6546404519573955255L;
 
-	/**
-	 * The default constructor. Just passes the arguments to the
-	 * JTextField-class'-constructor.
-	 */
-	public MultiLineToolTipJTextField() {
-		super();
-	}
+    /**
+     * The default constructor. Just passes the arguments to the
+     * JTextField-class'-constructor.
+     */
+    public MultiLineToolTipJTextField() {
+        super();
+    }
 
-	/**
-	 * Just passes the arguments to the JTextField-class'-constructor.
-	 *
-	 * @param text
-	 *            the text to be displayed, or <code>null</code>
-	 */
-	public MultiLineToolTipJTextField(String text) {
-		super(text);
-	}
+    /**
+     * Just passes the arguments to the JTextField-class'-constructor.
+     *
+     * @param text the text to be displayed, or <code>null</code>
+     */
+    public MultiLineToolTipJTextField(String text) {
+        super(text);
+    }
 
-	/**
-	 * Just passes the arguments to the JTextField-class'-constructor.
-	 *
-	 * @param columns
-	 *            the number of columns to use to calculate the preferred width; if
-	 *            columns is set to zero, the preferred width will be whatever
-	 *            naturally results from the component implementation
-	 */
-	public MultiLineToolTipJTextField(int columns) {
-		super(columns);
-	}
+    /**
+     * Just passes the arguments to the JTextField-class'-constructor.
+     *
+     * @param columns the number of columns to use to calculate the preferred width; if
+     *                columns is set to zero, the preferred width will be whatever
+     *                naturally results from the component implementation
+     */
+    public MultiLineToolTipJTextField(int columns) {
+        super(columns);
+    }
 
-	/**
-	 * Just passes the arguments to the JTextField-class'-constructor.
-	 *
-	 * @param text
-	 *            the text to be displayed, or <code>null</code>
-	 * @param columns
-	 *            the number of columns to use to calculate the preferred width; if
-	 *            columns is set to zero, the preferred width will be whatever
-	 *            naturally results from the component implementation
-	 */
-	public MultiLineToolTipJTextField(String text, int columns) {
-		super(text, columns);
-	}
+    /**
+     * Just passes the arguments to the JTextField-class'-constructor.
+     *
+     * @param text    the text to be displayed, or <code>null</code>
+     * @param columns the number of columns to use to calculate the preferred width; if
+     *                columns is set to zero, the preferred width will be whatever
+     *                naturally results from the component implementation
+     */
+    public MultiLineToolTipJTextField(String text, int columns) {
+        super(text, columns);
+    }
 
-	/**
-	 * Just passes the arguments to the JTextField-class'-constructor.
-	 *
-	 * @param doc
-	 *            the text storage to use; if this is <code>null</code>, a default
-	 *            will be provided by calling the <code>createDefaultModel</code>
-	 *            method
-	 * @param text
-	 *            the initial string to display, or <code>null</code>
-	 * @param columns
-	 *            the number of columns to use to calculate the preferred width >=
-	 *            0; if <code>columns</code> is set to zero, the preferred width
-	 *            will be whatever naturally results from the component
-	 *            implementation
-	 * @exception IllegalArgumentException
-	 *                if <code>columns</code> < 0
-	 */
-	public MultiLineToolTipJTextField(Document doc, String text, int columns) {
-		super(doc, text, columns);
-	}
+    /**
+     * Just passes the arguments to the JTextField-class'-constructor.
+     *
+     * @param doc     the text storage to use; if this is <code>null</code>, a default
+     *                will be provided by calling the <code>createDefaultModel</code>
+     *                method
+     * @param text    the initial string to display, or <code>null</code>
+     * @param columns the number of columns to use to calculate the preferred width >=
+     *                0; if <code>columns</code> is set to zero, the preferred width
+     *                will be whatever naturally results from the component
+     *                implementation
+     * @throws IllegalArgumentException if <code>columns</code> < 0
+     */
+    public MultiLineToolTipJTextField(Document doc, String text, int columns) {
+        super(doc, text, columns);
+    }
 
-	@Override
-	public JToolTip createToolTip() {
-		return new MultiLineToolTip();
-	}
+    @Override
+    public JToolTip createToolTip() {
+        return new MultiLineToolTip();
+    }
 }

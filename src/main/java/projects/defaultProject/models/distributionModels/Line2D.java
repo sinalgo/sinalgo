@@ -43,64 +43,62 @@ import sinalgo.nodes.Position;
 
 /**
  * Aligns the nodes on a line.
- *
+ * <p>
  * By default, the nodes are placed on a horizontal line equally distributed
  * over the entire simulation. Optionally, the orientation of the line can be
  * specified in the configuration file with an entry as following:
  *
  * <pre>
-&lt;DistributionModel&gt;
-	&lt;Line FromX="100" FromY="80" ToX="800" ToY="450"/&gt;
-&lt;/DistributionModel&gt;
+ * &lt;DistributionModel&gt;
+ * &lt;Line FromX="100" FromY="80" ToX="800" ToY="450"/&gt;
+ * &lt;/DistributionModel&gt;
  * </pre>
- *
+ * <p>
  * where the nodes are placed on a line from (FromX,FromY) to (ToX,ToY). If only
  * one node is placed, it placed in the middle of the line.
  */
 public class Line2D extends DistributionModel {
 
-	private int i = 0; // counts number of nodes already returned
-	private double dx;
-	private double dy;
-	private double previousPositionX;
-	private double previousPositionY;
+    private double dx;
+    private double dy;
+    private double previousPositionX;
+    private double previousPositionY;
 
-	@Override
-	public void initialize() {
-		if (Configuration.hasParameter("DistributionModel/Line/FromX")
-				&& Configuration.hasParameter("DistributionModel/Line/FromY")
-				&& Configuration.hasParameter("DistributionModel/Line/ToX")
-				&& Configuration.hasParameter("DistributionModel/Line/ToY")) {
-			try {
-				previousPositionX = Configuration.getDoubleParameter("DistributionModel/Line/FromX");
-				previousPositionY = Configuration.getDoubleParameter("DistributionModel/Line/FromY");
-				dx = Configuration.getDoubleParameter("DistributionModel/Line/ToX") - previousPositionX;
-				dy = Configuration.getDoubleParameter("DistributionModel/Line/ToY") - previousPositionY;
-			} catch (CorruptConfigurationEntryException e) {
-				sinalgo.runtime.Main.fatalError(e);
-			}
-			if (numberOfNodes <= 1) { // place the single node in the middle
-				dx /= 2;
-				dy /= 2;
-			} else {
-				dx /= (numberOfNodes - 1);
-				dy /= (numberOfNodes - 1);
-				previousPositionX -= dx;
-				previousPositionY -= dy;
-			}
-		} else { // default horizontal line
-			dy = 0;
-			dx = ((double) Configuration.dimX) / (this.numberOfNodes + 1);
-			previousPositionX = 0;
-			previousPositionY = Configuration.dimY / 2;
-		}
-	}
+    @Override
+    public void initialize() {
+        if (Configuration.hasParameter("DistributionModel/Line/FromX")
+                && Configuration.hasParameter("DistributionModel/Line/FromY")
+                && Configuration.hasParameter("DistributionModel/Line/ToX")
+                && Configuration.hasParameter("DistributionModel/Line/ToY")) {
+            try {
+                previousPositionX = Configuration.getDoubleParameter("DistributionModel/Line/FromX");
+                previousPositionY = Configuration.getDoubleParameter("DistributionModel/Line/FromY");
+                dx = Configuration.getDoubleParameter("DistributionModel/Line/ToX") - previousPositionX;
+                dy = Configuration.getDoubleParameter("DistributionModel/Line/ToY") - previousPositionY;
+            } catch (CorruptConfigurationEntryException e) {
+                sinalgo.runtime.Main.fatalError(e);
+            }
+            if (numberOfNodes <= 1) { // place the single node in the middle
+                dx /= 2;
+                dy /= 2;
+            } else {
+                dx /= (numberOfNodes - 1);
+                dy /= (numberOfNodes - 1);
+                previousPositionX -= dx;
+                previousPositionY -= dy;
+            }
+        } else { // default horizontal line
+            dy = 0;
+            dx = ((double) Configuration.dimX) / (this.numberOfNodes + 1);
+            previousPositionX = 0;
+            previousPositionY = Configuration.dimY / 2;
+        }
+    }
 
-	@Override
-	public Position getNextPosition() {
-		i++;
-		previousPositionX += dx;
-		previousPositionY += dy;
-		return new Position(previousPositionX, previousPositionY, 0);
-	}
+    @Override
+    public Position getNextPosition() {
+        previousPositionX += dx;
+        previousPositionY += dy;
+        return new Position(previousPositionX, previousPositionY, 0);
+    }
 }

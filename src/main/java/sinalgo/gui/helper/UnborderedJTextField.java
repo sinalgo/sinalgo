@@ -36,13 +36,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.helper;
 
-import java.awt.Dimension;
-import java.awt.Font;
-
-import javax.swing.BorderFactory;
-
 import sinalgo.gui.multiLineTooltip.MultiLineToolTipJTextField;
 import sinalgo.nodes.NotYetImplementedException;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This is a class implementing a special form of a Text Field. It is just used
@@ -50,50 +48,48 @@ import sinalgo.nodes.NotYetImplementedException;
  */
 public class UnborderedJTextField extends MultiLineToolTipJTextField {
 
-	private static final long serialVersionUID = 3756769692591270883L;
+    private static final long serialVersionUID = 3756769692591270883L;
 
-	private static Font boldHelvetica12 = new Font("Helvetica", Font.BOLD, 12);
-	private static Font plainHelvetica12 = new Font("Helvetica", Font.PLAIN, 12);
+    private static Font boldHelvetica12 = new Font("Helvetica", Font.BOLD, 12);
+    private static Font plainHelvetica12 = new Font("Helvetica", Font.PLAIN, 12);
 
-	/**
-	 * Creates a Text field having no border that is not editable and that has a
-	 * font-type according to the parameter passed.
-	 *
-	 * @param s
-	 *            The String to display in the text field.
-	 * @param type
-	 *            The type of the font. Use Font.BOLD or Font.PLAIN
-	 */
-	public UnborderedJTextField(String s, int type) {
-		super(s);
-		this.setEditable(false);
-		this.setBorder(BorderFactory.createEmptyBorder());
-		switch (type) {
-			case Font.BOLD:
-				this.setFont(boldHelvetica12);
-				break;
-			case Font.PLAIN:
-				this.setFont(plainHelvetica12);
-				break;
-			default:
-				throw new NotYetImplementedException("There this Font-Style is not supported.");
-		}
-		this.revalidate();
-	}
+    /**
+     * Creates a Text field having no border that is not editable and that has a
+     * font-type according to the parameter passed.
+     *
+     * @param s    The String to display in the text field.
+     * @param type The type of the font. Use Font.BOLD or Font.PLAIN
+     */
+    public UnborderedJTextField(String s, int type) {
+        super(s);
+        this.setEditable(false);
+        this.setBorder(BorderFactory.createEmptyBorder());
+        switch (type) {
+            case Font.BOLD:
+                this.setFont(boldHelvetica12);
+                break;
+            case Font.PLAIN:
+                this.setFont(plainHelvetica12);
+                break;
+            default:
+                throw new NotYetImplementedException("There this Font-Style is not supported.");
+        }
+        this.revalidate();
+    }
 
-	/**
-	 * Generates a TextField without a border.
-	 */
-	public UnborderedJTextField() {
-		this.setBorder(BorderFactory.createEmptyBorder());
-		this.getPreferredSize();
-	}
+    /**
+     * Generates a TextField without a border.
+     */
+    public UnborderedJTextField() {
+        this.setBorder(BorderFactory.createEmptyBorder());
+        this.getPreferredSize();
+    }
 
-	@Override
-	public Dimension getPreferredSize() {
-		Dimension d = super.getPreferredSize();
-		// increase the preferred width a bit to avoid cutting the border of the text.
-		d.width += 2;
-		return d;
-	}
+    @Override
+    public Dimension getPreferredSize() {
+        Dimension d = super.getPreferredSize();
+        // increase the preferred width a bit to avoid cutting the border of the text.
+        d.width += 2;
+        return d;
+    }
 }

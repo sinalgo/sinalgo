@@ -36,20 +36,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.controlPanel;
 
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-
-import javax.swing.JPanel;
-import javax.swing.event.MouseInputListener;
-
 import sinalgo.gui.GUI;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.gui.transformation.Transformation3D;
 import sinalgo.runtime.Global;
+
+import javax.swing.*;
+import javax.swing.event.MouseInputListener;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 /**
  * A panel that displays the part of the graph shown on the screen. This panel
@@ -59,170 +56,167 @@ import sinalgo.runtime.Global;
 
 public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelListener {
 
-	private static final long serialVersionUID = -8525553690793845242L;
+    private static final long serialVersionUID = -8525553690793845242L;
 
-	GUI gui;
-	PositionTransformation pt;
+    private final GUI gui;
+    private final PositionTransformation pt;
 
-	/**
-	 * Default constructor
-	 *
-	 * @param aGui
-	 *            The GUI
-	 * @param aPT
-	 *            The position transformator
-	 */
-	ZoomPanel(GUI aGui, PositionTransformation aPT) {
-		this.gui = aGui;
-		this.pt = aPT;
-		this.addMouseListener(this);
-		this.addMouseMotionListener(this);
-		this.addMouseWheelListener(this);
-	}
+    /**
+     * Default constructor
+     *
+     * @param aGui The GUI
+     * @param aPT  The position transformator
+     */
+    ZoomPanel(GUI aGui, PositionTransformation aPT) {
+        this.gui = aGui;
+        this.pt = aPT;
+        this.addMouseListener(this);
+        this.addMouseMotionListener(this);
+        this.addMouseWheelListener(this);
+    }
 
-	// size of the border (in percent) around the zoomPanel graphics
-	private double borderFactor = 0.15;
+    // size of the border (in percent) around the zoomPanel graphics
+    private double borderFactor = 0.15;
 
-	/**
-	 * Determines the preferred height of this panel, given its width
-	 *
-	 * @param width
-	 *            The total width of the panel
-	 * @return the preferred height of this panel, given its width
-	 */
-	public int getPreferredHeight(int width) {
-		if (pt instanceof Transformation3D) {
-			return width;
-		} else {
-			return (int) ((1 - 2 * borderFactor) * width);
-		}
-	}
+    /**
+     * Determines the preferred height of this panel, given its width
+     *
+     * @param width The total width of the panel
+     * @return the preferred height of this panel, given its width
+     */
+    int getPreferredHeight(int width) {
+        if (pt instanceof Transformation3D) {
+            return width;
+        } else {
+            return (int) ((1 - 2 * borderFactor) * width);
+        }
+    }
 
-	@Override
-	public void paint(Graphics g) {
-		synchronized (pt) {
-			// allow some border around
-			int border = (int) (getWidth() * borderFactor);
-			if (pt instanceof Transformation3D) {
-				// but not in 3D
-				border = 0;
-			}
+    @Override
+    public void paint(Graphics g) {
+        synchronized (pt) {
+            // allow some border around
+            int border = (int) (getWidth() * borderFactor);
+            if (pt instanceof Transformation3D) {
+                // but not in 3D
+                border = 0;
+            }
 
-			int dim = Math.min(getWidth() - 2 * border, getHeight());
-			g.setColor(getBackground());
-			g.fillRect(0, 0, getWidth(), getHeight());
-			pt.drawZoomPanel(g, dim, border, 0, getWidth(), getHeight());
-		}
-	}
+            int dim = Math.min(getWidth() - 2 * border, getHeight());
+            g.setColor(getBackground());
+            g.fillRect(0, 0, getWidth(), getHeight());
+            pt.drawZoomPanel(g, dim, border, 0, getWidth(), getHeight());
+        }
+    }
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (Global.isRunning) {
-			return;
-		} // block mouse input while simulating
-			// on double click, zoom to fit or default view
-		if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() >= 2) {
-			// fit, but do not rotate
-			pt.zoomToFit(gui.getGraphPanel().getWidth(), gui.getGraphPanel().getHeight());
-			gui.setZoomFactor(pt.getZoomFactor());
-		} else if (e.getButton() == MouseEvent.BUTTON3 && e.getClickCount() >= 2) {
-			// rotate to default view
-			pt.defaultView(gui.getGraphPanel().getWidth(), gui.getGraphPanel().getHeight());
-			gui.setZoomFactor(pt.getZoomFactor());
-		}
-	}
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (Global.isRunning) {
+            return;
+        } // block mouse input while simulating
+        // on double click, zoom to fit or default view
+        if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() >= 2) {
+            // fit, but do not rotate
+            pt.zoomToFit(gui.getGraphPanel().getWidth(), gui.getGraphPanel().getHeight());
+            gui.setZoomFactor(pt.getZoomFactor());
+        } else if (e.getButton() == MouseEvent.BUTTON3 && e.getClickCount() >= 2) {
+            // rotate to default view
+            pt.defaultView(gui.getGraphPanel().getWidth(), gui.getGraphPanel().getHeight());
+            gui.setZoomFactor(pt.getZoomFactor());
+        }
+    }
 
-	Point shiftStartPoint = null;
-	Point rotateStartPoint = null;
+    private Point shiftStartPoint = null;
+    private Point rotateStartPoint = null;
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if (Global.isRunning) {
-			return;
-		} // block mouse input while simulating
-		if (e.getButton() == MouseEvent.BUTTON1) { // translate the view
-			shiftStartPoint = e.getPoint();
-			setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-		} else if (e.getButton() == MouseEvent.BUTTON3) {
-			// rotate if 3D
-			if (pt instanceof Transformation3D) {
-				rotateStartPoint = e.getPoint();
-			}
-		}
-	}
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (Global.isRunning) {
+            return;
+        } // block mouse input while simulating
+        if (e.getButton() == MouseEvent.BUTTON1) { // translate the view
+            shiftStartPoint = e.getPoint();
+            setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+        } else if (e.getButton() == MouseEvent.BUTTON3) {
+            // rotate if 3D
+            if (pt instanceof Transformation3D) {
+                rotateStartPoint = e.getPoint();
+            }
+        }
+    }
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		if (Global.isRunning) {
-			return;
-		} // block mouse input while simulating
-		if (shiftStartPoint != null || rotateStartPoint != null) {
-			gui.redrawGUI();
-		}
-		shiftStartPoint = null;
-		rotateStartPoint = null;
-		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (Global.isRunning) {
+            return;
+        } // block mouse input while simulating
+        if (shiftStartPoint != null || rotateStartPoint != null) {
+            gui.redrawGUI();
+        }
+        shiftStartPoint = null;
+        rotateStartPoint = null;
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		if (Global.isRunning) {
-			return;
-		} // block mouse input while simulating
-	}
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        if (Global.isRunning) {
+            return;
+        } // block mouse input while simulating
+    }
 
-	@Override
-	public void mouseExited(MouseEvent e) {
-		if (Global.isRunning) {
-			return;
-		} // block mouse input while simulating
-	}
+    @Override
+    public void mouseExited(MouseEvent e) {
+        if (Global.isRunning) {
+            return;
+        } // block mouse input while simulating
+    }
 
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		if (Global.isRunning) {
-			return;
-		} // block mouse input while simulating
-		if (shiftStartPoint != null) {
-			// shift the view
-			pt.moveView((int) ((shiftStartPoint.x - e.getX()) / pt.getZoomPanelZoomFactor() * pt.getZoomFactor()),
-					(int) ((shiftStartPoint.y - e.getY()) / pt.getZoomPanelZoomFactor() * pt.getZoomFactor()));
-			shiftStartPoint = e.getPoint();
-			gui.redrawControl();
-		} else if (rotateStartPoint != null) {
-			if (pt instanceof Transformation3D) {
-				Transformation3D t3d = (Transformation3D) pt;
-				t3d.rotate(e.getX() - rotateStartPoint.x, e.getY() - rotateStartPoint.y, !e.isControlDown(), true); // read
-																													// keyboard
-																													// -
-																													// ctrl
-																													// allows
-																													// to
-																													// freely
-																													// rotate
-				rotateStartPoint = e.getPoint();
-				gui.redrawControl();
-			}
-		}
-	}
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (Global.isRunning) {
+            return;
+        } // block mouse input while simulating
+        if (shiftStartPoint != null) {
+            // shift the view
+            pt.moveView((int) ((shiftStartPoint.x - e.getX()) / pt.getZoomPanelZoomFactor() * pt.getZoomFactor()),
+                    (int) ((shiftStartPoint.y - e.getY()) / pt.getZoomPanelZoomFactor() * pt.getZoomFactor()));
+            shiftStartPoint = e.getPoint();
+            gui.redrawControl();
+        } else if (rotateStartPoint != null) {
+            if (pt instanceof Transformation3D) {
+                Transformation3D t3d = (Transformation3D) pt;
+                t3d.rotate(e.getX() - rotateStartPoint.x, e.getY() - rotateStartPoint.y, !e.isControlDown(), true); // read
+                // keyboard
+                // -
+                // ctrl
+                // allows
+                // to
+                // freely
+                // rotate
+                rotateStartPoint = e.getPoint();
+                gui.redrawControl();
+            }
+        }
+    }
 
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		if (Global.isRunning) {
-			return;
-		} // block mouse input while simulating
-	}
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (Global.isRunning) {
+            return;
+        } // block mouse input while simulating
+    }
 
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
-		if (Global.isRunning) {
-			return;
-		} // block mouse input while simulating
-		int clicks = e.getWheelRotation();
-		if (clicks < 0) {
-			gui.zoom(1.08); // zoom In
-		} else {
-			gui.zoom(1.0 / 1.08); // zoom out
-		}
-	}
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        if (Global.isRunning) {
+            return;
+        } // block mouse input while simulating
+        int clicks = e.getWheelRotation();
+        if (clicks < 0) {
+            gui.zoom(1.08); // zoom In
+        } else {
+            gui.zoom(1.0 / 1.08); // zoom out
+        }
+    }
 }

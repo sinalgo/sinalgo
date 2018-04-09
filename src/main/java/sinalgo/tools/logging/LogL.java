@@ -41,61 +41,61 @@ package sinalgo.tools.logging;
  */
 public class LogL {
 
-	/**
-	 * Stuff that is always logged. You should not set this to false.
-	 */
-	public static final boolean ALWAYS = true;
-	/**
-	 * Stuff that is always logged. You should not set this to false.
-	 */
-	public static final boolean EVENT_QUEUE_DETAILS = false;
-	/**
-	 * details about errors. You should not set this to false.
-	 */
-	public static final boolean ERROR_DETAIL = true;
-	/**
-	 * Prints out all the warnings. You should not set this to false.
-	 */
-	public static final boolean WARNING = true;
-	/**
-	 * Prints out all info messages. You should not set this to false.
-	 */
-	public static final boolean INFO = true;
-	/**
-	 * Hints about strange behaviour, that perhaps wasn't intended. You should not
-	 * set this to false.
-	 */
-	public static final boolean HINTS = true;
-	/**
-	 * details about the round
-	 */
-	public static final boolean ROUND_DETAIL = false;
-	/**
-	 * details about the messages
-	 */
-	public static final boolean MESSAGE_DETAIL = false;
-	/**
-	 * Details about the interference.
-	 */
-	public static final boolean INTERFERENCE_DETAIL = false;
-	/**
-	 * details about the nodes
-	 */
-	public static final boolean NODE_DETAIL = false;
-	/**
-	 * Details about the connectivity of the nodes.
-	 */
-	public static final boolean CONNECTIVITY_DETAIL = false;
-	/**
-	 * GUI calling sequence
-	 */
-	public static final boolean GUI_SEQ = false;
-	/**
-	 * Details about the GUI
-	 */
-	public static final boolean GUI_DETAIL = false;
-	/**
-	 * More details about the GUI and the i/o of the user to the GUI.
-	 */
-	public static final boolean GUI_ULTRA_DETAIL = false;
+    /**
+     * Stuff that is always logged. You should not set this to false.
+     */
+    public static final boolean ALWAYS = true;
+    /**
+     * Stuff that is always logged. You should not set this to false.
+     */
+    public static final boolean EVENT_QUEUE_DETAILS = false;
+    /**
+     * details about errors. You should not set this to false.
+     */
+    public static final boolean ERROR_DETAIL = true;
+    /**
+     * Prints out all the warnings. You should not set this to false.
+     */
+    public static final boolean WARNING = true;
+    /**
+     * Prints out all info messages. You should not set this to false.
+     */
+    public static final boolean INFO = true;
+    /**
+     * Hints about strange behaviour, that perhaps wasn't intended. You should not
+     * set this to false.
+     */
+    public static final boolean HINTS = true;
+    /**
+     * details about the round
+     */
+    public static final boolean ROUND_DETAIL = false;
+    /**
+     * details about the messages
+     */
+    public static final boolean MESSAGE_DETAIL = false;
+    /**
+     * Details about the interference.
+     */
+    public static final boolean INTERFERENCE_DETAIL = false;
+    /**
+     * details about the nodes
+     */
+    public static final boolean NODE_DETAIL = false;
+    /**
+     * Details about the connectivity of the nodes.
+     */
+    public static final boolean CONNECTIVITY_DETAIL = false;
+    /**
+     * GUI calling sequence
+     */
+    public static final boolean GUI_SEQ = false;
+    /**
+     * Details about the GUI
+     */
+    public static final boolean GUI_DETAIL = false;
+    /**
+     * More details about the GUI and the i/o of the user to the GUI.
+     */
+    public static final boolean GUI_ULTRA_DETAIL = false;
 }

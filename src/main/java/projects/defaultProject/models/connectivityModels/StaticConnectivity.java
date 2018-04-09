@@ -46,8 +46,8 @@ import sinalgo.nodes.Node;
  */
 public class StaticConnectivity extends ConnectivityModel {
 
-	@Override
-	public boolean updateConnections(Node n) {
-		return false;
-	}
+    @Override
+    public boolean updateConnections(Node n) {
+        return false;
+    }
 }

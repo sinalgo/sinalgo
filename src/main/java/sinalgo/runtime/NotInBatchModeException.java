@@ -42,16 +42,15 @@ package sinalgo.runtime;
  */
 public class NotInBatchModeException extends Exception {
 
-	private static final long serialVersionUID = 6663694293740915780L;
+    private static final long serialVersionUID = 6663694293740915780L;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param msg
-	 *            Exception message to be propagated.
-	 */
-	public NotInBatchModeException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor.
+     *
+     * @param msg Exception message to be propagated.
+     */
+    public NotInBatchModeException(String msg) {
+        super(msg);
+    }
 
 }

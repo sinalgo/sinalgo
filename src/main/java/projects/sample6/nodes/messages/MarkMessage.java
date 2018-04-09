@@ -7,9 +7,9 @@ import sinalgo.nodes.messages.Message;
  */
 public class MarkMessage extends Message {
 
-	@Override
-	public Message clone() {
-		return this; // read-only policy
-	}
+    @Override
+    public Message clone() {
+        return this; // read-only policy
+    }
 
 }

@@ -48,17 +48,17 @@ import sinalgo.tools.statistics.Distribution;
  */
 public class Random extends DistributionModel {
 
-	// The random-number generator
-	private java.util.Random rand = Distribution.getRandom();
+    // The random-number generator
+    private java.util.Random rand = Distribution.getRandom();
 
-	@Override
-	public Position getNextPosition() {
-		double randomPosX = rand.nextDouble() * Configuration.dimX;
-		double randomPosY = rand.nextDouble() * Configuration.dimY;
-		double randomPosZ = 0;
-		if (Main.getRuntime().getTransformator().getNumberOfDimensions() == 3) {
-			randomPosZ = rand.nextDouble() * Configuration.dimZ;
-		}
-		return new Position(randomPosX, randomPosY, randomPosZ);
-	}
+    @Override
+    public Position getNextPosition() {
+        double randomPosX = rand.nextDouble() * Configuration.dimX;
+        double randomPosY = rand.nextDouble() * Configuration.dimY;
+        double randomPosZ = 0;
+        if (Main.getRuntime().getTransformator().getNumberOfDimensions() == 3) {
+            randomPosZ = rand.nextDouble() * Configuration.dimZ;
+        }
+        return new Position(randomPosX, randomPosY, randomPosZ);
+    }
 }

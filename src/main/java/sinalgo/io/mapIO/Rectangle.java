@@ -43,21 +43,21 @@ package sinalgo.io.mapIO;
  */
 public class Rectangle {
 
-	/**
-	 * The x position of top left corner of the rectangle.
-	 */
-	public int x;
-	/**
-	 * The y position of top left corner of the rectangle.
-	 */
-	public int y;
+    /**
+     * The x position of top left corner of the rectangle.
+     */
+    public int x;
+    /**
+     * The y position of top left corner of the rectangle.
+     */
+    public int y;
 
-	/**
-	 * The height of the rectangle.
-	 */
-	public int height;
-	/**
-	 * The width of the rectangle.
-	 */
-	public int width;
+    /**
+     * The height of the rectangle.
+     */
+    public int height;
+    /**
+     * The width of the rectangle.
+     */
+    public int width;
 }

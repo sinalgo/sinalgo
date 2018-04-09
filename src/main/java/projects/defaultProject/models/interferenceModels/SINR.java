@@ -65,73 +65,73 @@ import sinalgo.tools.logging.LogL;
  */
 public class SINR extends InterferenceModel {
 
-	private int alpha = 2; // the path-loss exponent
-	private double beta = 0.5; // the threshold
-	private double ambientNoise = 0; // the ambient noise
+    private int alpha = 2; // the path-loss exponent
+    private double beta = 0.5; // the threshold
+    private double ambientNoise = 0; // the ambient noise
 
-	/**
-	 * The constructor for the SignalToInterference class.
-	 */
-	public SINR() {
-		try {
-			alpha = Configuration.getIntegerParameter("SINR/alpha");
-		} catch (CorruptConfigurationEntryException e) {
-			Tools.fatalError("The configuration entry SINR/alpha is not a valid double:\n\n" + e.getMessage());
-		}
-		try {
-			beta = Configuration.getDoubleParameter("SINR/beta");
-		} catch (CorruptConfigurationEntryException e) {
-			Tools.fatalError("The configuration entry SINR/beta is not a valid double:\n\n" + e.getMessage());
-		}
-		try {
-			ambientNoise = Configuration.getDoubleParameter("SINR/noise");
-		} catch (CorruptConfigurationEntryException e) {
-			Tools.fatalError("The configuration entry SINR/noise is not a valid double:\n\n" + e.getMessage());
-		}
-	}
+    /**
+     * The constructor for the SignalToInterference class.
+     */
+    public SINR() {
+        try {
+            alpha = Configuration.getIntegerParameter("SINR/alpha");
+        } catch (CorruptConfigurationEntryException e) {
+            Tools.fatalError("The configuration entry SINR/alpha is not a valid double:\n\n" + e.getMessage());
+        }
+        try {
+            beta = Configuration.getDoubleParameter("SINR/beta");
+        } catch (CorruptConfigurationEntryException e) {
+            Tools.fatalError("The configuration entry SINR/beta is not a valid double:\n\n" + e.getMessage());
+        }
+        try {
+            ambientNoise = Configuration.getDoubleParameter("SINR/noise");
+        } catch (CorruptConfigurationEntryException e) {
+            Tools.fatalError("The configuration entry SINR/noise is not a valid double:\n\n" + e.getMessage());
+        }
+    }
 
-	@Override
-	public boolean isDisturbed(Packet p) {
-		Position receiverPos = p.destination.getPosition();
-		double distanceFromSource = p.origin.getPosition().distanceTo(receiverPos);
-		double poweredDistanceFromSource = Math.pow(distanceFromSource, alpha);
+    @Override
+    public boolean isDisturbed(Packet p) {
+        Position receiverPos = p.destination.getPosition();
+        double distanceFromSource = p.origin.getPosition().distanceTo(receiverPos);
+        double poweredDistanceFromSource = Math.pow(distanceFromSource, alpha);
 
-		double signal = p.intensity / poweredDistanceFromSource;
+        double signal = p.intensity / poweredDistanceFromSource;
 
-		double noise = ambientNoise;
+        double noise = ambientNoise;
 
-		for (Packet pack : Runtime.packetsInTheAir) { // iterate over all active packets
-			if (pack == p) {
-				continue; // that's the packet we want
-			}
-			if (pack.origin.ID == p.destination.ID) {
-				// the receiver node of p is sending a packet itself
-				if (!Configuration.canReceiveWhileSending) {
-					return true;
-				}
-				continue; // the interference created from this sender is not considered
-			}
-			// Detect multiple packets that want to arrive in parallel at the same
-			// destination.
-			if (!Configuration.canReceiveMultiplePacketsInParallel && pack.destination.ID == p.destination.ID) {
-				return true;
-			}
+        for (Packet pack : Runtime.packetsInTheAir) { // iterate over all active packets
+            if (pack == p) {
+                continue; // that's the packet we want
+            }
+            if (pack.origin.ID == p.destination.ID) {
+                // the receiver node of p is sending a packet itself
+                if (!Configuration.canReceiveWhileSending) {
+                    return true;
+                }
+                continue; // the interference created from this sender is not considered
+            }
+            // Detect multiple packets that want to arrive in parallel at the same
+            // destination.
+            if (!Configuration.canReceiveMultiplePacketsInParallel && pack.destination.ID == p.destination.ID) {
+                return true;
+            }
 
-			Position pos = pack.origin.getPosition();
-			double distance = pos.distanceTo(receiverPos);
-			double poweredDistance = Math.pow(distance, alpha);
-			noise += pack.intensity / poweredDistance;
-		}
+            Position pos = pack.origin.getPosition();
+            double distance = pos.distanceTo(receiverPos);
+            double poweredDistance = Math.pow(distance, alpha);
+            noise += pack.intensity / poweredDistance;
+        }
 
-		boolean disturbed = signal < beta * noise;
+        boolean disturbed = signal < beta * noise;
 
-		if (LogL.INTERFERENCE_DETAIL) {
-			Global.log.logln("Node " + p.destination.ID + " is checking a packet from " + p.origin.ID);
-			if (disturbed) {
-				Global.log.logln("Dropped the message due to too much interference.");
-			}
-		}
+        if (LogL.INTERFERENCE_DETAIL) {
+            Global.log.logln("Node " + p.destination.ID + " is checking a packet from " + p.origin.ID);
+            if (disturbed) {
+                Global.log.logln("Dropped the message due to too much interference.");
+            }
+        }
 
-		return disturbed;
-	}
+        return disturbed;
+    }
 }

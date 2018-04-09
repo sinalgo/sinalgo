@@ -42,14 +42,14 @@ package sinalgo.io.eps;
  */
 public class ExportException extends Exception {
 
-	private static final long serialVersionUID = -7301338592343472510L;
+    private static final long serialVersionUID = -7301338592343472510L;
 
-	/**
-	 * Creates a ExportException with the given message.
-	 *
-	 * @param message
-	 */
-	public ExportException(String message) {
-		super(message);
-	}
+    /**
+     * Creates a ExportException with the given message.
+     *
+     * @param message The message
+     */
+    public ExportException(String message) {
+        super(message);
+    }
 }

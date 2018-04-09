@@ -47,114 +47,114 @@ import sinalgo.gui.dialogs.ProgressBarUser;
  */
 public class GUIRuntime extends Runtime implements ProgressBarUser {
 
-	private GUI gui = new GUI(this);
+    private GUI gui = new GUI(this);
 
-	/**
-	 * This method returns the gui instance.
-	 *
-	 * @return The one and only instance of the gui.
-	 */
-	public GUI getGUI() {
-		return gui;
-	}
+    /**
+     * This method returns the gui instance.
+     *
+     * @return The one and only instance of the gui.
+     */
+    public GUI getGUI() {
+        return gui;
+    }
 
-	private PercentualProgressDialog pf = new PercentualProgressDialog(this, "Initialising the Nodes");
+    private PercentualProgressDialog pf = new PercentualProgressDialog(this, "Initialising the Nodes");
 
-	@Override
-	public void initConcreteRuntime() {
+    @Override
+    public void initConcreteRuntime() {
 
-		// at this point the system has to wait for the initialisation of the nodes to
-		// be finished.
-		synchronized (this) {
-			try {
-				if (!nodeCreationFinished) {
-					this.wait();
-				}
-			} catch (InterruptedException e) {
-				Main.fatalError(e);
-			}
-		}
+        // at this point the system has to wait for the initialisation of the nodes to
+        // be finished.
+        synchronized (this) {
+            try {
+                if (!nodeCreationFinished) {
+                    this.wait();
+                }
+            } catch (InterruptedException e) {
+                Main.fatalError(e);
+            }
+        }
 
-		pf.finish();
+        pf.finish();
 
-		// In async mode, the user may specify to evaluate the connections immediately
-		// at startup
-		if (Global.isAsynchronousMode && Configuration.initializeConnectionsOnStartup) {
-			if (Runtime.nodes.size() > 0) {
-				// when there are no nodes created yet, perform the initialization
-				// only during the first step.
-				AsynchronousRuntimeThread.initializeConnectivity();
-			}
-		}
+        // In async mode, the user may specify to evaluate the connections immediately
+        // at startup
+        if (Global.isAsynchronousMode && Configuration.initializeConnectionsOnStartup) {
+            if (Runtime.nodes.size() > 0) {
+                // when there are no nodes created yet, perform the initialization
+                // only during the first step.
+                AsynchronousRuntimeThread.initializeConnectivity();
+            }
+        }
 
-		// init the gui
-		gui.init();
+        // init the gui
+        gui.init();
 
-		if (this.numberOfRounds != 0) {
-			gui.setStartButtonEnabled(false);
-		}
+        if (this.numberOfRounds != 0) {
+            gui.setStartButtonEnabled(false);
+        }
 
-		// wait until the the GUI has been painted at least once
-		// this ensures that the the entire GUI has been drawn nicely
-		// before any simulation starts
-		while (!GraphPanel.firstTimePainted) {
-			try {
-				synchronized (this) {
-					wait(100);
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+        // wait until the the GUI has been painted at least once
+        // this ensures that the the entire GUI has been drawn nicely
+        // before any simulation starts
+        while (!GraphPanel.firstTimePainted) {
+            try {
+                synchronized (this) {
+                    wait(100);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	@Override
-	public void run(long rounds, boolean considerInfiniteRunFlag) {
-		if (Global.isRunning) {
-			return; // a simulation thread is still running - don't start a second one!
-		}
-		if (rounds <= 0) {
-			return;// nothing to do
-		}
-		if (considerInfiniteRunFlag && !appConfig.guiRunOperationIsLimited) {
-			rounds = Long.MAX_VALUE;
-		}
-		if (Configuration.asynchronousMode) {
-			AsynchronousRuntimeThread arT = new AsynchronousRuntimeThread(this);
-			arT.numberOfEvents = rounds;
-			arT.refreshRate = Configuration.refreshRate;
+    @Override
+    public void run(long rounds, boolean considerInfiniteRunFlag) {
+        if (Global.isRunning) {
+            return; // a simulation thread is still running - don't start a second one!
+        }
+        if (rounds <= 0) {
+            return;// nothing to do
+        }
+        if (considerInfiniteRunFlag && !appConfig.guiRunOperationIsLimited) {
+            rounds = Long.MAX_VALUE;
+        }
+        if (Configuration.asynchronousMode) {
+            AsynchronousRuntimeThread arT = new AsynchronousRuntimeThread(this);
+            arT.numberOfEvents = rounds;
+            arT.refreshRate = Configuration.refreshRate;
 
-			Global.isRunning = true;
-			// start the thread
-			arT.start();
-		} else {
-			SynchronousRuntimeThread gRT = new SynchronousRuntimeThread(this);
-			gRT.numberOfRounds = rounds;
-			gRT.refreshRate = Configuration.refreshRate;
+            Global.isRunning = true;
+            // start the thread
+            arT.start();
+        } else {
+            SynchronousRuntimeThread gRT = new SynchronousRuntimeThread(this);
+            gRT.numberOfRounds = rounds;
+            gRT.refreshRate = Configuration.refreshRate;
 
-			Global.isRunning = true;
-			// start the thread
-			gRT.start();
-		}
-	}
+            Global.isRunning = true;
+            // start the thread
+            gRT.start();
+        }
+    }
 
-	@Override
-	public void initProgress() {
-		pf.init();
-	}
+    @Override
+    public void initProgress() {
+        pf.init();
+    }
 
-	@Override
-	public void setProgress(double percent) {
-		pf.setPercentage(percent);
-	}
+    @Override
+    public void setProgress(double percent) {
+        pf.setPercentage(percent);
+    }
 
-	@Override
-	public void cancelClicked() {
-		System.exit(1);
-	}
+    @Override
+    public void cancelClicked() {
+        System.exit(1);
+    }
 
-	@Override
-	public void performMethod() {
-		this.createNodes();
-	}
+    @Override
+    public void performMethod() {
+        this.createNodes();
+    }
 }

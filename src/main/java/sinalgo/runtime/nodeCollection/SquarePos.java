@@ -48,26 +48,24 @@ package sinalgo.runtime.nodeCollection;
  */
 public class SquarePos implements NodeCollectionInfoInterface {
 
-	/**
-	 * The x coordinate of the square in the whole datastructure.
-	 */
-	public int x;
+    /**
+     * The x coordinate of the square in the whole datastructure.
+     */
+    public int x;
 
-	/**
-	 * The y coordinate of the square in the whole datastructure.
-	 */
-	public int y;
+    /**
+     * The y coordinate of the square in the whole datastructure.
+     */
+    public int y;
 
-	/**
-	 * The constructor for the SquarePos class.
-	 *
-	 * @param x
-	 *            The x coordinate of this object in the datastructure.
-	 * @param y
-	 *            The y coordinate of this object in the datastructure.
-	 */
-	public SquarePos(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
+    /**
+     * The constructor for the SquarePos class.
+     *
+     * @param x The x coordinate of this object in the datastructure.
+     * @param y The y coordinate of this object in the datastructure.
+     */
+    public SquarePos(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 }

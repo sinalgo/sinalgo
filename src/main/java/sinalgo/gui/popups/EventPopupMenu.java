@@ -36,83 +36,77 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.popups;
 
+import sinalgo.runtime.events.Event;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.ListCellRenderer;
-
-import sinalgo.runtime.events.Event;
-
 /**
  * @author rflury
- *
  */
 public class EventPopupMenu extends JPopupMenu implements ActionListener {
 
-	private static final long serialVersionUID = 315706472796346139L;
+    private static final long serialVersionUID = 315706472796346139L;
 
-	Event event;
-	JList list;
-	ListCellRenderer renderer;
-	private JMenuItem info = new JMenuItem("Info About This Event");
-	private JMenuItem delete = new JMenuItem("Delete Event");
-	private JMenuItem deleteAll = new JMenuItem("Delete All Events");
+    private Event event;
+    private JList list;
+    private ListCellRenderer renderer;
+    private JMenuItem info = new JMenuItem("Info About This Event");
+    private JMenuItem delete = new JMenuItem("Delete Event");
+    private JMenuItem deleteAll = new JMenuItem("Delete All Events");
 
-	public EventPopupMenu(Event e, JList l, ListCellRenderer lcr) {
-		this.event = e;
-		this.list = l;
-		this.renderer = lcr;
-		info.addActionListener(this);
-		delete.addActionListener(this);
-		deleteAll.addActionListener(this);
+    public EventPopupMenu(Event e, JList l, ListCellRenderer lcr) {
+        this.event = e;
+        this.list = l;
+        this.renderer = lcr;
+        info.addActionListener(this);
+        delete.addActionListener(this);
+        deleteAll.addActionListener(this);
 
-		this.add(info);
-		this.addSeparator();
-		this.add(delete);
-		this.add(deleteAll);
+        this.add(info);
+        this.addSeparator();
+        this.add(delete);
+        this.add(deleteAll);
 
-		this.addComponentListener(new ComponentListener() {
+        this.addComponentListener(new ComponentListener() {
 
-			@Override
-			public void componentHidden(ComponentEvent e) {
-				list.setCellRenderer(renderer);
-				list.repaint();
-			}
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                list.setCellRenderer(renderer);
+                list.repaint();
+            }
 
-			@Override
-			public void componentMoved(ComponentEvent e) {
-			}
+            @Override
+            public void componentMoved(ComponentEvent e) {
+            }
 
-			@Override
-			public void componentResized(ComponentEvent e) {
-			}
+            @Override
+            public void componentResized(ComponentEvent e) {
+            }
 
-			@Override
-			public void componentShown(ComponentEvent e) {
-			}
-		});
+            @Override
+            public void componentShown(ComponentEvent e) {
+            }
+        });
 
-	}
+    }
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals(info.getActionCommand())) {
-			JOptionPane.showMessageDialog(null,
-					event.getEventListText(false) + "\n" + event.getEventListToolTipText(false),
-					"Information about an Event", JOptionPane.NO_OPTION);
-		} else if (e.getActionCommand().equals(delete.getActionCommand())) {
-			sinalgo.runtime.Runtime.removeEvent(event);
-		} else if (e.getActionCommand().equals(deleteAll.getActionCommand())) {
-			sinalgo.runtime.Runtime.removeAllAsynchronousEvents();
-		}
-		list.setCellRenderer(renderer);
-		list.repaint();
-	}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals(info.getActionCommand())) {
+            JOptionPane.showMessageDialog(null,
+                    event.getEventListText(false) + "\n" + event.getEventListToolTipText(false),
+                    "Information about an Event", JOptionPane.INFORMATION_MESSAGE);
+        } else if (e.getActionCommand().equals(delete.getActionCommand())) {
+            sinalgo.runtime.Runtime.removeEvent(event);
+        } else if (e.getActionCommand().equals(deleteAll.getActionCommand())) {
+            sinalgo.runtime.Runtime.removeAllAsynchronousEvents();
+        }
+        list.setCellRenderer(renderer);
+        list.repaint();
+    }
 
 }

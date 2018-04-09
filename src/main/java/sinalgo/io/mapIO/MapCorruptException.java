@@ -41,15 +41,14 @@ package sinalgo.io.mapIO;
  */
 public class MapCorruptException extends Exception {
 
-	private static final long serialVersionUID = -6333440361800645781L;
+    private static final long serialVersionUID = -6333440361800645781L;
 
-	/**
-	 * The constructor for the MapCorruptException class.
-	 *
-	 * @param msg
-	 *            The Message for the exception.
-	 */
-	public MapCorruptException(String msg) {
-		super(msg);
-	}
+    /**
+     * The constructor for the MapCorruptException class.
+     *
+     * @param msg The Message for the exception.
+     */
+    public MapCorruptException(String msg) {
+        super(msg);
+    }
 }

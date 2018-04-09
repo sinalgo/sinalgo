@@ -36,77 +36,74 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.statistics;
 
-import java.util.Random;
-
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
+
+import java.util.Random;
 
 /**
  * An exponential distribution random number generator with parameter lambda.
  * (The expected value is 1/lambda)
- *
+ * <p>
  * If the distribution is specified in the xml configuration file, an entry like
  *
  * <pre>
-   &lt;mainTagName distribution="Exponential" lambda="xxx"/&gt;
+ * &lt;mainTagName distribution="Exponential" lambda="xxx"/&gt;
  * </pre>
- *
+ * <p>
  * is expected.
  */
 public class ExponentialDistribution extends Distribution {
 
-	private double lambda;
+    private double lambda;
 
-	/**
-	 * Creates a new exponential distribution sample generator with parameter
-	 * lambda.
-	 *
-	 * @param lambda
-	 *            The parameter of the exponential distribution. The expectation is
-	 *            1/lambda.
-	 */
-	public ExponentialDistribution(double lambda) {
-		this.lambda = lambda;
-	}
+    /**
+     * Creates a new exponential distribution sample generator with parameter
+     * lambda.
+     *
+     * @param lambda The parameter of the exponential distribution. The expectation is
+     *               1/lambda.
+     */
+    public ExponentialDistribution(double lambda) {
+        this.lambda = lambda;
+    }
 
-	/**
-	 * Creates a new uniform distribution and initializes it from the XML
-	 * configuration file.
-	 *
-	 * @param mainTagPath
-	 *            The entry-path which points to the entry in the XML configuration
-	 *            file which contains the specifications for this distribution.
-	 * @throws CorruptConfigurationEntryException
-	 *             If the configuration file is corrupt.
-	 */
-	public ExponentialDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
-		lambda = Configuration.getDoubleParameter(mainTagPath + "/lambda");
-	}
+    /**
+     * Creates a new uniform distribution and initializes it from the XML
+     * configuration file.
+     *
+     * @param mainTagPath The entry-path which points to the entry in the XML configuration
+     *                    file which contains the specifications for this distribution.
+     * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
+     */
+    public ExponentialDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
+        lambda = Configuration.getDoubleParameter(mainTagPath + "/lambda");
+    }
 
-	@Override
-	public double nextSample() {
-		return -Math.log(randomGenerator.nextDouble()) / lambda;
-	}
+    @Override
+    public double nextSample() {
+        return -Math.log(randomGenerator.nextDouble()) / lambda;
+    }
 
-	/**
-	 * Creates a random sample drawn from an exponential distribution with parameter
-	 * lambda.
-	 *
-	 * <ul>
-	 * <li>PDF: lambda * e ^ (-lambda * x)</li>
-	 * <li>CDF: 1 - e^(-lambda * x)</li>
-	 * <li>x > 0</li>
-	 * <li>lambda > 0</li>
-	 * <li>E(X) = 1/lambda</li>
-	 * <li>Var(X) = 1/(lambda^2)</li>
-	 * </ul>
-	 *
-	 * @param lambda
-	 * @return A random sample drawn from an exponential distribution with parameter
-	 *         lambda.
-	 */
-	public static double nextExponential(double lambda) {
-		Random r = Distribution.getRandom();
-		return -Math.log(r.nextDouble()) / lambda;
-	}
+    /**
+     * Creates a random sample drawn from an exponential distribution with parameter
+     * lambda.
+     *
+     * <ul>
+     * <li>PDF: lambda * e ^ (-lambda * x)</li>
+     * <li>CDF: 1 - e^(-lambda * x)</li>
+     * <li>x > 0</li>
+     * <li>lambda > 0</li>
+     * <li>E(X) = 1/lambda</li>
+     * <li>Var(X) = 1/(lambda^2)</li>
+     * </ul>
+     *
+     * @param lambda The lambda value
+     * @return A random sample drawn from an exponential distribution with parameter
+     * lambda.
+     */
+    public static double nextExponential(double lambda) {
+        Random r = Distribution.getRandom();
+        return -Math.log(r.nextDouble()) / lambda;
+    }
 }

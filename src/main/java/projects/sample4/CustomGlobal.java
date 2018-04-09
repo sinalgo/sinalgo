@@ -36,13 +36,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.sample4;
 
-import java.awt.Color;
-
-import javax.swing.JOptionPane;
-
 import sinalgo.nodes.Node;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.tools.Tools;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This class holds customized global state and methods for the framework. The
@@ -59,61 +58,61 @@ import sinalgo.tools.Tools;
  * </ul>
  *
  * @see sinalgo.runtime.AbstractCustomGlobal for more details. <br>
- *      In addition, this class also provides the possibility to extend the
- *      framework with custom methods that can be called either through the menu
- *      or via a button that is added to the GUI.
+ * In addition, this class also provides the possibility to extend the
+ * framework with custom methods that can be called either through the menu
+ * or via a button that is added to the GUI.
  */
 public class CustomGlobal extends AbstractCustomGlobal {
 
-	@Override
-	public boolean hasTerminated() {
-		return false;
-	}
+    @Override
+    public boolean hasTerminated() {
+        return false;
+    }
 
-	/**
-	 * An example of a method that will be available through the menu of the GUI.
-	 */
-	@AbstractCustomGlobal.GlobalMethod(menuText = "Echo")
-	public void echo() {
-		// Query the user for an input
-		String answer = JOptionPane.showInputDialog(null, "This is an example.\nType in any text to echo.");
-		// Show an information message
-		JOptionPane.showMessageDialog(null, "You typed '" + answer + "'", "Example Echo",
-				JOptionPane.INFORMATION_MESSAGE);
-	}
+    /**
+     * An example of a method that will be available through the menu of the GUI.
+     */
+    @AbstractCustomGlobal.GlobalMethod(menuText = "Echo")
+    public void echo() {
+        // Query the user for an input
+        String answer = JOptionPane.showInputDialog(null, "This is an example.\nType in any text to echo.");
+        // Show an information message
+        JOptionPane.showMessageDialog(null, "You typed '" + answer + "'", "Example Echo",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
 
-	/**
-	 * An example to add a button to the user interface. In this sample, the button
-	 * is labeled with a text 'GO'. Alternatively, you can specify an icon that is
-	 * shown on the button. See AbstractCustomGlobal.CustomButton for more details.
-	 */
-	@AbstractCustomGlobal.CustomButton(buttonText = "Clear", toolTipText = "Reset the color of all nodes")
-	public void sampleButton() {
-		for (Node n : Tools.getNodeList()) {
-			n.setColor(Color.BLACK);
-		}
-		Tools.repaintGUI(); // to have the changes visible immediately
-	}
+    /**
+     * An example to add a button to the user interface. In this sample, the button
+     * is labeled with a text 'GO'. Alternatively, you can specify an icon that is
+     * shown on the button. See AbstractCustomGlobal.CustomButton for more details.
+     */
+    @AbstractCustomGlobal.CustomButton(buttonText = "Clear", toolTipText = "Reset the color of all nodes")
+    public void sampleButton() {
+        for (Node n : Tools.getNodeList()) {
+            n.setColor(Color.BLACK);
+        }
+        Tools.repaintGUI(); // to have the changes visible immediately
+    }
 
-	/**
-	 * Color all nodes red.
-	 */
-	@AbstractCustomGlobal.CustomButton(imageName = "red.gif", toolTipText = "Set all nodes to red.")
-	public void redButton() {
-		for (Node n : Tools.getNodeList()) {
-			n.setColor(Color.RED);
-		}
-		Tools.repaintGUI(); // to have the changes visible immediately
-	}
+    /**
+     * Color all nodes red.
+     */
+    @AbstractCustomGlobal.CustomButton(imageName = "red.gif", toolTipText = "Set all nodes to red.")
+    public void redButton() {
+        for (Node n : Tools.getNodeList()) {
+            n.setColor(Color.RED);
+        }
+        Tools.repaintGUI(); // to have the changes visible immediately
+    }
 
-	/**
-	 * Color all nodes blue.
-	 */
-	@AbstractCustomGlobal.CustomButton(imageName = "blue.gif", toolTipText = "Set all nodes to blue.")
-	public void blueButton() {
-		for (Node n : Tools.getNodeList()) {
-			n.setColor(Color.BLUE);
-		}
-		Tools.repaintGUI(); // to have the changes visible immediately
-	}
+    /**
+     * Color all nodes blue.
+     */
+    @AbstractCustomGlobal.CustomButton(imageName = "blue.gif", toolTipText = "Set all nodes to blue.")
+    public void blueButton() {
+        for (Node n : Tools.getNodeList()) {
+            n.setColor(Color.BLUE);
+        }
+        Tools.repaintGUI(); // to have the changes visible immediately
+    }
 }

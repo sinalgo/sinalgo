@@ -41,28 +41,28 @@ package sinalgo.models;
  */
 public enum ModelType {
 
-	/**
-	 * The ConnectivityModel
-	 */
-	ConnectivityModel, // C
-	/**
-	 * The DistributionModel
-	 */
-	DistributionModel, // D
-	/**
-	 * The InterferenceModel
-	 */
-	InterferenceModel, // I
-	/**
-	 * The MessageTransmissionModel
-	 */
-	MessageTransmissionModel, // T
-	/**
-	 * The MobilityModel
-	 */
-	MobilityModel, // M
-	/**
-	 * The ReliabilityModel
-	 */
-	ReliabilityModel // R
+    /**
+     * The ConnectivityModel
+     */
+    ConnectivityModel, // C
+    /**
+     * The DistributionModel
+     */
+    DistributionModel, // D
+    /**
+     * The InterferenceModel
+     */
+    InterferenceModel, // I
+    /**
+     * The MessageTransmissionModel
+     */
+    MessageTransmissionModel, // T
+    /**
+     * The MobilityModel
+     */
+    MobilityModel, // M
+    /**
+     * The ReliabilityModel
+     */
+    ReliabilityModel // R
 }

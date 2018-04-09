@@ -43,8 +43,8 @@ package sinalgo.runtime;
  */
 public final class DefaultCustomGlobal extends AbstractCustomGlobal {
 
-	@Override
-	public boolean hasTerminated() {
-		return false;
-	}
+    @Override
+    public boolean hasTerminated() {
+        return false;
+    }
 }

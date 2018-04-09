@@ -52,42 +52,41 @@ import sinalgo.tools.Tools;
  */
 public class LakeAvoid extends RandomWayPoint {
 
-	/**
-	 * The one and only constructor.
-	 *
-	 * @throws CorruptConfigurationEntryException
-	 *             When a needed configuration entry is missing.
-	 */
-	public LakeAvoid() throws CorruptConfigurationEntryException {
-		super();
-	}
+    /**
+     * The one and only constructor.
+     *
+     * @throws CorruptConfigurationEntryException When a needed configuration entry is missing.
+     */
+    public LakeAvoid() throws CorruptConfigurationEntryException {
+        super();
+    }
 
-	@Override
-	public Position getNextPos(Node n) {
-		Map map = Tools.getBackgroundMap();
+    @Override
+    public Position getNextPos(Node n) {
+        Map map = Tools.getBackgroundMap();
 
-		Position newPos = new Position();
+        Position newPos;
 
-		boolean inLake = false;
-		if (Configuration.useMap) {
-			inLake = !map.isWhite(n.getPosition()); // we are already standing in the lake
-		}
+        boolean inLake = false;
+        if (Configuration.useMap) {
+            inLake = !map.isWhite(n.getPosition()); // we are already standing in the lake
+        }
 
-		if (inLake) {
-			Main.fatalError("A node is standing in a lake. Cannot find a step outside.");
-		}
+        if (inLake) {
+            Main.fatalError("A node is standing in a lake. Cannot find a step outside.");
+        }
 
-		do {
-			inLake = false;
-			newPos = super.getNextPos(n);
-			if (Configuration.useMap) {
-				if (!map.isWhite(newPos)) {
-					inLake = true;
-					super.remaining_hops = 0;// this foces the node to search for an other target...
-				}
-			}
-		} while (inLake);
+        do {
+            inLake = false;
+            newPos = super.getNextPos(n);
+            if (Configuration.useMap) {
+                if (!map.isWhite(newPos)) {
+                    inLake = true;
+                    super.remaining_hops = 0;// this foces the node to search for an other target...
+                }
+            }
+        } while (inLake);
 
-		return newPos;
-	}
+        return newPos;
+    }
 }

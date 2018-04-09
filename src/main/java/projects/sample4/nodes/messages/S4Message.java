@@ -36,19 +36,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.sample4.nodes.messages;
 
-import java.awt.Color;
-
 import sinalgo.nodes.messages.Message;
+
+import java.awt.*;
 
 public class S4Message extends Message {
 
-	public Color color; // the color the receiver should take
+    public Color color; // the color the receiver should take
 
-	@Override
-	public Message clone() {
-		// This is a read-only message! Receivers may not modify the message
-		// If this is not the case, we need to return a clone of this msg.
-		return this;
-	}
+    @Override
+    public Message clone() {
+        // This is a read-only message! Receivers may not modify the message
+        // If this is not the case, we need to return a clone of this msg.
+        return this;
+    }
 
 }

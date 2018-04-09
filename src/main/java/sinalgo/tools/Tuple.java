@@ -39,63 +39,59 @@ package sinalgo.tools;
 /**
  * A tuple-class which can hold two objects in a type-safe manner.
  *
- * @param <A>
- *            The type of the first entry of the tuple instance.
- * @param <B>
- *            The type of the second entry of the tuple instance.
+ * @param <A> The type of the first entry of the tuple instance.
+ * @param <B> The type of the second entry of the tuple instance.
  */
 public class Tuple<A, B> {
 
-	/**
-	 * The first value of this tuple.
-	 */
-	public A first;
+    /**
+     * The first value of this tuple.
+     */
+    public A first;
 
-	/**
-	 * The second value of this tuple
-	 */
-	public B second;
+    /**
+     * The second value of this tuple
+     */
+    public B second;
 
-	/**
-	 * Constructs a new tuple and initializes the two fields.
-	 *
-	 * @param a
-	 *            The value for the first entry
-	 * @param b
-	 *            The value for the second entry
-	 */
-	public Tuple(A a, B b) {
-		first = a;
-		second = b;
-	}
+    /**
+     * Constructs a new tuple and initializes the two fields.
+     *
+     * @param a The value for the first entry
+     * @param b The value for the second entry
+     */
+    public Tuple(A a, B b) {
+        first = a;
+        second = b;
+    }
 
-	/**
-	 * Default constructor for this class.
-	 */
-	public Tuple() {
-	}
+    /**
+     * Default constructor for this class.
+     */
+    public Tuple() {
+    }
 
-	/**
-	 * Two tuples are equal if the two pairs of objects stored in the tuplets are
-	 * equal. (non-Javadoc)
-	 *
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (o == null || !(o instanceof Tuple)) {
-			return false;
-		}
-		Tuple<?, ?> t = (Tuple<?, ?>) o;
-		if (first == null && second == null) {
-			return t.first == null && t.second == null;
-		}
-		if (first == null) {
-			return t.first == null && second.equals(t.second);
-		}
-		if (second == null) {
-			return t.second == null && first.equals(t.first);
-		}
-		return first.equals(t.first) && second.equals(t.second);
-	}
+    /**
+     * Two tuples are equal if the two pairs of objects stored in the tuplets are
+     * equal. (non-Javadoc)
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Tuple)) {
+            return false;
+        }
+        Tuple<?, ?> t = (Tuple<?, ?>) o;
+        if (first == null && second == null) {
+            return t.first == null && t.second == null;
+        }
+        if (first == null) {
+            return t.first == null && second.equals(t.second);
+        }
+        if (second == null) {
+            return t.second == null && first.equals(t.first);
+        }
+        return first.equals(t.first) && second.equals(t.second);
+    }
 }

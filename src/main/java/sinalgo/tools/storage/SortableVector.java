@@ -47,45 +47,43 @@ import java.util.Vector;
  */
 public class SortableVector<T> extends Vector<T> {
 
-	private static final long serialVersionUID = 2685289788493437402L;
+    private static final long serialVersionUID = 2685289788493437402L;
 
-	/**
-	 * Constructor specifing the initial size of the data-array
-	 *
-	 * @param size
-	 *            Initial size of the array
-	 */
-	public SortableVector(int size) {
-		super(size);
-	}
+    /**
+     * Constructor specifing the initial size of the data-array
+     *
+     * @param size Initial size of the array
+     */
+    public SortableVector(int size) {
+        super(size);
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public SortableVector() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public SortableVector() {
+        super();
+    }
 
-	/**
-	 * Sorts the contents of this vector. The elements contained in the vector may
-	 * not be null, and need to implement the Comparable interface.
-	 * <p>
-	 * Note: T needs to extend Comparable<T>
-	 */
-	public void sort() {
-		java.util.Arrays.sort(super.elementData, 0, this.size());
-	}
+    /**
+     * Sorts the contents of this vector. The elements contained in the vector may
+     * not be null, and need to implement the Comparable interface.
+     * <p>
+     * Note: T needs to extend Comparable<T>
+     */
+    public void sort() {
+        java.util.Arrays.sort(super.elementData, 0, this.size());
+    }
 
-	/**
-	 * Sorts the contents of this vector. The elements contained in the vector may
-	 * not be null.
-	 *
-	 * @param c
-	 *            The comparator to compare any two elements in the vector.
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public void sort(Comparator<? super T> c) {
-		java.util.Arrays.sort((T[]) super.elementData, 0, this.size(), c);
-	}
+    /**
+     * Sorts the contents of this vector. The elements contained in the vector may
+     * not be null.
+     *
+     * @param c The comparator to compare any two elements in the vector.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void sort(Comparator<? super T> c) {
+        java.util.Arrays.sort((T[]) super.elementData, 0, this.size(), c);
+    }
 }

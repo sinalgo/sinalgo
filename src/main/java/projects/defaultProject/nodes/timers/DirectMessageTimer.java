@@ -13,24 +13,22 @@ import sinalgo.nodes.timers.Timer;
  */
 public class DirectMessageTimer extends Timer {
 
-	Message msg; // the msg to send
-	Node target; // the node to send the msg to
+    private Message msg; // the msg to send
+    private Node target; // the node to send the msg to
 
-	/**
-	 * Create a new timer for the given message.
-	 *
-	 * @param m
-	 *            The message to send to the node n.
-	 * @param n
-	 *            The node to send the msg to
-	 */
-	public DirectMessageTimer(Message m, Node n) {
-		msg = m;
-		target = n;
-	}
+    /**
+     * Create a new timer for the given message.
+     *
+     * @param m The message to send to the node n.
+     * @param n The node to send the msg to
+     */
+    public DirectMessageTimer(Message m, Node n) {
+        msg = m;
+        target = n;
+    }
 
-	@Override
-	public void fire() {
-		this.node.sendDirect(msg, target);
-	}
+    @Override
+    public void fire() {
+        this.node.sendDirect(msg, target);
+    }
 }

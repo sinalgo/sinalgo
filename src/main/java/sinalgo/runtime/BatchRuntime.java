@@ -43,39 +43,39 @@ import sinalgo.configuration.Configuration;
  */
 public class BatchRuntime extends Runtime {
 
-	@Override
-	public void initConcreteRuntime() {
-	}
+    @Override
+    public void initConcreteRuntime() {
+    }
 
-	@Override
-	public void run(long rounds, boolean considerInfiniteRunFlag) {
-		if (Global.isRunning) {
-			return; // a simulation thread is still running - don't start a second one!
-		}
-		// if the -rounds flag is not set or negative, run as long as possible
-		if (rounds <= 0) {
-			rounds = Long.MAX_VALUE;
-		}
+    @Override
+    public void run(long rounds, boolean considerInfiniteRunFlag) {
+        if (Global.isRunning) {
+            return; // a simulation thread is still running - don't start a second one!
+        }
+        // if the -rounds flag is not set or negative, run as long as possible
+        if (rounds <= 0) {
+            rounds = Long.MAX_VALUE;
+        }
 
-		if (Configuration.asynchronousMode) {
-			AsynchronousRuntimeThread arT = new AsynchronousRuntimeThread();
-			arT.numberOfEvents = rounds;
-			Global.isRunning = true;
-			arT.start();
-		} else {
-			SynchronousRuntimeThread bRT = new SynchronousRuntimeThread();
-			bRT.numberOfRounds = rounds;
-			Global.isRunning = true;
-			bRT.start();
-		}
-	}
+        if (Configuration.asynchronousMode) {
+            AsynchronousRuntimeThread arT = new AsynchronousRuntimeThread();
+            arT.numberOfEvents = rounds;
+            Global.isRunning = true;
+            arT.start();
+        } else {
+            SynchronousRuntimeThread bRT = new SynchronousRuntimeThread();
+            bRT.numberOfRounds = rounds;
+            Global.isRunning = true;
+            bRT.start();
+        }
+    }
 
-	@Override
-	public void setProgress(double percent) {
-	}
+    @Override
+    public void setProgress(double percent) {
+    }
 
-	@Override
-	public void initProgress() {
-		createNodes();
-	}
+    @Override
+    public void initProgress() {
+        createNodes();
+    }
 }

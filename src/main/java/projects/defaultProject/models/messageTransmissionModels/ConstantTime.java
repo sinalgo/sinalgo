@@ -52,25 +52,25 @@ import sinalgo.runtime.Main;
  */
 public class ConstantTime extends MessageTransmissionModel {
 
-	private double time = 1.0;
+    private double time = 1.0;
 
-	/**
-	 * Creates a new Constant time DefaultMessageTransmissionModel. It tries to read
-	 * the parameter called ConstantTime/ConstantValue from the configuration file.
-	 * You can vary the value there.
-	 */
-	public ConstantTime() {
-		try {
-			time = Configuration.getDoubleParameter("MessageTransmission/ConstantTime");
-		} catch (CorruptConfigurationEntryException e) {
-			Main.warning(
-					"Missing or wrong entry in the configuration file for the ConstantTime DefaultMessageTransmissionModel:\n"
-							+ e.getMessage() + "\n\nDefaulting to constant transmission time of 1 time unit.");
-		}
-	}
+    /**
+     * Creates a new Constant time DefaultMessageTransmissionModel. It tries to read
+     * the parameter called ConstantTime/ConstantValue from the configuration file.
+     * You can vary the value there.
+     */
+    public ConstantTime() {
+        try {
+            time = Configuration.getDoubleParameter("MessageTransmission/ConstantTime");
+        } catch (CorruptConfigurationEntryException e) {
+            Main.warning(
+                    "Missing or wrong entry in the configuration file for the ConstantTime DefaultMessageTransmissionModel:\n"
+                            + e.getMessage() + "\n\nDefaulting to constant transmission time of 1 time unit.");
+        }
+    }
 
-	@Override
-	public double timeToReach(Node startNode, Node endNode, Message msg) {
-		return time;
-	}
+    @Override
+    public double timeToReach(Node startNode, Node endNode, Message msg) {
+        return time;
+    }
 }

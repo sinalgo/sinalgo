@@ -36,10 +36,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
-import java.lang.Thread.UncaughtExceptionHandler;
-
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
+
+import java.lang.Thread.UncaughtExceptionHandler;
 
 /**
  * This class implements a UncoughtExceptionHandler. It is used to catch all the
@@ -47,27 +47,27 @@ import sinalgo.tools.logging.Logging;
  */
 public class MyUncaughtExceptionHandler implements UncaughtExceptionHandler {
 
-	@Override
-	public void uncaughtException(Thread t, Throwable e) {
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
 
-		if (e.getClass().equals(java.lang.OutOfMemoryError.class)) {
-			Runtime.nodes = null;
-			Tools.disposeRecycledObjects(Logging.getLogger().getOutputStream());
-			System.gc();
-			java.lang.Runtime r = java.lang.Runtime.getRuntime();
-			long maxMem = r.maxMemory() / 1048576;
-			Main.fatalError("Sinalgo ran out of memory. (" + maxMem + " MB is not enough). \n"
-					+ "To allow the VM to use more memory, modify the javaVMmaxMem entry of the config file.");
-			return;
-		}
+        if (e.getClass().equals(java.lang.OutOfMemoryError.class)) {
+            Runtime.nodes = null;
+            Tools.disposeRecycledObjects(Logging.getLogger().getOutputStream());
+            System.gc();
+            java.lang.Runtime r = java.lang.Runtime.getRuntime();
+            long maxMem = r.maxMemory() / 1048576;
+            Main.fatalError("Sinalgo ran out of memory. (" + maxMem + " MB is not enough). \n"
+                    + "To allow the VM to use more memory, modify the javaVMmaxMem entry of the config file.");
+            return;
+        }
 
-		String st = "    ";
-		StackTraceElement[] ste = e.getStackTrace();
-		for (StackTraceElement element : ste) {
-			st += element.toString() + "\n    ";
-		}
-		Main.fatalError("There was an Exception in Thread " + t + " \n\n" + "Exception: " + e + ": \n\n" + "Message: "
-				+ e.getMessage() + "\n\n" + "Cause: " + e.getCause() + "\n\n" + "StackTrace: " + st);
-	}
+        StringBuilder st = new StringBuilder("    ");
+        StackTraceElement[] ste = e.getStackTrace();
+        for (StackTraceElement element : ste) {
+            st.append(element.toString()).append("\n    ");
+        }
+        Main.fatalError("There was an Exception in Thread " + t + " \n\n" + "Exception: " + e + ": \n\n" + "Message: "
+                + e.getMessage() + "\n\n" + "Cause: " + e.getCause() + "\n\n" + "StackTrace: " + st);
+    }
 
 }

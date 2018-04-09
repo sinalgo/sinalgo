@@ -48,16 +48,16 @@ import sinalgo.tools.Tools;
  */
 public class LakeAvoidRandomDistribution extends Random {
 
-	@Override
-	public Position getNextPosition() {
-		Position pos = super.getNextPosition();
-		if (Configuration.useMap) {
-			// anything else than white is considered an obstacle
-			while (!Tools.getBackgroundMap().isWhite(pos)) {
-				pos = super.getNextPosition();
-			}
-		}
-		return pos;
-	}
+    @Override
+    public Position getNextPosition() {
+        Position pos = super.getNextPosition();
+        if (Configuration.useMap) {
+            // anything else than white is considered an obstacle
+            while (!Tools.getBackgroundMap().isWhite(pos)) {
+                pos = super.getNextPosition();
+            }
+        }
+        return pos;
+    }
 
 }

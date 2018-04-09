@@ -36,18 +36,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.multiLineTooltip;
 
-import javax.swing.JList;
-import javax.swing.JToolTip;
+import javax.swing.*;
 
 /**
  * A JList having a Tooltip which can have more than one line.
  */
 public class MultilineToolTipJList extends JList {
 
-	private static final long serialVersionUID = -1778917939929406346L;
+    private static final long serialVersionUID = -1778917939929406346L;
 
-	@Override
-	public JToolTip createToolTip() {
-		return new MultiLineToolTip();
-	}
+    @Override
+    public JToolTip createToolTip() {
+        return new MultiLineToolTip();
+    }
 }

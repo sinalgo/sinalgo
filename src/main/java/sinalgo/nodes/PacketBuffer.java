@@ -52,54 +52,51 @@ import sinalgo.nodes.messages.Packet;
  */
 public interface PacketBuffer {
 
-	/**
-	 * This method returns the number of packets arriving in this round.
-	 *
-	 * @return The number of Packets arriving this node in this round.
-	 */
-	public abstract int waitingPackets();
+    /**
+     * This method returns the number of packets arriving in this round.
+     *
+     * @return The number of Packets arriving this node in this round.
+     */
+    int waitingPackets();
 
-	/**
-	 * This method adds a Packet to the buffer.
-	 *
-	 * @param p
-	 *            The packet to add to the buffer.
-	 */
-	public abstract void addPacket(Packet p);
+    /**
+     * This method adds a Packet to the buffer.
+     *
+     * @param p The packet to add to the buffer.
+     */
+    void addPacket(Packet p);
 
-	/**
-	 * This method removes a packet from the buffer. This method is called very
-	 * rarely. It is just called by the system when a packet is interferred by
-	 * interference. In all the other cases the packets are removed by iterators.
-	 *
-	 * @param p
-	 *            The Packet to remove from the buffer.
-	 */
-	public abstract void removePacket(Packet p);
+    /**
+     * This method removes a packet from the buffer. This method is called very
+     * rarely. It is just called by the system when a packet is interferred by
+     * interference. In all the other cases the packets are removed by iterators.
+     *
+     * @param p The Packet to remove from the buffer.
+     */
+    void removePacket(Packet p);
 
-	/**
-	 * Sets the positivedelivery flag of all packets to false if they are sent over
-	 * the specified edge.
-	 *
-	 * @param e
-	 *            The edge for which the packets have to be invalidated.
-	 */
-	public abstract void invalidatePacketsSentOverThisEdge(Edge e);
+    /**
+     * Sets the positivedelivery flag of all packets to false if they are sent over
+     * the specified edge.
+     *
+     * @param e The edge for which the packets have to be invalidated.
+     */
+    void invalidatePacketsSentOverThisEdge(Edge e);
 
-	/**
-	 * This method updates the message-buffer for the node. This means, that it
-	 * prepares all the messages that are incoming in this round for the user to get
-	 * them. Note that is Configuration.checkConnectionsEveyStep is set true it is
-	 * possible, that a message is removed in this round.
-	 */
-	public abstract void updateMessageBuffer();
+    /**
+     * This method updates the message-buffer for the node. This means, that it
+     * prepares all the messages that are incoming in this round for the user to get
+     * them. Note that is Configuration.checkConnectionsEveyStep is set true it is
+     * possible, that a message is removed in this round.
+     */
+    void updateMessageBuffer();
 
-	/**
-	 * This method returns a Inbox instance for this PacketBuffer. The inbox
-	 * instance is used to iterate over the PacketBuffer and to get the
-	 * Header-Information from the Packets.
-	 *
-	 * @return An Inbox instance for this PacketBuffer.
-	 */
-	public abstract Inbox getInbox();
+    /**
+     * This method returns a Inbox instance for this PacketBuffer. The inbox
+     * instance is used to iterate over the PacketBuffer and to get the
+     * Header-Information from the Packets.
+     *
+     * @return An Inbox instance for this PacketBuffer.
+     */
+    Inbox getInbox();
 }

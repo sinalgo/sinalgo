@@ -36,13 +36,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.sample3;
 
-import java.awt.Color;
-
 import projects.sample3.nodes.nodeImplementations.MobileNode;
 import projects.sample3.nodes.timers.SmsTimer;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.tools.Tools;
+
+import java.awt.*;
 
 /**
  * This class holds customized global state and methods for the framework. The
@@ -59,56 +59,56 @@ import sinalgo.tools.Tools;
  * </ul>
  *
  * @see sinalgo.runtime.AbstractCustomGlobal for more details. <br>
- *      In addition, this class also provides the possibility to extend the
- *      framework with custom methods that can be called either through the menu
- *      or via a button that is added to the GUI.
+ * In addition, this class also provides the possibility to extend the
+ * framework with custom methods that can be called either through the menu
+ * or via a button that is added to the GUI.
  */
 public class CustomGlobal extends AbstractCustomGlobal {
 
-	@Override
-	public boolean hasTerminated() {
-		return false;
-	}
+    @Override
+    public boolean hasTerminated() {
+        return false;
+    }
 
-	/**
-	 * An example of a method that will be available through the menu of the GUI.
-	 */
-	@AbstractCustomGlobal.GlobalMethod(menuText = "Reset Color")
-	public void resetColor() {
-		for (Node n : Tools.getNodeList()) {
-			n.setColor(Color.black);
-		}
-	}
+    /**
+     * An example of a method that will be available through the menu of the GUI.
+     */
+    @AbstractCustomGlobal.GlobalMethod(menuText = "Reset Color")
+    public void resetColor() {
+        for (Node n : Tools.getNodeList()) {
+            n.setColor(Color.black);
+        }
+    }
 
-	private boolean automaticSMS = false;
+    private boolean automaticSMS = false;
 
-	@AbstractCustomGlobal.GlobalMethod(menuText = "Toggle Automatic SMS")
-	public void toggleAutomaticSMS() {
-		automaticSMS = !automaticSMS;
-	}
+    @AbstractCustomGlobal.GlobalMethod(menuText = "Toggle Automatic SMS")
+    public void toggleAutomaticSMS() {
+        automaticSMS = !automaticSMS;
+    }
 
-	@Override
-	public void postRound() {
-		if (automaticSMS) {
-			Node sender = getRandomMobileNode();
-			Node receiver = getRandomMobileNode();
-			SmsTimer t = new SmsTimer("Automatic SMS", receiver);
-			t.startRelative(1, sender);
-			sender.setColor(Color.RED);
-			receiver.setColor(Color.BLUE);
-		}
-	}
+    @Override
+    public void postRound() {
+        if (automaticSMS) {
+            Node sender = getRandomMobileNode();
+            Node receiver = getRandomMobileNode();
+            SmsTimer t = new SmsTimer("Automatic SMS", receiver);
+            t.startRelative(1, sender);
+            sender.setColor(Color.RED);
+            receiver.setColor(Color.BLUE);
+        }
+    }
 
-	private MobileNode getRandomMobileNode() {
-		Node n = Tools.getNodeList().getRandomNode();
-		while (!(n instanceof MobileNode)) {
-			n = Tools.getNodeList().getRandomNode();
-		}
-		return (MobileNode) n;
-	}
+    private MobileNode getRandomMobileNode() {
+        Node n = Tools.getNodeList().getRandomNode();
+        while (!(n instanceof MobileNode)) {
+            n = Tools.getNodeList().getRandomNode();
+        }
+        return (MobileNode) n;
+    }
 
-	@Override
-	public void preRun() {
-		// A method called at startup, before the first round is executed.
-	}
+    @Override
+    public void preRun() {
+        // A method called at startup, before the first round is executed.
+    }
 }

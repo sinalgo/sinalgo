@@ -49,144 +49,141 @@ import sinalgo.tools.logging.LogL;
  */
 public class AsynchronousRuntimeThread extends Thread {
 
-	/**
-	 * The number of events to be executed in this run. Has to be set before the
-	 * thread is started.
-	 */
-	public long numberOfEvents = 0;
+    /**
+     * The number of events to be executed in this run. Has to be set before the
+     * thread is started.
+     */
+    public long numberOfEvents = 0;
 
-	/**
-	 * Indicates whether the connectivity is initialized or not. In Asynchronous
-	 * mode the connectivity is generated once at startup and then it does not
-	 * change anymore.
-	 */
-	public static boolean connectivityInitialized = false;
+    /**
+     * Indicates whether the connectivity is initialized or not. In Asynchronous
+     * mode the connectivity is generated once at startup and then it does not
+     * change anymore.
+     */
+    public static boolean connectivityInitialized = false;
 
-	/**
-	 * The number events the gui will be redrawn after.
-	 */
-	public long refreshRate = 0;
+    /**
+     * The number events the gui will be redrawn after.
+     */
+    public long refreshRate = 0;
 
-	private GUIRuntime runtime = null;
+    private GUIRuntime runtime = null;
 
-	private static Node lastEventNode = null;
+    private static Node lastEventNode = null;
 
-	/**
-	 * The Condtructor for the AsynchronousRuntimeThread creating an instancs with a
-	 * given GUIRuntime.
-	 *
-	 * @param runtime
-	 *            The GUIRuntime instance this thread is created for.
-	 */
-	public AsynchronousRuntimeThread(GUIRuntime runtime) {
-		this.runtime = runtime;
-	}
+    /**
+     * The Condtructor for the AsynchronousRuntimeThread creating an instancs with a
+     * given GUIRuntime.
+     *
+     * @param runtime The GUIRuntime instance this thread is created for.
+     */
+    public AsynchronousRuntimeThread(GUIRuntime runtime) {
+        this.runtime = runtime;
+    }
 
-	/**
-	 * The Condtructor for the AsynchronousRuntimeThread creating an instance of
-	 * without a given runtime. This call is absolutely the same as calling
-	 * AsynchronousRuntimeThread(null)
-	 */
-	public AsynchronousRuntimeThread() {
-		runtime = null;
-	}
+    /**
+     * The Condtructor for the AsynchronousRuntimeThread creating an instance of
+     * without a given runtime. This call is absolutely the same as calling
+     * AsynchronousRuntimeThread(null)
+     */
+    public AsynchronousRuntimeThread() {
+        runtime = null;
+    }
 
-	/**
-	 * Determines which nodes are connected according to the connectivity model.
-	 */
-	public static void initializeConnectivity() {
-		connectivityInitialized = true;
-		for (Node n : Runtime.nodes) {
-			n.getConnectivityModel().updateConnections(n);
-		}
-	}
+    /**
+     * Determines which nodes are connected according to the connectivity model.
+     */
+    public static void initializeConnectivity() {
+        connectivityInitialized = true;
+        for (Node n : Runtime.nodes) {
+            n.getConnectivityModel().updateConnections(n);
+        }
+    }
 
-	@Override
-	public void run() {
-		Global.isRunning = true;
+    @Override
+    public void run() {
+        Global.isRunning = true;
 
-		Event event = null;
+        Event event = null;
 
-		if (!connectivityInitialized && Configuration.initializeConnectionsOnStartup) {
-			initializeConnectivity();
-		}
+        if (!connectivityInitialized && Configuration.initializeConnectionsOnStartup) {
+            initializeConnectivity();
+        }
 
-		for (long i = 0; i < numberOfEvents; i++) {
-			// In GUI-mode, check whether ABORT was pressed.
-			if (runtime != null && runtime.abort) {
-				runtime.abort = false;
-				break;
-			}
-			if (event != null) {
-				event.free(); // free the previous event
-				event = null;
-			}
-			event = Runtime.eventQueue.getNextEvent(); // returns null if there is no further event
+        for (long i = 0; i < numberOfEvents; i++) {
+            // In GUI-mode, check whether ABORT was pressed.
+            if (runtime != null && runtime.abort) {
+                runtime.abort = false;
+                break;
+            }
+            if (event != null) {
+                event.free(); // free the previous event
+            }
+            event = Runtime.eventQueue.getNextEvent(); // returns null if there is no further event
 
-			if (event == null && Configuration.handleEmptyEventQueue) {
-				Global.customGlobal.handleEmptyEventQueue();
-				// and try again
-				event = Runtime.eventQueue.getNextEvent(); // returns null if there is no further event
-			}
-			if (event == null) {
-				Global.log.logln(LogL.EVENT_QUEUE_DETAILS,
-						"There is no event to be executed. Generate an event manually.");
-				if (Global.isGuiMode) {
-					break;
-				} else {
-					Main.exitApplication(); // we're in batch mode and there are no more events -> exit
-				}
-			}
+            if (event == null && Configuration.handleEmptyEventQueue) {
+                Global.customGlobal.handleEmptyEventQueue();
+                // and try again
+                event = Runtime.eventQueue.getNextEvent(); // returns null if there is no further event
+            }
+            if (event == null) {
+                Global.log.logln(LogL.EVENT_QUEUE_DETAILS,
+                        "There is no event to be executed. Generate an event manually.");
+                if (Global.isGuiMode) {
+                    break;
+                } else {
+                    Main.exitApplication(); // we're in batch mode and there are no more events -> exit
+                }
+            }
 
-			Global.currentTime = event.time;
+            Global.currentTime = event.time;
 
-			event.handle(); // does not yet free the event
+            event.handle(); // does not yet free the event
 
-			if (Global.isGuiMode) {
-				if (i % refreshRate == refreshRate - 1 && i + 1 < numberOfEvents) { // only perform if we continue with
-																					// more events
-					if (lastEventNode != null) {
-						lastEventNode.highlight(false);
-					}
-					if (event.isNodeEvent()) {
-						event.getEventNode().highlight(true);
-					}
-					lastEventNode = event.getEventNode();// may be null, if the event does not execute on a node
-					runtime.getGUI().setRoundsPerformed((Global.currentTime), EventQueue.eventNumber);
-					runtime.getGUI().setCurrentlyProcessedEvent(event); // does not store the event
-					runtime.getGUI().redrawGUINow();
-				}
-			}
-		}
+            if (Global.isGuiMode) {
+                if (i % refreshRate == refreshRate - 1 && i + 1 < numberOfEvents) { // only perform if we continue with
+                    // more events
+                    if (lastEventNode != null) {
+                        lastEventNode.highlight(false);
+                    }
+                    if (event.isNodeEvent()) {
+                        event.getEventNode().highlight(true);
+                    }
+                    lastEventNode = event.getEventNode();// may be null, if the event does not execute on a node
+                    runtime.getGUI().setRoundsPerformed((Global.currentTime), EventQueue.eventNumber);
+                    runtime.getGUI().setCurrentlyProcessedEvent(event); // does not store the event
+                    runtime.getGUI().redrawGUINow();
+                }
+            }
+        }
 
-		if (Global.isGuiMode) {
-			runtime.getGUI().setRoundsPerformed((Global.currentTime), EventQueue.eventNumber);
-			if (event != null) {
-				runtime.getGUI().setCurrentlyProcessedEvent(event);
+        if (Global.isGuiMode) {
+            runtime.getGUI().setRoundsPerformed((Global.currentTime), EventQueue.eventNumber);
+            if (event != null) {
+                runtime.getGUI().setCurrentlyProcessedEvent(event);
 
-				if (lastEventNode != null) {
-					lastEventNode.highlight(false);
-				}
-				if (event.isNodeEvent()) {
-					event.getEventNode().highlight(true);
-				}
-				lastEventNode = event.getEventNode();// may be null, if the event does not execute on a node
-			} else {
-				runtime.getGUI().setCurrentlyProcessedEvent(null);
-				if (lastEventNode != null) {
-					lastEventNode.highlight(false);
-				}
-			}
-			runtime.getGUI().redrawGUINow();
-			runtime.getGUI().setStartButtonEnabled(true);
-		} else { // Batch mode
-			Main.exitApplication(); // we're in batch mode and the required number of events have been handled ->
-									// exit
-		}
-		if (event != null) {
-			event.free();
-			event = null;
-		}
-		Global.isRunning = false;
-	}
+                if (lastEventNode != null) {
+                    lastEventNode.highlight(false);
+                }
+                if (event.isNodeEvent()) {
+                    event.getEventNode().highlight(true);
+                }
+                lastEventNode = event.getEventNode();// may be null, if the event does not execute on a node
+            } else {
+                runtime.getGUI().setCurrentlyProcessedEvent(null);
+                if (lastEventNode != null) {
+                    lastEventNode.highlight(false);
+                }
+            }
+            runtime.getGUI().redrawGUINow();
+            runtime.getGUI().setStartButtonEnabled(true);
+        } else { // Batch mode
+            Main.exitApplication(); // we're in batch mode and the required number of events have been handled ->
+            // exit
+        }
+        if (event != null) {
+            event.free();
+        }
+        Global.isRunning = false;
+    }
 }

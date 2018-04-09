@@ -47,23 +47,23 @@ import sinalgo.runtime.Main;
  */
 public class NoMobility extends MobilityModel {
 
-	private static boolean firstTime = true;
+    private static boolean firstTime = true;
 
-	@Override
-	public Position getNextPos(Node n) {
-		return n.getPosition();
-	}
+    @Override
+    public Position getNextPos(Node n) {
+        return n.getPosition();
+    }
 
-	/**
-	 * Constructor that prints a warning if interference is turned on
-	 */
-	public NoMobility() {
-		super(false);
-		if (firstTime && Configuration.mobility && Configuration.showOptimizationHints) {
-			Main.warning("At least some nodes use the '" + this.getClass().getSimpleName() + "' mobility model. "
-					+ "If you do not consider mobility at all in your project, you can "
-					+ "considerably improve performance by turning off mobility in the " + "XML configuration file.");
-			firstTime = false; // important to only have one message.
-		}
-	}
+    /**
+     * Constructor that prints a warning if interference is turned on
+     */
+    public NoMobility() {
+        super(false);
+        if (firstTime && Configuration.mobility && Configuration.showOptimizationHints) {
+            Main.warning("At least some nodes use the '" + this.getClass().getSimpleName() + "' mobility model. "
+                    + "If you do not consider mobility at all in your project, you can "
+                    + "considerably improve performance by turning off mobility in the " + "XML configuration file.");
+            firstTime = false; // important to only have one message.
+        }
+    }
 }

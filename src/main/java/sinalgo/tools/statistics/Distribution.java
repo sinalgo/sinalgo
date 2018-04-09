@@ -36,13 +36,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.statistics;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Random;
-
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Random;
 
 /**
  * Abstract class that provides the basis for distribution models, which are
@@ -54,7 +54,7 @@ import sinalgo.configuration.CorruptConfigurationEntryException;
  * a constructor that takes a string with the mainTagPath, which points to the
  * configuration file xml-entry that contains the information for the specific
  * distribution.
- * <p>
+ *
  * <b>Conventions for sub-classing this class.</b>
  * <p>
  * Naming convention: All sub-classes must have a name that ends with
@@ -66,120 +66,115 @@ import sinalgo.configuration.CorruptConfigurationEntryException;
  */
 public abstract class Distribution {
 
-	protected static Random randomGenerator; // the singleton instance of the random object. Be sure to initialize
-												// before using the first time!
-	private static long randomSeed; // the seed used for the random object
+    protected static Random randomGenerator; // the singleton instance of the random object. Be sure to initialize
+    // before using the first time!
+    private static long randomSeed; // the seed used for the random object
 
-	/**
-	 * Returns the seed value that was used for the singleton random object.
-	 *
-	 * @return the seed value that was used for the singleton random object.
-	 */
-	public static long getSeed() {
-		getRandom(); // initialize the random generator if it's not already done
-		return randomSeed;
-	}
+    /**
+     * Returns the seed value that was used for the singleton random object.
+     *
+     * @return the seed value that was used for the singleton random object.
+     */
+    public static long getSeed() {
+        getRandom(); // initialize the random generator if it's not already done
+        return randomSeed;
+    }
 
-	/**
-	 * The super-class for all distributions, ensures that the random generator
-	 * instance exists
-	 */
-	protected Distribution() {
-		getRandom(); // initialize the random generator if it's not already done
-	}
+    /**
+     * The super-class for all distributions, ensures that the random generator
+     * instance exists
+     */
+    protected Distribution() {
+        getRandom(); // initialize the random generator if it's not already done
+    }
 
-	/**
-	 * Returns the singleton random generator object of this simulation. You should
-	 * only use this random number generator in this project to ensure that the
-	 * simulatoin can be repeated by using a fixed seed. (The usage of a fixed seed
-	 * can be enforced in the XML configuration file.)
-	 *
-	 * @return the singleton random generator object of this simulation
-	 */
-	public static Random getRandom() {
-		// construct the singleton random object if it does not yet exist
-		if (randomGenerator == null) {
-			if (Configuration.useSameSeedAsInPreviousRun) {
-				randomSeed = AppConfig.getAppConfig().seedFromLastRun;
-			} else {
-				if (Configuration.useFixedSeed) {
-					randomSeed = Configuration.fixedSeed;
-				} else {
-					randomSeed = (new java.util.Random()).nextLong();
-					Configuration.fixedSeed = randomSeed;
-				}
-			}
-			randomGenerator = new Random(randomSeed); // use a random seed
-		}
-		return randomGenerator;
-	}
+    /**
+     * Returns the singleton random generator object of this simulation. You should
+     * only use this random number generator in this project to ensure that the
+     * simulatoin can be repeated by using a fixed seed. (The usage of a fixed seed
+     * can be enforced in the XML configuration file.)
+     *
+     * @return the singleton random generator object of this simulation
+     */
+    public static Random getRandom() {
+        // construct the singleton random object if it does not yet exist
+        if (randomGenerator == null) {
+            if (Configuration.useSameSeedAsInPreviousRun) {
+                randomSeed = AppConfig.getAppConfig().seedFromLastRun;
+            } else {
+                if (Configuration.useFixedSeed) {
+                    randomSeed = Configuration.fixedSeed;
+                } else {
+                    randomSeed = (new java.util.Random()).nextLong();
+                    Configuration.fixedSeed = randomSeed;
+                }
+            }
+            randomGenerator = new Random(randomSeed); // use a random seed
+        }
+        return randomGenerator;
+    }
 
-	/**
-	 * Constructs a distribution that was specified in the XML configuration file.
-	 * The entry in the configuration file is supposed to look as following:
-	 *
-	 * <pre>
-	  &lt;mainTagName distribution="X" .../&gt;
-	 * </pre>
-	 *
-	 * where <cod>mainTagName</code> is an arbitrary tag name which contains at
-	 * least one attribute called <code>distribution</code>. This attribute
-	 * specifies the name of the distribution, here denoted by <cod>X</code>. The
-	 * tag may have further attributes which are distribution specific, e.g. the
-	 * Guassian distribution expects a tag like
-	 *
-	 * <pre>
-	  &lt;mainTagName distribution="Gaussian" mean="10" variance="20"/>
-	 * </pre>
-	 * <p>
-	 * <b>Note</b> that the name of the acutal implementation of the distribution is
-	 * called XDistribution.java, where X may be 'Gaussian'.
-	 *
-	 * @param mainTagPath
-	 *            The tag-path under which the mainTagName can be found.
-	 * @return The distribution described by the configuration file entry.
-	 * @throws CorruptConfigurationEntryException
-	 *             If the configuration file is does not contain the expected
-	 *             entries.
-	 */
-	public static Distribution getDistributionFromConfigFile(String mainTagPath)
-			throws CorruptConfigurationEntryException {
-		getRandom(); // initialize the randomGenerator
-		String distributionName = Configuration.getStringParameter(mainTagPath + "/distribution");
+    /**
+     * Constructs a distribution that was specified in the XML configuration file.
+     * The entry in the configuration file is supposed to look as following:
+     *
+     * <pre>
+     * &lt;mainTagName distribution="X" .../&gt;
+     * </pre>
+     * <p>
+     * where <cod>mainTagName</code> is an arbitrary tag name which contains at
+     * least one attribute called <code>distribution</code>. This attribute
+     * specifies the name of the distribution, here denoted by <cod>X</code>. The
+     * tag may have further attributes which are distribution specific, e.g. the
+     * Guassian distribution expects a tag like
+     *
+     * <pre>
+     * &lt;mainTagName distribution="Gaussian" mean="10" variance="20"/>
+     * </pre>
+     *
+     * <b>Note</b> that the name of the acutal implementation of the distribution is
+     * called XDistribution.java, where X may be 'Gaussian'.
+     *
+     * @param mainTagPath The tag-path under which the mainTagName can be found.
+     * @return The distribution described by the configuration file entry.
+     * @throws CorruptConfigurationEntryException If the configuration file is does not contain the expected
+     *                                            entries.
+     */
+    public static Distribution getDistributionFromConfigFile(String mainTagPath)
+            throws CorruptConfigurationEntryException {
+        getRandom(); // initialize the randomGenerator
+        String distributionName = Configuration.getStringParameter(mainTagPath + "/distribution");
 
-		try {
-			Class<?> c = Class.forName("sinalgo.tools.statistics." + distributionName + "Distribution");
-			// construct the array of class-types of the objects
-			Class<?>[] parameterTypes = { String.class };
-			// find the corresponding constructor ...
-			Constructor<?> constructor = c.getConstructor(parameterTypes);
-			// ... and create an instance of the object
-			return (Distribution) constructor.newInstance(mainTagPath);
-		} catch (ClassNotFoundException e) {
-			throw new IllegalArgumentException("Cannot find an implementation of 'tools.statistics." + distributionName
-					+ "'Distribution.java' to create a distribution given its name. (" + e.getMessage() + ")");
-		} catch (NoSuchMethodException e) {
-			throw new IllegalArgumentException("Cannot find the constructor of 'tools.statistics." + distributionName
-					+ "'Distribution.java' to create a distribution given a configuration-file entry name. ("
-					+ e.getMessage() + ")");
-		} catch (InvocationTargetException e) {
-			throw new IllegalArgumentException("Cannot create an instance of 'tools.statistics." + distributionName
-					+ "'Distribution.java' (" + e.getCause().getMessage() + ")");
-		} catch (IllegalAccessException e) {
-			throw new IllegalArgumentException("Cannot create an instance of 'tools.statistics." + distributionName
-					+ "'Distribution.java' (" + e.getMessage() + ")");
-		} catch (InstantiationException e) {
-			throw new IllegalArgumentException("Cannot create an instance of 'tools.statistics." + distributionName
-					+ "'Distribution.java' (" + e.getMessage() + ")");
-		}
-	}
+        try {
+            Class<?> c = Class.forName("sinalgo.tools.statistics." + distributionName + "Distribution");
+            // construct the array of class-types of the objects
+            Class<?>[] parameterTypes = {String.class};
+            // find the corresponding constructor ...
+            Constructor<?> constructor = c.getConstructor(parameterTypes);
+            // ... and create an instance of the object
+            return (Distribution) constructor.newInstance(mainTagPath);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("Cannot find an implementation of 'tools.statistics." + distributionName
+                    + "'Distribution.java' to create a distribution given its name. (" + e.getMessage() + ")");
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("Cannot find the constructor of 'tools.statistics." + distributionName
+                    + "'Distribution.java' to create a distribution given a configuration-file entry name. ("
+                    + e.getMessage() + ")");
+        } catch (InvocationTargetException e) {
+            throw new IllegalArgumentException("Cannot create an instance of 'tools.statistics." + distributionName
+                    + "'Distribution.java' (" + e.getCause().getMessage() + ")");
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new IllegalArgumentException("Cannot create an instance of 'tools.statistics." + distributionName
+                    + "'Distribution.java' (" + e.getMessage() + ")");
+        }
+    }
 
-	/**
-	 * Returns the next random sample of this distribution.
-	 *
-	 * This method must be implemented in all proper subclasses.
-	 *
-	 * @return the next random sample of this distribution.
-	 */
-	public abstract double nextSample();
+    /**
+     * Returns the next random sample of this distribution.
+     * <p>
+     * This method must be implemented in all proper subclasses.
+     *
+     * @return the next random sample of this distribution.
+     */
+    public abstract double nextSample();
 }

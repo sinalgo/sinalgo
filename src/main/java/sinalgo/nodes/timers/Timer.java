@@ -56,126 +56,121 @@ import sinalgo.runtime.events.TimerEvent;
  */
 public abstract class Timer implements Comparable<Timer> {
 
-	/**
-	 * The node that started the timer, null if the timer executes globally
-	 */
-	protected Node node = null;
+    /**
+     * The node that started the timer, null if the timer executes globally
+     */
+    protected Node node = null;
 
-	private double fireTime = 0; // The time when this timer fires.
+    private double fireTime = 0; // The time when this timer fires.
 
-	/**
-	 * Starts this <b>global timer</b> to go off after the indicated time, where the
-	 * time is specified relative to the current time.
-	 * <p>
-	 * In synchrone mode, set the relative time to 1 to have the timer go off in the
-	 * following round.
-	 *
-	 * @param relativeTime
-	 *            The time in which the timer should go off. relativeTime must be
-	 *            greater than 0.
-	 */
-	public final void startGlobalTimer(double relativeTime) {
-		if (relativeTime <= 0) {
-			Main.fatalError("A relative time indicating when a timer should start must be strictly positive.");
-		}
-		node = null;
-		fireTime = Global.currentTime + relativeTime;
-		if (Global.isAsynchronousMode) {
-			Runtime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
-		} else {
-			Global.customGlobal.globalTimers.add(this);
-		}
-	}
+    /**
+     * Starts this <b>global timer</b> to go off after the indicated time, where the
+     * time is specified relative to the current time.
+     * <p>
+     * In synchrone mode, set the relative time to 1 to have the timer go off in the
+     * following round.
+     *
+     * @param relativeTime The time in which the timer should go off. relativeTime must be
+     *                     greater than 0.
+     */
+    public final void startGlobalTimer(double relativeTime) {
+        if (relativeTime <= 0) {
+            Main.fatalError("A relative time indicating when a timer should start must be strictly positive.");
+        }
+        node = null;
+        fireTime = Global.currentTime + relativeTime;
+        if (Global.isAsynchronousMode) {
+            Runtime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
+        } else {
+            Global.customGlobal.globalTimers.add(this);
+        }
+    }
 
-	/**
-	 * Starts this timer to go off after a certain time, where the time is specified
-	 * relative to the current time.
-	 * <p>
-	 * In synchrone mode, set the relative time to 1 to have the timer go off in the
-	 * following round.
-	 *
-	 * @param relativeTime
-	 *            The time in which the timer should go off. relativeTime must be
-	 *            greater than 0.
-	 * @param n
-	 *            The node that started the timer and on which the timer will be
-	 *            fired.
-	 */
-	public final void startRelative(double relativeTime, Node n) {
-		if (relativeTime <= 0) {
-			Main.fatalError("A relative time indicating when a timer should start must be strictly positive.");
-		}
-		node = n;
-		fireTime = Global.currentTime + relativeTime;
-		if (Global.isAsynchronousMode) {
-			Runtime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
-		} else {
-			node.getTimers().add(this);
-		}
-	}
+    /**
+     * Starts this timer to go off after a certain time, where the time is specified
+     * relative to the current time.
+     * <p>
+     * In synchrone mode, set the relative time to 1 to have the timer go off in the
+     * following round.
+     *
+     * @param relativeTime The time in which the timer should go off. relativeTime must be
+     *                     greater than 0.
+     * @param n            The node that started the timer and on which the timer will be
+     *                     fired.
+     */
+    public final void startRelative(double relativeTime, Node n) {
+        if (relativeTime <= 0) {
+            Main.fatalError("A relative time indicating when a timer should start must be strictly positive.");
+        }
+        node = n;
+        fireTime = Global.currentTime + relativeTime;
+        if (Global.isAsynchronousMode) {
+            Runtime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
+        } else {
+            node.getTimers().add(this);
+        }
+    }
 
-	/**
-	 * Starts this timer to go off at the specified time, where the time is given
-	 * absolute.
-	 *
-	 * @param absoluteTime
-	 *            The (absolute) time when the timer should goes off. This time must
-	 *            be strictly greater than the current time.
-	 * @param n
-	 *            The node that started the timer and on which the timer will be
-	 *            fired.
-	 */
-	public final void startAbsolute(double absoluteTime, Node n) {
-		if (absoluteTime <= Global.currentTime) {
-			Main.fatalError("The absolute time when a timer goes off must be strictly larger than the current time.");
-		}
-		node = n;
-		fireTime = absoluteTime;
-		if (Global.isAsynchronousMode) {
-			Runtime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
-		} else {
-			node.getTimers().add(this);
-		}
-	}
+    /**
+     * Starts this timer to go off at the specified time, where the time is given
+     * absolute.
+     *
+     * @param absoluteTime The (absolute) time when the timer should goes off. This time must
+     *                     be strictly greater than the current time.
+     * @param n            The node that started the timer and on which the timer will be
+     *                     fired.
+     */
+    public final void startAbsolute(double absoluteTime, Node n) {
+        if (absoluteTime <= Global.currentTime) {
+            Main.fatalError("The absolute time when a timer goes off must be strictly larger than the current time.");
+        }
+        node = n;
+        fireTime = absoluteTime;
+        if (Global.isAsynchronousMode) {
+            Runtime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
+        } else {
+            node.getTimers().add(this);
+        }
+    }
 
-	@Override
-	public int compareTo(Timer t) {
-		return Double.compare(fireTime, t.fireTime);
-	}
+    @Override
+    public int compareTo(Timer t) {
+        return Double.compare(fireTime, t.fireTime);
+    }
 
-	/**
-	 * Returns the time this timer goes off.
-	 *
-	 * @return The time this timer goes off.
-	 */
-	public final double getFireTime() {
-		return fireTime;
-	}
+    /**
+     * Returns the time this timer goes off.
+     *
+     * @return The time this timer goes off.
+     */
+    public final double getFireTime() {
+        return fireTime;
+    }
 
-	/**
-	 * @return True if the timer is set for a node, false if this timer is for the
-	 *         framework.
-	 */
-	public final boolean isNodeTimer() {
-		return node != null;
-	}
+    /**
+     * @return True if the timer is set for a node, false if this timer is for the
+     * framework.
+     */
+    public final boolean isNodeTimer() {
+        return node != null;
+    }
 
-	/**
-	 * @return The node on which this timer executes, null if the timer is set for
-	 *         the framework.
-	 */
-	public final Node getTargetNode() {
-		return node;
-	}
+    /**
+     * @return The node on which this timer executes, null if the timer is set for
+     * the framework.
+     */
+    public final Node getTargetNode() {
+        return node;
+    }
 
-	/**
-	 * When the timer goes off, it calls this method, which executes the desired
-	 * task. Overwrite this method in your subclass to execute the actions that
-	 * should happen when the timer goes off.
-	 * <p>
-	 * You may access the <code>node</code> member of this class to refer to the
-	 * node on which the timer is handled.
-	 */
-	public abstract void fire();
+    /**
+     * When the timer goes off, it calls this method, which executes the desired
+     * task. Overwrite this method in your subclass to execute the actions that
+     * should happen when the timer goes off.
+     * <p>
+     * You may access the <code>node</code> member of this class to refer to the
+     * node on which the timer is handled.
+     */
+    public abstract void fire();
 
 }

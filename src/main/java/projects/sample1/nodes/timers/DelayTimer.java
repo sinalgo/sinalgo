@@ -51,40 +51,37 @@ import sinalgo.tools.logging.Logging;
  */
 public class DelayTimer extends Timer {
 
-	Message msg;
-	S1Node sender;
-	Logging log = Logging.getLogger("s1_log");
-	int interval;
+    private Message msg;
+    private S1Node sender;
+    private Logging log = Logging.getLogger("s1_log");
+    private int interval;
 
-	/**
-	 * Creates a new Timer object which will send the message repeatedly to the
-	 * receiver. The delay between the successive firings of the timer is indicated
-	 * by interval. The timer needs to be started initially, with an arbitrary
-	 * delay, after which the first message is sent. All subsequent messages are
-	 * sent with the given interval.
-	 *
-	 * @param msg
-	 *            Message to be sent.
-	 * @param sender
-	 *            The sender of the message.
-	 * @param interval
-	 *            Interval between subsequent firings of the timer.
-	 */
-	public DelayTimer(Message msg, S1Node sender, int interval) {
-		this.msg = msg;
-		this.sender = sender;
-		this.interval = interval;
-	}
+    /**
+     * Creates a new Timer object which will send the message repeatedly to the
+     * receiver. The delay between the successive firings of the timer is indicated
+     * by interval. The timer needs to be started initially, with an arbitrary
+     * delay, after which the first message is sent. All subsequent messages are
+     * sent with the given interval.
+     *
+     * @param msg      Message to be sent.
+     * @param sender   The sender of the message.
+     * @param interval Interval between subsequent firings of the timer.
+     */
+    public DelayTimer(Message msg, S1Node sender, int interval) {
+        this.msg = msg;
+        this.sender = sender;
+        this.interval = interval;
+    }
 
-	@Override
-	public void fire() {
-		if (!S1Node.isSending) {
-			return;
-		}
-		if (sender.next != null) {
-			node.send(msg, sender.next);
-			((S1Node) node).msgSentInThisRound++;
-		}
-		this.startRelative(interval, node); // recursive restart of the timer
-	}
+    @Override
+    public void fire() {
+        if (!S1Node.isSending) {
+            return;
+        }
+        if (sender.next != null) {
+            node.send(msg, sender.next);
+            ((S1Node) node).msgSentInThisRound++;
+        }
+        this.startRelative(interval, node); // recursive restart of the timer
+    }
 }

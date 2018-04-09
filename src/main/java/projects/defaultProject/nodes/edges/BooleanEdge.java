@@ -36,11 +36,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.nodes.edges;
 
-import java.awt.Graphics;
-
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.nodes.edges.Edge;
+
+import java.awt.*;
 
 /**
  * An edge that carries a boolean flag that can be used freely by the project
@@ -48,35 +48,35 @@ import sinalgo.nodes.edges.Edge;
  */
 public class BooleanEdge extends Edge {
 
-	/**
-	 * The flag of this edge, per default set to true.
-	 */
-	public boolean flag = true;
+    /**
+     * The flag of this edge, per default set to true.
+     */
+    public boolean flag = true;
 
-	/**
-	 * Set this memeber to true to draw only the boolean edges whose flag is set to
-	 * true.
-	 */
-	public static boolean onlyUseFlagedEdges = false;
+    /**
+     * Set this memeber to true to draw only the boolean edges whose flag is set to
+     * true.
+     */
+    public static boolean onlyUseFlagedEdges = false;
 
-	/**
-	 * @return Whether this edge is drawn on the GUI or to PostScript.
-	 */
-	public boolean isDrawn() {
-		return !onlyUseFlagedEdges || flag;
-	}
+    /**
+     * @return Whether this edge is drawn on the GUI or to PostScript.
+     */
+    public boolean isDrawn() {
+        return !onlyUseFlagedEdges || flag;
+    }
 
-	@Override
-	public void draw(Graphics g, PositionTransformation pt) {
-		if (isDrawn()) {
-			super.draw(g, pt);
-		}
-	}
+    @Override
+    public void draw(Graphics g, PositionTransformation pt) {
+        if (isDrawn()) {
+            super.draw(g, pt);
+        }
+    }
 
-	@Override
-	public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-		if (isDrawn()) {
-			super.drawToPostScript(pw, pt);
-		}
-	}
+    @Override
+    public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
+        if (isDrawn()) {
+            super.drawToPostScript(pw, pt);
+        }
+    }
 }

@@ -36,14 +36,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes.messages;
 
-import java.util.Stack;
-
 import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.runtime.Main;
 import sinalgo.tools.logging.Logging;
 import sinalgo.tools.storage.DoublyLinkedList;
 import sinalgo.tools.storage.DoublyLinkedListEntry;
+
+import java.util.Stack;
 
 /* TODO: base packet delivery on edge id
  *  2) While a packet is being sent, there needs to be a check in every round that the edge it uses is
@@ -68,214 +68,211 @@ import sinalgo.tools.storage.DoublyLinkedListEntry;
  */
 public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
 
-	/**
-	 * The time the message arrives its destination.
-	 */
-	public double arrivingTime;
+    /**
+     * The time the message arrives its destination.
+     */
+    public double arrivingTime;
 
-	/**
-	 * The time of the round when this message was sent.
-	 */
-	public double sendingTime;
+    /**
+     * The time of the round when this message was sent.
+     */
+    public double sendingTime;
 
-	/**
-	 * The edge over which this message is sent, may be null if the message is sent
-	 * independent of an edge or if the edge was deleted while the message is being
-	 * sent.
-	 */
-	public Edge edge;
+    /**
+     * The edge over which this message is sent, may be null if the message is sent
+     * independent of an edge or if the edge was deleted while the message is being
+     * sent.
+     */
+    public Edge edge;
 
-	/**
-	 * The intensity of the message. I.e. interference can depend on the intensity
-	 * of the message.
-	 */
-	public double intensity;
+    /**
+     * The intensity of the message. I.e. interference can depend on the intensity
+     * of the message.
+     */
+    public double intensity;
 
-	/**
-	 * The destination of this packet.
-	 */
-	public Node destination;
+    /**
+     * The destination of this packet.
+     */
+    public Node destination;
 
-	/**
-	 * The origin of this packet.
-	 */
-	public Node origin;
+    /**
+     * The origin of this packet.
+     */
+    public Node origin;
 
-	/**
-	 * True if the message will be received by the receiver, otherwise false.
-	 *
-	 * This flag is needed to invalidate the packet due to interference or link
-	 * reliability. Even if such situations cause the packet from not being
-	 * delivered, it must remain around until it arrives at the destination to cause
-	 * interference with auther packets.
-	 */
-	public boolean positiveDelivery;
+    /**
+     * True if the message will be received by the receiver, otherwise false.
+     * <p>
+     * This flag is needed to invalidate the packet due to interference or link
+     * reliability. Even if such situations cause the packet from not being
+     * delivered, it must remain around until it arrives at the destination to cause
+     * interference with auther packets.
+     */
+    public boolean positiveDelivery;
 
-	public enum PacketType {
-		UNICAST, MULTICAST, DUMMY // packets sent for other reasons, e.g. to simulate interference
-	}
+    public enum PacketType {
+        UNICAST, MULTICAST, DUMMY // packets sent for other reasons, e.g. to simulate interference
+    }
 
-	/**
-	 * The type of this message (unicast, multicast or dummy)
-	 */
-	public PacketType type;
+    /**
+     * The type of this message (unicast, multicast or dummy)
+     */
+    public PacketType type;
 
-	/**
-	 * Sets the positiveDelivery flag of this packet to false such that this packet
-	 * is not delivered.
-	 */
-	public void denyDelivery() {
-		positiveDelivery = false;
-	}
+    /**
+     * Sets the positiveDelivery flag of this packet to false such that this packet
+     * is not delivered.
+     */
+    public void denyDelivery() {
+        positiveDelivery = false;
+    }
 
-	/**
-	 * The message to send.
-	 */
-	public Message message;
+    /**
+     * The message to send.
+     */
+    public Message message;
 
-	// -----------------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------------
-	// Framework specific methods and member variables
-	// => You should not need to modify/overwrite/call/use any of these members or
-	// methods
-	// -----------------------------------------------------------------------------------
-	// -----------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------
+    // Framework specific methods and member variables
+    // => You should not need to modify/overwrite/call/use any of these members or
+    // methods
+    // -----------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------
 
-	public static int numPacketsOnTheFly = 0; // number of packets in the system, not yet freed
+    public static int numPacketsOnTheFly = 0; // number of packets in the system, not yet freed
 
-	/**
-	 * Constructor to create new Packet objects. If possible, this method returns a
-	 * recycled packet.
-	 *
-	 * @param msg
-	 *            The message to create the packet for.
-	 * @return A Packet instance, either a new one or a recycled one.
-	 */
-	public static Packet fabricatePacket(Message msg) {
-		numPacketsOnTheFly++;
-		if (freePackets.empty()) {
-			Packet p = new Packet(msg);
-			synchronized (issuedPackets) {
-				issuedPackets.append(p);
-			}
-			return p;
-		} else {
-			Packet rP = freePackets.pop();
-			if (rP.message != null) {
-				Main.fatalError(Logging.getCodePosition()
-						+ " Packet factory failed! About to return a packet that was already returned. (Probably, free() was called > 1 on this packet.)");
-			}
-			rP.ID = getNextFreeID();
-			rP.message = msg;
-			synchronized (issuedPackets) {
-				issuedPackets.append(rP);
-			}
-			return rP;
-		}
-	}
+    /**
+     * Constructor to create new Packet objects. If possible, this method returns a
+     * recycled packet.
+     *
+     * @param msg The message to create the packet for.
+     * @return A Packet instance, either a new one or a recycled one.
+     */
+    public static Packet fabricatePacket(Message msg) {
+        numPacketsOnTheFly++;
+        if (freePackets.empty()) {
+            Packet p = new Packet(msg);
+            synchronized (issuedPackets) {
+                issuedPackets.append(p);
+            }
+            return p;
+        } else {
+            Packet rP = freePackets.pop();
+            if (rP.message != null) {
+                Main.fatalError(Logging.getCodePosition()
+                        + " Packet factory failed! About to return a packet that was already returned. (Probably, free() was called > 1 on this packet.)");
+            }
+            rP.ID = getNextFreeID();
+            rP.message = msg;
+            synchronized (issuedPackets) {
+                issuedPackets.append(rP);
+            }
+            return rP;
+        }
+    }
 
-	/**
-	 * This method marks this packet as unused. This means that it adds itself to
-	 * the packet pool and can thus be recycled by the fabricatePacket-method.
-	 *
-	 * @param pack
-	 *            The packet to free.
-	 */
-	public static void free(Packet pack) {
-		synchronized (issuedPackets) {
-			if (!issuedPackets.remove(pack)) { // nothing happens if the packet is not in the list
-				System.err.println(Logging.getCodePosition()
-						+ " Bug in packet factory. Please report this error if you see this line.\n\n\n");
-			}
-		}
-		numPacketsOnTheFly--;
-		pack.destination = null;
-		pack.origin = null;
-		pack.edge = null;
-		pack.message = null;
-		freePackets.push(pack);
-	}
+    /**
+     * This method marks this packet as unused. This means that it adds itself to
+     * the packet pool and can thus be recycled by the fabricatePacket-method.
+     *
+     * @param pack The packet to free.
+     */
+    public static void free(Packet pack) {
+        synchronized (issuedPackets) {
+            if (!issuedPackets.remove(pack)) { // nothing happens if the packet is not in the list
+                System.err.println(Logging.getCodePosition()
+                        + " Bug in packet factory. Please report this error if you see this line.\n\n\n");
+            }
+        }
+        numPacketsOnTheFly--;
+        pack.destination = null;
+        pack.origin = null;
+        pack.edge = null;
+        pack.message = null;
+        freePackets.push(pack);
+    }
 
-	/**
-	 * The internal id of this packet.
-	 */
-	public long ID = 0;
+    /**
+     * The internal id of this packet.
+     */
+    public long ID;
 
-	// the next id to give to a packet
-	private static long nextID = 1;
+    // the next id to give to a packet
+    private static long nextID = 1;
 
-	/**
-	 * @return The next Free ID to be used.
-	 */
-	private static long getNextFreeID() {
-		if (nextID == 0) {
-			Main.minorError(
-					"The Packet ID counter overflowed. It is likely that the simulation continues correctly despite of this overlow.");
-		}
-		return nextID++;// implicit post-increment
-	}
+    /**
+     * @return The next Free ID to be used.
+     */
+    private static long getNextFreeID() {
+        if (nextID == 0) {
+            Main.minorError(
+                    "The Packet ID counter overflowed. It is likely that the simulation continues correctly despite of this overlow.");
+        }
+        return nextID++;// implicit post-increment
+    }
 
-	/**
-	 * This is a stack containing all the unused packet instances. To reduce the
-	 * garbage collection time, used Packets are not destroyed but are added to a
-	 * Packet pool. When a new instance is requested, the system only creates a new
-	 * instance, when the stack is empty.
-	 */
-	private static Stack<Packet> freePackets = new Stack<>();
+    /**
+     * This is a stack containing all the unused packet instances. To reduce the
+     * garbage collection time, used Packets are not destroyed but are added to a
+     * Packet pool. When a new instance is requested, the system only creates a new
+     * instance, when the stack is empty.
+     */
+    private static Stack<Packet> freePackets = new Stack<>();
 
-	/**
-	 * List of all packet-objects issued and not yet returned with free. In theory,
-	 * all of these packets are 'on the fly', i.e. being sent. In practice, some of
-	 * the packets are just being created / destroyed, or are kept for further
-	 * processing.
-	 * <p>
-	 * Note that this list is not equivalent to the 'packetsInTheAir' list used for
-	 * interference! This list simply contains all packets objects that are
-	 * currently used. For now, this member is only experimental.
-	 * <p>
-	 * Whenever accessing this member, you should synchronize on this member
-	 */
-	public static DoublyLinkedList<Packet> issuedPackets = new DoublyLinkedList<>(true);
+    /**
+     * List of all packet-objects issued and not yet returned with free. In theory,
+     * all of these packets are 'on the fly', i.e. being sent. In practice, some of
+     * the packets are just being created / destroyed, or are kept for further
+     * processing.
+     * <p>
+     * Note that this list is not equivalent to the 'packetsInTheAir' list used for
+     * interference! This list simply contains all packets objects that are
+     * currently used. For now, this member is only experimental.
+     * <p>
+     * Whenever accessing this member, you should synchronize on this member
+     */
+    public final static DoublyLinkedList<Packet> issuedPackets = new DoublyLinkedList<>(true);
 
-	public static void clearUnusedPackets() {
-		freePackets.clear();
-	}
+    public static void clearUnusedPackets() {
+        freePackets.clear();
+    }
 
-	/**
-	 * @return The number of packets ready to be reused.
-	 */
-	public static int getNumFreedPackets() {
-		return freePackets.size();
-	}
+    /**
+     * @return The number of packets ready to be reused.
+     */
+    public static int getNumFreedPackets() {
+        return freePackets.size();
+    }
 
-	/**
-	 * The constructor for the Packet class. This constructor is private to ensure
-	 * nobody uses it. The proper way to create a Packet is to get an instance by
-	 * calling the fabricatePacket() method.
-	 *
-	 * @param msg
-	 *            The message to create a packet for.
-	 */
-	private Packet(Message msg) {
-		message = msg;
-		ID = getNextFreeID();
-	}
+    /**
+     * The constructor for the Packet class. This constructor is private to ensure
+     * nobody uses it. The proper way to create a Packet is to get an instance by
+     * calling the fabricatePacket() method.
+     *
+     * @param msg The message to create a packet for.
+     */
+    private Packet(Message msg) {
+        message = msg;
+        ID = getNextFreeID();
+    }
 
-	@Override
-	public DLLFingerList getDoublyLinkedListFinger() {
-		return dllFingerList;
-	}
+    @Override
+    public DLLFingerList getDoublyLinkedListFinger() {
+        return dllFingerList;
+    }
 
-	// the DLLE entry for the DoublyLinkedList
-	private DLLFingerList dllFingerList = new DLLFingerList();
+    // the DLLE entry for the DoublyLinkedList
+    private DLLFingerList dllFingerList = new DLLFingerList();
 
-	/**
-	 * Compare method to sort lists of packets according to their arriving time.
-	 *
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(Packet p) {
-		return Double.compare(arrivingTime, p.arrivingTime);
-	}
+    /**
+     * Compare method to sort lists of packets according to their arriving time.
+     *
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(Packet p) {
+        return Double.compare(arrivingTime, p.arrivingTime);
+    }
 }

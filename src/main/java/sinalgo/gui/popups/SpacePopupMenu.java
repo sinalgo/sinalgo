@@ -36,15 +36,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.popups;
 
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JMenuItem;
-
 import sinalgo.gui.GUI;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Position;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * The class for the popupmenus displayed on the graph panel when the user
@@ -53,51 +52,49 @@ import sinalgo.nodes.Position;
  */
 public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener {
 
-	private static final long serialVersionUID = 8356598949303688723L;
+    private static final long serialVersionUID = 8356598949303688723L;
 
-	private Point pos = null;
+    private Point pos = null;
 
-	private JMenuItem add = new JMenuItem("Add Node");
+    private JMenuItem add = new JMenuItem("Add Node");
 
-	/**
-	 * The constructor for the SpacePopupMenu class.
-	 *
-	 * @param p
-	 *            The Frame to add the AddNodeDialog to if the user clicked AddNode.
-	 */
-	public SpacePopupMenu(GUI p) {
-		parent = p;
-		add.addActionListener(this);
-	}
+    /**
+     * The constructor for the SpacePopupMenu class.
+     *
+     * @param p The Frame to add the AddNodeDialog to if the user clicked AddNode.
+     */
+    public SpacePopupMenu(GUI p) {
+        parent = p;
+        add.addActionListener(this);
+    }
 
-	/**
-	 * This method composes a Popupmenu for the given position.
-	 *
-	 * @param p
-	 *            The position the user clicked to.
-	 */
-	public void compose(Point p) {
-		pos = p;
+    /**
+     * This method composes a Popupmenu for the given position.
+     *
+     * @param p The position the user clicked to.
+     */
+    public void compose(Point p) {
+        pos = p;
 
-		this.removeAll();
+        this.removeAll();
 
-		if (parent.getTransformator().supportReverseTranslation()) {
-			this.add(add);
-			this.addSeparator();
-		}
+        if (parent.getTransformator().supportReverseTranslation()) {
+            this.add(add);
+            this.addSeparator();
+        }
 
-		this.add(zoomIn);
-		this.add(zoomOut);
-	}
+        this.add(zoomIn);
+        this.add(zoomOut);
+    }
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals(add.getActionCommand())) {
-			PositionTransformation pt = parent.getTransformator();
-			if (pt.supportReverseTranslation()) {
-				pt.translateToLogicPosition(pos.x, pos.y);
-				parent.addSingleNode(new Position(pt.logicX, pt.logicY, pt.logicZ));
-			}
-		}
-	}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals(add.getActionCommand())) {
+            PositionTransformation pt = parent.getTransformator();
+            if (pt.supportReverseTranslation()) {
+                pt.translateToLogicPosition(pos.x, pos.y);
+                parent.addSingleNode(new Position(pt.logicX, pt.logicY, pt.logicZ));
+            }
+        }
+    }
 }

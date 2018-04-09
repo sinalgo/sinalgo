@@ -36,12 +36,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.nodes.nodeImplementations;
 
-import java.util.Iterator;
-
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.messages.Inbox;
+
+import java.util.Iterator;
 
 /**
  * The absolute dummy node. Does not do anything. Good for testing network
@@ -49,40 +49,38 @@ import sinalgo.nodes.messages.Inbox;
  */
 public class DummyNode extends Node {
 
-	@Override
-	public void handleMessages(Inbox inbox) {
-	}
+    @Override
+    public void handleMessages(Inbox inbox) {
+    }
 
-	@Override
-	public void preStep() {
-	}
+    @Override
+    public void preStep() {
+    }
 
-	@Override
-	public void init() {
-	}
+    @Override
+    public void init() {
+    }
 
-	@Override
-	public void neighborhoodChange() {
-	}
+    @Override
+    public void neighborhoodChange() {
+    }
 
-	@Override
-	public void postStep() {
-	}
+    @Override
+    public void postStep() {
+    }
 
-	@Override
-	public String toString() {
-		String s = "Node(" + this.ID + ") [";
-		Iterator<Edge> edgeIter = this.outgoingConnections.iterator();
-		while (edgeIter.hasNext()) {
-			Edge e = edgeIter.next();
-			Node n = e.endNode;
-			s += n.ID + " ";
-		}
-		return s + "]";
-	}
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder("Node(" + this.ID + ") [");
+        for (Edge e : this.outgoingConnections) {
+            Node n = e.endNode;
+            s.append(n.ID).append(" ");
+        }
+        return s + "]";
+    }
 
-	@Override
-	public void checkRequirements() throws WrongConfigurationException {
-	}
+    @Override
+    public void checkRequirements() throws WrongConfigurationException {
+    }
 
 }

@@ -45,22 +45,20 @@ import sinalgo.nodes.Node;
  */
 public abstract class ConnectivityModel extends Model {
 
-	@Override
-	public final ModelType getType() {
-		return ModelType.ConnectivityModel;
-	}
+    @Override
+    public final ModelType getType() {
+        return ModelType.ConnectivityModel;
+    }
 
-	/**
-	 * This function updates the connections of a node and returns whether something
-	 * has changed.
-	 *
-	 * @param n
-	 *            The node on which the connections have to be updated
-	 * @return True if an edge for this node has been added or removed, otherwise
-	 *         false.
-	 * @throws WrongConfigurationException
-	 *             When the configuration is not correct. This means, that the type
-	 *             of edges does not fit the type of nodes.
-	 */
-	public abstract boolean updateConnections(Node n) throws WrongConfigurationException;
+    /**
+     * This function updates the connections of a node and returns whether something
+     * has changed.
+     *
+     * @param n The node on which the connections have to be updated
+     * @return True if an edge for this node has been added or removed, otherwise
+     * false.
+     * @throws WrongConfigurationException When the configuration is not correct. This means, that the type
+     *                                     of edges does not fit the type of nodes.
+     */
+    public abstract boolean updateConnections(Node n) throws WrongConfigurationException;
 }

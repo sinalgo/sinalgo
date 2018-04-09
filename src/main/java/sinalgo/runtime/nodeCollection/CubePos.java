@@ -42,34 +42,31 @@ package sinalgo.runtime.nodeCollection;
  */
 public class CubePos implements NodeCollectionInfoInterface {
 
-	/**
-	 * x-Position in the 3D matrix of the geometric 3D node collection.
-	 */
-	public int x;
+    /**
+     * x-Position in the 3D matrix of the geometric 3D node collection.
+     */
+    public int x;
 
-	/**
-	 * y-Position in the 3D matrix of the geometric 3D node collection.
-	 */
-	public int y;
+    /**
+     * y-Position in the 3D matrix of the geometric 3D node collection.
+     */
+    public int y;
 
-	/**
-	 * z-Position in the 3D matrix of the geometric 3D node collection.
-	 */
-	public int z;
+    /**
+     * z-Position in the 3D matrix of the geometric 3D node collection.
+     */
+    public int z;
 
-	/**
-	 * Default constructor
-	 *
-	 * @param x
-	 *            X offset
-	 * @param y
-	 *            Y offset
-	 * @param z
-	 *            Z offset
-	 */
-	public CubePos(int x, int y, int z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
+    /**
+     * Default constructor
+     *
+     * @param x X offset
+     * @param y Y offset
+     * @param z Z offset
+     */
+    public CubePos(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 }

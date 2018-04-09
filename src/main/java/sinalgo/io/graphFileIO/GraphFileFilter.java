@@ -36,9 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.io.graphFileIO;
 
-import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
+import java.io.File;
 
 /**
  * A file filter used to display only the files with ending ".gf" and
@@ -46,20 +45,14 @@ import javax.swing.filechooser.FileFilter;
  */
 public class GraphFileFilter extends FileFilter {
 
-	@Override
-	public boolean accept(File f) {
-		String filename = f.getName();
-		if (filename != null) {
-			if (filename.endsWith(".gf") || f.isDirectory()) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean accept(File f) {
+        return f.getName().endsWith(".gf") || f.isDirectory();
+    }
 
-	@Override
-	public String getDescription() {
-		return "GraphFiles .gf";
-	}
+    @Override
+    public String getDescription() {
+        return "GraphFiles .gf";
+    }
 
 }

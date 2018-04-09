@@ -42,15 +42,14 @@ package sinalgo.runtime;
  */
 public class NotInGUIModeException extends Exception {
 
-	private static final long serialVersionUID = 487157741357666251L;
+    private static final long serialVersionUID = 487157741357666251L;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param msg
-	 *            Exception message to be propagated.
-	 */
-	public NotInGUIModeException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructor.
+     *
+     * @param msg Exception message to be propagated.
+     */
+    public NotInGUIModeException(String msg) {
+        super(msg);
+    }
 }

@@ -1,10 +1,10 @@
 package projects.defaultProject.models.distributionModels;
 
-import java.io.LineNumberReader;
-
 import sinalgo.io.positionFile.PositionFileIO;
 import sinalgo.models.DistributionModel;
 import sinalgo.nodes.Position;
+
+import java.io.LineNumberReader;
 
 /**
  * A simple helper distribution model that allows to capture the position of a
@@ -18,17 +18,17 @@ import sinalgo.nodes.Position;
  */
 public class PositionFile extends DistributionModel {
 
-	LineNumberReader reader = null;
+    private LineNumberReader reader = null;
 
-	@Override
-	public Position getNextPosition() {
-		if (reader == null) {
-			if (super.getParamString().equals("")) {
-				reader = PositionFileIO.getPositionFileReader(null);
-			} else {
-				reader = PositionFileIO.getPositionFileReader(super.getParamString());
-			}
-		}
-		return PositionFileIO.getNextPosition(reader);
-	}
+    @Override
+    public Position getNextPosition() {
+        if (reader == null) {
+            if (super.getParamString().equals("")) {
+                reader = PositionFileIO.getPositionFileReader(null);
+            } else {
+                reader = PositionFileIO.getPositionFileReader(super.getParamString());
+            }
+        }
+        return PositionFileIO.getNextPosition(reader);
+    }
 }

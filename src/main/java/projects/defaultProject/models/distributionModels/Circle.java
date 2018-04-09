@@ -45,34 +45,34 @@ import sinalgo.nodes.Position;
  */
 public class Circle extends DistributionModel {
 
-	private double radius = 0.0;
-	private double oneStep = 0.0;
-	private int number = 0;
+    private double radius = 0.0;
+    private double oneStep = 0.0;
+    private int number = 0;
 
-	@Override
-	public void initialize() {
-		String parameter = this.getParamString();
-		if (parameter.equals("")) {
-			if (Configuration.dimX < Configuration.dimY) {
-				radius = Configuration.dimX / 3.0;
-			} else {
-				radius = Configuration.dimY / 3.0;
-			}
-		} else {
-			radius = Double.parseDouble(parameter);
-		}
+    @Override
+    public void initialize() {
+        String parameter = this.getParamString();
+        if (parameter.equals("")) {
+            if (Configuration.dimX < Configuration.dimY) {
+                radius = Configuration.dimX / 3.0;
+            } else {
+                radius = Configuration.dimY / 3.0;
+            }
+        } else {
+            radius = Double.parseDouble(parameter);
+        }
 
-		oneStep = 360.0 / numberOfNodes;
-	}
+        oneStep = 360.0 / numberOfNodes;
+    }
 
-	@Override
-	public Position getNextPosition() {
-		Position pos = new Position();
-		pos.xCoord = (Configuration.dimX / 2.0) + (radius * Math.cos(Math.toRadians((number * oneStep))));
-		pos.yCoord = (Configuration.dimY / 2.0) + (radius * Math.sin(Math.toRadians((number * oneStep))));
+    @Override
+    public Position getNextPosition() {
+        Position pos = new Position();
+        pos.xCoord = (Configuration.dimX / 2.0) + (radius * Math.cos(Math.toRadians((number * oneStep))));
+        pos.yCoord = (Configuration.dimY / 2.0) + (radius * Math.sin(Math.toRadians((number * oneStep))));
 
-		number++;
+        number++;
 
-		return pos;
-	}
+        return pos;
+    }
 }

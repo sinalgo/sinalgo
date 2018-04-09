@@ -51,104 +51,103 @@ import sinalgo.tools.storage.ReusableListIterator;
  */
 public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements PacketBuffer {
 
-	// the vector of packets that arrive in this step
-	private PacketCollection arrivingPackets = new PacketCollection();
-	private ReusableListIterator<Packet> bufferIterator = this.iterator();
+    // the vector of packets that arrive in this step
+    private PacketCollection arrivingPackets = new PacketCollection();
+    private ReusableListIterator<Packet> bufferIterator = this.iterator();
 
-	private Inbox inbox = null;
+    private Inbox inbox = null;
 
-	/**
-	 * The default constructor of the dllPacketBuffer-class.
-	 */
-	public InboxPacketBuffer() {
-		super();
-	}
+    /**
+     * The default constructor of the dllPacketBuffer-class.
+     */
+    public InboxPacketBuffer() {
+        super();
+    }
 
-	/**
-	 * Creates a new instance of a DLLPacketBuffer.
-	 * <p>
-	 * This method lets you specify whether entries keep their finger-entry when
-	 * they are removed from this list. This may increase performance if the same
-	 * entries are added and removed several times to/from this list.
-	 *
-	 * @param keepFinger
-	 *            If set to true, entries keep their finger for for later reuse (in
-	 *            this or a different list) when they are removed from this list.
-	 *            When set to false, the finger is removed.
-	 */
-	public InboxPacketBuffer(boolean keepFinger) {
-		super(keepFinger);
-	}
+    /**
+     * Creates a new instance of a DLLPacketBuffer.
+     * <p>
+     * This method lets you specify whether entries keep their finger-entry when
+     * they are removed from this list. This may increase performance if the same
+     * entries are added and removed several times to/from this list.
+     *
+     * @param keepFinger If set to true, entries keep their finger for for later reuse (in
+     *                   this or a different list) when they are removed from this list.
+     *                   When set to false, the finger is removed.
+     */
+    public InboxPacketBuffer(boolean keepFinger) {
+        super(keepFinger);
+    }
 
-	@Override
-	public void addPacket(Packet p) {
-		append(p);
-	}
+    @Override
+    public void addPacket(Packet p) {
+        append(p);
+    }
 
-	@Override
-	public void removePacket(Packet p) {
-		remove(p);
-	}
+    @Override
+    public void removePacket(Packet p) {
+        remove(p);
+    }
 
-	@Override
-	public void updateMessageBuffer() {
-		// ensure that the list of packets is clean (should already be empty)
-		arrivingPackets.clear();
+    @Override
+    public void updateMessageBuffer() {
+        // ensure that the list of packets is clean (should already be empty)
+        arrivingPackets.clear();
 
-		bufferIterator.reset();
-		while (bufferIterator.hasNext()) {
-			Packet p = bufferIterator.next();
+        bufferIterator.reset();
+        while (bufferIterator.hasNext()) {
+            Packet p = bufferIterator.next();
 
-			if (p.arrivingTime <= Global.currentTime) {
+            if (p.arrivingTime <= Global.currentTime) {
 
-				// only if added
-				if (Configuration.interference) {
-					// remove it from the global queue
-					Runtime.packetsInTheAir.remove(p);
-				}
+                // only if added
+                if (Configuration.interference) {
+                    // remove it from the global queue
+                    Runtime.packetsInTheAir.remove(p);
+                }
 
-				bufferIterator.remove();
-				if (p.edge != null) {
-					p.edge.removeMessageForThisEdge(p.message);
-				}
-				if (p.positiveDelivery) {
-					// successful transmission
-					arrivingPackets.add(p);
-				} else {
-					// failed transmission, drop the package
-					if (Configuration.generateNAckMessages) {
-						p.origin.addNackPacket(p); // return the packet to the sender
-					} else {
-						Packet.free(p);
-					}
-				}
-			}
-		}
-	}
+                bufferIterator.remove();
+                if (p.edge != null) {
+                    p.edge.removeMessageForThisEdge(p.message);
+                }
+                if (p.positiveDelivery) {
+                    // successful transmission
+                    arrivingPackets.add(p);
+                } else {
+                    // failed transmission, drop the package
+                    if (Configuration.generateNAckMessages) {
+                        p.origin.addNackPacket(p); // return the packet to the sender
+                    } else {
+                        Packet.free(p);
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public int waitingPackets() {
-		return arrivingPackets.size();
-	}
+    @Override
+    public int waitingPackets() {
+        return arrivingPackets.size();
+    }
 
-	@Override
-	public void invalidatePacketsSentOverThisEdge(Edge e) {
-		for (Packet p : this) {
-			if (p.edge != null && p.edge.getID() == e.getID()) {
-				p.positiveDelivery = false;
-				p.edge = null; // the edge may have been removed and should not be refered to anymore
-			}
-		}
-	}
+    @Override
+    public void invalidatePacketsSentOverThisEdge(Edge e) {
+        for (Packet p : this) {
+            if (p.edge != null && p.edge.getID() == e.getID()) {
+                p.positiveDelivery = false;
+                p.edge = null; // the edge may have been removed and should not be refered to anymore
+            }
+        }
+    }
 
-	@Override
-	public Inbox getInbox() {
-		arrivingPackets.sort();
-		if (inbox == null) {
-			inbox = new Inbox(arrivingPackets);
-		} else {
-			inbox.resetForList(arrivingPackets);
-		}
-		return inbox;
-	}
+    @Override
+    public Inbox getInbox() {
+        arrivingPackets.sort();
+        if (inbox == null) {
+            inbox = new Inbox(arrivingPackets);
+        } else {
+            inbox.resetForList(arrivingPackets);
+        }
+        return inbox;
+    }
 }

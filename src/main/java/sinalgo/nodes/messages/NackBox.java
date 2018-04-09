@@ -51,43 +51,42 @@ package sinalgo.nodes.messages;
 
 public class NackBox extends Inbox {
 
-	/**
-	 * Constructor to create a NackBox containing a single packet
-	 *
-	 * @param p
-	 */
-	public NackBox(Packet p) {
-		super(p);
-	}
+    /**
+     * Constructor to create a NackBox containing a single packet
+     *
+     * @param p The packet
+     */
+    public NackBox(Packet p) {
+        super(p);
+    }
 
-	/**
-	 * Constructor to create a NackBox containing a given list of packets
-	 *
-	 * @param list
-	 */
-	public NackBox(PacketCollection list) {
-		super(list);
-	}
+    /**
+     * Constructor to create a NackBox containing a given list of packets
+     *
+     * @param list The list of packets
+     */
+    public NackBox(PacketCollection list) {
+        super(list);
+    }
 
-	/**
-	 * Dummy constructor to create empty nackBox.
-	 */
-	public NackBox() {
-	}
+    /**
+     * Dummy constructor to create empty nackBox.
+     */
+    public NackBox() {
+    }
 
-	/**
-	 * <b>This is a framework internal method. Project developers should not need to
-	 * call this method.</b><br>
-	 * Resets the inbox to contain a single packet.
-	 *
-	 * @param p
-	 *            The packet to include in this inbox.
-	 * @return This inbox object.
-	 */
-	@Override
-	public NackBox resetForPacket(Packet p) {
-		super.resetForPacket(p);
-		return this;
-	}
+    /**
+     * <b>This is a framework internal method. Project developers should not need to
+     * call this method.</b><br>
+     * Resets the inbox to contain a single packet.
+     *
+     * @param p The packet to include in this inbox.
+     * @return This inbox object.
+     */
+    @Override
+    public NackBox resetForPacket(Packet p) {
+        super.resetForPacket(p);
+        return this;
+    }
 
 }

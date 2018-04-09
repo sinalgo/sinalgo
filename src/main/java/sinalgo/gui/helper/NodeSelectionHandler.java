@@ -45,11 +45,10 @@ import sinalgo.nodes.Node;
  */
 public interface NodeSelectionHandler {
 
-	/**
-	 * Called by the framework after the user has selected a node.
-	 *
-	 * @param n
-	 *            The selected node, null if the user aborted.
-	 */
-	public void handleNodeSelectedEvent(Node n);
+    /**
+     * Called by the framework after the user has selected a node.
+     *
+     * @param n The selected node, null if the user aborted.
+     */
+    void handleNodeSelectedEvent(Node n);
 }

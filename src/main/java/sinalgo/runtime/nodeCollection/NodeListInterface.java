@@ -36,36 +36,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime.nodeCollection;
 
-import java.util.Iterator;
-
 import sinalgo.nodes.Node;
+
+import java.util.Iterator;
 
 /**
  * The abstract class for a collection of nodes.
  */
 public interface NodeListInterface {
 
-	/**
-	 * This method adds a Node to the Collection.
-	 *
-	 * @param nw
-	 *            The node to add.
-	 */
-	public abstract void addNode(Node nw);
+    /**
+     * This method adds a Node to the Collection.
+     *
+     * @param nw The node to add.
+     */
+    void addNode(Node nw);
 
-	/**
-	 * This method removes a node from the Collection.
-	 *
-	 * @param nw
-	 *            The node to remove from the Collection.
-	 * @return True when when the node was removed successfully, otherwise false
-	 */
-	public abstract boolean removeNode(Node nw);
+    /**
+     * This method removes a node from the Collection.
+     *
+     * @param nw The node to remove from the Collection.
+     * @return True when when the node was removed successfully, otherwise false
+     */
+    boolean removeNode(Node nw);
 
-	/**
-	 * This method returns an iterator to traverse all the nodes in the collection.
-	 *
-	 * @return An Iterator over the collection.
-	 */
-	public abstract Iterator<Node> iterator();
+    /**
+     * This method returns an iterator to traverse all the nodes in the collection.
+     *
+     * @return An Iterator over the collection.
+     */
+    Iterator<Node> iterator();
 }

@@ -36,41 +36,39 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.popups;
 
+import sinalgo.gui.GUI;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-
-import sinalgo.gui.GUI;
 
 /**
  * Common items for popup menus
  */
 public abstract class AbstractPopupMenu extends JPopupMenu {
 
-	private static final long serialVersionUID = 6108642977345194041L;
+    private static final long serialVersionUID = 6108642977345194041L;
 
-	protected GUI parent = null;
+    protected GUI parent = null;
 
-	protected JMenuItem zoomIn = new JMenuItem("Zoom In");
-	protected JMenuItem zoomOut = new JMenuItem("Zoom Out");
+    protected JMenuItem zoomIn = new JMenuItem("Zoom In");
+    protected JMenuItem zoomOut = new JMenuItem("Zoom Out");
 
-	protected AbstractPopupMenu() {
-		zoomIn.addActionListener(new ZoomListener());
-		zoomOut.addActionListener(new ZoomListener());
-	}
+    protected AbstractPopupMenu() {
+        zoomIn.addActionListener(new ZoomListener());
+        zoomOut.addActionListener(new ZoomListener());
+    }
 
-	// Listening to the zoom in and zoom out action events
-	private class ZoomListener implements ActionListener {
+    // Listening to the zoom in and zoom out action events
+    private class ZoomListener implements ActionListener {
 
-		@Override
-		public void actionPerformed(ActionEvent event) {
-			if (event.getActionCommand().equals(zoomIn.getActionCommand())) {
-				parent.zoomIn();
-			} else if (event.getActionCommand().equals(zoomOut.getActionCommand())) {
-				parent.zoomOut();
-			}
-		}
-	}
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            if (event.getActionCommand().equals(zoomIn.getActionCommand())) {
+                parent.zoomIn();
+            } else if (event.getActionCommand().equals(zoomOut.getActionCommand())) {
+                parent.zoomOut();
+            }
+        }
+    }
 }

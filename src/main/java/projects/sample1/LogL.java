@@ -42,9 +42,9 @@ package projects.sample1;
  */
 public class LogL extends sinalgo.tools.logging.LogL {
 
-	/**
-	 * An additional loglevel to inform about loggings for the sending process of
-	 * sending.
-	 */
-	public static boolean SEND = true;
+    /**
+     * An additional loglevel to inform about loggings for the sending process of
+     * sending.
+     */
+    public static boolean SEND = true;
 }

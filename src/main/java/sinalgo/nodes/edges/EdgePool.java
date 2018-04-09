@@ -36,10 +36,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes.edges;
 
+import sinalgo.configuration.Configuration;
+
 import java.util.Hashtable;
 import java.util.Stack;
-
-import sinalgo.configuration.Configuration;
 
 /**
  * This class stores unused Edges to recycle them when a new one is used. This
@@ -47,75 +47,74 @@ import sinalgo.configuration.Configuration;
  */
 public class EdgePool {
 
-	private static Hashtable<String, Stack<Edge>> stacks = new Hashtable<>();
-	private static Stack<Edge> lastStack = null;
-	private static String lastStackTypeName = "";
+    private static Hashtable<String, Stack<Edge>> stacks = new Hashtable<>();
+    private static Stack<Edge> lastStack = null;
+    private static String lastStackTypeName = "";
 
-	/**
-	 * @return The number of freed edges, ready to be reused
-	 */
-	public static int getNumFreedEdges() {
-		if (lastStack != null) {
-			return lastStack.size();
-		} else {
-			return 0;
-		}
-	}
+    /**
+     * @return The number of freed edges, ready to be reused
+     */
+    public static int getNumFreedEdges() {
+        if (lastStack != null) {
+            return lastStack.size();
+        } else {
+            return 0;
+        }
+    }
 
-	/**
-	 * Removes all edges stored for reuse
-	 */
-	public static void clear() {
-		for (Stack<Edge> s : stacks.values()) {
-			s.clear();
-		}
-		stacks.clear();
-		if (lastStack != null) {
-			lastStack.clear();
-		}
-		lastStack = null;
-	}
+    /**
+     * Removes all edges stored for reuse
+     */
+    public static void clear() {
+        for (Stack<Edge> s : stacks.values()) {
+            s.clear();
+        }
+        stacks.clear();
+        if (lastStack != null) {
+            lastStack.clear();
+        }
+        lastStack = null;
+    }
 
-	/**
-	 * This method frees the given edge. This means that it adds it to the edgePool.
-	 *
-	 * @param e
-	 *            The edge to be added to the Edge Pool
-	 */
-	public void add(Edge e) {
-		String typename = e.getClass().getName();
-		Stack<Edge> st = null;
-		if (typename.equals(lastStackTypeName)) {
-			st = lastStack;
-		} else {
-			st = stacks.get(typename);
-		}
-		if (st == null) {
-			st = new Stack<>();
-			stacks.put(typename, st);
-		}
-		st.push(e);
-	}
+    /**
+     * This method frees the given edge. This means that it adds it to the edgePool.
+     *
+     * @param e The edge to be added to the Edge Pool
+     */
+    public void add(Edge e) {
+        String typename = e.getClass().getName();
+        Stack<Edge> st = null;
+        if (typename.equals(lastStackTypeName)) {
+            st = lastStack;
+        } else {
+            st = stacks.get(typename);
+        }
+        if (st == null) {
+            st = new Stack<>();
+            stacks.put(typename, st);
+        }
+        st.push(e);
+    }
 
-	/**
-	 * This method returns a Edge from the edge pool. The type of the edge is
-	 * defined through the config file.
-	 *
-	 * @return An edge of the type given as parameter, null if there is no edge to
-	 *         reuse.
-	 */
-	public Edge get() {
-		if (lastStack == null || Configuration.hasEdgeTypeChanged()) {
-			lastStackTypeName = Configuration.getEdgeType();
-			lastStack = stacks.get(lastStackTypeName);
-			if (lastStack == null) {
-				lastStack = new Stack<>();
-				stacks.put(Configuration.getEdgeType(), lastStack);
-			}
-		}
-		if (lastStack.empty()) {
-			return null;
-		}
-		return lastStack.pop();
-	}
+    /**
+     * This method returns a Edge from the edge pool. The type of the edge is
+     * defined through the config file.
+     *
+     * @return An edge of the type given as parameter, null if there is no edge to
+     * reuse.
+     */
+    public Edge get() {
+        if (lastStack == null || Configuration.hasEdgeTypeChanged()) {
+            lastStackTypeName = Configuration.getEdgeType();
+            lastStack = stacks.get(lastStackTypeName);
+            if (lastStack == null) {
+                lastStack = new Stack<>();
+                stacks.put(Configuration.getEdgeType(), lastStack);
+            }
+        }
+        if (lastStack.empty()) {
+            return null;
+        }
+        return lastStack.pop();
+    }
 }

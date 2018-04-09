@@ -36,14 +36,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.popups;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-
-import javax.swing.JMenuItem;
-
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.GUI;
 import sinalgo.gui.dialogs.NodeInfoDialog;
@@ -51,137 +43,141 @@ import sinalgo.nodes.Node;
 import sinalgo.runtime.Main;
 import sinalgo.runtime.Runtime;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+
 /**
  * The class for the popupmenus displayed on the graph panel when the user
  * presses the right mouse button over a node.
  */
 public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
 
-	private static final long serialVersionUID = 3539517948195533969L;
+    private static final long serialVersionUID = 3539517948195533969L;
 
-	private HashMap<String, Method> methodsAndDescriptions = new HashMap<>();
+    private HashMap<String, Method> methodsAndDescriptions = new HashMap<>();
 
-	private Node node = null;
-	private JMenuItem info = new JMenuItem("Info");
-	private JMenuItem delete = new JMenuItem("Delete Node");
-	private JMenuItem showCoordinateCube = new JMenuItem("Show coordinate cube");
-	private JMenuItem hideCoordinateCube = new JMenuItem("Hide coordinate cube");
+    private Node node = null;
+    private JMenuItem info = new JMenuItem("Info");
+    private JMenuItem delete = new JMenuItem("Delete Node");
+    private JMenuItem showCoordinateCube = new JMenuItem("Show coordinate cube");
+    private JMenuItem hideCoordinateCube = new JMenuItem("Hide coordinate cube");
 
-	/**
-	 * The constructor for the NodePopupMenu class.
-	 *
-	 * @param p
-	 *            The parent gui, where the popupMenu appears in.
-	 */
-	public NodePopupMenu(GUI p) {
-		parent = p;
-		info.addActionListener(this);
-		delete.addActionListener(this);
-		showCoordinateCube.addActionListener(this);
-		hideCoordinateCube.addActionListener(this);
-	}
+    /**
+     * The constructor for the NodePopupMenu class.
+     *
+     * @param p The parent gui, where the popupMenu appears in.
+     */
+    public NodePopupMenu(GUI p) {
+        parent = p;
+        info.addActionListener(this);
+        delete.addActionListener(this);
+        showCoordinateCube.addActionListener(this);
+        hideCoordinateCube.addActionListener(this);
+    }
 
-	/**
-	 * This method composes the popupmenu for the given node.
-	 *
-	 * @param n
-	 *            The node the popupmenu is about.
-	 */
-	public void compose(Node n) {
+    /**
+     * This method composes the popupmenu for the given node.
+     *
+     * @param n The node the popupmenu is about.
+     */
+    public void compose(Node n) {
 
-		node = n;
+        node = n;
 
-		methodsAndDescriptions.clear();
-		this.removeAll();
+        methodsAndDescriptions.clear();
+        this.removeAll();
 
-		this.add(info);
+        this.add(info);
 
-		if (Configuration.dimensions == 3) {
-			if (parent.getGraphPanel().containsNodeToDrawCoordinateCube(n)) {
-				this.add(hideCoordinateCube);
-			} else {
-				this.add(showCoordinateCube);
-			}
-		}
+        if (Configuration.dimensions == 3) {
+            if (parent.getGraphPanel().containsNodeToDrawCoordinateCube(n)) {
+                this.add(hideCoordinateCube);
+            } else {
+                this.add(showCoordinateCube);
+            }
+        }
 
-		this.add(delete);
+        this.add(delete);
 
-		this.addSeparator();
+        this.addSeparator();
 
-		JMenuItem dummy = new JMenuItem("No Methods specified");
-		dummy.setEnabled(false);
+        JMenuItem dummy = new JMenuItem("No Methods specified");
+        dummy.setEnabled(false);
 
-		boolean customMethods = false;
+        boolean customMethods = false;
 
-		Method[] methods = node.getClass().getMethods();
-		for (int i = 0; i < methods.length; i++) {
-			Method method = methods[i];
-			Node.NodePopupMethod info = method.getAnnotation(Node.NodePopupMethod.class);
-			if (info != null) {
-				String text = n.includeMethodInPopupMenu(method, info.menuText());
-				if (text == null) { // the user dismissed this menu item
-					continue;
-				}
-				JMenuItem item = new JMenuItem(text);
-				item.addActionListener(this); // BUGFIX for 0.75.0 -> 0.75.1 : this line was missing
-				this.add(item);
-				customMethods = true;
-				methodsAndDescriptions.put(text, method); // BUGFIX: 1st parameter was info.menuText()
-			}
-		}
+        Method[] methods = node.getClass().getMethods();
+        for (Method method : methods) {
+            Node.NodePopupMethod info = method.getAnnotation(Node.NodePopupMethod.class);
+            if (info != null) {
+                String text = n.includeMethodInPopupMenu(method, info.menuText());
+                if (text == null) { // the user dismissed this menu item
+                    continue;
+                }
+                JMenuItem item = new JMenuItem(text);
+                item.addActionListener(this); // BUGFIX for 0.75.0 -> 0.75.1 : this line was missing
+                this.add(item);
+                customMethods = true;
+                methodsAndDescriptions.put(text, method); // BUGFIX: 1st parameter was info.menuText()
+            }
+        }
 
-		if (!customMethods) {
-			this.add(dummy);
-		}
+        if (!customMethods) {
+            this.add(dummy);
+        }
 
-		this.addSeparator();
+        this.addSeparator();
 
-		this.add(zoomIn);
-		this.add(zoomOut);
-	}
+        this.add(zoomIn);
+        this.add(zoomOut);
+    }
 
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		if (event.getActionCommand().equals(info.getActionCommand())) {
-			new NodeInfoDialog(parent, node);
-		} else if (event.getActionCommand().equals(delete.getActionCommand())) {
-			Runtime.removeNode(node);
-			parent.redrawGUI();
-		} else if (event.getActionCommand().equals(showCoordinateCube.getActionCommand())) {
-			parent.getGraphPanel().setNodeToDrawCoordinateCube(node);
-			parent.repaint(); // need not repaint the graph, only the toppings
-		} else if (event.getActionCommand().equals(hideCoordinateCube.getActionCommand())) {
-			parent.getGraphPanel().removeNodeToDrawCoordinateCube(node);
-			parent.repaint(); // need not repaint the graph, only the toppings
-		} else {
-			// try to execute a custom-command
-			Method clickedMethod = methodsAndDescriptions.get(event.getActionCommand());
-			if (clickedMethod == null) {
-				Main.fatalError("Cannot find method associated with menu item " + event.getActionCommand());
-				return;
-			}
-			try {
-				synchronized (parent.getTransformator()) {
-					// synchronize it on the transformator to grant not to be concurrent with
-					// any drawing or modifying action
-					clickedMethod.invoke(node, new Object[0]);
-				}
-			} catch (InvocationTargetException e) {
-				String text = "";
-				if (null != e.getCause()) {
-					text = "\n\n" + e.getCause() + "\n\n" + e.getCause().getMessage();
-				}
-				Main.minorError("The method '" + clickedMethod.getName()
-						+ "' has thrown an exception and did not terminate properly:\n" + e + text);
-			} catch (IllegalArgumentException e) {
-				Main.minorError("The method '" + clickedMethod.getName() + "' cannot be invoked without parameters:\n"
-						+ e + "\n\n" + e.getMessage());
-			} catch (IllegalAccessException e) {
-				Main.minorError("The method '" + clickedMethod.getName() + "' cannot be accessed:\n" + e + "\n\n"
-						+ e.getMessage());
-			}
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        if (event.getActionCommand().equals(info.getActionCommand())) {
+            new NodeInfoDialog(parent, node);
+        } else if (event.getActionCommand().equals(delete.getActionCommand())) {
+            Runtime.removeNode(node);
+            parent.redrawGUI();
+        } else if (event.getActionCommand().equals(showCoordinateCube.getActionCommand())) {
+            parent.getGraphPanel().setNodeToDrawCoordinateCube(node);
+            parent.repaint(); // need not repaint the graph, only the toppings
+        } else if (event.getActionCommand().equals(hideCoordinateCube.getActionCommand())) {
+            parent.getGraphPanel().removeNodeToDrawCoordinateCube(node);
+            parent.repaint(); // need not repaint the graph, only the toppings
+        } else {
+            // try to execute a custom-command
+            Method clickedMethod = methodsAndDescriptions.get(event.getActionCommand());
+            if (clickedMethod == null) {
+                Main.fatalError("Cannot find method associated with menu item " + event.getActionCommand());
+                return;
+            }
+            try {
+                synchronized (parent.getTransformator()) {
+                    // synchronize it on the transformator to grant not to be concurrent with
+                    // any drawing or modifying action
+                    clickedMethod.invoke(node);
+                }
+            } catch (InvocationTargetException e) {
+                String text = "";
+                if (null != e.getCause()) {
+                    text = "\n\n" + e.getCause() + "\n\n" + e.getCause().getMessage();
+                }
+                Main.minorError("The method '" + clickedMethod.getName()
+                        + "' has thrown an exception and did not terminate properly:\n" + e + text);
+            } catch (IllegalArgumentException e) {
+                Main.minorError("The method '" + clickedMethod.getName() + "' cannot be invoked without parameters:\n"
+                        + e + "\n\n" + e.getMessage());
+            } catch (IllegalAccessException e) {
+                Main.minorError("The method '" + clickedMethod.getName() + "' cannot be accessed:\n" + e + "\n\n"
+                        + e.getMessage());
+            }
 
-			parent.redrawGUI();
-		}
-	}
+            parent.redrawGUI();
+        }
+    }
 }

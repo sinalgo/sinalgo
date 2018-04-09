@@ -42,15 +42,14 @@ package sinalgo.nodes;
  */
 public class NoConnectionException extends Exception {
 
-	private static final long serialVersionUID = 1023865317275420612L;
+    private static final long serialVersionUID = 1023865317275420612L;
 
-	/**
-	 * The constructor for the NoConnectionException class.
-	 *
-	 * @param message
-	 *            The message for the Exception.
-	 */
-	public NoConnectionException(String message) {
-		super(message);
-	}
+    /**
+     * The constructor for the NoConnectionException class.
+     *
+     * @param message The message for the Exception.
+     */
+    public NoConnectionException(String message) {
+        super(message);
+    }
 }

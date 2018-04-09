@@ -42,28 +42,25 @@ package sinalgo.configuration;
  */
 public class SimulationException extends Exception {
 
-	private static final long serialVersionUID = 3172196647873850143L;
+    private static final long serialVersionUID = 3172196647873850143L;
 
-	/**
-	 * The constructor for the SimulationException class.
-	 *
-	 * @param s
-	 *            The message for the Exception.
-	 */
-	public SimulationException(String s) {
-		super(s);
-	}
+    /**
+     * The constructor for the SimulationException class.
+     *
+     * @param s The message for the Exception.
+     */
+    public SimulationException(String s) {
+        super(s);
+    }
 
-	/**
-	 * The constructor for the CorruptConfigurationEntryException class.
-	 *
-	 * @param cause
-	 *            The exception causing this exception.
-	 * @param msg
-	 *            The message of this exception.
-	 */
-	public SimulationException(Throwable cause, String msg) {
-		super(msg);
-		this.initCause(cause);
-	}
+    /**
+     * The constructor for the CorruptConfigurationEntryException class.
+     *
+     * @param cause The exception causing this exception.
+     * @param msg   The message of this exception.
+     */
+    public SimulationException(Throwable cause, String msg) {
+        super(msg);
+        this.initCause(cause);
+    }
 }

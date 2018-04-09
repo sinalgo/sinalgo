@@ -10,21 +10,19 @@ import sinalgo.nodes.messages.Message;
  */
 public class AckPayload extends PayloadMsg {
 
-	/**
-	 * Constructor
-	 *
-	 * @param destination
-	 *            The node to whom the ACK should be sent
-	 * @param sender
-	 *            The node that acknowledges receipt of a message
-	 */
-	public AckPayload(Node destination, Node sender) {
-		super(destination, sender);
-	}
+    /**
+     * Constructor
+     *
+     * @param destination The node to whom the ACK should be sent
+     * @param sender      The node that acknowledges receipt of a message
+     */
+    public AckPayload(Node destination, Node sender) {
+        super(destination, sender);
+    }
 
-	@Override
-	public Message clone() {
-		return this; // read-only policy
-	}
+    @Override
+    public Message clone() {
+        return this; // read-only policy
+    }
 
 }

@@ -36,11 +36,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.models;
 
-import java.util.Enumeration;
-
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.Runtime;
+
+import java.util.Enumeration;
 
 /**
  * A helper class that helps you implement the connectivity model. This class
@@ -59,54 +59,52 @@ import sinalgo.runtime.Runtime;
  */
 public abstract class ConnectivityModelHelper extends ConnectivityModel {
 
-	@Override
-	public boolean updateConnections(Node n) throws WrongConfigurationException {
-		boolean edgeAdded = false;
+    @Override
+    public boolean updateConnections(Node n) throws WrongConfigurationException {
+        boolean edgeAdded = false;
 
-		// For the given node n, retrieve only the nodes which are possible neighbor
-		// candidates. This
-		// is possible because of the rMax filed of the GeometricNodeCollection, which
-		// indicates the maximum
-		// distance between any two connected points.
-		Enumeration<Node> pNE = Runtime.nodes.getPossibleNeighborsEnumeration(n);
-		while (pNE.hasMoreElements()) {
-			Node possibleNeighbor = pNE.nextElement();
-			if (n.ID != possibleNeighbor.ID) {
-				// if the possible neighbor is connected with the the node: add the connection
-				// to the outgoing connection of n
-				if (isConnected(n, possibleNeighbor)) {
-					// add it to the outgoing Edges of n. The EdgeCollection itself checks, if the
-					// Edge is already contained
+        // For the given node n, retrieve only the nodes which are possible neighbor
+        // candidates. This
+        // is possible because of the rMax filed of the GeometricNodeCollection, which
+        // indicates the maximum
+        // distance between any two connected points.
+        Enumeration<Node> pNE = Runtime.nodes.getPossibleNeighborsEnumeration(n);
+        while (pNE.hasMoreElements()) {
+            Node possibleNeighbor = pNE.nextElement();
+            if (n.ID != possibleNeighbor.ID) {
+                // if the possible neighbor is connected with the the node: add the connection
+                // to the outgoing connection of n
+                if (isConnected(n, possibleNeighbor)) {
+                    // add it to the outgoing Edges of n. The EdgeCollection itself checks, if the
+                    // Edge is already contained
 
-					edgeAdded = !n.outgoingConnections.add(n, possibleNeighbor, true) || edgeAdded; // note: don't write
-																									// it the other way
-																									// round, otherwise,
-																									// the edge is not
-																									// added if
-																									// edgeAdded is
-																									// true.
-				}
-			}
-		}
-		// loop over all edges again and remove edges that have not been marked 'valid'
-		// in this round
-		boolean dyingLinks = n.outgoingConnections.removeInvalidLinks();
+                    edgeAdded = !n.outgoingConnections.add(n, possibleNeighbor, true) || edgeAdded; // note: don't write
+                    // it the other way
+                    // round, otherwise,
+                    // the edge is not
+                    // added if
+                    // edgeAdded is
+                    // true.
+                }
+            }
+        }
+        // loop over all edges again and remove edges that have not been marked 'valid'
+        // in this round
+        boolean dyingLinks = n.outgoingConnections.removeInvalidLinks();
 
-		return edgeAdded || dyingLinks; // return whether an edge has been added or removed.
-	}
+        return edgeAdded || dyingLinks; // return whether an edge has been added or removed.
+    }
 
-	/**
-	 * Function to find out, if two nodes are connected when evaluating the current
-	 * Connectivity Model. The connectivity is always checked only in one direction.
-	 * This Function only checks, if there should be a connection from node 'from'
-	 * to node 'to'. This function is normally overwritten by the concrete
-	 * implementation of a Mobility Model.
-	 *
-	 * @param from
-	 *            The origin of a connection you want to check.
-	 * @param to
-	 *            The Target of a connection you want to check.
-	 * @return If the two Nodes are connected in the specified direction.
-	 */
-	protected abstract boolean isConnected(Node from, Node to);
+    /**
+     * Function to find out, if two nodes are connected when evaluating the current
+     * Connectivity Model. The connectivity is always checked only in one direction.
+     * This Function only checks, if there should be a connection from node 'from'
+     * to node 'to'. This function is normally overwritten by the concrete
+     * implementation of a Mobility Model.
+     *
+     * @param from The origin of a connection you want to check.
+     * @param to   The Target of a connection you want to check.
+     * @return If the two Nodes are connected in the specified direction.
+     */
+    protected abstract boolean isConnected(Node from, Node to);
 }

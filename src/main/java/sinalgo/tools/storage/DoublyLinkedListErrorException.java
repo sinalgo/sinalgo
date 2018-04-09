@@ -41,27 +41,24 @@ package sinalgo.tools.storage;
  */
 public class DoublyLinkedListErrorException extends Exception {
 
-	private static final long serialVersionUID = -6354233490716531606L;
+    private static final long serialVersionUID = -6354233490716531606L;
 
-	/**
-	 * Thrown by the linked list implementation upon failure.
-	 *
-	 * @param msg
-	 *            Description of the reason for this exception.
-	 */
-	public DoublyLinkedListErrorException(String msg) {
-		super(msg);
-	}
+    /**
+     * Thrown by the linked list implementation upon failure.
+     *
+     * @param msg Description of the reason for this exception.
+     */
+    public DoublyLinkedListErrorException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Thrown by the linked list implementation upon failure.
-	 *
-	 * @param msg
-	 *            Description of the reason for this exception.
-	 * @param e
-	 *            The reason / causing exception for this exception
-	 */
-	public DoublyLinkedListErrorException(String msg, Throwable e) {
-		super(msg, e);
-	}
+    /**
+     * Thrown by the linked list implementation upon failure.
+     *
+     * @param msg Description of the reason for this exception.
+     * @param e   The reason / causing exception for this exception
+     */
+    public DoublyLinkedListErrorException(String msg, Throwable e) {
+        super(msg, e);
+    }
 }

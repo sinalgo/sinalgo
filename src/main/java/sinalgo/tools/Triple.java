@@ -39,49 +39,43 @@ package sinalgo.tools;
 /**
  * A triple-class which can hold two objects in a type-safe manner.
  *
- * @param <A>
- *            The type of the first entry of the triple instance.
- * @param <B>
- *            The type of the second entry of the triple instance.
- * @param <C>
- *            The type of the third entry of the triple instance.
+ * @param <A> The type of the first entry of the triple instance.
+ * @param <B> The type of the second entry of the triple instance.
+ * @param <C> The type of the third entry of the triple instance.
  */
 public class Triple<A, B, C> {
 
-	/**
-	 * The first value of this triple
-	 */
-	public A first;
+    /**
+     * The first value of this triple
+     */
+    public A first;
 
-	/**
-	 * The second value of this triple
-	 */
-	public B second;
+    /**
+     * The second value of this triple
+     */
+    public B second;
 
-	/**
-	 * The third value of this triple
-	 */
-	public C third;
+    /**
+     * The third value of this triple
+     */
+    public C third;
 
-	/**
-	 * Constructs a new triple and initializes the three fields.
-	 *
-	 * @param a
-	 *            The value for the first entry
-	 * @param b
-	 *            The value for the second entry
-	 * @param c
-	 *            The value for the third entry
-	 */
-	public Triple(A a, B b, C c) {
-		first = a;
-		second = b;
-		third = c;
-	}
+    /**
+     * Constructs a new triple and initializes the three fields.
+     *
+     * @param a The value for the first entry
+     * @param b The value for the second entry
+     * @param c The value for the third entry
+     */
+    public Triple(A a, B b, C c) {
+        first = a;
+        second = b;
+        third = c;
+    }
 
-	/**
-	 * Default constructor for this class.
-	 */
-	public Triple() {
-	}
+    /**
+     * Default constructor for this class.
+     */
+    public Triple() {
+    }
 }

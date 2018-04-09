@@ -43,14 +43,13 @@ import java.util.Iterator;
  * used to reset the Iterator to the initial state without allocating a new
  * Iterator instance.
  *
- * @param <E>
- *            The generic Type to create the Iterator for.
+ * @param <E> The generic Type to create the Iterator for.
  */
 public interface ReusableIterator<E> extends Iterator<E> {
 
-	/**
-	 * This method resets the Iterator to the initial state without allocating a new
-	 * Iterator instance.
-	 */
-	public void reset();
+    /**
+     * This method resets the Iterator to the initial state without allocating a new
+     * Iterator instance.
+     */
+    void reset();
 }

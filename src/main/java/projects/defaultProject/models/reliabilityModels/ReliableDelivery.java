@@ -44,8 +44,8 @@ import sinalgo.nodes.messages.Packet;
  */
 public class ReliableDelivery extends ReliabilityModel {
 
-	@Override
-	public boolean reachesDestination(Packet p) {
-		return true;
-	}
+    @Override
+    public boolean reachesDestination(Packet p) {
+        return true;
+    }
 }

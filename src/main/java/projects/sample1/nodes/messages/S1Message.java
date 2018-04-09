@@ -44,23 +44,23 @@ import sinalgo.nodes.messages.Message;
  */
 public class S1Message extends Message {
 
-	/**
-	 * The payload of the S1Message.
-	 */
-	public int data;
+    /**
+     * The payload of the S1Message.
+     */
+    public int data;
 
-	/**
-	 * Constructs a new Message of type S1Message.
-	 *
-	 * @param data
-	 */
-	public S1Message(int data) {
-		this.data = data;
-	}
+    /**
+     * Constructs a new Message of type S1Message.
+     *
+     * @param data
+     */
+    public S1Message(int data) {
+        this.data = data;
+    }
 
-	@Override
-	public Message clone() {
-		return new S1Message(data);
-	}
+    @Override
+    public Message clone() {
+        return new S1Message(data);
+    }
 
 }

@@ -36,21 +36,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Vector;
-
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.ProjectSelector;
 import sinalgo.io.xml.XMLParser;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
+import sinalgo.tools.Tools;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Vector;
 
 /**
  * A helper function to start the simulator. Execute 'java -cp binaries/bin
@@ -58,224 +57,181 @@ import sinalgo.runtime.Main;
  */
 public class Run {
 
-	public static void main(String args[]) {
-		testJavaVersion();
+    public static void main(String args[]) {
+        testJavaVersion();
 
-		String command = ""; // the entire command
-		try {
-			{ // Store the cmd line args s.t. we could restart Sinalgo
-				String cmdLineArgs = "";
-				for (String s : args) {
-					cmdLineArgs += s + " ";
-				}
-				AppConfig.getAppConfig().previousRunCmdLineArgs = cmdLineArgs;
-				AppConfig.getAppConfig().writeConfig();
-			}
+        StringBuilder command = new StringBuilder(); // the entire command
+        try {
+            { // Store the cmd line args s.t. we could restart Sinalgo
+                StringBuilder cmdLineArgs = new StringBuilder();
+                for (String s : args) {
+                    cmdLineArgs.append(s).append(" ");
+                }
+                AppConfig.getAppConfig().previousRunCmdLineArgs = cmdLineArgs.toString();
+                AppConfig.getAppConfig().writeConfig();
+            }
 
-			// ensure that there is a project selected
-			String projectName = new Run().projectSelector(args); // may be null
+            // ensure that there is a project selected
+            String projectName = new Run().projectSelector(args); // may be null
 
-			// read in the XML-File and save it in the lookup-table
-			String tempConfigFileName = Global.getProjectSrcDir() + "/" + Configuration.configfileFileName;
-			XMLParser.parse(tempConfigFileName);
-			// parse the -overwrite parameters
-			Main.parseOverwriteParameters(args, false);
+            // read in the XML-File and save it in the lookup-table
+            String tempConfigFileName = Global.getProjectSrcDir() + "/" + Configuration.configfileFileName;
+            XMLParser.parse(tempConfigFileName);
+            // parse the -overwrite parameters
+            Main.parseOverwriteParameters(args, false);
 
-			// assemble the cmd-line args to start the simulator
-			// The simulator is started in a new process s.t. we can
-			// - dynamically set the max memory usage
-			// - define the priority of the application, e.g. with nice w/o typing it on the
-			// cmd line each time
-			Vector<String> cmds = new Vector<>();
-			// add the command string as specified in the config file
-			for (String s : Configuration.javaCmd.split(" ")) {
-				cmds.add(s);
-			}
+            // assemble the cmd-line args to start the simulator
+            // The simulator is started in a new process s.t. we can
+            // - dynamically set the max memory usage
+            // - define the priority of the application, e.g. with nice w/o typing it on the
+            // cmd line each time
+            // add the command string as specified in the config file
+            Vector<String> cmds = new Vector<>(Arrays.asList(Configuration.javaCmd.split(" ")));
 
-			String cp = System.getProperty("user.dir");
-			cmds.add("-Xmx" + Configuration.javaVMmaxMem + "m");
-			cmds.add("-cp");
-			// Uses the old Class Path as its set by gradle
-			cmds.add(System.getProperty("java.class.path"));
-			cmds.add("sinalgo.runtime.Main");
+            String cp = System.getProperty("user.dir");
+            cmds.add("-Xmx" + Configuration.javaVMmaxMem + "m");
+            cmds.add("-cp");
+            // Uses the old Class Path as its set by gradle
+            cmds.add(System.getProperty("java.class.path"));
+            cmds.add("sinalgo.runtime.Main");
 
-			if (projectName != null) { // the project was selected through the projectSelector GUI, add it to the cmd
-										// line args
-				cmds.add("-project");
-				cmds.add(projectName);
-			}
-			// add the given cmd-line args
-			for (int i = 0; i < args.length; i++) {
-				cmds.add(args[i]);
-			}
+            // the project was selected through the projectSelector GUI, add it to the cmd line args
+            if (projectName != null) {
+                cmds.add("-project");
+                cmds.add(projectName);
+            }
+            // add the given cmd-line args
+            cmds.addAll(Arrays.asList(args));
 
-			// reassemble the entire command for error-messages
-			for (String s : cmds) {
-				command += s + " ";
-			}
+            // reassemble the entire command for error-messages
+            for (String s : cmds) {
+                command.append(s).append(" ");
+            }
 
-			// create & start the procecss
-			ProcessBuilder pb = new ProcessBuilder(cmds);
-			pb.directory(new File(cp));
-			pb.redirectErrorStream(true);
-			mainProcess = pb.start();
-			// mainProcess = Runtime.getRuntime().exec(command); // alternative
+            // create & start the procecss
+            ProcessBuilder pb = new ProcessBuilder(cmds);
+            pb.directory(new File(cp));
+            pb.redirectErrorStream(true);
+            mainProcess = pb.start();
+            // mainProcess = Runtime.getRuntime().exec(command); // alternative
 
-			Runtime.getRuntime().addShutdownHook(new ShutdownThread()); // catch shutdown of this process through user
+            Runtime.getRuntime().addShutdownHook(new ShutdownThread()); // catch shutdown of this process through user
 
-			// forward all output to this process's standard output (remains in this while
-			// loop until
-			// the other process finishes)
-			BufferedReader osr = new BufferedReader(new InputStreamReader(mainProcess.getInputStream()));
-			String line = null;
-			while ((line = osr.readLine()) != null) {
-				System.out.println(line);
-			}
-			int exitValue = 0;
-			if ((exitValue = mainProcess.waitFor()) != 0) {
-				System.out.println("\n\nThe simulation terminated with exit value " + exitValue + "\n");
-				System.out.println("Command: " + command); // print the command for error-checking
-			}
-			mainProcess = null; // the simulation process stopped
+            // forward all output to this process's standard output (remains in this while
+            // loop until
+            // the other process finishes)
+            BufferedReader osr = new BufferedReader(new InputStreamReader(mainProcess.getInputStream()));
+            String line;
+            while ((line = osr.readLine()) != null) {
+                System.out.println(line);
+            }
+            int exitValue;
+            if ((exitValue = mainProcess.waitFor()) != 0) {
+                System.out.println("\n\nThe simulation terminated with exit value " + exitValue + "\n");
+                System.out.println("Command: " + command); // print the command for error-checking
+            }
+            mainProcess = null; // the simulation process stopped
 
-			// cleanup the Config.xml.run file
-			if (projectName != null) {
-				File configFile = new File(tempConfigFileName + ".run");
-				if (configFile.exists()) {
-					configFile.delete();
-				}
-			}
+            // cleanup the Config.xml.run file
+            if (projectName != null) {
+                File configFile = new File(tempConfigFileName + ".run");
+                if (configFile.exists()) {
+                    configFile.delete();
+                }
+            }
 
-			System.exit(0); // important, otherwise, this process does not terminate
-		} catch (IOException e) {
-			Main.fatalError("Failed to create the simulation process with the following command:\n" + command + "\n\n"
-					+ e.getMessage());
-		} catch (InterruptedException e) {
-			Main.fatalError("Failed to create the simulation process with the following command:\n" + command + "\n\n"
-					+ e.getMessage());
-		}
-	}
+            System.exit(0); // important, otherwise, this process does not terminate
+        } catch (IOException | InterruptedException e) {
+            Main.fatalError("Failed to create the simulation process with the following command:\n" + command + "\n\n"
+                    + e.getMessage());
+        }
+    }
 
-	/**
-	 * Test that the java VM version is not below 1.8
-	 */
-	private static void testJavaVersion() {
-		// Test that java version is OK (must be >= 1.8)
-		String version = System.getProperty("java.version");
-		try {
-			if (version.matches("^[0-9]\\.[0-9].*$")) {
-				version = version.substring(0, version.indexOf(".") + 2);
-			}
-			double v = Double.parseDouble(version);
-			if (v < 1.8) {
-				printInvalidJavaError(version);
-			}
-		} catch (NumberFormatException e) {
-			printInvalidJavaError(version);
-		}
-	}
+    /**
+     * Test that the java VM version is not below 1.8
+     */
+    private static void testJavaVersion() {
+        // Test that java version is OK (must be >= 1.8)
+        String version = System.getProperty("java.version");
+        try {
+            if (version.matches("^[0-9]\\.[0-9].*$")) {
+                version = version.substring(0, version.indexOf(".") + 2);
+            }
+            double v = Double.parseDouble(version);
+            if (v < 1.8) {
+                printInvalidJavaError(version);
+            }
+        } catch (NumberFormatException e) {
+            printInvalidJavaError(version);
+        }
+    }
 
-	private static void printInvalidJavaError(String version) {
-		System.err.println("You may have an invalid Java version: " + version
-				+ ". The application requires version 1.8 or more recent.");
-	}
+    private static void printInvalidJavaError(String version) {
+        System.err.println("You may have an invalid Java version: " + version
+                + ". The application requires version 1.8 or more recent.");
+    }
 
-	/**
-	 * Ensures that the user selected a project. If not done so on the command line
-	 * with the '-project' flag, this method launches the project selector dialgo,
-	 * which lets the user select a project.
-	 *
-	 * @param args
-	 *            The cmd-line arguments
-	 * @return The name of the selected project if the project selector was
-	 *         launched, null otherwise.
-	 */
-	private String projectSelector(String[] args) {
-		// most of the following code-parts are copied from sinalgo.runtime.Main.main()
-		for (String s : args) { // any argument '-help' triggers the help to be printed
-			if (s.equals("-help")) {
-				Main.usage(false);
-				System.exit(1);
-			}
-		}
+    /**
+     * Ensures that the user selected a project. If not done so on the command line
+     * with the '-project' flag, this method launches the project selector dialgo,
+     * which lets the user select a project.
+     *
+     * @param args The cmd-line arguments
+     * @return The name of the selected project if the project selector was
+     * launched, null otherwise.
+     */
+    private String projectSelector(String[] args) {
+        // most of the following code-parts are copied from sinalgo.runtime.Main.main()
+        for (String s : args) { // any argument '-help' triggers the help to be printed
+            if (s.equals("-help")) {
+                Main.usage(false);
+                System.exit(1);
+            }
+        }
 
-		// Parse whether in to start the framework in GUI or batch mode.
-		int guiBatch = 0; // 0 = not seen (defaults to GUI), 1 = GUI, 2 = batch
-		for (String s : args) {
-			if (s.toLowerCase().equals("-batch")) {
-				if (guiBatch == 1) { // conflict
-					Main.fatalError("You may only specify the '-gui' xor the '-batch' flag.");
-				}
-				guiBatch = 2;
-				Global.isGuiMode = false;
-			} else if (s.toLowerCase().equals("-gui")) {
-				if (guiBatch == 2) { // conflict
-					Main.fatalError("You may only specify the '-gui' xor the '-batch' flag.");
-				}
-				guiBatch = 1;
-				Global.isGuiMode = true;
-			}
-		}
+        int guiBatch = Tools.parseGuiBatch(args);
 
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("-project")) { // A specific project is specified
-				if (i + 1 >= args.length) {
-					Main.fatalError("The flag '-project' must be preceeded by the name of a project");
-				}
-				// Test that the project folder exists (in the source)
-				String path = Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPath.replace('.', '/')
-						+ "/" + args[i + 1]; // <<RF>> Why not simply call getProejctSrcDir for path?
-				Global.getProjectSrcDir();
-				File testProj = new File(path);
-				if (testProj.exists()) {
-					Global.useProject = true;
-					Global.projectName = args[i + 1];
-				} else {
-					Main.fatalError("Cannot find the specified project '" + args[i + 1] + "'.\n"
-							+ "In order to create a project '" + args[i + 1] + "', create a folder '" + path + "'");
-				}
-			}
-		}
+        Tools.parseProject(args);
 
-		// start the project selector GUI if no project was selected.
-		if (!Global.useProject) {
-			if (guiBatch == 2) { // in batch mode
-				Main.fatalError(
-						"Missing project: In batch mode, you need to specify a project on the command line using the -project flag.");
-			}
+        // start the project selector GUI if no project was selected.
+        if (!Global.useProject) {
+            if (guiBatch == 2) { // in batch mode
+                Main.fatalError(
+                        "Missing project: In batch mode, you need to specify a project on the command line using the -project flag.");
+            }
 
-			Global.isGuiMode = true;
-			// we are in gui mode, but no project was selected
-			ProjectSelector pane = new ProjectSelector();
-			pane.populate(this);
+            Global.isGuiMode = true;
+            // we are in gui mode, but no project was selected
+            ProjectSelector pane = new ProjectSelector();
+            pane.populate(this);
 
-			try {
-				// wait for the user to press ok in the ProjectSelector.
-				synchronized (this) {
-					wait();
-				}
-			} catch (InterruptedException e) {
-				Main.fatalError(e);
-			}
-			return Global.projectName;
-		} else {
-			return null; // already specified
-		}
-	}
+            try {
+                // wait for the user to press ok in the ProjectSelector.
+                synchronized (this) {
+                    wait();
+                }
+            } catch (InterruptedException e) {
+                Main.fatalError(e);
+            }
+            return Global.projectName;
+        } else {
+            return null; // already specified
+        }
+    }
 
-	private static Process mainProcess = null; // the simulation process, may be null
+    private static Process mainProcess = null; // the simulation process, may be null
 
-	/**
-	 * A shutdown hook to kill the simulation process when this process is killed.
-	 */
-	public static class ShutdownThread extends Thread {
+    /**
+     * A shutdown hook to kill the simulation process when this process is killed.
+     */
+    public static class ShutdownThread extends Thread {
 
-		@Override
-		public void run() {
-			if (mainProcess != null) {
-				mainProcess.destroy(); // kill the simulation process
-			}
-		}
-	}
+        @Override
+        public void run() {
+            if (mainProcess != null) {
+                mainProcess.destroy(); // kill the simulation process
+            }
+        }
+    }
 
 }

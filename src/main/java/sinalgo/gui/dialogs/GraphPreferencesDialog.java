@@ -36,27 +36,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.dialogs;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.KeyEventPostProcessor;
-import java.awt.KeyboardFocusManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.GUI;
@@ -64,212 +43,210 @@ import sinalgo.gui.GuiHelper;
 import sinalgo.models.Model;
 import sinalgo.runtime.Global;
 
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.Vector;
+
 /**
  * The Class for the dialog for the Graph preferences.
  */
 public class GraphPreferencesDialog extends JDialog implements ActionListener {
 
-	private static final long serialVersionUID = 7895237565849731280L;
+    private static final long serialVersionUID = 7895237565849731280L;
 
-	private JCheckBox drawArrowsCB = new JCheckBox("Draw the links as arrows");
-	private JCheckBox drawRulerCB = new JCheckBox("Draw the ruler");
-	private JCheckBox drawEdgesCB = new JCheckBox("Draw edges");
-	private JCheckBox drawNodesCB = new JCheckBox("Draw nodes");
-	private JCheckBox usePerspectiveCB = new JCheckBox("Draw 3D with perspective");
+    private JCheckBox drawArrowsCB = new JCheckBox("Draw the links as arrows");
+    private JCheckBox drawRulerCB = new JCheckBox("Draw the ruler");
+    private JCheckBox drawEdgesCB = new JCheckBox("Draw edges");
+    private JCheckBox drawNodesCB = new JCheckBox("Draw nodes");
+    private JCheckBox usePerspectiveCB = new JCheckBox("Draw 3D with perspective");
 
-	private JComboBox typeOfEdges = new JComboBox();
-	private JComboBox selectedTransmissionModel = new JComboBox();
-	JCheckBox allModelsCheckBox;
+    private JComboBox typeOfEdges = new JComboBox();
+    private JComboBox selectedTransmissionModel = new JComboBox();
+    private JCheckBox allModelsCheckBox;
 
-	private JButton ok = new JButton("Ok");
-	private JButton cancel = new JButton("Cancel");
+    private JButton ok = new JButton("Ok");
 
-	private GUI parent = null;
+    private GUI parent;
 
-	/**
-	 * Generates a dialog that shows information about the current graph.
-	 *
-	 * @param parent
-	 *            The Gui instance that created the dialog.
-	 */
-	public GraphPreferencesDialog(GUI parent) {
-		super(parent, "Preferences", true);
-		GuiHelper.setWindowIcon(this);
-		this.parent = parent;
+    /**
+     * Generates a dialog that shows information about the current graph.
+     *
+     * @param parent The Gui instance that created the dialog.
+     */
+    public GraphPreferencesDialog(GUI parent) {
+        super(parent, "Preferences", true);
+        GuiHelper.setWindowIcon(this);
+        this.parent = parent;
 
-		JPanel cp = new JPanel();
-		cp.setLayout(new BorderLayout());
-		cp.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+        JPanel cp = new JPanel();
+        cp.setLayout(new BorderLayout());
+        cp.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 
-		JPanel visualDetails = new JPanel();
-		visualDetails.setBorder(BorderFactory.createTitledBorder("Visual Details:"));
-		visualDetails.setLayout(new BoxLayout(visualDetails, BoxLayout.Y_AXIS));
+        JPanel visualDetails = new JPanel();
+        visualDetails.setBorder(BorderFactory.createTitledBorder("Visual Details:"));
+        visualDetails.setLayout(new BoxLayout(visualDetails, BoxLayout.Y_AXIS));
 
-		drawArrowsCB.setSelected(Configuration.drawArrows);
-		visualDetails.add(drawArrowsCB);
+        drawArrowsCB.setSelected(Configuration.drawArrows);
+        visualDetails.add(drawArrowsCB);
 
-		// Feature not yet implemented
-		// drawRulerCB.setSelected(Configuration.drawRulers);
-		// visualDetails.add(drawRulerCB);
+        // Feature not yet implemented
+        // drawRulerCB.setSelected(Configuration.drawRulers);
+        // visualDetails.add(drawRulerCB);
 
-		drawNodesCB.setSelected(Configuration.drawNodes);
-		visualDetails.add(drawNodesCB);
+        drawNodesCB.setSelected(Configuration.drawNodes);
+        visualDetails.add(drawNodesCB);
 
-		drawEdgesCB.setSelected(Configuration.drawEdges);
-		visualDetails.add(drawEdgesCB);
+        drawEdgesCB.setSelected(Configuration.drawEdges);
+        visualDetails.add(drawEdgesCB);
 
-		usePerspectiveCB.setSelected(Configuration.usePerspectiveView);
-		if (Configuration.dimensions == 3) { // only show in 3D
-			visualDetails.add(usePerspectiveCB);
-		}
+        usePerspectiveCB.setSelected(Configuration.usePerspectiveView);
+        if (Configuration.dimensions == 3) { // only show in 3D
+            visualDetails.add(usePerspectiveCB);
+        }
 
-		cp.add(visualDetails, BorderLayout.NORTH);
+        cp.add(visualDetails, BorderLayout.NORTH);
 
-		JPanel simulationDetails = new JPanel();
-		simulationDetails.setLayout(new GridLayout(3, 2, 3, 3));
-		simulationDetails.setBorder(BorderFactory.createTitledBorder("Simulation Details:"));
+        JPanel simulationDetails = new JPanel();
+        simulationDetails.setLayout(new GridLayout(3, 2, 3, 3));
+        simulationDetails.setBorder(BorderFactory.createTitledBorder("Simulation Details:"));
 
-		// Edges implemenations
+        // Edges implemenations
 
-		Font f = typeOfEdges.getFont().deriveFont(Font.PLAIN);
-		typeOfEdges.setFont(f);
-		fillTypesOfEdges();
-		simulationDetails.add(new JLabel("Type of Edges: "));
-		simulationDetails.add(typeOfEdges);
+        Font f = typeOfEdges.getFont().deriveFont(Font.PLAIN);
+        typeOfEdges.setFont(f);
+        fillTypesOfEdges();
+        simulationDetails.add(new JLabel("Type of Edges: "));
+        simulationDetails.add(typeOfEdges);
 
-		// Transmission model
-		selectedTransmissionModel.setFont(f);
-		fillTransmissionModel();
-		simulationDetails.add(new JLabel("Transmission Model: "));
-		simulationDetails.add(selectedTransmissionModel);
+        // Transmission model
+        selectedTransmissionModel.setFont(f);
+        fillTransmissionModel();
+        simulationDetails.add(new JLabel("Transmission Model: "));
+        simulationDetails.add(selectedTransmissionModel);
 
-		simulationDetails.add(new JLabel(""));
-		allModelsCheckBox = new JCheckBox("Show all implementations");
-		allModelsCheckBox.setSelected(Configuration.showModelsOfAllProjects);
-		allModelsCheckBox.addChangeListener(new ChangeListener() {
+        simulationDetails.add(new JLabel(""));
+        allModelsCheckBox = new JCheckBox("Show all implementations");
+        allModelsCheckBox.setSelected(Configuration.showModelsOfAllProjects);
+        allModelsCheckBox.addChangeListener(e -> {
+            if (Configuration.showModelsOfAllProjects != allModelsCheckBox.isSelected()) {
+                Configuration.showModelsOfAllProjects = allModelsCheckBox.isSelected();
+                fillTypesOfEdges();
+                fillTransmissionModel();
+            }
+        });
+        simulationDetails.add(allModelsCheckBox);
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout());
+        centerPanel.setBorder(BorderFactory.createEmptyBorder());
+        centerPanel.add(simulationDetails, BorderLayout.NORTH);
 
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				if (Configuration.showModelsOfAllProjects != allModelsCheckBox.isSelected()) {
-					Configuration.showModelsOfAllProjects = allModelsCheckBox.isSelected();
-					fillTypesOfEdges();
-					fillTransmissionModel();
-				}
-			}
-		});
-		simulationDetails.add(allModelsCheckBox);
-		JPanel centerPanel = new JPanel();
-		centerPanel.setLayout(new BorderLayout());
-		centerPanel.setBorder(BorderFactory.createEmptyBorder());
-		centerPanel.add(simulationDetails, BorderLayout.NORTH);
+        JLabel label = new JLabel(
+                "<html><table><tr valign='top'><td><b>Note:</b></td><td> These settings affect only this simulation; they are not stored <br>in the config file for further runs.</td></tr></table></html>");
+        label.setFont(label.getFont().deriveFont(Font.PLAIN, 11));
+        centerPanel.add(label, BorderLayout.SOUTH);
 
-		JLabel label = new JLabel(
-				"<html><table><tr valign='top'><td><b>Note:</b></td><td> These settings affect only this simulation; they are not stored <br>in the config file for further runs.</td></tr></table></html>");
-		label.setFont(label.getFont().deriveFont(Font.PLAIN, 11));
-		centerPanel.add(label, BorderLayout.SOUTH);
+        cp.add(centerPanel, BorderLayout.CENTER);
 
-		cp.add(centerPanel, BorderLayout.CENTER);
+        JPanel buttons = new JPanel();
 
-		JPanel buttons = new JPanel();
+        ok.addActionListener(this);
+        buttons.add(ok);
 
-		ok.addActionListener(this);
-		buttons.add(ok);
+        JButton cancel = new JButton("Cancel");
+        cancel.addActionListener(this);
+        buttons.add(cancel);
 
-		cancel.addActionListener(this);
-		buttons.add(cancel);
+        cp.add(buttons, BorderLayout.SOUTH);
 
-		cp.add(buttons, BorderLayout.SOUTH);
+        this.setContentPane(cp);
 
-		this.setContentPane(cp);
+        // Detect ESCAPE button
+        KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        focusManager.addKeyEventPostProcessor(e -> {
+            if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                GraphPreferencesDialog.this.setVisible(false);
+            }
+            return false;
+        });
 
-		// Detect ESCAPE button
-		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-		focusManager.addKeyEventPostProcessor(new KeyEventPostProcessor() {
+        this.getRootPane().setDefaultButton(ok);
+        this.pack();
+        this.setLocationRelativeTo(parent);
+        this.setVisible(true);
+    }
 
-			@Override
-			public boolean postProcessKeyEvent(KeyEvent e) {
-				if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					GraphPreferencesDialog.this.setVisible(false);
-				}
-				return false;
-			}
-		});
+    private void fillTypesOfEdges() {
+        // default + current project
+        Vector<String> names = new Vector<>(Global.getImplementations("nodes/edges"));
+        if (!names.contains(Configuration.getEdgeTypeShortName())) {
+            names.add(Configuration.getEdgeTypeShortName());
+        }
+        typeOfEdges.removeAllItems();
+        for (String s : names) {
+            typeOfEdges.addItem(s);
+        }
 
-		this.getRootPane().setDefaultButton(ok);
-		this.pack();
-		this.setLocationRelativeTo(parent);
-		this.setVisible(true);
-	}
+        typeOfEdges.setSelectedItem(Configuration.getEdgeTypeShortName());
+    }
 
-	private void fillTypesOfEdges() {
-		Vector<String> names = new Vector<>();
-		names.addAll(Global.getImplementations("nodes/edges")); // default + current project
-		if (!names.contains(Configuration.getEdgeTypeShortName())) {
-			names.add(Configuration.getEdgeTypeShortName());
-		}
-		typeOfEdges.removeAllItems();
-		for (String s : names) {
-			typeOfEdges.addItem(s);
-		}
+    private void fillTransmissionModel() {
+        // default project && current
+        // project
+        Vector<String> names = new Vector<>(Global.getImplementations("models/messageTransmissionModels"));
+        if (!names.contains(Configuration.DefaultMessageTransmissionModel)) {
+            names.add(Configuration.DefaultMessageTransmissionModel);
+        }
+        selectedTransmissionModel.removeAllItems();
+        for (String s : names) {
+            selectedTransmissionModel.addItem(s);
+        }
+        selectedTransmissionModel.setSelectedItem(Configuration.DefaultMessageTransmissionModel);
+    }
 
-		typeOfEdges.setSelectedItem(Configuration.getEdgeTypeShortName());
-	}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals(ok.getActionCommand())) {
+            try {
+                String selectedType = (String) typeOfEdges.getSelectedItem();
+                Configuration.setEdgeType(selectedType);
 
-	private void fillTransmissionModel() {
-		Vector<String> names = new Vector<>();
-		for (String s : Global.getImplementations("models/messageTransmissionModels")) { // default project && current
-																							// project
-			names.add(s);
-		}
-		if (!names.contains(Configuration.DefaultMessageTransmissionModel)) {
-			names.add(Configuration.DefaultMessageTransmissionModel);
-		}
-		selectedTransmissionModel.removeAllItems();
-		for (String s : names) {
-			selectedTransmissionModel.addItem(s);
-		}
-		selectedTransmissionModel.setSelectedItem(Configuration.DefaultMessageTransmissionModel);
-	}
+                String selectedTransModel = (String) selectedTransmissionModel.getSelectedItem();
+                if (!Configuration.DefaultMessageTransmissionModel.equals(selectedTransModel)) {
+                    Configuration.DefaultMessageTransmissionModel = selectedTransModel;
+                    Global.messageTransmissionModel = Model.getMessageTransmissionModelInstance(
+                            Configuration.DefaultMessageTransmissionModel);
+                }
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals(ok.getActionCommand())) {
-			try {
-				String selectedType = (String) typeOfEdges.getSelectedItem();
-				Configuration.setEdgeType(selectedType);
+                if (drawRulerCB.isSelected() != Configuration.drawRulers) {
+                    Configuration.drawRulers = drawRulerCB.isSelected();
+                    parent.getGraphPanel().forceDrawInNextPaint();
+                }
+                if (drawArrowsCB.isSelected() != Configuration.drawArrows) {
+                    Configuration.drawArrows = drawArrowsCB.isSelected();
+                    parent.getGraphPanel().forceDrawInNextPaint();
+                }
+                if (drawEdgesCB.isSelected() != Configuration.drawEdges) {
+                    Configuration.drawEdges = drawEdgesCB.isSelected();
+                    parent.getGraphPanel().forceDrawInNextPaint();
+                }
+                if (drawNodesCB.isSelected() != Configuration.drawNodes) {
+                    Configuration.drawNodes = drawNodesCB.isSelected();
+                    parent.getGraphPanel().forceDrawInNextPaint();
+                }
+                if (usePerspectiveCB.isSelected() != Configuration.usePerspectiveView) {
+                    Configuration.usePerspectiveView = !Configuration.usePerspectiveView;
+                    parent.getGraphPanel().forceDrawInNextPaint();
+                }
 
-				String selectedTransModel = (String) selectedTransmissionModel.getSelectedItem();
-				if (!selectedTransModel.equals(Configuration.DefaultMessageTransmissionModel)) {
-					Configuration.DefaultMessageTransmissionModel = selectedTransModel;
-					Global.messageTransmissionModel = Model.getMessageTransmissionModelInstance(
-							Configuration.DefaultMessageTransmissionModel, new Object[0]);
-				}
-
-				if (drawRulerCB.isSelected() != Configuration.drawRulers) {
-					Configuration.drawRulers = drawRulerCB.isSelected();
-					parent.getGraphPanel().forceDrawInNextPaint();
-				}
-				if (drawArrowsCB.isSelected() != Configuration.drawArrows) {
-					Configuration.drawArrows = drawArrowsCB.isSelected();
-					parent.getGraphPanel().forceDrawInNextPaint();
-				}
-				if (drawEdgesCB.isSelected() != Configuration.drawEdges) {
-					Configuration.drawEdges = drawEdgesCB.isSelected();
-					parent.getGraphPanel().forceDrawInNextPaint();
-				}
-				if (drawNodesCB.isSelected() != Configuration.drawNodes) {
-					Configuration.drawNodes = drawNodesCB.isSelected();
-					parent.getGraphPanel().forceDrawInNextPaint();
-				}
-				if (usePerspectiveCB.isSelected() != Configuration.usePerspectiveView) {
-					Configuration.usePerspectiveView = !Configuration.usePerspectiveView;
-					parent.getGraphPanel().forceDrawInNextPaint();
-				}
-
-			} catch (WrongConfigurationException ex) {
-				sinalgo.runtime.Main.fatalError(ex);
-			}
-		}
-		this.setVisible(false);
-	}
+            } catch (WrongConfigurationException ex) {
+                sinalgo.runtime.Main.fatalError(ex);
+            }
+        }
+        this.setVisible(false);
+    }
 }

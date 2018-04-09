@@ -36,32 +36,31 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime.nodeCollection;
 
+import sinalgo.nodes.Node;
+
 import java.util.Iterator;
 import java.util.Vector;
-
-import sinalgo.nodes.Node;
 
 /**
  * The concrete implementation of a node list. The nodes are stored in an
  * vector.
- *
  */
 public class VectorNodeList implements NodeListInterface {
 
-	Vector<Node> nodes = new Vector<>();
+    private Vector<Node> nodes = new Vector<>();
 
-	@Override
-	public void addNode(Node n) {
-		nodes.add(n);
-	}
+    @Override
+    public void addNode(Node n) {
+        nodes.add(n);
+    }
 
-	@Override
-	public boolean removeNode(Node n) {
-		return nodes.remove(n);
-	}
+    @Override
+    public boolean removeNode(Node n) {
+        return nodes.remove(n);
+    }
 
-	@Override
-	public Iterator<Node> iterator() {
-		return nodes.iterator();
-	}
+    @Override
+    public Iterator<Node> iterator() {
+        return nodes.iterator();
+    }
 }

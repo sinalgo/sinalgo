@@ -44,17 +44,16 @@ import sinalgo.nodes.messages.Packet;
  */
 public abstract class ReliabilityModel extends Model {
 
-	/**
-	 * This method decides if a packet can be sent from one node to another.
-	 *
-	 * @param p
-	 *            The packet to decide whether it reaches its destination.
-	 * @return A boolean indicating whether the packet can reach the destination.
-	 */
-	public abstract boolean reachesDestination(Packet p);
+    /**
+     * This method decides if a packet can be sent from one node to another.
+     *
+     * @param p The packet to decide whether it reaches its destination.
+     * @return A boolean indicating whether the packet can reach the destination.
+     */
+    public abstract boolean reachesDestination(Packet p);
 
-	@Override
-	public final ModelType getType() {
-		return ModelType.ReliabilityModel;
-	}
+    @Override
+    public final ModelType getType() {
+        return ModelType.ReliabilityModel;
+    }
 }

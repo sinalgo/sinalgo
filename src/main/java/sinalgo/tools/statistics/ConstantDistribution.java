@@ -45,41 +45,38 @@ import sinalgo.configuration.CorruptConfigurationEntryException;
  * If the distribution is specified in the xml configuration file, an entry like
  *
  * <pre>
-   &lt;mainTagName distribution="Constant" constant="xxx"/&gt;
+ * &lt;mainTagName distribution="Constant" constant="xxx"/&gt;
  * </pre>
- *
+ * <p>
  * is expected.
  */
 public class ConstantDistribution extends Distribution {
 
-	private double value; // the value of this distribution
+    private double value; // the value of this distribution
 
-	/**
-	 * Constructs a new ConstantDistribution object that returns always a constant.
-	 *
-	 * @param value
-	 *            The value to be returned by this distribution.
-	 */
-	public ConstantDistribution(double value) {
-		this.value = value;
-	}
+    /**
+     * Constructs a new ConstantDistribution object that returns always a constant.
+     *
+     * @param value The value to be returned by this distribution.
+     */
+    public ConstantDistribution(double value) {
+        this.value = value;
+    }
 
-	/**
-	 * Creates a new constant distribution and initializes it from the XML
-	 * configuration file.
-	 *
-	 * @param mainTagPath
-	 *            The entry-path which points to the entry in the XML configuration
-	 *            file which contains the specifications for this distribution.
-	 * @throws CorruptConfigurationEntryException
-	 *             If the configuration file is corrupt.
-	 */
-	public ConstantDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
-		value = Configuration.getDoubleParameter(mainTagPath + "/constant");
-	}
+    /**
+     * Creates a new constant distribution and initializes it from the XML
+     * configuration file.
+     *
+     * @param mainTagPath The entry-path which points to the entry in the XML configuration
+     *                    file which contains the specifications for this distribution.
+     * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
+     */
+    public ConstantDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
+        value = Configuration.getDoubleParameter(mainTagPath + "/constant");
+    }
 
-	@Override
-	public double nextSample() {
-		return value;
-	}
+    @Override
+    public double nextSample() {
+        return value;
+    }
 }

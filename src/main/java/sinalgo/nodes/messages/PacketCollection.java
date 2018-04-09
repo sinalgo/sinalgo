@@ -36,11 +36,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes.messages;
 
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-
 import sinalgo.tools.storage.ReusableIterator;
 import sinalgo.tools.storage.SortableVector;
+
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 
 /**
  * This class stores the Packets in a vector. It extends the Vector class and
@@ -50,89 +50,88 @@ import sinalgo.tools.storage.SortableVector;
  */
 public class PacketCollection extends SortableVector<Packet> {
 
-	private static final long serialVersionUID = -8788148921758142918L;
+    private static final long serialVersionUID = -8788148921758142918L;
 
-	/**
-	 * This is the one and only constructor for the PacketCollection-class. It
-	 * generates a Vector with an initial size of 3.
-	 */
-	public PacketCollection() {
-		super(3);
-	}
+    /**
+     * This is the one and only constructor for the PacketCollection-class. It
+     * generates a Vector with an initial size of 3.
+     */
+    public PacketCollection() {
+        super(3);
+    }
 
-	// the instance of the iterator over the PacketCollection
-	private ReusableIter iter = null;
+    // the instance of the iterator over the PacketCollection
+    private ReusableIter iter = null;
 
-	@Override
-	public Iterator<Packet> iterator() {
-		if (iter == null) {
-			iter = new ReusableIter();
-		} else {
-			// reset the iterator instead of returning always a new one
-			iter.reset();
-		}
-		return iter;
-	}
+    @Override
+    public Iterator<Packet> iterator() {
+        if (iter == null) {
+            iter = new ReusableIter();
+        } else {
+            // reset the iterator instead of returning always a new one
+            iter.reset();
+        }
+        return iter;
+    }
 
-	private Packet remove2(int pos) {
-		return remove(pos);
-	}
+    private Packet remove2(int pos) {
+        return remove(pos);
+    }
 
-	private class ReusableIter implements ReusableIterator<Packet> {
+    private class ReusableIter implements ReusableIterator<Packet> {
 
-		// the counter for the number of modifications
-		private int expectedModCount;
+        // the counter for the number of modifications
+        private int expectedModCount;
 
-		// the position in the vector
-		private int position;
+        // the position in the vector
+        private int position;
 
-		/**
-		 * Create a new instance of the ReusableIterator
-		 */
-		private ReusableIter() {
-			position = 0;
-			expectedModCount = modCount;
-		}
+        /**
+         * Create a new instance of the ReusableIterator
+         */
+        private ReusableIter() {
+            position = 0;
+            expectedModCount = modCount;
+        }
 
-		/**
-		 * This method resets the reusable iterator. This makes the iterator reusable.
-		 */
-		@Override
-		public void reset() {
-			position = 0;
-			expectedModCount = modCount;
-		}
+        /**
+         * This method resets the reusable iterator. This makes the iterator reusable.
+         */
+        @Override
+        public void reset() {
+            position = 0;
+            expectedModCount = modCount;
+        }
 
-		@Override
-		public boolean hasNext() {
-			return (position + 1 <= size());
-		}
+        @Override
+        public boolean hasNext() {
+            return (position + 1 <= size());
+        }
 
-		@Override
-		public Packet next() {
-			checkForComodification();
-			return elementAt(position++);
-		}
+        @Override
+        public Packet next() {
+            checkForComodification();
+            return elementAt(position++);
+        }
 
-		@Override
-		public void remove() {
-			remove2(--position);
-		}
+        @Override
+        public void remove() {
+            remove2(--position);
+        }
 
-		/**
-		 * Tests whether the list has been modified other than through the iteration
-		 * commands. If this is the case, the method throws a
-		 * ConcurrentModificationException.
-		 *
-		 * @throws ConcurrentModificationException
-		 *             if this list was modified other than through the iterators
-		 *             methods.
-		 */
-		final void checkForComodification() {
-			if (expectedModCount != modCount) {
-				throw new ConcurrentModificationException();
-			}
-		}
-	}
+        /**
+         * Tests whether the list has been modified other than through the iteration
+         * commands. If this is the case, the method throws a
+         * ConcurrentModificationException.
+         *
+         * @throws ConcurrentModificationException if this list was modified other than through the iterators
+         *                                         methods.
+         */
+        final void checkForComodification() {
+            if (expectedModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+        }
+    }
 
 }

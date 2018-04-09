@@ -44,96 +44,92 @@ import sinalgo.tools.storage.DoublyLinkedListEntry;
  */
 public abstract class Event implements DoublyLinkedListEntry {
 
-	/**
-	 * the time this event happens.
-	 */
-	public double time;
+    /**
+     * the time this event happens.
+     */
+    public double time;
 
-	// the id of this event (this id is just used interanally for ordering the
-	// events)
-	long id = 0;
-	protected static long nextId = 1;
+    // the id of this event (this id is just used interanally for ordering the
+    // events)
+    long id = 0;
+    protected static long nextId = 1;
 
-	/**
-	 * Returns a string representation of the time when this event executes,
-	 * truncated to the given number of digits.
-	 *
-	 * @param digits
-	 *            The number of digits to display
-	 * @return A truncated string representation of the time when this event will
-	 *         execute.
-	 */
-	public String getExecutionTimeString(int digits) {
-		if (digits > 10) {
-			return Double.toString(time);
-		}
-		double factor = Math.pow(10, digits);
-		double temp = Math.round(time * factor) / factor;
-		return Double.toString(temp);
-	}
+    /**
+     * Returns a string representation of the time when this event executes,
+     * truncated to the given number of digits.
+     *
+     * @param digits The number of digits to display
+     * @return A truncated string representation of the time when this event will
+     * execute.
+     */
+    public String getExecutionTimeString(int digits) {
+        if (digits > 10) {
+            return Double.toString(time);
+        }
+        double factor = Math.pow(10, digits);
+        double temp = Math.round(time * factor) / factor;
+        return Double.toString(temp);
+    }
 
-	/**
-	 * Creates an event with a given time to execute and a given node to execute on.
-	 *
-	 * @param time
-	 *            The time the event will pappen.
-	 */
-	protected Event(double time) {
-		this.time = time;
-		this.id = nextId++;// impicit increment
-	}
+    /**
+     * Creates an event with a given time to execute and a given node to execute on.
+     *
+     * @param time The time the event will pappen.
+     */
+    protected Event(double time) {
+        this.time = time;
+        this.id = nextId++;// impicit increment
+    }
 
-	/**
-	 * @return The text to be displayed in the extended control panel for this
-	 *         event.
-	 * @param hasExecuted
-	 *            True if the event has already executed, otherwise false.
-	 */
-	public abstract String getEventListText(boolean hasExecuted);
+    /**
+     * @param hasExecuted True if the event has already executed, otherwise false.
+     * @return The text to be displayed in the extended control panel for this
+     * event.
+     */
+    public abstract String getEventListText(boolean hasExecuted);
 
-	/**
-	 * @return The tooltip text to be displayed in the extended control panel for
-	 *         this event.
-	 * @param hasExecuted
-	 *            True if the event has already executed, otherwise false.
-	 */
-	public abstract String getEventListToolTipText(boolean hasExecuted);
+    /**
+     * @param hasExecuted True if the event has already executed, otherwise false.
+     * @return The tooltip text to be displayed in the extended control panel for
+     * this event.
+     */
+    public abstract String getEventListToolTipText(boolean hasExecuted);
 
-	/**
-	 * @return True if this event is associated with a node (e.g. receiver of a
-	 *         packet or the handler of a timer). Otherwise, if this event is
-	 *         framework specific, this method returns false.
-	 */
-	public abstract boolean isNodeEvent();
+    /**
+     * @return True if this event is associated with a node (e.g. receiver of a
+     * packet or the handler of a timer). Otherwise, if this event is
+     * framework specific, this method returns false.
+     */
+    public abstract boolean isNodeEvent();
 
-	/**
-	 * @return The node for which the event is scheduled (receiver of a packet,
-	 *         handler of a timer event), null if the event is not associated with a
-	 *         node.
-	 */
-	public abstract Node getEventNode();
+    /**
+     * @return The node for which the event is scheduled (receiver of a packet,
+     * handler of a timer event), null if the event is not associated with a
+     * node.
+     */
+    public abstract Node getEventNode();
 
-	/**
-	 * Frees the this event. Puts it into the event pool.
-	 */
-	public abstract void free();
+    /**
+     * Frees the this event. Puts it into the event pool.
+     */
+    public abstract void free();
 
-	/**
-	 * Called when this event is removed before it was handled. This method does NOT
-	 * free the event.
-	 */
-	public abstract void drop();
+    /**
+     * Called when this event is removed before it was handled. This method does NOT
+     * free the event.
+     */
+    public abstract void drop();
 
-	/**
-	 * Executes this event, but does not yet free its resources or this event.
-	 */
-	public abstract void handle();
+    /**
+     * Executes this event, but does not yet free its resources or this event.
+     */
+    public abstract void handle();
 
-	// the DLLE entry for the DoublyLinkedList
-	private DLLFingerList dllFingerList = new DLLFingerList();
+    // the DLLE entry for the DoublyLinkedList
+    private DLLFingerList dllFingerList = new DLLFingerList();
 
-	@Override
-	public DLLFingerList getDoublyLinkedListFinger() {
-		return dllFingerList;
-	}
+    @Override
+    public DLLFingerList getDoublyLinkedListFinger() {
+        return dllFingerList;
+    }
 }

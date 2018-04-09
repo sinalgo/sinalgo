@@ -10,19 +10,18 @@ import sinalgo.nodes.timers.Timer;
  */
 public class PayloadMessageTimer extends Timer {
 
-	PayloadMsg msg = null; // the msg to send
+    private PayloadMsg msg; // the msg to send
 
-	/**
-	 * @param msg
-	 *            The message to send
-	 */
-	public PayloadMessageTimer(PayloadMsg msg) {
-		this.msg = msg;
-	}
+    /**
+     * @param msg The message to send
+     */
+    public PayloadMessageTimer(PayloadMsg msg) {
+        this.msg = msg;
+    }
 
-	@Override
-	public void fire() {
-		((FNode) node).sendPayloadMessage(msg);
-	}
+    @Override
+    public void fire() {
+        ((FNode) node).sendPayloadMessage(msg);
+    }
 
 }

@@ -42,15 +42,14 @@ package sinalgo.nodes;
  */
 public class NotYetImplementedException extends RuntimeException {
 
-	private static final long serialVersionUID = -3878647966455920675L;
+    private static final long serialVersionUID = -3878647966455920675L;
 
-	/**
-	 * The one and only constructor of this Exception.
-	 *
-	 * @param s
-	 *            The message this exception has to be constructed for.
-	 */
-	public NotYetImplementedException(String s) {
-		super(s);
-	}
+    /**
+     * The one and only constructor of this Exception.
+     *
+     * @param s The message this exception has to be constructed for.
+     */
+    public NotYetImplementedException(String s) {
+        super(s);
+    }
 }

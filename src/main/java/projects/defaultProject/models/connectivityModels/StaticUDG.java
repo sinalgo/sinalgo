@@ -49,25 +49,24 @@ import sinalgo.nodes.Node;
  */
 public class StaticUDG extends UDG {
 
-	private boolean firstTime = true; // detect when the connections are evaluated for the first time
+    private boolean firstTime = true; // detect when the connections are evaluated for the first time
 
-	@Override
-	public boolean updateConnections(Node n) throws WrongConfigurationException {
-		if (firstTime) {
-			firstTime = false;
-			return super.updateConnections(n); // let UDG do its work
-		} else {
-			return false; // keep all existing connections
-		}
-	}
+    @Override
+    public boolean updateConnections(Node n) throws WrongConfigurationException {
+        if (firstTime) {
+            firstTime = false;
+            return super.updateConnections(n); // let UDG do its work
+        } else {
+            return false; // keep all existing connections
+        }
+    }
 
-	/**
-	 * The default constructor for this class.
-	 *
-	 * @throws CorruptConfigurationEntryException
-	 *             If one of the initialization steps fails.
-	 */
-	public StaticUDG() throws CorruptConfigurationEntryException {
-		// all done in UDG.
-	}
+    /**
+     * The default constructor for this class.
+     *
+     * @throws CorruptConfigurationEntryException If one of the initialization steps fails.
+     */
+    public StaticUDG() throws CorruptConfigurationEntryException {
+        // all done in UDG.
+    }
 }

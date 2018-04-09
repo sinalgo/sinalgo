@@ -43,23 +43,22 @@ import sinalgo.nodes.messages.Message;
  */
 public class IntMessage extends Message {
 
-	/**
-	 * The payload of the Message: an integer.
-	 */
-	public int value = 0;
+    /**
+     * The payload of the Message: an integer.
+     */
+    public int value;
 
-	/**
-	 * The constructor for the IntMessage class.
-	 *
-	 * @param i
-	 *            The integer the payload has to be set to.
-	 */
-	public IntMessage(int i) {
-		value = i;
-	}
+    /**
+     * The constructor for the IntMessage class.
+     *
+     * @param i The integer the payload has to be set to.
+     */
+    public IntMessage(int i) {
+        value = i;
+    }
 
-	@Override
-	public Message clone() {
-		return new IntMessage(this.value);
-	}
+    @Override
+    public Message clone() {
+        return new IntMessage(this.value);
+    }
 }

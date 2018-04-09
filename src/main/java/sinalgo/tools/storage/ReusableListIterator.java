@@ -48,14 +48,13 @@ import java.util.ListIterator;
  * implementing this interface can be reset and reused such that no allocation
  * of a new iteration object is necessary.
  *
- * @param <E>
- *            The generic parameter to create the ListIterator for.
+ * @param <E> The generic parameter to create the ListIterator for.
  */
 public interface ReusableListIterator<E> extends ListIterator<E> {
 
-	/**
-	 * Reset the iterator to its initial state, just as if a new iterator for the
-	 * list would have been created.
-	 */
-	public void reset();
+    /**
+     * Reset the iterator to its initial state, just as if a new iterator for the
+     * list would have been created.
+     */
+    void reset();
 }

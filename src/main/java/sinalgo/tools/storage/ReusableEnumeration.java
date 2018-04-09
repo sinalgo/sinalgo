@@ -43,14 +43,13 @@ import java.util.Enumeration;
  * used to reset the Enumeration to the initial state without allocating a new
  * Enumeration instance.
  *
- * @param <E>
- *            The generic Type to create the Enumeration for.
+ * @param <E> The generic Type to create the Enumeration for.
  */
 public interface ReusableEnumeration<E> extends Enumeration<E> {
 
-	/**
-	 * This method resets the Enumeration to the initial state without allocating a
-	 * new Enumeration instance.
-	 */
-	public void reset();
+    /**
+     * This method resets the Enumeration to the initial state without allocating a
+     * new Enumeration instance.
+     */
+    void reset();
 }

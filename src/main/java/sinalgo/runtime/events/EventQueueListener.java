@@ -41,8 +41,8 @@ package sinalgo.runtime.events;
  */
 public interface EventQueueListener {
 
-	/**
-	 * Is called whenever something in the eventqueue changed.
-	 */
-	public void eventQueueChanged();
+    /**
+     * Is called whenever something in the eventqueue changed.
+     */
+    void eventQueueChanged();
 }

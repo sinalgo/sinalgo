@@ -43,24 +43,23 @@ import sinalgo.nodes.messages.Message;
  */
 public class StringMessage extends Message {
 
-	/**
-	 * The text of this message.
-	 */
-	public String text = "";
+    /**
+     * The text of this message.
+     */
+    public String text;
 
-	/**
-	 * Constructing a Message having the given string as message.
-	 *
-	 * @param txt
-	 *            The test of the Message to construct.
-	 */
-	public StringMessage(String txt) {
-		text = txt;
-	}
+    /**
+     * Constructing a Message having the given string as message.
+     *
+     * @param txt The test of the Message to construct.
+     */
+    public StringMessage(String txt) {
+        text = txt;
+    }
 
-	@Override
-	public Message clone() {
-		return new StringMessage(this.text);
-	}
+    @Override
+    public Message clone() {
+        return new StringMessage(this.text);
+    }
 
 }
