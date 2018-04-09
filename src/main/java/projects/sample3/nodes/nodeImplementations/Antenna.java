@@ -123,7 +123,7 @@ public class Antenna extends Node {
 
     private static int radius;
 
-    {
+    static {
         try {
             radius = Configuration.getIntegerParameter("GeometricNodeCollection/rMax");
         } catch (CorruptConfigurationEntryException e) {
@@ -159,7 +159,7 @@ public class Antenna extends Node {
 
         @Override
         public int compare(Node n1, Node n2) {
-            return Integer.compare(n1.ID, n2.ID);
+            return n1.ID < n2.ID ? -1 : n1.ID == n2.ID ? 0 : 1;
         }
     }
 

@@ -40,8 +40,6 @@ import sinalgo.gui.GuiHelper;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * This is a JDialog that shows the percentual progress of a action.

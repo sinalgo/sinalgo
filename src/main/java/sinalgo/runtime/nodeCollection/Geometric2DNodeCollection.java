@@ -41,7 +41,6 @@ import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
-import sinalgo.tools.statistics.Distribution;
 
 import java.util.Enumeration;
 import java.util.Iterator;

@@ -42,6 +42,7 @@ import sinalgo.models.MobilityModel;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
+import sinalgo.tools.Tools;
 import sinalgo.tools.statistics.Distribution;
 
 import java.util.Random;
@@ -181,13 +182,7 @@ public class RandomWayPoint extends MobilityModel {
      * @return the next waypoint where this node moves after having waited.
      */
     protected Position getNextWayPoint() {
-        double randx = random.nextDouble() * Configuration.dimX;
-        double randy = random.nextDouble() * Configuration.dimY;
-        double randz = 0;
-        if (Main.getRuntime().getTransformator().getNumberOfDimensions() == 3) {
-            randz = random.nextDouble() * Configuration.dimZ;
-        }
-        return new Position(randx, randy, randz);
+        return Tools.getRandomPosition(random);
     }
 
     /**

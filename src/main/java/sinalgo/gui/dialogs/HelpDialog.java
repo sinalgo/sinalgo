@@ -48,7 +48,6 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class HelpDialog extends JFrame implements ActionListener, WindowListener {

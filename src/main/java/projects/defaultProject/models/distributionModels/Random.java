@@ -40,6 +40,7 @@ import sinalgo.configuration.Configuration;
 import sinalgo.models.DistributionModel;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
+import sinalgo.tools.Tools;
 import sinalgo.tools.statistics.Distribution;
 
 /**
@@ -53,12 +54,6 @@ public class Random extends DistributionModel {
 
     @Override
     public Position getNextPosition() {
-        double randomPosX = rand.nextDouble() * Configuration.dimX;
-        double randomPosY = rand.nextDouble() * Configuration.dimY;
-        double randomPosZ = 0;
-        if (Main.getRuntime().getTransformator().getNumberOfDimensions() == 3) {
-            randomPosZ = rand.nextDouble() * Configuration.dimZ;
-        }
-        return new Position(randomPosX, randomPosY, randomPosZ);
+        return Tools.getRandomPosition(rand);
     }
 }

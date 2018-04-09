@@ -41,7 +41,6 @@ import sinalgo.gui.GuiHelper;
 import sinalgo.gui.helper.NonRegularGridLayout;
 import sinalgo.gui.helper.UnborderedJTextField;
 import sinalgo.nodes.Node;
-import sinalgo.nodes.edges.Edge;
 import sinalgo.runtime.Runtime;
 import sinalgo.tools.Tools;
 
@@ -51,7 +50,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Enumeration;
-import java.util.Iterator;
 
 /**
  * The Dialog to show the informations about the actual Graph. It is showing the

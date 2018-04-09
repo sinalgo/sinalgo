@@ -43,7 +43,6 @@ import sinalgo.gui.transformation.Transformation3D;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
-import sinalgo.tools.statistics.Distribution;
 
 import java.util.*;
 
@@ -57,10 +56,6 @@ import java.util.*;
  * the matrix cells adjacent to the cell containing the node.
  */
 public class Geometric3DNodeCollection extends NodeCollectionInterface {
-
-    private int dimX = Configuration.dimX;
-    private int dimY = Configuration.dimY;
-    private int dimZ = Configuration.dimZ;
 
     private int numX, numY, numZ; // cardinality of matrix in each dimension
 
@@ -101,8 +96,11 @@ public class Geometric3DNodeCollection extends NodeCollectionInterface {
                     + "is not valid. The value of rMax must be positive.");
         }
         // determine cardinality of matrix in each dimension
+        int dimX = Configuration.dimX;
         numX = (int) Math.ceil(dimX / rMax);
+        int dimY = Configuration.dimY;
         numY = (int) Math.ceil(dimY / rMax);
+        int dimZ = Configuration.dimZ;
         numZ = (int) Math.ceil(dimZ / rMax);
         // create and initialize the matrix
         list = new DLLNodeList[numX][numY][numZ];

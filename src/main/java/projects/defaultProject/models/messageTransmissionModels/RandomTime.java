@@ -58,7 +58,6 @@ import sinalgo.tools.statistics.Distribution;
 public class RandomTime extends sinalgo.models.MessageTransmissionModel {
 
     private Distribution dist;
-    private double minTime = 1e-9;
 
     /**
      * Creates a new RandomTime transmission model instance and reads the config for
@@ -74,6 +73,7 @@ public class RandomTime extends sinalgo.models.MessageTransmissionModel {
     public double timeToReach(Node startNode, Node endNode, Message msg) {
         double time = dist.nextSample();
         if (time <= 0) {
+            double minTime = 1e-9;
             time = minTime;
         }
         return time;

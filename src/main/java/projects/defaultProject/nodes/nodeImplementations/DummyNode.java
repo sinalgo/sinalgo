@@ -41,8 +41,6 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.messages.Inbox;
 
-import java.util.Iterator;
-
 /**
  * The absolute dummy node. Does not do anything. Good for testing network
  * topologies.

@@ -793,7 +793,7 @@ public abstract class Node implements DoublyLinkedListEntry {
     protected void drawNodeAsDiskWithText(Graphics g, PositionTransformation pt, boolean highlight, String text,
                                           int fontSize, Color textColor) {
         // Set the font
-        Font font = new Font(null, 0, (int) (fontSize * pt.getZoomFactor()));
+        Font font = new Font(null, Font.PLAIN, (int) (fontSize * pt.getZoomFactor()));
         g.setFont(font);
 
         // Determine the height and width of the text to be written

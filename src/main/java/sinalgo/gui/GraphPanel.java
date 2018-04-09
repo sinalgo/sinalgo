@@ -82,7 +82,7 @@ public class GraphPanel extends JPanel {
     private NodePopupMenu nodePopupMenu;
     private EdgePopupMenu edgePopupMenu;
     private SpacePopupMenu spacePopupMenu;
-    private GUI parent;
+    private final GUI parent;
 
     private Node nodeToDrag;
     private Position nodeToDragInitialPosition = new Position(); // initial position of the node that is being dragged,
@@ -115,7 +115,7 @@ public class GraphPanel extends JPanel {
      */
     public static boolean firstTimePainted = false;
 
-    private PositionTransformation pt;
+    private final PositionTransformation pt;
     private int myLastPtVersionNumber = -1;
 
     // Support to let the user select a node
@@ -433,7 +433,7 @@ public class GraphPanel extends JPanel {
                 Tuple<NodeSelectionHandler, String> h = userSelectsNodeHandler.peek();
                 String text = h.second;
                 String textCancel = "Cancel";
-                Font font = new Font(null, 0, 12);
+                Font font = new Font(null, Font.PLAIN, 12);
                 g.setFont(font);
                 int len1 = (int) g.getFontMetrics().getStringBounds(text, g).getWidth();
                 int len2 = (int) g.getFontMetrics().getStringBounds(textCancel, g).getWidth();

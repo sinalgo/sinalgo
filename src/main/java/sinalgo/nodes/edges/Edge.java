@@ -107,7 +107,7 @@ public class Edge implements DoublyLinkedListEntry {
     public void cleanUp() {
     }
 
-    protected void defaultCleanUp(){
+    protected void defaultCleanUp() {
         if (this.oppositeEdge != null) {
             // there is a related edge to this one.
             Edge oe = this.oppositeEdge;
@@ -160,11 +160,11 @@ public class Edge implements DoublyLinkedListEntry {
     public static Color defaultEdgeColorPassive = Color.BLACK;
     public static Color defaultEdgeColorActive = Color.RED;
 
-    {
+    static {
         try {
             String s = Configuration.getStringParameter("Edge/PassiveColor");
             defaultEdgeColorPassive = Color.decode(s);
-        } catch (CorruptConfigurationEntryException e) { // there is no config entry -> take default
+        } catch (CorruptConfigurationEntryException ignored) { // there is no config entry -> take default
         } catch (NumberFormatException e) {
             Main.fatalError(
                     "Invalid color specification for the configuration entry Edge/PassiveColor. Expected a hexadecimal number of the form 0xrrggbb");
@@ -172,7 +172,7 @@ public class Edge implements DoublyLinkedListEntry {
         try {
             String s = Configuration.getStringParameter("Edge/ActiveColor");
             defaultEdgeColorActive = Color.decode(s);
-        } catch (CorruptConfigurationEntryException e) { // there is no config entry -> take default
+        } catch (CorruptConfigurationEntryException ignored) { // there is no config entry -> take default
         } catch (NumberFormatException e) {
             Main.fatalError(
                     "Invalid color specification for the configuration entry Edge/ActiveColor. Expected a hexadecimal number of the form 0xrrggbb");

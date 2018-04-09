@@ -42,7 +42,6 @@ import projects.sample4.nodes.timers.S4SendDirectTimer;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.configuration.WrongConfigurationException;
-import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.nodes.Node;

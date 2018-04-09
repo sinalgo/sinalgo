@@ -45,6 +45,7 @@ import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.mapIO.Map;
 import sinalgo.models.*;
 import sinalgo.nodes.Node;
+import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.edges.EdgePool;
 import sinalgo.nodes.messages.Packet;
@@ -1036,6 +1037,22 @@ public class Tools {
                 }
             }
         }
+    }
+
+    /**
+     * Gets a new random position based on the current configuration and a random number generator
+     *
+     * @param rand The random number generator
+     * @return A random position
+     */
+    public static Position getRandomPosition(Random rand) {
+        double randomPosX = rand.nextDouble() * Configuration.dimX;
+        double randomPosY = rand.nextDouble() * Configuration.dimY;
+        double randomPosZ = 0;
+        if (Main.getRuntime().getTransformator().getNumberOfDimensions() == 3) {
+            randomPosZ = rand.nextDouble() * Configuration.dimZ;
+        }
+        return new Position(randomPosX, randomPosY, randomPosZ);
     }
 
 }

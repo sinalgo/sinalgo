@@ -58,7 +58,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
@@ -489,14 +488,14 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     protected Vector<JButton> createCustomButtons() {
         Vector<JButton> buttons = new Vector<>();
         Method[] f = Global.customGlobal.getClass().getMethods();
-        for (int i = 0; i < f.length; i++) {
-            AbstractCustomGlobal.CustomButton info = f[i].getAnnotation(AbstractCustomGlobal.CustomButton.class);
+        for (Method aF : f) {
+            AbstractCustomGlobal.CustomButton info = aF.getAnnotation(AbstractCustomGlobal.CustomButton.class);
             if (info != null) {
-                Class<?>[] params = f[i].getParameterTypes();
+                Class<?>[] params = aF.getParameterTypes();
                 if (params.length != 0) { // we only accept methods with no parameters
                     continue;
                 }
-                String command = "GLOBAL_BUTTON_" + f[i].getName();
+                String command = "GLOBAL_BUTTON_" + aF.getName();
                 JButton b;
                 if (!info.imageName().equals("")) {
                     b = createCustomIconButton(command, info.imageName(), info.toolTipText());
@@ -504,7 +503,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
                     b = createTextButton(command, info.buttonText(), info.toolTipText());
                 }
                 buttons.add(b);
-                customButtons.add(new Tuple<>(b, f[i]));
+                customButtons.add(new Tuple<>(b, aF));
             }
         }
         return buttons;

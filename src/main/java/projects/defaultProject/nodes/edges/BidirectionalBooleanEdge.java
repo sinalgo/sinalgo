@@ -36,8 +36,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.nodes.edges;
 
-import sinalgo.nodes.edges.Edge;
-
 /**
  * A bidirectional edge that also implements the boolean flag.
  *

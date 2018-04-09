@@ -83,7 +83,6 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
     private JButton cancel = new JButton("Cancel");
 
     private JTextArea descriptionText = new JTextArea();
-    private JScrollPane scrollableDescriptionPane = null;
 
     private JPanel configuration = new JPanel();
     private JPanel frameworkConfigurationPanel = new JPanel();
@@ -102,7 +101,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
     private Vector<ConfigEntry> projectEntries;
 
     // the instance to invoke after having finished
-    private Object main = null;
+    private final Object main;
 
     private int defaultTooltipDismissDelay;
 
@@ -112,14 +111,17 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
     /**
      * The constructor for the project selection frame.
+     *
+     * @param main The object to notify when the ok button is pressed.
      */
-    public ProjectSelector() {
+    public ProjectSelector(Object main) {
         super("Select a Project");
         GuiHelper.setWindowIcon(this);
         // show all the tooltips for 15000 mili-seconds
         defaultTooltipDismissDelay = ToolTipManager.sharedInstance().getDismissDelay();
         int myTooltipDismissDelay = 15000;
         ToolTipManager.sharedInstance().setDismissDelay(myTooltipDismissDelay);
+        this.main = main;
     }
 
     /**
@@ -146,12 +148,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
     /**
      * This method populates the ProjectSelector with all the subpanels and buttons
-     *
-     * @param main The object to notify when the ok button is pressed.
      */
-    public void populate(Object main) {
-        this.main = main;
-
+    public void populate() {
         // gather all projects
         String[] projects = getAllProjectNames();
         if (projects == null) {
@@ -274,7 +272,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         // The tab containing the description of the selected project
         JPanel description = new JPanel();
         description.setLayout(new BorderLayout());
-        scrollableDescriptionPane = new JScrollPane(descriptionText);
+        JScrollPane scrollableDescriptionPane = new JScrollPane(descriptionText);
         description.add(scrollableDescriptionPane);
         descriptionText.setEditable(false);
         descriptionText.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));

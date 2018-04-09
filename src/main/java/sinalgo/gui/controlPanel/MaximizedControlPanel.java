@@ -183,7 +183,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
             textPanel.add(sp);
             JButton clearText = super.createTextButton("ClearOutputText", "Clear", "Remove all output");
             clearText.setPreferredSize(new Dimension(60, 12));
-            clearText.setFont(new Font("", 0, 11));
+            clearText.setFont(new Font("", Font.PLAIN, 11));
             addToDisabledButtonList(clearText); // disable while simulating
             JPanel p = new JPanel();
             p.setLayout(new BorderLayout());
@@ -350,7 +350,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
                         if (e.getClickCount() == 2) {
                             eventJList.setCellRenderer(dLCR);
                             JOptionPane.showMessageDialog(null, currentEventString + "\n" + currentEventToolTip,
-                                    "Information about an Event", JOptionPane.NO_OPTION);
+                                    "Information about an Event", JOptionPane.INFORMATION_MESSAGE);
                             eventJList.setCellRenderer(nCNBCR);
                         }
                     }
@@ -727,7 +727,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
                             setSelectedIndex(index);
                             setCellRenderer(dLCR); // mark the element
                             JOptionPane.showMessageDialog(null, selElem.toString() + "\n" + selElem.getToolTipText(),
-                                    "Information about an Event", JOptionPane.NO_OPTION);
+                                    "Information about an Event", JOptionPane.INFORMATION_MESSAGE);
                             setCellRenderer(nCNBCR); // unmark it
                         }
                     }

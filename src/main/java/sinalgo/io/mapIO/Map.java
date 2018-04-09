@@ -58,7 +58,7 @@ import java.io.InputStream;
  */
 public class Map {
 
-    private int[][] grid = null;
+    private int[][] grid;
     private ColorModel colorModel = ColorModel.getRGBdefault(); // Color model to undertand RGB
     private int imgWidth, imgHeight; // width / height of this BG image
     private double xRatio, yRatio;

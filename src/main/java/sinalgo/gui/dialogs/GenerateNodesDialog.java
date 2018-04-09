@@ -52,8 +52,6 @@ import sinalgo.runtime.Runtime;
 import sinalgo.tools.Tools;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -70,9 +68,8 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
     private static JTextField number = new JTextField(6);
 
     // static: keep the value for subsequent calls
-    {
+    static {
         number.setText(Integer.toString(AppConfig.getAppConfig().generateNodesDlgNumNodes));
-
     }
 
     private int numberOfNodes; // 'number' field translated to an int, set after a call to readSelection()

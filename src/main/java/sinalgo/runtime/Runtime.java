@@ -38,7 +38,6 @@ package sinalgo.runtime;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GraphPanel;

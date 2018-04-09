@@ -104,18 +104,7 @@ public class NonRegularGridLayout extends GridLayout {
             }
             int[] w = new int[ncols];
             int[] h = new int[nrows];
-            for (int i = 0; i < ncomponents; i++) {
-                int r = i / ncols;
-                int c = i % ncols;
-                Component comp = parent.getComponent(i);
-                Dimension d = comp.getPreferredSize();
-                if (w[c] < d.width) {
-                    w[c] = d.width;
-                }
-                if (h[r] < d.height) {
-                    h[r] = d.height;
-                }
-            }
+            calculateSize(parent, ncomponents, ncols, w, h);
             int nw = 0;
             for (int j = 0; j < ncols; j++) {
                 nw += w[j];
@@ -193,18 +182,7 @@ public class NonRegularGridLayout extends GridLayout {
             if (alignToLeft) {
                 int[] w = new int[ncols]; // maximal width
                 int[] h = new int[nrows]; // maximal height
-                for (int i = 0; i < ncomponents; i++) {
-                    int r = i / ncols;
-                    int c = i % ncols;
-                    Component comp = parent.getComponent(i);
-                    Dimension d = comp.getPreferredSize();
-                    if (w[c] < d.width) {
-                        w[c] = d.width;
-                    }
-                    if (h[r] < d.height) {
-                        h[r] = d.height;
-                    }
-                }
+                calculateSize(parent, ncomponents, ncols, w, h);
                 int totW = 0;
                 for (int i : w) {
                     totW += i + hgap;
@@ -214,16 +192,7 @@ public class NonRegularGridLayout extends GridLayout {
                     w[ncols - 1] += parent.getWidth() - totW;
                 }
 
-                for (int c = 0, x = insets.left; c < ncols; c++) {
-                    for (int r = 0, y = insets.top; r < nrows; r++) {
-                        int i = r * ncols + c;
-                        if (i < ncomponents) {
-                            parent.getComponent(i).setBounds(x, y, w[c], h[r]);
-                        }
-                        y += h[r] + vgap;
-                    }
-                    x += w[c] + hgap;
-                }
+                calculateBounds(parent, insets, ncomponents, nrows, ncols, hgap, vgap, w, h);
             } else {
                 double sw = (1.0 * parent.getWidth()) / pd.width;
                 double sh = (1.0 * parent.getHeight()) / pd.height;
@@ -244,16 +213,35 @@ public class NonRegularGridLayout extends GridLayout {
                         h[r] = d.height;
                     }
                 }
-                for (int c = 0, x = insets.left; c < ncols; c++) {
-                    for (int r = 0, y = insets.top; r < nrows; r++) {
-                        int i = r * ncols + c;
-                        if (i < ncomponents) {
-                            parent.getComponent(i).setBounds(x, y, w[c], h[r]);
-                        }
-                        y += h[r] + vgap;
-                    }
-                    x += w[c] + hgap;
+                calculateBounds(parent, insets, ncomponents, nrows, ncols, hgap, vgap, w, h);
+            }
+        }
+    }
+
+    private void calculateBounds(Container parent, Insets insets, int ncomponents, int nrows, int ncols, int hgap, int vgap, int[] w, int[] h) {
+        for (int c = 0, x = insets.left; c < ncols; c++) {
+            for (int r = 0, y = insets.top; r < nrows; r++) {
+                int i = r * ncols + c;
+                if (i < ncomponents) {
+                    parent.getComponent(i).setBounds(x, y, w[c], h[r]);
                 }
+                y += h[r] + vgap;
+            }
+            x += w[c] + hgap;
+        }
+    }
+
+    private void calculateSize(Container parent, int ncomponents, int ncols, int[] w, int[] h) {
+        for (int i = 0; i < ncomponents; i++) {
+            int r = i / ncols;
+            int c = i % ncols;
+            Component comp = parent.getComponent(i);
+            Dimension d = comp.getPreferredSize();
+            if (w[c] < d.width) {
+                w[c] = d.width;
+            }
+            if (h[r] < d.height) {
+                h[r] = d.height;
             }
         }
     }

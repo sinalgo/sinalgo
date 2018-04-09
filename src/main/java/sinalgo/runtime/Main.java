@@ -97,8 +97,8 @@ public class Main {
             if (guiBatch <= 1) {
                 Global.isGuiMode = true;
                 // we are in gui mode, but no project was selected
-                ProjectSelector pane = new ProjectSelector();
-                pane.populate(this);
+                ProjectSelector pane = new ProjectSelector(this);
+                pane.populate();
 
                 try {
                     // wait for the user to press ok in the ProjectSelector.
