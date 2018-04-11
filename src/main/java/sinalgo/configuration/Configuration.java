@@ -80,7 +80,7 @@ public class Configuration {
     /**
      * The version of the release - this is needed especially for bug-tracking
      */
-    public static final String versionString = "0.77"; // also change the value in the build.xml file
+    public static final String versionString = "0.81"; // also change the value in the build.xml file
 
     /**
      * The annotation to be used for fields that are included by default in the
