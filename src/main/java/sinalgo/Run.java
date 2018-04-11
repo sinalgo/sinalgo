@@ -76,7 +76,6 @@ public class Run {
 
             // read in the XML-File and save it in the lookup-table
             String tempConfigDir = Configuration.appConfigDir + "/" + Configuration.userProjectDir + "/" + projectName;
-            Tools.createDir(tempConfigDir);
             String tempConfigFileName = tempConfigDir + "/" + Configuration.configfileFileName;
             Path tempoConfigFilePath = Paths.get(tempConfigFileName);
 

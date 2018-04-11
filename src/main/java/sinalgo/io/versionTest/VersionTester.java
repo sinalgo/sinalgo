@@ -56,6 +56,8 @@ public class VersionTester extends Thread {
 
             // read the input
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            // FIXME This mechanism for checking for new versions is broken. I need to create a VERSION file on the repo
             String line = in.readLine(); // we're only interested in the very first line
             if (line != null) {
                 // System.out.println("Most recent version: " + line);
@@ -70,7 +72,7 @@ public class VersionTester extends Thread {
                             + "| A more recent version of Sinalgo is available (" + line + ")\n"
                             + "+---------------------------------------------------------------------\n"
                             + "| To download the latest version, please visit\n"
-                            + "| http://sourceforge.net/projects/sinalgo/\n"
+                            + "| https://github.com/andrebrait/sinalgo/\n"
                             + "+---------------------------------------------------------------------\n"
                             + "| You may turn off these version checks through the 'Settings' dialog.\n"
                             + "| Note:   Sinalgo automatically tests for updates at most once\n"
@@ -85,7 +87,7 @@ public class VersionTester extends Thread {
                     + Configuration.versionString + "\n"
                     + ">---------------------------------------------------------------------\n"
                     + "> To check for more recent versions, please visit\n"
-                    + "> http://sourceforge.net/projects/sinalgo/\n"
+                    + "> https://github.com/andrebrait/sinalgo/\n"
                     + ">---------------------------------------------------------------------\n"
                     + "> You may turn off these version checks through the 'Settings' dialog.\n"
                     + "| Note:   Sinalgo automatically tests for updates at most once\n" + "|         every 24 hours.\n"
