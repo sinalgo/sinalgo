@@ -45,7 +45,7 @@ public class VersionTester extends Thread {
     public void run() {
         isRunning = true;
         try {
-            URL url = new URL("http://https://github.com/andrebrait/sinalgo");
+            URL url = new URL("https://github.com/andrebrait/sinalgo/raw/resources/VERSION");
             URLConnection con = url.openConnection();
             con.setDoOutput(true);
             con.setDoInput(true);
@@ -57,11 +57,8 @@ public class VersionTester extends Thread {
             // read the input
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-            // FIXME This mechanism for checking for new versions is broken. I need to create a VERSION file on the repo
             String line = in.readLine(); // we're only interested in the very first line
             if (line != null) {
-                // System.out.println("Most recent version: " + line);
-                // System.out.println("Current version : " + Configuration.versionString);
                 if (line.equals(Configuration.versionString)) {
                     if (displayIfOK) {
                         Main.info("You are using the most recent version of Sinalgo.");

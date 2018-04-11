@@ -53,10 +53,12 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 /**
  * This class provides globally visible constants and access to the custom
@@ -80,8 +82,17 @@ public class Configuration {
     /**
      * The version of the release - this is needed especially for bug-tracking
      */
-    public static final String versionString = "0.81"; // also change the value in the build.xml file
+    public static final String versionString = getVersionString();
 
+    private static String getVersionString() {
+        try {
+            return new Scanner(Configuration.class.getClassLoader().getResourceAsStream("VERSION"),
+                    StandardCharsets.UTF_8.displayName()).useDelimiter("\\A").next();
+        } catch (Exception e){
+            Main.fatalError("Could not read version information from the VERSION file.\n\n" + e);
+        }
+        return null;
+    }
     /**
      * The annotation to be used for fields that are included by default in the
      * configuration file. The description contains a brief description of this
