@@ -1026,7 +1026,6 @@ public class Tools {
                 // Test that the project folder exists (in the source)
                 String path = Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPath.replace('.', '/')
                         + "/" + args[i + 1]; // <<RF>> Why not simply call getProejctSrcDir for path?
-                Global.getProjectSrcDir();
                 File testProj = new File(path);
                 if (testProj.exists()) {
                     Global.useProject = true;

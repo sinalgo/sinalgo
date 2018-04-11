@@ -45,8 +45,8 @@ import sinalgo.configuration.Configuration;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -129,12 +129,12 @@ public class XMLParser {
     /**
      * This method parses a xml-file and stores the data in the configuration.
      *
-     * @param path The name of the xml-file.
+     * @param inputStream The input stream of the xml-file.
      */
-    public static void parse(String path) {
+    public static void parse(InputStream inputStream) {
         if (!blockParse) {
             try {
-                Document doc = new SAXBuilder().build(new File(path));
+                Document doc = new SAXBuilder().build(inputStream);
                 Element root = doc.getRootElement();
                 Element framework = root.getChild("Framework");
                 Element custom = root.getChild("Custom");
@@ -147,10 +147,10 @@ public class XMLParser {
                 parseFrameworkConfig(framework);
                 parseCustom(custom, "");
             } catch (JDOMException e) {
-                Main.fatalError("Currupt XML configuration file (" + path + "):\n" + e);
+                Main.fatalError("Currupt XML configuration file (" + inputStream + "):\n" + e);
             } catch (IOException e) {
                 if (Global.useProject) {
-                    Main.fatalError("Cannot find the XML-configuration file (" + path + "):\n" + e);
+                    Main.fatalError("Cannot find the XML-configuration file (" + inputStream + "):\n" + e);
                 }
             }
         }

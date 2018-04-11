@@ -36,17 +36,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.configuration;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 import sinalgo.tools.statistics.Distribution;
 
+import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -54,6 +53,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 /**
  * A config file that stores application wide settings for the user, such as the
@@ -113,13 +113,12 @@ public class AppConfig {
 
     /**
      * @return A file describing the directory that was chosen last, if this
-     * directory does not exist anymore, the directory of the current
-     * project.
+     * directory does not exist anymore, the default directory.
      */
     public File getLastSelectedFileDirectory() {
         File f = new File(lastSelectedFileDirectory);
         if (!f.exists()) {
-            f = new File(Global.getProjectSrcDir());
+            f = FileSystemView.getFileSystemView().getDefaultDirectory();
         }
         return f;
     }
@@ -132,9 +131,9 @@ public class AppConfig {
         InputStream configInputStream;
         try {
             configInputStream = Files.newInputStream(configFilePath);
-        } catch (IOException ignored) {
-            ClassLoader cl = getClass().getClassLoader();
-            configInputStream = cl.getResourceAsStream(Configuration.sinalgoResourceDirPrefix + "/" + configFileName);
+        } catch (Exception e) {
+            ClassLoader cldr = getClass().getClassLoader();
+            configInputStream = cldr.getResourceAsStream(Configuration.sinalgoResourceDirPrefix + "/" + configFileName);
         }
 
         if(configInputStream == null){
@@ -357,7 +356,7 @@ public class AppConfig {
      */
     public void writeConfig() {
         String dir = Configuration.appConfigDir;
-        if (StringUtils.isNotEmpty(dir)) {
+        if (!Objects.equals("", dir)) {
             Tools.createDir(dir);
         }
 
@@ -372,7 +371,7 @@ public class AppConfig {
         ps.setAttribute("lastChosenProject", lastChosenProject);
         ps.setAttribute("windowPosX", Integer.toString(projectSelectorWindowPosX));
         ps.setAttribute("windowPosY", Integer.toString(projectSelectorWindowPosY));
-        ps.setAttribute("isMaximized", projectSelectorIsMaximized ? "true" : "false");
+        ps.setAttribute("isMaximized", Boolean.toString(projectSelectorIsMaximized));
         ps.setAttribute("selectedTab", Integer.toString(projectSelectorSelectedTab));
 
         Element gui = new Element("GUI");
@@ -381,17 +380,17 @@ public class AppConfig {
         gui.setAttribute("windowHeight", Integer.toString(guiWindowHeight));
         gui.setAttribute("windowPosX", Integer.toString(guiWindowPosX));
         gui.setAttribute("windowPosY", Integer.toString(guiWindowPosY));
-        gui.setAttribute("isMaximized", guiIsMaximized ? "true" : "false");
-        gui.setAttribute("ControlPanelExpandSimulation", guiControlPanelExpandSimulation ? "true" : "false");
-        gui.setAttribute("ControlPanelShowFullViewPanel", guiControlPanelShowFullViewPanel ? "true" : "false");
-        gui.setAttribute("ControlPanelShowTextPanel", guiControlPanelShowTextPanel ? "true" : "false");
-        gui.setAttribute("ControlPanelShowProjectControl", guiControlPanelShowProjectControl ? "true" : "false");
-        gui.setAttribute("RunOperationIsLimited", guiRunOperationIsLimited ? "true" : "false");
+        gui.setAttribute("isMaximized", Boolean.toString(guiIsMaximized));
+        gui.setAttribute("ControlPanelExpandSimulation", Boolean.toString(guiControlPanelExpandSimulation));
+        gui.setAttribute("ControlPanelShowFullViewPanel", Boolean.toString(guiControlPanelShowFullViewPanel));
+        gui.setAttribute("ControlPanelShowTextPanel", Boolean.toString(guiControlPanelShowTextPanel));
+        gui.setAttribute("ControlPanelShowProjectControl", Boolean.toString(guiControlPanelShowProjectControl));
+        gui.setAttribute("RunOperationIsLimited", Boolean.toString(guiRunOperationIsLimited));
         gui.setAttribute("helpWindowWidth", Integer.toString(helpWindowWidth));
         gui.setAttribute("helpWindowHeight", Integer.toString(helpWindowHeight));
         gui.setAttribute("helpWindowPosX", Integer.toString(helpWindowPosX));
         gui.setAttribute("helpWindowPosY", Integer.toString(helpWindowPosY));
-        gui.setAttribute("helpWindowIsMaximized", helpWindowIsMaximized ? "true" : "false");
+        gui.setAttribute("helpWindowIsMaximized", Boolean.toString(helpWindowIsMaximized));
 
         Element seed = new Element("RandomSeed");
         root.addContent(seed);
@@ -400,7 +399,7 @@ public class AppConfig {
         Element app = new Element("App");
         root.addContent(app);
         app.setAttribute("lastSelectedFileDirectory", lastSelectedFileDirectory);
-        app.setAttribute("checkForUpdatesAtStartup", checkForSinalgoUpdate ? "true" : "false");
+        app.setAttribute("checkForUpdatesAtStartup", Boolean.toString(checkForSinalgoUpdate));
         app.setAttribute("updateCheckTimeStamp", Long.toString(timeStampOfLastUpdateCheck));
         app.setAttribute("runCmdLineArgs", previousRunCmdLineArgs);
 
@@ -415,7 +414,7 @@ public class AppConfig {
         outputter.setFormat(f);
 
         try {
-            FileWriter fW = new FileWriter(Paths.get(Configuration.appConfigDir, configFileName).toFile());
+            FileWriter fW = new FileWriter(new File(Configuration.appConfigDir + "/" + configFileName));
             outputter.output(doc, fW);
         } catch (IOException ignored) {
         }

@@ -57,7 +57,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
@@ -185,8 +184,9 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      */
     protected JButton createCustomIconButton(String actionCommand, String imageName, String toolTip) {
         JButton b;
+        ClassLoader cldr = getClass().getClassLoader();
         if(Global.useProject){
-            URL url = getClass().getResource(Global.getProjectResourceDir() + "/images/" + imageName);
+            URL url = cldr.getResource(Global.getProjectResourceDir() + "/images/" + imageName);
             if (url == null){
                 Main.fatalError("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
                         + Global.getProjectResourceDir() + "/images/" + imageName + ".");
@@ -194,12 +194,12 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
             ImageIcon icon = new ImageIcon(url);
             b = new JButton(icon);
         } else {
-            File f = new File(Global.getProjectResourceDir() + "/images/" + imageName);
-            if (!f.exists()) {
+            URL url = cldr.getResource(Global.getProjectResourceDir() + "/images/" + imageName);
+            if (url == null) {
                 Main.fatalError("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
                         + Global.getProjectResourceDir() + "/images/" + imageName + ".");
             }
-            ImageIcon icon = new ImageIcon(Global.getProjectResourceDir() + "/images/" + imageName);
+            ImageIcon icon = new ImageIcon(url);
             b = new JButton(icon);
         }
         b.setPreferredSize(new Dimension(29, 29));

@@ -50,12 +50,14 @@ import sinalgo.tools.logging.Logging;
 import sinalgo.tools.statistics.Distribution;
 
 import javax.swing.*;
-import java.io.File;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * The main class to start with.
@@ -113,11 +115,18 @@ public class Main {
 
         // read in the XML-File and save it in the lookup-table
         // if there is a Config.xml.run file, use this temporary file
-        String path = Global.getProjectSrcDir() + "/" + Configuration.configfileFileName;
-        if (new File(path + ".run").exists()) {
-            XMLParser.parse(path + ".run");
-        } else {
-            XMLParser.parse(path);
+        InputStream tempPath;
+        try {
+            tempPath = Files.newInputStream(Paths.get(Global.getProjecTempDir() + "/" + Configuration.configfileFileName + ".run"));
+        } catch (Exception e) {
+            tempPath = null;
+        }
+        ClassLoader cldr = getClass().getClassLoader();
+        InputStream normalPath = cldr.getResourceAsStream(Global.getProjectResourceDir() + "/" + Configuration.configfileFileName);
+        if (tempPath != null) {
+            XMLParser.parse(tempPath);
+        } else if (normalPath != null) {
+            XMLParser.parse(normalPath);
         }
 
         // parse the -overwrite parameters
@@ -518,12 +527,6 @@ public class Main {
     private static void cleanup() {
         // write the app config
         AppConfig.getAppConfig().writeConfig();
-        // delete the temporary config file (with suffix .run)
-        String path = Global.getProjectSrcDir() + "/" + Configuration.configfileFileName;
-        File f = new File(path + ".run");
-        if (f.exists()) { // delete the temporary .run config file
-            f.delete();
-        }
     }
 
     /**

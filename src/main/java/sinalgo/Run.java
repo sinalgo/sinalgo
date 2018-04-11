@@ -44,10 +44,10 @@ import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
 import sinalgo.tools.Tools;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -75,8 +75,21 @@ public class Run {
             String projectName = new Run().projectSelector(args); // may be null
 
             // read in the XML-File and save it in the lookup-table
-            String tempConfigFileName = Global.getProjectSrcDir() + "/" + Configuration.configfileFileName;
-            XMLParser.parse(tempConfigFileName);
+            String tempConfigDir = Configuration.appConfigDir + "/" + Configuration.userProjectDir + "/" + projectName;
+            Tools.createDir(tempConfigDir);
+            String tempConfigFileName = tempConfigDir + "/" + Configuration.configfileFileName;
+            Path tempoConfigFilePath = Paths.get(tempConfigFileName);
+
+            InputStream tempConfigFile;
+            if (Files.exists(tempoConfigFilePath)) {
+                tempConfigFile = Files.newInputStream(tempoConfigFilePath);
+            } else {
+                ClassLoader cldr = ClassLoader.getSystemClassLoader();
+                tempConfigFile = cldr.getResourceAsStream(Configuration.projectResourceDirPrefix + "/"
+                        + projectName + "/" + Configuration.configfileFileName);
+            }
+
+            XMLParser.parse(tempConfigFile);
             // parse the -overwrite parameters
             Main.parseOverwriteParameters(args, false);
 
@@ -132,16 +145,8 @@ public class Run {
             }
             mainProcess = null; // the simulation process stopped
 
-            // cleanup the Config.xml.run file
-            if (projectName != null) {
-                File configFile = new File(tempConfigFileName + ".run");
-                if (configFile.exists()) {
-                    configFile.delete();
-                }
-            }
-
             System.exit(0); // important, otherwise, this process does not terminate
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | SecurityException | InterruptedException | IllegalArgumentException | UnsupportedOperationException e) {
             Main.fatalError("Failed to create the simulation process with the following command:\n" + command + "\n\n"
                     + e.getMessage());
         }

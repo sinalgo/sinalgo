@@ -43,6 +43,7 @@ import sinalgo.tools.storage.SortableVector;
 
 import javax.naming.ConfigurationException;
 import java.awt.*;
+import java.io.File;
 import java.io.PrintStream;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -52,6 +53,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -879,7 +881,21 @@ public class Configuration {
     /**
      * The folder where configurations, logs, etc. will be stored.
      */
-    public final static String appConfigDir = System.getProperty("user.home", "") + "/" + appName;
+    public final static String appConfigDir = System.getProperty("user.home", "") + "/." + appName.toLowerCase();
+
+    /**
+     * The folder where the temporary files are generated
+     */
+    public final static String tempFolder = getTemporaryFolder();
+
+    private static String getTemporaryFolder(){
+        try {
+            return Files.createTempDirectory(appName.toLowerCase()).toString().replace(File.separatorChar, '/');
+        } catch (Exception e) {
+            Main.fatalError("Could not create a temporary working directory:\n\n" + e);
+        }
+        return null;
+    }
 
     /**
      * The directory where the logfiles are stored.
@@ -887,14 +903,19 @@ public class Configuration {
     public static final String logFileDirectory = appConfigDir + "/logs";
 
     /**
+     * The default project's name
+     */
+    public static final String defaultProjectName = "defaultProject";
+
+    /**
      * The path where the default project is stored.
      */
-    public static final String defaultProjectPath = "projects.defaultProject";
+    public static final String defaultProjectPath = "projects." + defaultProjectName;
 
     /**
      * The directory where the default project is stored.
      */
-    public static final String defaultProjectDir = "projects/defaultProject";
+    public static final String defaultProjectDir = defaultProjectPath.replace(".", "/");
 
     /**
      * The path where user-specific projects are stored. This path has to be
@@ -948,7 +969,7 @@ public class Configuration {
     /**
      * The directory where the resources for the projects are stored
      */
-    public static final String projectResourceDirPrefix = "projects";
+    public static final String projectResourceDirPrefix = userProjectDir;
 
     /**
      * A semicolon separated list of folder-names that should not be considered as

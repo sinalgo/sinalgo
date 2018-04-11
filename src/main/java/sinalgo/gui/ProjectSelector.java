@@ -36,7 +36,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Comment;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -55,6 +54,7 @@ import sinalgo.gui.multiLineTooltip.MultiLineToolTipJTextField;
 import sinalgo.io.xml.XMLParser;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
+import sinalgo.tools.Tools;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -66,6 +66,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Vector;
 
 /**
@@ -365,7 +366,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
             b = new JButton(icon);
         } catch (NullPointerException e) {
             Main.fatalError("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + "resources/" + Configuration.imageDir + "/" + imageName + ".");
+                    + "resources" + Configuration.imageDir + "/" + imageName + ".");
             return null;
         }
         // b.setPreferredSize(new Dimension(29, 29));
@@ -386,13 +387,13 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      * @param projectName The project name
      */
     private void generateGUIDescription(String projectName) {
-        File proj = new File(Configuration.sourceDirPrefix + "/" + Configuration.projectDirInSourceFolder + "/"
-                + projectName + "/" + Configuration.descriptionFileName);
+        ClassLoader cldr = getClass().getClassLoader();
+        InputStream proj = cldr.getResourceAsStream(Configuration.projectResourceDirPrefix + "/" + projectName + "/" + Configuration.descriptionFileName);
         try {
-            if (!proj.exists()) {
+            if (proj == null) {
                 descriptionText.setText("There is no description-file in the currently selected project.");
             } else {
-                LineNumberReader r = new LineNumberReader(new FileReader(proj));
+                LineNumberReader r = new LineNumberReader(new InputStreamReader(proj));
                 StringBuilder description = new StringBuilder();
                 String tmp;
                 while ((tmp = r.readLine()) != null) {
@@ -416,13 +417,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      * @param aConfigFile The config file
      * @return The custom text, an empty string upon any failure
      */
-    private String getCustomText(File aConfigFile) {
-        LineNumberReader reader;
-        try {
-            reader = new LineNumberReader(new FileReader(aConfigFile));
-        } catch (FileNotFoundException e) {
-            return "";
-        }
+    private String getCustomText(InputStream aConfigFile) {
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(aConfigFile));
         StringBuilder result = new StringBuilder();
         boolean inCustom = false;
         String line;
@@ -465,10 +461,10 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         Element frameworkElement = null;
 
-        String configFileName = Configuration.sourceDirPrefix + "/" + Configuration.projectDirInSourceFolder + "/"
-                + projectName + "/" + Configuration.configfileFileName;
-        File configFile = new File(configFileName);
-        if (!configFile.exists()) {
+        String configFileName = Configuration.projectResourceDirPrefix + "/" + projectName + "/" + Configuration.configfileFileName;
+        ClassLoader cldr = getClass().getClassLoader();
+        InputStream configFile = cldr.getResourceAsStream(configFileName);
+        if (configFile == null) {
             configExists = false;
         } else {
             try {
@@ -762,7 +758,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         for (ConfigEntry e : projectEntries) {
             if (e.valueComponent != null) { // there is a value field in the GUI
-                if (StringUtils.isNotEmpty(e.comment)) { // the comment is not "", add it
+                if (!Objects.equals("", e.comment)) { // the comment is not "", add it
                     framework.addContent(new Comment(e.comment.replace("\n", " "))); // without the newline chars
                 }
                 // get the value of this entry from the GUI
@@ -793,8 +789,9 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
             }
         }
 
-        String outputPath = Configuration.sourceDirPrefix + "/" + Configuration.projectDirInSourceFolder + "/"
-                + selectedProjectName;
+        String outputPath = (isTemporary ? Configuration.tempFolder : Configuration.appConfigDir)
+                + "/" + Configuration.userProjectDir + "/" + selectedProjectName;
+        Tools.createDir(outputPath);
         File outputFile = new File(outputPath + "/" + Configuration.configfileFileName + (isTemporary ? ".run" : ""));
 
         // And write the xml tree to the file
@@ -802,7 +799,11 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         Format f = Format.getPrettyFormat();
         f.setIndent("\t");
         outputter.setFormat(f);
-        File tempOutputFile = new File(outputPath + "/" + Configuration.configfileFileName + ".temp");
+        String tempOutputFolder = Configuration.tempFolder + "/" + Configuration.userProjectDir
+                + "/" + selectedProjectName;
+        Tools.createDir(tempOutputFolder);
+        File tempOutputFile = new File(tempOutputFolder + "/" + Configuration.configfileFileName + ".temp");
+
         try {
             FileWriter fW = new FileWriter(tempOutputFile);
             outputter.output(doc, fW);

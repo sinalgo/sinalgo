@@ -72,7 +72,7 @@ public class Map {
         try {
             ClassLoader cldr = this.getClass().getClassLoader();
             InputStream in = cldr.getResourceAsStream(aMapImageFile);
-            BufferedImage img = null;
+            BufferedImage img;
             if ((img = ImageIO.read(in)) == null) {
                 throw new FileNotFoundException("\n'" + aMapImageFile + "' - This image format is not supported.");
             }

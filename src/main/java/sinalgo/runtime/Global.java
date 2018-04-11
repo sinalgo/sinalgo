@@ -150,21 +150,45 @@ public class Global {
      */
     public static String getProjectResourceDir() {
         if (useProject) {
-            return "/" + Configuration.projectResourceDirPrefix + "/" + projectName;
+            return Configuration.projectResourceDirPrefix + "/" + projectName;
         } else {
-            return Configuration.sourceDirPrefix + "/" + Configuration.defaultProjectPath.replace('.', '/');
+            return Configuration.projectResourceDirPrefix + "/" + Configuration.defaultProjectName;
+        }
+    }
+
+//    /**
+//     * @return The base-directory of the source-files of the currently used project.
+//     */
+//    public static String getProjectSrcDir() {
+//        if (useProject) {
+//            return Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPath.replace('.', '/') + "/"
+//                    + projectName;
+//        } else {
+//            return Configuration.sourceDirPrefix + "/" + Configuration.defaultProjectPath.replace('.', '/');
+//        }
+//    }
+
+    /**
+     * @return The temp-directory of the config-files of the currently used project.
+     */
+    public static String getProjecTempDir() {
+        if (useProject) {
+            return Configuration.tempFolder + "/" + Configuration.userProjectsPath.replace('.', '/') + "/"
+                    + projectName;
+        } else {
+            return Configuration.tempFolder + "/" + Configuration.defaultProjectPath.replace('.', '/');
         }
     }
 
     /**
-     * @return The base-directory of the source-files of the currently used project.
+     * @return The base-directory of the config-files of the currently used project.
      */
-    public static String getProjectSrcDir() {
+    public static String getProjectConfigDir() {
         if (useProject) {
-            return Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPath.replace('.', '/') + "/"
+            return Configuration.appConfigDir + "/" + Configuration.userProjectsPath.replace('.', '/') + "/"
                     + projectName;
         } else {
-            return Configuration.sourceDirPrefix + "/" + Configuration.defaultProjectPath.replace('.', '/');
+            return Configuration.appConfigDir + "/" + Configuration.defaultProjectPath.replace('.', '/');
         }
     }
 
