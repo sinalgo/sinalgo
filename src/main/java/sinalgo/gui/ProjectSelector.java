@@ -652,7 +652,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         customParameters.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 
         if (configExists) {
-            customParameters.setText(getCustomText(configFile));
+            customParameters.setText(getCustomText(cldr.getResourceAsStream(configFileName)));
         } else {
             customParameters.setText("");
         }
