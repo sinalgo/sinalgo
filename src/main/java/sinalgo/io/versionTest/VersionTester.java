@@ -45,7 +45,7 @@ public class VersionTester extends Thread {
     public void run() {
         isRunning = true;
         try {
-            URL url = new URL("https://github.com/andrebrait/sinalgo/raw/resources/VERSION");
+            URL url = new URL("https://github.com/andrebrait/sinalgo/raw/master/VERSION");
             URLConnection con = url.openConnection();
             con.setDoOutput(true);
             con.setDoInput(true);
