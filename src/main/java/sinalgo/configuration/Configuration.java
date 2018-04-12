@@ -84,12 +84,12 @@ public class Configuration {
     /**
      * The version of the release - this is needed especially for bug-tracking
      */
-    public static final String versionString = getVersionString();
+    public static final String VERSION_STRING = getVersionString();
 
     private static String getVersionString() {
         try {
             return new Scanner(Configuration.class.getClassLoader().getResourceAsStream("VERSION"),
-                    StandardCharsets.UTF_8.displayName()).useDelimiter("\\A").next();
+                    StandardCharsets.UTF_8.displayName()).useDelimiter("\\A").next().trim();
         } catch (Exception e) {
             throw new SinalgoFatalException("Could not read version information from the VERSION file.\n\n" + e);
         }
@@ -558,7 +558,7 @@ public class Configuration {
      * Indicates whether the three plotted frame lines are also exported to the eps
      * as a dotted line.
      */
-    // public static final boolean drawFrameDotted = false;
+    // public static final boolean DRAW_FRAME_DOTTED = false;
 
     /*************************************************************************************************************
      * END of FRAMEWORK-BLOCK
@@ -613,9 +613,9 @@ public class Configuration {
             edgeType = "sinalgo.nodes.edges.BidirectionalEdge";
         } else if (selectedType.contains(":")) { // edge specification of the form project:edgeName
             String[] modelParts = selectedType.split(":");
-            edgeType = Configuration.userProjectsPath + "." + modelParts[0] + ".nodes.edges." + modelParts[1];
+            edgeType = Configuration.USER_PROJECTS_PATH + "." + modelParts[0] + ".nodes.edges." + modelParts[1];
         } else if (!selectedType.contains(".")) { // just the name of an edge (without '.') -> from the default project
-            edgeType = Configuration.defaultProjectPath + ".nodes.edges." + selectedType;
+            edgeType = Configuration.DEFAULT_PROJECT_PATH + ".nodes.edges." + selectedType;
         } else { // the edge is given already in explicit form
             edgeType = selectedType;
             edgeTypeShortName = Global.toShortName(edgeType);
@@ -889,21 +889,21 @@ public class Configuration {
     /**
      * The name of this application.
      */
-    public final static String appName = "Sinalgo";
+    public final static String APP_NAME = "Sinalgo";
 
     /**
      * The folder where configurations, logs, etc. will be stored.
      */
-    public final static String appConfigDir = System.getProperty("user.home", "") + "/." + appName.toLowerCase();
+    public final static String APP_CONFIG_DIR = System.getProperty("user.home", "") + "/." + APP_NAME.toLowerCase();
 
     /**
      * The folder where the temporary files are generated
      */
-    public final static String tempFolder = getTemporaryFolder();
+    public final static String APP_TMP_FOLDER = getTemporaryFolder();
 
     private static String getTemporaryFolder() {
         try {
-            return Files.createTempDirectory(appName.toLowerCase()).toString().replace(File.separatorChar, '/');
+            return Files.createTempDirectory(APP_NAME.toLowerCase()).toString().replace(File.separatorChar, '/');
         } catch (Exception e) {
             throw new SinalgoFatalException("Could not create a temporary working directory:\n\n" + e);
         }
@@ -912,82 +912,82 @@ public class Configuration {
     /**
      * The directory where the logfiles are stored.
      */
-    public static final String logFileDirectory = appConfigDir + "/logs";
+    public static final String LOG_FILE_DIRECTORY = APP_CONFIG_DIR + "/logs";
 
     /**
      * The default project's name
      */
-    public static final String defaultProjectName = "defaultProject";
+    public static final String DEFAULT_PROJECT_NAME = "defaultProject";
 
     /**
      * The path where the default project is stored.
      */
-    public static final String defaultProjectPath = "projects." + defaultProjectName;
+    public static final String DEFAULT_PROJECT_PATH = "projects." + DEFAULT_PROJECT_NAME;
 
     /**
      * The directory where the default project is stored.
      */
-    public static final String defaultProjectDir = defaultProjectPath.replace(".", "/");
+    public static final String DEFAULT_PROJECT_DIR = DEFAULT_PROJECT_PATH.replace(".", "/");
 
     /**
      * The path where user-specific projects are stored. This path has to be
      * postfixed with the users project name.
      */
-    public static final String userProjectsPath = "projects";
+    public static final String USER_PROJECTS_PATH = "projects";
 
     /**
      * The directory where user-specific projects are stored. This path has to be
      * postfixed with the users project name.
      */
-    public static final String userProjectDir = "projects";
+    public static final String USER_PROJECTS_DIR = "projects";
 
     /**
      * The directory where the source tree starts.
      */
-    public static final String sourceDirPrefix = "src/main/java";
+    public static final String SOURCE_DIR_PREFIX = "src/main/java";
 
     /**
      * The directory where the resources for sinalgo are stored;
      */
-    public static final String sinalgoResourceDirPrefix = "sinalgo";
+    public static final String SINALGO_RESOURCE_DIR_PREFIX = "sinalgo";
 
     /**
      * The directory where the project tree starts in the source dir.
      */
-    public static final String projectDirInSourceFolder = "projects";
+    public static final String PROJECT_DIR_IN_SOURCE_FOLDER = "projects";
 
     /**
      * The name of the description file in the project folder.
      */
-    public static final String descriptionFileName = "description.txt";
+    public static final String DESCRIPTION_FILE_NAME = "description.txt";
 
     /**
      * The name of the description file in the project folder.
      */
-    public static final String configfileFileName = "Config.xml";
+    public static final String CONFIGFILE_FILE_NAME = "Config.xml";
 
     /**
      * The directory where the class files are located.
      */
-    public static final String binaryDir = "build/classes/java/main";
+    public static final String BINARY_DIR = "build/classes/java/main";
 
     /**
      * The directory where the images are stored. Remember to use the
      * ClassLoader.getResource() method to map the file name to a url, such that the
      * images can be accessed when they are stored in a jar file.
      */
-    public static final String imageDir = sinalgoResourceDirPrefix + "/images";
+    public static final String IMAGE_DIR = SINALGO_RESOURCE_DIR_PREFIX + "/images";
 
     /**
      * The directory where the resources for the projects are stored
      */
-    public static final String projectResourceDirPrefix = userProjectDir;
+    public static final String PROJECT_RESOURCE_DIR_PREFIX = USER_PROJECTS_DIR;
 
     /**
      * A semicolon separated list of folder-names that should not be considered as
      * user-projects
      */
-    public static final String nonUserProjectDirNames = "defaultProject;template;CVS";
+    public static final String NON_USER_PROJECT_DIR_NAMES = "defaultProject;template";
 
     /**
      * Assigns a value to the configuration file. This method should only be called

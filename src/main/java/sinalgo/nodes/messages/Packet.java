@@ -155,8 +155,8 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
         numPacketsOnTheFly++;
         if (freePackets.empty()) {
             Packet p = new Packet(msg);
-            synchronized (issuedPackets) {
-                issuedPackets.append(p);
+            synchronized (ISSUED_PACKETS) {
+                ISSUED_PACKETS.append(p);
             }
             return p;
         } else {
@@ -167,8 +167,8 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
             }
             rP.ID = getNextFreeID();
             rP.message = msg;
-            synchronized (issuedPackets) {
-                issuedPackets.append(rP);
+            synchronized (ISSUED_PACKETS) {
+                ISSUED_PACKETS.append(rP);
             }
             return rP;
         }
@@ -181,8 +181,8 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
      * @param pack The packet to free.
      */
     public static void free(Packet pack) {
-        synchronized (issuedPackets) {
-            if (!issuedPackets.remove(pack)) { // nothing happens if the packet is not in the list
+        synchronized (ISSUED_PACKETS) {
+            if (!ISSUED_PACKETS.remove(pack)) { // nothing happens if the packet is not in the list
                 System.err.println(Logging.getCodePosition()
                         + " Bug in packet factory. Please report this error if you see this line.\n\n\n");
             }
@@ -234,7 +234,7 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
      * <p>
      * Whenever accessing this member, you should synchronize on this member
      */
-    public final static DoublyLinkedList<Packet> issuedPackets = new DoublyLinkedList<>(true);
+    public final static DoublyLinkedList<Packet> ISSUED_PACKETS = new DoublyLinkedList<>(true);
 
     public static void clearUnusedPackets() {
         freePackets.clear();

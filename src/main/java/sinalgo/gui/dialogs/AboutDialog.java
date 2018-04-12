@@ -73,7 +73,7 @@ public class AboutDialog extends JDialog implements ActionListener {
                 + "body { font-family: Verdana, Arial, Helvetica, sans-serif; }" + "h1 { color:#000077; } "
                 + ".red { color: rgb(160, 0, 0);} " + "-->" + "</style>" + "</head>" + "<body>"
                 + "<center><h1><span class='red'>Si</span>mulator for <span class='red'>N</span>etwork <span class='red'>Algo</span>rithms</h1></center>"
-                + "" + "<center>Version " + Configuration.versionString
+                + "" + "<center>Version " + Configuration.VERSION_STRING
                 + "</center><center><small><a href='TestVersion'>Test for newer version</a></small></center>"
                 + "<p>Visit <a href='https://github.com/andrebrait/sinalgo'>https://github.com/andrebrait/sinalgo</a> to obtain the latest version, report bugs or problems, "
                 + "and visit <a href='https://github.com/andrebrait/sinalgo'>https://github.com/andrebrait/sinalgo</a> for a documentation of Sinalgo"

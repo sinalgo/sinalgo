@@ -119,8 +119,8 @@ import java.util.HashMap;
  * The file LogL.java may look as following:<br>
  * <code>
  * public class LogL extends sinalgo.tools.logging.LogL {<br>
- * public static final boolean testLog = false;<br>
- * public static final boolean nodeSpeed = true;<br>
+ * public static final boolean TEST_LOG = false;<br>
+ * public static final boolean NODE_SPEED = true;<br>
  * }
  * </code> <br>
  * and the log-statements now look as following:<br>
@@ -527,7 +527,7 @@ public class Logging {
      */
     private Logging(String aFileName, boolean append) {
         try {
-            String dir = Configuration.logFileDirectory;
+            String dir = Configuration.LOG_FILE_DIRECTORY;
             IOUtils.createDir(dir);
             dir += "/";
 

@@ -59,13 +59,13 @@ public class VersionTester extends Thread {
 
             String line = in.readLine(); // we're only interested in the very first line
             if (line != null) {
-                if (line.equals(Configuration.versionString)) {
+                if (line.equals(Configuration.VERSION_STRING)) {
                     if (displayIfOK) {
                         Main.info("You are using the most recent version of Sinalgo.");
                     }
                 } else {
                     String msg = "\n" + "+----------------------------------------------------------------------\n"
-                            + "| You are currently running Sinalgo " + Configuration.versionString + ".\n"
+                            + "| You are currently running Sinalgo " + Configuration.VERSION_STRING + ".\n"
                             + "| A more recent version of Sinalgo is available (" + line + ")\n"
                             + "+---------------------------------------------------------------------\n"
                             + "| To download the latest version, please visit\n"
@@ -81,7 +81,7 @@ public class VersionTester extends Thread {
         } catch (Exception e) {
             String msg = "\n" + ">----------------------------------------------------------------------\n"
                     + "> Unable to test for updates of Sinalgo. The installed version\n" + "> is "
-                    + Configuration.versionString + "\n"
+                    + Configuration.VERSION_STRING + "\n"
                     + ">---------------------------------------------------------------------\n"
                     + "> To check for more recent versions, please visit\n"
                     + "> https://github.com/andrebrait/sinalgo/\n"

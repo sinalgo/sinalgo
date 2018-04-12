@@ -17,7 +17,7 @@ import java.io.*;
  */
 public class PositionFileIO {
 
-    private static final String separator = "#####----- start of node posiitons -----#####";
+    private static final String SEPARATOR = "#####----- start of node positions -----#####";
 
     /**
      * Creates a file containing a list of the positions of all nodes currently hold
@@ -48,7 +48,7 @@ public class PositionFileIO {
             // header contains # of nodes and dimension of deployment field
             ps.println("Number of nodes: " + Tools.getNodeList().size());
             Configuration.printConfiguration(ps);
-            ps.println(separator);
+            ps.println(SEPARATOR);
 
             for (Node n : Tools.getNodeList()) {
                 Position p = n.getPosition();
@@ -99,7 +99,7 @@ public class PositionFileIO {
         try {
             // skip the first lines
             String numNodes = reader.readLine();
-            while (numNodes != null && !numNodes.equals(separator)) {
+            while (numNodes != null && !numNodes.equals(SEPARATOR)) {
                 numNodes = reader.readLine();
             }
         } catch (IOException e) {

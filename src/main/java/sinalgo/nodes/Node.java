@@ -1500,10 +1500,10 @@ public abstract class Node implements DoublyLinkedListEntry {
         if (!classPath.contains(".")) { // is a relative path
             if (classPath.contains(":")) { // project implementation
                 String[] splitter = classPath.split(":");
-                classPath = Configuration.userProjectsPath + "." + splitter[0] + ".nodes.nodeImplementations."
+                classPath = Configuration.USER_PROJECTS_PATH + "." + splitter[0] + ".nodes.nodeImplementations."
                         + splitter[1];
             } else {
-                classPath = Configuration.defaultProjectPath + ".nodes.nodeImplementations." + classPath;
+                classPath = Configuration.DEFAULT_PROJECT_PATH + ".nodes.nodeImplementations." + classPath;
             }
         }
 

@@ -38,8 +38,8 @@ public class IOUtils {
      * @throws FileReadException if the file cannot be read
      */
     public static BufferedInputStream getProjectTempConfigurationAsStream(String projectName) {
-        Path tempConfigFilePath = Paths.get(Configuration.tempFolder + "/" + Configuration.userProjectDir
-                + "/" + projectName + "/" + Configuration.configfileFileName + ".run");
+        Path tempConfigFilePath = Paths.get(Configuration.APP_TMP_FOLDER + "/" + Configuration.USER_PROJECTS_DIR
+                + "/" + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME + ".run");
         if (Files.isReadable(tempConfigFilePath)) {
             try {
                 return new BufferedInputStream(Files.newInputStream(tempConfigFilePath));
@@ -61,8 +61,8 @@ public class IOUtils {
      * @throws FileReadException if the file cannot be read
      */
     public static LineNumberReader getProjectTempConfigurationAsReader(String projectName) {
-        Path tempConfigFilePath = Paths.get(Configuration.tempFolder + "/" + Configuration.userProjectDir
-                + "/" + projectName + "/" + Configuration.configfileFileName + ".run");
+        Path tempConfigFilePath = Paths.get(Configuration.APP_TMP_FOLDER + "/" + Configuration.USER_PROJECTS_DIR
+                + "/" + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME + ".run");
         if (Files.isReadable(tempConfigFilePath)) {
             try {
                 return new LineNumberReader(new InputStreamReader(Files.newInputStream(tempConfigFilePath)));
@@ -83,8 +83,8 @@ public class IOUtils {
      * @throws FileReadException if the file cannot be read
      */
     public static BufferedInputStream getProjectConfigurationAsStream(String projectName) {
-        Path userConfigFilePath = Paths.get(Configuration.appConfigDir + "/" + Configuration.userProjectDir
-                + "/" + projectName + "/" + Configuration.configfileFileName);
+        Path userConfigFilePath = Paths.get(Configuration.APP_CONFIG_DIR + "/" + Configuration.USER_PROJECTS_DIR
+                + "/" + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
         if (Files.isReadable(userConfigFilePath)) {
             try {
                 return new BufferedInputStream(Files.newInputStream(userConfigFilePath));
@@ -92,8 +92,8 @@ public class IOUtils {
                 throw new FileReadException(userConfigFilePath.toString(), e);
             }
         }
-        return getResourceAsStream(Configuration.projectResourceDirPrefix + "/"
-                + projectName + "/" + Configuration.configfileFileName);
+        return getResourceAsStream(Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/"
+                + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
     }
 
     /**
@@ -106,8 +106,8 @@ public class IOUtils {
      * @throws FileReadException if the file cannot be read
      */
     public static LineNumberReader getProjectConfigurationAsReader(String projectName) {
-        Path userConfigFilePath = Paths.get(Configuration.appConfigDir + "/" + Configuration.userProjectDir
-                + "/" + projectName + "/" + Configuration.configfileFileName);
+        Path userConfigFilePath = Paths.get(Configuration.APP_CONFIG_DIR + "/" + Configuration.USER_PROJECTS_DIR
+                + "/" + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
         if (Files.isReadable(userConfigFilePath)) {
             try {
                 return new LineNumberReader(new InputStreamReader((Files.newInputStream(userConfigFilePath))));
@@ -115,8 +115,8 @@ public class IOUtils {
                 throw new FileReadException(userConfigFilePath.toString(), e);
             }
         }
-        return getResourceAsReader(Configuration.projectResourceDirPrefix + "/"
-                + projectName + "/" + Configuration.configfileFileName);
+        return getResourceAsReader(Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/"
+                + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
     }
 
     /**

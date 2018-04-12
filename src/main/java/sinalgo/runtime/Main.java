@@ -129,12 +129,12 @@ public class Main {
         // initialize the chosen runtime system
         if (guiBatch <= 1) { // GUI MODE
             Global.isGuiMode = true;
-            Global.log.logln(LogL.ALWAYS, "> Starting " + Configuration.appName + " in GUI-Mode"
+            Global.log.logln(LogL.ALWAYS, "> Starting " + Configuration.APP_NAME + " in GUI-Mode"
                     + (Global.useProject ? " for project " + Global.projectName + "." : "."));
 
             runtime = new GUIRuntime();
         } else { // BATCH MODE
-            Global.log.log(LogL.ALWAYS, "> Starting " + Configuration.appName + " in BATCH-Mode"
+            Global.log.log(LogL.ALWAYS, "> Starting " + Configuration.APP_NAME + " in BATCH-Mode"
                     + (Global.useProject ? " for project " + Global.projectName + "." : "."));
             runtime = new BatchRuntime();
         }

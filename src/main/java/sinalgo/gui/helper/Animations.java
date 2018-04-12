@@ -50,8 +50,8 @@ public class Animations {
      */
     public static void drawEnvelopes(Graphics g, PositionTransformation pt) {
         double time = Tools.getGlobalTime();
-        synchronized (Packet.issuedPackets) {
-            for (Packet p : Packet.issuedPackets) {
+        synchronized (Packet.ISSUED_PACKETS) {
+            for (Packet p : Packet.ISSUED_PACKETS) {
                 if (p.arrivingTime < time || p.sendingTime > time || p.origin == null || p.destination == null) {
                     continue;
                 }

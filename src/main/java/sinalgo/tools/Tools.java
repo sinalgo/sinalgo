@@ -1017,7 +1017,7 @@ public class Tools {
                     throw new SinalgoFatalException("The flag '-project' must be preceeded by the name of a project");
                 }
                 // Test that the project folder exists (in the source)
-                String path = Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPath.replace('.', '/')
+                String path = Configuration.SOURCE_DIR_PREFIX + "/" + Configuration.USER_PROJECTS_PATH.replace('.', '/')
                         + "/" + args[i + 1]; // <<RF>> Why not simply call getProejctSrcDir for path?
                 File testProj = new File(path);
                 if (testProj.exists()) {

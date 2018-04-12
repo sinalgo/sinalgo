@@ -111,7 +111,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param r The runtime instance for which the gui was created.
      */
     public GUI(SinalgoRuntime r) {
-        super(Global.useProject ? (Configuration.appName + " - " + Global.projectName) : (Configuration.appName));
+        super(Global.useProject ? (Configuration.APP_NAME + " - " + Global.projectName) : (Configuration.APP_NAME));
         GuiHelper.setWindowIcon(this);
 
         // load the buttons for the menu - these settings should be done only once
