@@ -73,7 +73,7 @@ public class SortableVector<T> extends Vector<T> {
      * Note: T needs to extend Comparable<T>
      */
     public void sort() {
-        Arrays.sort(super.elementData);
+        Arrays.sort(super.elementData, 0, this.size());
     }
 
     /**
@@ -85,6 +85,6 @@ public class SortableVector<T> extends Vector<T> {
     @Override
     @SuppressWarnings("unchecked")
     public void sort(Comparator<? super T> c) {
-        Arrays.sort((T[]) super.elementData, c);
+        Arrays.sort((T[]) super.elementData, 0, this.size(), c);
     }
 }
