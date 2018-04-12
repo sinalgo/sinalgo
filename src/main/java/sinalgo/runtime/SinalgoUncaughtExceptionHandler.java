@@ -54,7 +54,6 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-
         if (e instanceof SinalgoWrappedException) {
             fatalError(e.getCause());
         } else if (e instanceof OutOfMemoryError) {
@@ -64,13 +63,14 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
             Runtime r = Runtime.getRuntime();
             long maxMem = r.maxMemory() / 1048576;
             fatalError("Sinalgo ran out of memory. (" + maxMem + " MB is not enough). \n"
-                    + "To allow the VM to use more memory, modify the javaVMmaxMem entry of the config file.");
-            return;
+                    + "To allow the VM to use more memory, modify the javaVMmaxMem entry of the config file.", e);
         } else if (e instanceof SinalgoFatalException) {
             fatalError(String.format(
                     Optional.ofNullable(((SinalgoFatalException) e).getFormat())
                             .orElse(((SinalgoFatalException) e).getDefaultFormat())
-                            + (e.getCause() != null ? ":\n%s" : ""), e.getMessage(), e.getCause().getCause()));
+                            + (e.getCause() != null ? ":\n%s" : ""),
+                    e.getMessage(),
+                    (e.getCause() != null ? e.getCause().getCause() : "")), e);
         }
 
         StringBuilder st = new StringBuilder("    ");
@@ -82,7 +82,7 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
                 + "Exception: " + e + ": \n\n"
                 + "Message: " + e.getMessage() + "\n\n"
                 + "Cause: " + e.getCause() + "\n\n"
-                + "StackTrace: " + st);
+                + "StackTrace: " + st, e);
     }
 
     /**
@@ -103,12 +103,12 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
                     + "Cause:\n"
                     + "----------------------------------------------\n"
                     + t.getCause() + "\n"
-                    + "----------------------------------------------\n");
+                    + "----------------------------------------------\n", t);
         } else {
             String message = t.toString()
                     + "\n\n" + "Message: " + t.getMessage()
                     + "\n\n";
-            fatalError(message);
+            fatalError(message, null);
         }
     }
 
@@ -120,7 +120,7 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
      *
      * @param message The message containing the error description.
      */
-    private static void fatalError(String message) {
+    private static void fatalError(String message, Throwable cause) {
         if (Global.isGuiMode) {
             if (Main.runtime != null) {
                 JOptionPane.showMessageDialog(((GUIRuntime) Main.runtime).getGUI(),
@@ -140,7 +140,7 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
                     + "-------------------------------------------------------\n"
                     + "Stack Trace\n"
                     + "-------------------------------------------------------\n"
-                    + Logging.getStackTrace()
+                    + (cause != null ? getStackTrace(cause) : Logging.getStackTrace())
                     + "-------------------------------------------------------\n");
         }
 
@@ -156,6 +156,25 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
         }
         Main.cleanup();
         System.exit(1);
+    }
+
+    /**
+     * @return The current stacktrace as a string.
+     */
+    private static String getStackTrace(Throwable t) {
+        StringBuilder s = new StringBuilder();
+        StackTraceElement[] list = t.getStackTrace();
+        if (list.length <= 2) {
+            return ""; // no stack trace
+        }
+        for (int i = 2; true; i++) {
+            s.append(list[i].toString());
+            if (i >= list.length - 1) {
+                break;
+            }
+            s.append("\n");
+        }
+        return s.toString();
     }
 
 }

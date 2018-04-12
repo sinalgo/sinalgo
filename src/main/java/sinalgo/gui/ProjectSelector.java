@@ -46,6 +46,7 @@ import org.jdom2.output.XMLOutputter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile;
+import sinalgo.exception.ResourceReadException;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.gui.helper.NonRegularGridLayout;
@@ -415,11 +416,10 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      * Extracts the custom-text from the config file, without the surrounding
      * <custom></custom> flag
      *
-     * @param aConfigFile The config file
+     * @param reader The file loaded as a reader
      * @return The custom text, an empty string upon any failure
      */
-    private String getCustomText(InputStream aConfigFile) {
-        LineNumberReader reader = new LineNumberReader(new InputStreamReader(aConfigFile));
+    private String getCustomText(LineNumberReader reader) {
         StringBuilder result = new StringBuilder();
         boolean inCustom = false;
         String line;
@@ -462,9 +462,12 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         Element frameworkElement = null;
 
-        String configFileName = Configuration.projectResourceDirPrefix + "/" + projectName + "/" + Configuration.configfileFileName;
-        ClassLoader cldr = getClass().getClassLoader();
-        InputStream configFile = cldr.getResourceAsStream(configFileName);
+        LineNumberReader configFile;
+        try {
+            configFile = IOUtils.getProjectConfigurationAsReader(projectName);
+        } catch (ResourceReadException e) {
+            configFile = null;
+        }
         if (configFile == null) {
             configExists = false;
         } else {
@@ -653,7 +656,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         customParameters.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 
         if (configExists) {
-            customParameters.setText(getCustomText(cldr.getResourceAsStream(configFileName)));
+            customParameters.setText(getCustomText(IOUtils.getProjectConfigurationAsReader(projectName)));
         } else {
             customParameters.setText("");
         }
