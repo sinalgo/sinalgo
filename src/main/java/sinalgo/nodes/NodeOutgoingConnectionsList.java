@@ -36,7 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes;
 
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.tools.storage.DoublyLinkedList;
 import sinalgo.tools.storage.ReusableListIterator;

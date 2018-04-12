@@ -36,7 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.io.eps;
 
-import sinalgo.runtime.Main;
+import sinalgo.exception.SinalgoFatalException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -222,7 +222,7 @@ public class EPSOutputPrintStream extends PrintStream {
      */
     public void drawFilledPolygon(double... positions) {
         if (positions.length == 0 || positions.length % 2 != 0) {
-            Main.fatalError("You are trying to draw a polygon which hasn't got an even number of parameters.\n");
+            throw new SinalgoFatalException("You are trying to draw a polygon which hasn't got an even number of parameters.\n");
         }
         for (int i = 0; i < positions.length; i++) {
             double paramx = positions[i];
@@ -267,10 +267,10 @@ public class EPSOutputPrintStream extends PrintStream {
      * the line between the two endpoints. If set to false, only the arrow-head is
      * drawn.
      *
-     * @param x1 The initial x coordinate
-     * @param y1 The initial y coordinate
-     * @param x2 The final x coordinate
-     * @param y2 The final y coordinate
+     * @param x1       The initial x coordinate
+     * @param y1       The initial y coordinate
+     * @param x2       The final x coordinate
+     * @param y2       The final y coordinate
      * @param drawLine If true, draws a line. Else, draws only the arrow-head
      */
     private void drawArrow(double x1, double y1, double x2, double y2, boolean drawLine) {
@@ -388,7 +388,7 @@ public class EPSOutputPrintStream extends PrintStream {
      */
     public double mirrorCoords(double original) {
         if (boundingBoxHeight == 0) {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "The height of the bounding box is 0 and thus the coordinates can not be mirrored correctly. Please "
                             + "set the bounding box of the graph prior to drawing items.");
         }

@@ -37,10 +37,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.runtime.nodeCollection;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
-import sinalgo.runtime.Main;
 
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -105,7 +105,7 @@ public class Geometric2DNodeCollection extends NodeCollectionInterface {
         try {
             rMax = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
         } catch (CorruptConfigurationEntryException e) {
-            Main.fatalError(e.getMessage());
+            throw new SinalgoFatalException(e.getMessage());
         }
 
         // the size of the playground
@@ -178,7 +178,7 @@ public class Geometric2DNodeCollection extends NodeCollectionInterface {
         NodeListInterface nList = lists[pos.x][pos.y];
         if (!nList.removeNode(n)) {
             // the node was not located where it said! ERROR!
-            Main.fatalError("Geometric2DNodeCollection.removeNode(Node):\n" + "A node is being removed, but it is not"
+            throw new SinalgoFatalException("Geometric2DNodeCollection.removeNode(Node):\n" + "A node is being removed, but it is not"
                     + "located in the matrix cell " + "in which it claims to be.");
         }
         localNodes.remove(n);

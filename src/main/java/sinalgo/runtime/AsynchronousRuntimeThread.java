@@ -43,7 +43,7 @@ import sinalgo.runtime.events.EventQueue;
 import sinalgo.tools.logging.LogL;
 
 /**
- * This is the asynchronous Runtime Thread that executes the simulation in the
+ * This is the asynchronous SinalgoRuntime Thread that executes the simulation in the
  * Asynchronous case. It handles the global event-queue and takes one event
  * after the other out of it and handles it.
  */
@@ -95,7 +95,7 @@ public class AsynchronousRuntimeThread extends Thread {
      */
     public static void initializeConnectivity() {
         connectivityInitialized = true;
-        for (Node n : Runtime.nodes) {
+        for (Node n : SinalgoRuntime.nodes) {
             n.getConnectivityModel().updateConnections(n);
         }
     }
@@ -119,12 +119,12 @@ public class AsynchronousRuntimeThread extends Thread {
             if (event != null) {
                 event.free(); // free the previous event
             }
-            event = Runtime.eventQueue.getNextEvent(); // returns null if there is no further event
+            event = SinalgoRuntime.eventQueue.getNextEvent(); // returns null if there is no further event
 
             if (event == null && Configuration.handleEmptyEventQueue) {
                 Global.customGlobal.handleEmptyEventQueue();
                 // and try again
-                event = Runtime.eventQueue.getNextEvent(); // returns null if there is no further event
+                event = SinalgoRuntime.eventQueue.getNextEvent(); // returns null if there is no further event
             }
             if (event == null) {
                 Global.log.logln(LogL.EVENT_QUEUE_DETAILS,

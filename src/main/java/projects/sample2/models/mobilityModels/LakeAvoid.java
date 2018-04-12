@@ -38,11 +38,11 @@ package projects.sample2.models.mobilityModels;
 
 import projects.defaultProject.models.mobilityModels.RandomWayPoint;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.io.mapIO.Map;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
-import sinalgo.runtime.Main;
 import sinalgo.tools.Tools;
 
 /**
@@ -73,7 +73,7 @@ public class LakeAvoid extends RandomWayPoint {
         }
 
         if (inLake) {
-            Main.fatalError("A node is standing in a lake. Cannot find a step outside.");
+            throw new SinalgoFatalException("A node is standing in a lake. Cannot find a step outside.");
         }
 
         do {

@@ -46,7 +46,7 @@ import sinalgo.gui.multiLineTooltip.MultilineToolTipJList;
 import sinalgo.gui.popups.EventPopupMenu;
 import sinalgo.gui.transformation.Transformation3D;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.runtime.events.Event;
 import sinalgo.runtime.events.EventQueue;
 import sinalgo.runtime.events.EventQueueListener;
@@ -373,7 +373,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
             composeEventList();
             eventList = new EventQueueList(queueElements);
-            Runtime.eventQueue.addEventQueueListener(MaximizedControlPanel.this);
+            SinalgoRuntime.eventQueue.addEventQueueListener(MaximizedControlPanel.this);
             eventList.setCellRenderer(new NonColoringNonBorderingCellRenderer());
             eventList.setFixedCellHeight(fixedCellHeight);
             eventList.setFixedCellWidth(fixedCellWidth);
@@ -626,7 +626,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
     }
 
     private void composeEventList() {
-        Iterator<Event> eventIter = Runtime.eventQueue.iterator();
+        Iterator<Event> eventIter = SinalgoRuntime.eventQueue.iterator();
         for (EventQueueElement queueElement : queueElements) {
             if (eventIter.hasNext()) {
                 Event e = eventIter.next();

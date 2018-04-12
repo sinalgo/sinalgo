@@ -43,7 +43,7 @@ import sinalgo.io.positionFile.PositionFileIO;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.runtime.Main;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -160,7 +160,7 @@ public class Exporter {
         // print the map prior to the background (such that the border is on top of the
         // map
         if (Configuration.useMap) {
-            Runtime.map.drawToPostScript(pw, pt);
+            SinalgoRuntime.map.drawToPostScript(pw, pt);
         }
 
         // draw the background
@@ -170,7 +170,7 @@ public class Exporter {
 
         // draw the edges
         if (Configuration.drawEdges) {
-            Enumeration<Node> nodeEnumer = Runtime.nodes.getSortedNodeEnumeration(true);
+            Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
             while (nodeEnumer.hasMoreElements()) {
                 Node n = nodeEnumer.nextElement();
                 for (Edge e : n.outgoingConnections) {
@@ -181,7 +181,7 @@ public class Exporter {
 
         if (Configuration.drawNodes) {
             // draw the nodes
-            for (Node n : Runtime.nodes) {
+            for (Node n : SinalgoRuntime.nodes) {
                 n.drawToPostScript(pw, pt);
             }
         }

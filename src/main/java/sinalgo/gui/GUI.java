@@ -38,6 +38,7 @@ package sinalgo.gui;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.controlPanel.ControlPanel;
 import sinalgo.gui.controlPanel.MaximizedControlPanel;
 import sinalgo.gui.controlPanel.MinimizedControlPanel;
@@ -50,7 +51,7 @@ import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.runtime.AbstractCustomGlobal.GlobalMethod;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.runtime.events.Event;
 import sinalgo.tools.storage.SortableVector;
 
@@ -109,7 +110,7 @@ public class GUI extends JFrame implements ActionListener {
      *
      * @param r The runtime instance for which the gui was created.
      */
-    public GUI(Runtime r) {
+    public GUI(SinalgoRuntime r) {
         super(Global.useProject ? (Configuration.appName + " - " + Global.projectName) : (Configuration.appName));
         GuiHelper.setWindowIcon(this);
 
@@ -166,7 +167,7 @@ public class GUI extends JFrame implements ActionListener {
     /**
      * The instance of the runtime to make changes comming from the gui.
      */
-    public Runtime runtime = null;
+    public SinalgoRuntime runtime = null;
 
     // The zoom level used to draw the graph.
     private double zoomFactor = 1;
@@ -516,7 +517,7 @@ public class GUI extends JFrame implements ActionListener {
                         globalMenu.addSeparator();
                     }
                 } catch (ClassNotFoundException e) {
-                    Main.fatalError("Could not find class sinalgo.runtime.Global to get the global gui methods from.");
+                    throw new SinalgoFatalException("Could not find class sinalgo.runtime.Global to get the global gui methods from.");
                 }
 
                 // And finally the Settings and About dialog
@@ -790,7 +791,7 @@ public class GUI extends JFrame implements ActionListener {
      * simulation.
      */
     public void clearAllNodes() {
-        Runtime.clearAllNodes();
+        SinalgoRuntime.clearAllNodes();
     }
 
     /**
@@ -834,7 +835,7 @@ public class GUI extends JFrame implements ActionListener {
             if (0 == JOptionPane.showConfirmDialog(this,
                     "Do you really want to reevaluate the connections of all nodes?", "Reevaluate Connections?",
                     JOptionPane.YES_NO_OPTION)) {
-                Runtime.reevaluateConnections();
+                SinalgoRuntime.reevaluateConnections();
                 this.redrawGUI();
             }
         } else if (e.getActionCommand().equals(exportMenuItem.getActionCommand())) {
@@ -873,7 +874,7 @@ public class GUI extends JFrame implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             Method method = methodsAndNames.get(event.getSource());
             if (method == null) {
-                Main.fatalError("Cannot find method associated with menu item " + event.getActionCommand());
+                throw new SinalgoFatalException("Cannot find method associated with menu item " + event.getActionCommand());
             }
             try {
                 synchronized (getTransformator()) {

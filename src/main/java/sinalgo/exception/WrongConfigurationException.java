@@ -34,22 +34,22 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package sinalgo.configuration;
+package sinalgo.exception;
 
 /**
- * An Exception to indicate an error during the simulation or its
- * initialization. *
+ * An Exception to indicate that there is something wrong witch the
+ * configuration.
  */
-public class SimulationException extends Exception {
+public class WrongConfigurationException extends RuntimeException {
 
-    private static final long serialVersionUID = 3172196647873850143L;
+    private static final long serialVersionUID = 8134105692334478150L;
 
     /**
-     * The constructor for the SimulationException class.
+     * The constructor for the WrongConfigurationException class.
      *
      * @param s The message for the Exception.
      */
-    public SimulationException(String s) {
+    public WrongConfigurationException(String s) {
         super(s);
     }
 
@@ -59,7 +59,7 @@ public class SimulationException extends Exception {
      * @param cause The exception causing this exception.
      * @param msg   The message of this exception.
      */
-    public SimulationException(Throwable cause, String msg) {
+    public WrongConfigurationException(Throwable cause, String msg) {
         super(msg);
         this.initCause(cause);
     }

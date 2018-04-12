@@ -3,7 +3,7 @@ package projects.sample3.nodes.timers;
 import projects.sample3.nodes.messages.InviteMessage;
 import projects.sample3.nodes.nodeImplementations.Antenna;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.tools.Tools;
 import sinalgo.tools.statistics.Distribution;

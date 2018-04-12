@@ -38,7 +38,7 @@ package sinalgo.tools.statistics;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

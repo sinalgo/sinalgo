@@ -1,7 +1,7 @@
 package projects.sample5.nodes.edges;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.helper.Arrow;
 import sinalgo.gui.transformation.PositionTransformation;

@@ -41,7 +41,7 @@ import sinalgo.configuration.Configuration;
 /**
  * The runtime handling the runtime in the batch mode.
  */
-public class BatchRuntime extends Runtime {
+public class BatchRuntime extends SinalgoRuntime {
 
     @Override
     public void initConcreteRuntime() {

@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package projects.sample3.models.distributionModels;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.models.DistributionModel;
 import sinalgo.nodes.Position;
 import sinalgo.tools.statistics.Distribution;

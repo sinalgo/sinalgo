@@ -38,16 +38,20 @@ package sinalgo;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.gui.ProjectSelector;
+import sinalgo.io.IOUtils;
 import sinalgo.io.xml.XMLParser;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
+import sinalgo.runtime.SinalgoUncaughtExceptionHandler;
 import sinalgo.tools.Tools;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -58,6 +62,8 @@ import java.util.Vector;
 public class Run {
 
     public static void main(String args[]) {
+        Thread.currentThread().setUncaughtExceptionHandler(new SinalgoUncaughtExceptionHandler());
+
         testJavaVersion();
 
         StringBuilder command = new StringBuilder(); // the entire command
@@ -75,20 +81,8 @@ public class Run {
             String projectName = new Run().projectSelector(args); // may be null
 
             // read in the XML-File and save it in the lookup-table
-            String tempConfigDir = Configuration.appConfigDir + "/" + Configuration.userProjectDir + "/" + projectName;
-            String tempConfigFileName = tempConfigDir + "/" + Configuration.configfileFileName;
-            Path tempoConfigFilePath = Paths.get(tempConfigFileName);
+            XMLParser.parse(IOUtils.getProjectConfigurationAsReader(projectName));
 
-            InputStream tempConfigFile;
-            if (Files.exists(tempoConfigFilePath)) {
-                tempConfigFile = Files.newInputStream(tempoConfigFilePath);
-            } else {
-                ClassLoader cldr = ClassLoader.getSystemClassLoader();
-                tempConfigFile = cldr.getResourceAsStream(Configuration.projectResourceDirPrefix + "/"
-                        + projectName + "/" + Configuration.configfileFileName);
-            }
-
-            XMLParser.parse(tempConfigFile);
             // parse the -overwrite parameters
             Main.parseOverwriteParameters(args, false);
 
@@ -125,7 +119,7 @@ public class Run {
             pb.directory(new File(cp));
             pb.redirectErrorStream(true);
             mainProcess = pb.start();
-            // mainProcess = Runtime.getRuntime().exec(command); // alternative
+            // mainProcess = SinalgoRuntime.getRuntime().exec(command); // alternative
 
             Runtime.getRuntime().addShutdownHook(new ShutdownThread()); // catch shutdown of this process through user
 
@@ -146,8 +140,8 @@ public class Run {
 
             System.exit(0); // important, otherwise, this process does not terminate
         } catch (IOException | SecurityException | InterruptedException | IllegalArgumentException | UnsupportedOperationException e) {
-            Main.fatalError("Failed to create the simulation process with the following command:\n" + command + "\n\n"
-                    + e.getMessage());
+            throw new SinalgoFatalException(String.valueOf(command) + "\n\n" + e.getMessage(),
+                    "Failed to create the simulation process with the following command:\n%s");
         }
     }
 
@@ -200,7 +194,7 @@ public class Run {
         // start the project selector GUI if no project was selected.
         if (!Global.useProject) {
             if (guiBatch == 2) { // in batch mode
-                Main.fatalError(
+                throw new SinalgoFatalException(
                         "Missing project: In batch mode, you need to specify a project on the command line using the -project flag.");
             }
 
@@ -215,7 +209,7 @@ public class Run {
                     wait();
                 }
             } catch (InterruptedException e) {
-                Main.fatalError(e);
+                throw new SinalgoWrappedException(e);
             }
             return Global.projectName;
         } else {

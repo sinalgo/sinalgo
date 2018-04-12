@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.popups;
 
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.runtime.events.Event;
 
 import javax.swing.*;
@@ -101,9 +102,9 @@ public class EventPopupMenu extends JPopupMenu implements ActionListener {
                     event.getEventListText(false) + "\n" + event.getEventListToolTipText(false),
                     "Information about an Event", JOptionPane.INFORMATION_MESSAGE);
         } else if (e.getActionCommand().equals(delete.getActionCommand())) {
-            sinalgo.runtime.Runtime.removeEvent(event);
+            SinalgoRuntime.removeEvent(event);
         } else if (e.getActionCommand().equals(deleteAll.getActionCommand())) {
-            sinalgo.runtime.Runtime.removeAllAsynchronousEvents();
+            SinalgoRuntime.removeAllAsynchronousEvents();
         }
         list.setCellRenderer(renderer);
         list.repaint();

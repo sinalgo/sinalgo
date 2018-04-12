@@ -37,9 +37,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.tools.logging;
 
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.io.IOUtils;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
-import sinalgo.tools.Tools;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -145,7 +145,7 @@ import java.util.HashMap;
  * <br>
  * <br>
  * <b><u>Remarks:</u></b></br>
- * <b>a) Runtime:</b><br>
+ * <b>a) SinalgoRuntime:</b><br>
  * In order to change the log-levels at runtime, you need to remove the 'final'
  * modifier for the corresponding log-levels in the LogL.java file.
  *
@@ -189,7 +189,7 @@ public class Logging {
                     return getLogger(Configuration.logFileName);
                 }
             } else {
-                Main.fatalError("You tried to instantiate the logging mechanism before you are allowed to."
+                throw new SinalgoFatalException("You tried to instantiate the logging mechanism before you are allowed to."
                         + "Most probable you instantiated runtime.Global or accessed a static member/function"
                         + "before parsing of the 	-overwrite parameters.");
             }
@@ -264,11 +264,10 @@ public class Logging {
                 return l;
             }
         } else {
-            Main.fatalError("You tried to instantiate the logging mechanism before you are allowed to."
+            throw new SinalgoFatalException("You tried to instantiate the logging mechanism before you are allowed to."
                     + "Most probable you instantiated runtime.Global or accessed a static member/function"
                     + "before parsing of the 	-overwrite parameters.");
         }
-        return null;
     }
 
     /**
@@ -529,20 +528,20 @@ public class Logging {
     private Logging(String aFileName, boolean append) {
         try {
             String dir = Configuration.logFileDirectory;
-            Tools.createDir(dir);
+            IOUtils.createDir(dir);
             dir += "/";
 
             if (!append) {
                 if (Configuration.logToTimeDirectory) {
                     dir = dir + getTimeDirectoryName();
-                    Tools.createDir(dir);
+                    IOUtils.createDir(dir);
                     dir = dir + "/";
                 }
             }
             int index = aFileName.lastIndexOf('/');
             if (index > 0) {
                 String path = aFileName.substring(0, index);
-                Tools.createDir(dir + path);
+                IOUtils.createDir(dir + path);
             }
 
             if (append) {
@@ -551,7 +550,7 @@ public class Logging {
                 out = new PrintStream(dir + aFileName);
             }
         } catch (FileNotFoundException e) {
-            Main.fatalError("Could not open the logfile " + aFileName);
+            throw new SinalgoFatalException("Could not open the logfile " + aFileName);
         }
     }
 

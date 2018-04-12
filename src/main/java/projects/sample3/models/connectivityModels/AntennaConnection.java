@@ -39,7 +39,7 @@ package projects.sample3.models.connectivityModels;
 import projects.sample3.nodes.nodeImplementations.Antenna;
 import projects.sample3.nodes.nodeImplementations.MobileNode;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.models.ConnectivityModelHelper;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.Global;

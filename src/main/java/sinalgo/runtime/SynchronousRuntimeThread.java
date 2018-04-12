@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.runtime;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.nodes.Node;
 import sinalgo.tools.logging.LogL;
 
@@ -104,25 +104,25 @@ public class SynchronousRuntimeThread extends Thread {
             // Mobility is performed in a separate iteration over all nodes to avoid
             // inconsistencies.
             if (Configuration.mobility) {
-                for (Node n : Runtime.nodes) {
+                for (Node n : SinalgoRuntime.nodes) {
                     n.setPosition(n.getMobilityModel().getNextPos(n));
                 }
             }
 
             // Before the nodes perform their step, the entire network graph is updated
             // such that all nodes see the same network when they perform their step.
-            for (Node n : Runtime.nodes) {
+            for (Node n : SinalgoRuntime.nodes) {
                 n.updateConnections();
             }
 
             // Test all messages still being sent for interference
             if (Configuration.interference) {
-                Runtime.packetsInTheAir.testForInterference();
+                SinalgoRuntime.packetsInTheAir.testForInterference();
             }
 
             // Perform the step for each node
             try {
-                for (Node n : Runtime.nodes) {
+                for (Node n : SinalgoRuntime.nodes) {
                     n.step();
                 }
             } catch (WrongConfigurationException wCE) {

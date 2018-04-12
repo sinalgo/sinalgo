@@ -41,7 +41,7 @@ import sinalgo.gui.GuiHelper;
 import sinalgo.gui.helper.NonRegularGridLayout;
 import sinalgo.gui.helper.UnborderedJTextField;
 import sinalgo.nodes.Node;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.tools.Tools;
 
 import javax.swing.*;
@@ -69,14 +69,14 @@ public class GraphInfoDialog extends JDialog implements ActionListener {
         GuiHelper.setWindowIcon(this);
 
         // determine the number of nodes and edges
-        Enumeration<Node> nodeEnumer = Runtime.nodes.getNodeEnumeration();
+        Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
         int numNodes = 0;
         int numEdges = 0;
 
         while (nodeEnumer.hasMoreElements()) {
             numNodes++;
             Node node = nodeEnumer.nextElement();
-            numEdges+=node.outgoingConnections.size();
+            numEdges += node.outgoingConnections.size();
         }
 
         JPanel cp = new JPanel();

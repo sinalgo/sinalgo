@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.models;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.tools.Tuple;
 
 import java.lang.reflect.Constructor;

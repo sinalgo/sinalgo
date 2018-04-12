@@ -37,10 +37,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package projects.defaultProject.models.reliabilityModels;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.models.ReliabilityModel;
 import sinalgo.nodes.messages.Packet;
-import sinalgo.runtime.Main;
 import sinalgo.tools.statistics.Distribution;
 
 /**
@@ -69,7 +69,7 @@ public class LossyDelivery extends ReliabilityModel {
         try {
             dropRate = Configuration.getDoubleParameter("LossyDelivery/dropRate");
         } catch (CorruptConfigurationEntryException e) {
-            Main.fatalError("Missing configuration entry for the Message Transmission Model:\n" + e.getMessage());
+            throw new SinalgoFatalException("Missing configuration entry for the Message Transmission Model:\n" + e.getMessage());
         }
     }
 }

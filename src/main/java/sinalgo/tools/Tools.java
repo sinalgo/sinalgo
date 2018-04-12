@@ -37,7 +37,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.tools;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.SinalgoWrappedException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.helper.NodeSelectionHandler;
@@ -50,7 +52,6 @@ import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.edges.EdgePool;
 import sinalgo.nodes.messages.Packet;
 import sinalgo.runtime.*;
-import sinalgo.runtime.Runtime;
 import sinalgo.runtime.events.EventQueue;
 import sinalgo.runtime.events.PacketEvent;
 import sinalgo.runtime.events.TimerEvent;
@@ -114,7 +115,7 @@ public class Tools {
      * @param message The message containing the error description.
      */
     public static void fatalError(String message) {
-        Main.fatalError(message);
+        throw new SinalgoFatalException(message);
     }
 
     // **************************************************************************************
@@ -137,9 +138,7 @@ public class Tools {
         if (!Global.isAsynchronousMode) {
             return Global.startTime;
         } else {
-            Main.fatalError("Cannot get the startTime of the round in asynchronous mode");
-            // will never reach this code, but for the compiler...
-            return null;
+            throw new SinalgoFatalException("Cannot get the startTime of the round in asynchronous mode");
         }
     }
 
@@ -152,9 +151,7 @@ public class Tools {
         if (!Global.isAsynchronousMode) {
             return Global.numberOfMessagesInThisRound;
         } else {
-            Main.fatalError("Cannot get the startTime of the round in asynchronous mode");
-            // will never reach this code, but for the compiler...
-            return 0;
+            throw new SinalgoFatalException("Cannot get the startTime of the round in asynchronous mode");
         }
     }
 
@@ -296,7 +293,7 @@ public class Tools {
      * information about the sender, the intensity...
      */
     public static PacketsInTheAirBuffer getPacketsInTheAir() {
-        return Runtime.packetsInTheAir;
+        return SinalgoRuntime.packetsInTheAir;
     }
 
     /**
@@ -326,9 +323,7 @@ public class Tools {
         try {
             return Main.getGuiRuntime();
         } catch (NotInGUIModeException e) {
-            Main.fatalError(e);
-            // will never reach this code, but for the compiler...
-            return null;
+            throw new SinalgoWrappedException(e);
         }
     }
 
@@ -343,19 +338,17 @@ public class Tools {
         try {
             return Main.getBatchRuntime();
         } catch (NotInBatchModeException e) {
-            Main.fatalError(e);
-            // will never reach this code, but for the compiler...
-            return null;
+            throw new SinalgoWrappedException(e);
         }
     }
 
     /**
-     * @return The runtime instance. Note that the returned Runtime is either a
+     * @return The runtime instance. Note that the returned SinalgoRuntime is either a
      * BatchRuntime or a GUIRuntime object. If you want to avoid casting the
-     * Runtime to a Batch- resp. GUI- Runtime use the getGuiRuntime or the
+     * SinalgoRuntime to a Batch- resp. GUI- SinalgoRuntime use the getGuiRuntime or the
      * getBatchRuntime methods.
      */
-    public static Runtime getRuntime() {
+    public static SinalgoRuntime getRuntime() {
         return Main.getRuntime();
     }
 
@@ -364,7 +357,7 @@ public class Tools {
      * simulation mode.
      */
     public static EventQueue getEventQueue() {
-        return Runtime.eventQueue;
+        return SinalgoRuntime.eventQueue;
     }
 
     /**
@@ -372,14 +365,14 @@ public class Tools {
      * is set.
      */
     public static Map getBackgroundMap() {
-        return Runtime.map;
+        return SinalgoRuntime.map;
     }
 
     /**
      * @return A list of all nodes currently added to the framework.
      */
     public static NodeCollectionInterface getNodeList() {
-        return Runtime.nodes;
+        return SinalgoRuntime.nodes;
     }
 
     /**
@@ -391,7 +384,7 @@ public class Tools {
      * @return The node with the given ID, null if there is no such node.
      */
     public static Node getNodeByID(int id) {
-        for (Node n : Runtime.nodes) {
+        for (Node n : SinalgoRuntime.nodes) {
             if (n.ID == id) {
                 return n;
             }
@@ -404,14 +397,14 @@ public class Tools {
      * framework.
      */
     public static Node getRandomNode() {
-        return Runtime.nodes.getRandomNode();
+        return SinalgoRuntime.nodes.getRandomNode();
     }
 
     /**
      * Removes all nodes
      */
     public static void removeAllNodes() {
-        sinalgo.runtime.Runtime.clearAllNodes();
+        SinalgoRuntime.clearAllNodes();
     }
 
     /**
@@ -421,7 +414,7 @@ public class Tools {
      * @param n The node
      */
     public static void removeNode(Node n) {
-        sinalgo.runtime.Runtime.removeNode(n);
+        SinalgoRuntime.removeNode(n);
     }
 
     /**
@@ -454,7 +447,7 @@ public class Tools {
 
         for (; i < strings.length; i++) {
             if (numSpecifiedModels >= 4) { // too many models specified
-                Main.fatalError("Invalid command-line argument: The -gen flag takes at most 4 models\n"
+                throw new SinalgoFatalException("Invalid command-line argument: The -gen flag takes at most 4 models\n"
                         + "after the distribution model: (in arbitrary order)\n"
                         + "Connectivity, Interference, Mobility, Reliability\n"
                         + "each of which may be post-fixed with one optional parameter placed in \n" + "parameters.\n"
@@ -491,7 +484,7 @@ public class Tools {
             try {
                 node = Node.createNodeByClassname(nodeTypeName);
             } catch (WrongConfigurationException e) {
-                Main.fatalError(e);
+                throw new SinalgoWrappedException(e);
             }
             node.setPosition(nodeDistribution.getNextPosition());
 
@@ -544,18 +537,18 @@ public class Tools {
                     break;
                 }
             } catch (IllegalAccessException e) {
-                Main.fatalError(
+                throw new SinalgoFatalException(
                         "Cannot generate instance of the model '" + modelNames[k] + "' due to illegal access. "
                                 + "(The model needs a public constructor w/o parameters.):\n" + e);
             } catch (InstantiationException | NoSuchMethodException | IllegalArgumentException e) {
-                Main.fatalError("Cannot generate instance of the model '" + modelNames[k] + "' "
+                throw new SinalgoFatalException("Cannot generate instance of the model '" + modelNames[k] + "' "
                         + "(The model needs a public constructor w/o parameters.):\n" + e);
             } catch (SecurityException e) {
-                Main.fatalError("Cannot generate instance of the model'" + modelNames[k] + "' "
+                throw new SinalgoFatalException("Cannot generate instance of the model'" + modelNames[k] + "' "
                         + "(Probably not sufficient security permissions.):\n" + e);
             } catch (InvocationTargetException e) {
                 // The constructor has thrown an exception
-                Main.fatalError(e.getCause().getMessage() + "\n\nMore Info:\n" + e.getCause());
+                throw new SinalgoFatalException(e.getCause().getMessage() + "\n\nMore Info:\n" + e.getCause());
             }
         }
     }
@@ -573,7 +566,7 @@ public class Tools {
             Tuple<ModelType, Class<?>> tmp = Model.getModelClass(modelNames[j]);
 
             if (tmp.first == ModelType.DistributionModel) {
-                Main.fatalError("Invalid command-line argument for the -gen flag:\n"
+                throw new SinalgoFatalException("Invalid command-line argument for the -gen flag:\n"
                         + "The optional parameters to specify the models for the nodes contains\n"
                         + "a DistributionModel.\n\n"
                         + "The arguments for the -gen flag have to be formatted as following:\n"
@@ -583,7 +576,7 @@ public class Tools {
                         + "it is set in the configuration file.)");
             }
             if (tmp.first == ModelType.MessageTransmissionModel) {
-                Main.fatalError("Invalid command-line argument for the -gen flag:\n"
+                throw new SinalgoFatalException("Invalid command-line argument for the -gen flag:\n"
                         + "The optional parameters to specify the models for the nodes contained\n"
                         + "MessageTransmissionModel. This model is globally unique and set through\n"
                         + "the configuration file.");
@@ -591,7 +584,7 @@ public class Tools {
             // test that no duplicate
             for (int k = 0; k < j; k++) {
                 if (models.elementAt(k).first == tmp.first) {
-                    Main.fatalError("Invalid command-line argument for the -gen flag:\n"
+                    throw new SinalgoFatalException("Invalid command-line argument for the -gen flag:\n"
                             + "The optional parameters to specify the models for the nodes contains\n"
                             + "more than one '" + tmp.first.name() + "' \n\n"
                             + "The arguments for the -gen flag have to be formatted as following:\n"
@@ -656,7 +649,7 @@ public class Tools {
         try {
             Main.getGuiRuntime().getGUI().getGraphPanel().getNodeSelectedByUser(handler, text);
         } catch (NotInGUIModeException e) {
-            Main.fatalError("");
+            throw new SinalgoFatalException("");
         }
     }
 
@@ -708,7 +701,7 @@ public class Tools {
      * every round.
      */
     public static void reevaluateConnections() {
-        Runtime.reevaluateConnections();
+        SinalgoRuntime.reevaluateConnections();
     }
 
     /**
@@ -997,13 +990,13 @@ public class Tools {
         for (String s : args) {
             if (s.toLowerCase().equals("-batch")) {
                 if (guiBatch == 1) { // conflict
-                    Main.fatalError("You may only specify the '-gui' xor the '-batch' flag.");
+                    throw new SinalgoFatalException("You may only specify the '-gui' xor the '-batch' flag.");
                 }
                 guiBatch = 2;
                 Global.isGuiMode = false;
             } else if (s.toLowerCase().equals("-gui")) {
                 if (guiBatch == 2) { // conflict
-                    Main.fatalError("You may only specify the '-gui' xor the '-batch' flag.");
+                    throw new SinalgoFatalException("You may only specify the '-gui' xor the '-batch' flag.");
                 }
                 guiBatch = 1;
                 Global.isGuiMode = true;
@@ -1021,7 +1014,7 @@ public class Tools {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-project")) { // A specific project is specified
                 if (i + 1 >= args.length) {
-                    Main.fatalError("The flag '-project' must be preceeded by the name of a project");
+                    throw new SinalgoFatalException("The flag '-project' must be preceeded by the name of a project");
                 }
                 // Test that the project folder exists (in the source)
                 String path = Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPath.replace('.', '/')
@@ -1031,7 +1024,7 @@ public class Tools {
                     Global.useProject = true;
                     Global.projectName = args[i + 1];
                 } else {
-                    Main.fatalError("Cannot find the specified project '" + args[i + 1] + "'.\n"
+                    throw new SinalgoFatalException("Cannot find the specified project '" + args[i + 1] + "'.\n"
                             + "In order to create a project '" + args[i + 1] + "', create a folder '" + path + "'");
                 }
             }
@@ -1052,27 +1045,6 @@ public class Tools {
             randomPosZ = rand.nextDouble() * Configuration.dimZ;
         }
         return new Position(randomPosX, randomPosY, randomPosZ);
-    }
-
-    /**
-     * <b>This member is framework internal and should not be used by the project
-     * developer.</b> Creates a directory if it does not already exist.
-     *
-     * @param dir The directory name
-     */
-    public static void createDir(String dir) {
-        File f = new File(dir);
-        if (f.exists() && !f.isDirectory()) {
-            Main.fatalError("Cannot create folder '" + dir + "'. There is a file called the same name.");
-        } else if (!f.exists()) {
-            try {
-                if (!f.mkdirs()) {
-                    Main.fatalError("Could not generate all of the directories '" + dir + "'.");
-                }
-            } catch (SecurityException e) {
-                Main.fatalError("Cannot create folder '" + dir + "':\n" + e);
-            }
-        }
     }
 
 }

@@ -34,40 +34,33 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package sinalgo.runtime;
-
-import sinalgo.tools.Tools;
-import sinalgo.tools.logging.Logging;
-
-import java.lang.Thread.UncaughtExceptionHandler;
+package sinalgo.exception;
 
 /**
- * This class implements a UncoughtExceptionHandler. It is used to catch all the
- * uncaught exceptions and forward it to the Main as a fatal error.
+ * An Exception to indicate an error during the simulation or its
+ * initialization. *
  */
-public class MyUncaughtExceptionHandler implements UncaughtExceptionHandler {
+public class SimulationException extends Exception {
 
-    @Override
-    public void uncaughtException(Thread t, Throwable e) {
+    private static final long serialVersionUID = 3172196647873850143L;
 
-        if (e.getClass().equals(java.lang.OutOfMemoryError.class)) {
-            Runtime.nodes = null;
-            Tools.disposeRecycledObjects(Logging.getLogger().getOutputStream());
-            System.gc();
-            java.lang.Runtime r = java.lang.Runtime.getRuntime();
-            long maxMem = r.maxMemory() / 1048576;
-            Main.fatalError("Sinalgo ran out of memory. (" + maxMem + " MB is not enough). \n"
-                    + "To allow the VM to use more memory, modify the javaVMmaxMem entry of the config file.");
-            return;
-        }
-
-        StringBuilder st = new StringBuilder("    ");
-        StackTraceElement[] ste = e.getStackTrace();
-        for (StackTraceElement element : ste) {
-            st.append(element.toString()).append("\n    ");
-        }
-        Main.fatalError("There was an Exception in Thread " + t + " \n\n" + "Exception: " + e + ": \n\n" + "Message: "
-                + e.getMessage() + "\n\n" + "Cause: " + e.getCause() + "\n\n" + "StackTrace: " + st);
+    /**
+     * The constructor for the SimulationException class.
+     *
+     * @param s The message for the Exception.
+     */
+    public SimulationException(String s) {
+        super(s);
     }
 
+    /**
+     * The constructor for the CorruptConfigurationEntryException class.
+     *
+     * @param cause The exception causing this exception.
+     * @param msg   The message of this exception.
+     */
+    public SimulationException(Throwable cause, String msg) {
+        super(msg);
+        this.initCause(cause);
+    }
 }

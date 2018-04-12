@@ -37,12 +37,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package projects.defaultProject.models.interferenceModels;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.models.InterferenceModel;
 import sinalgo.nodes.Position;
 import sinalgo.nodes.messages.Packet;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.LogL;
 
@@ -100,7 +100,7 @@ public class SINR extends InterferenceModel {
 
         double noise = ambientNoise;
 
-        for (Packet pack : Runtime.packetsInTheAir) { // iterate over all active packets
+        for (Packet pack : SinalgoRuntime.packetsInTheAir) { // iterate over all active packets
             if (pack == p) {
                 continue; // that's the packet we want
             }

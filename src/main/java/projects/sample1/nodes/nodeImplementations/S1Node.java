@@ -40,14 +40,14 @@ import projects.defaultProject.nodes.timers.MessageTimer;
 import projects.sample1.nodes.messages.S1Message;
 import projects.sample1.nodes.timers.DelayTimer;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
-import sinalgo.runtime.Main;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
@@ -122,7 +122,7 @@ public class S1Node extends Node {
         } catch (CorruptConfigurationEntryException e) {
             // Missing entry in the configuration file: Abort the simulation and
             // display a message to the user
-            Main.fatalError(e.getMessage());
+            throw new SinalgoFatalException(e.getMessage());
         }
     }
 

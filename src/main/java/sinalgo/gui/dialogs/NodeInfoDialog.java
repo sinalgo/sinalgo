@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.gui.dialogs;
 
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GuiHelper;
 import sinalgo.gui.helper.NonRegularGridLayout;
@@ -44,8 +45,7 @@ import sinalgo.gui.helper.UnborderedJTextField;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 
 import javax.swing.*;
 import java.awt.*;
@@ -106,7 +106,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         // has no
         // previous respective next element.
         boolean hasPrev = false;
-        Enumeration<Node> nodesEnumer = Runtime.nodes.getNodeEnumeration();
+        Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
         while (nodesEnumer.hasMoreElements()) {
             Node nd = nodesEnumer.nextElement();
             if (nd.ID == n.ID) {
@@ -284,14 +284,14 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
                     node.setPosition(new Position(Double.parseDouble(positionX.getText()),
                             Double.parseDouble(positionY.getText()), Double.parseDouble(positionZ.getText())));
                 } catch (NumberFormatException nFE) {
-                    Main.fatalError(nFE);
+                    throw new SinalgoWrappedException(nFE);
                 }
                 node.highlight(false);
                 this.setVisible(false);
                 parent.redrawGUINow(); // needs blocking redrawing
                 break;
             case "Next Node": {
-                Enumeration<Node> nodesEnumer = Runtime.nodes.getNodeEnumeration();
+                Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
                 while (nodesEnumer.hasMoreElements()) {
                     Node nd = nodesEnumer.nextElement();
                     if (nd.ID == node.ID + 1) {
@@ -303,7 +303,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
                 break;
             }
             case "Previous Node": {
-                Enumeration<Node> nodesEnumer = Runtime.nodes.getNodeEnumeration();
+                Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
                 while (nodesEnumer.hasMoreElements()) {
                     Node nd = nodesEnumer.nextElement();
                     if (nd.ID == node.ID - 1) {
@@ -323,7 +323,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         int newId = (Integer) evt.getNewValue();
 
         boolean hasPrev = false;
-        Enumeration<Node> nodesEnumer = Runtime.nodes.getNodeEnumeration();
+        Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
         while (nodesEnumer.hasMoreElements()) {
             Node nd = nodesEnumer.nextElement();
             if (nd.ID == newId) {

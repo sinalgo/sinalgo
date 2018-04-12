@@ -36,10 +36,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime.events;
 
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
 import sinalgo.tools.logging.Logging;
 
 import java.util.Stack;
@@ -70,8 +70,8 @@ public class TimerEvent extends Event {
      * Creates a TimerEvent for the given timer, a given time and a node. This event
      * represents the event that happens, when timer fires at time on eventNode.
      *
-     * @param timer     The timer that will fire.
-     * @param time      The time the timer will fire.
+     * @param timer The timer that will fire.
+     * @param time  The time the timer will fire.
      */
     private TimerEvent(Timer timer, double time) {
         super(time);
@@ -91,7 +91,7 @@ public class TimerEvent extends Event {
         if (unusedTimerEvents.size() > 0) {
             te = unusedTimerEvents.pop();
             if (te.timer != null) { // sanity check
-                Main.fatalError(Logging.getCodePosition()
+                throw new SinalgoFatalException(Logging.getCodePosition()
                         + " TimerEvent factory failed! About to return a timer-event that was already returned. (Probably, free() was called > 1 on this timer event.)");
             }
             te.timer = timer;

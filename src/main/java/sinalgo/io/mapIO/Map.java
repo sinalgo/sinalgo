@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.io.mapIO;
 
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.nodes.Position;
@@ -219,7 +220,7 @@ public class Map {
      */
     public void paintMap(Graphics g, PositionTransformation pt) {
         if (pt.getNumberOfDimensions() != 2) {
-            sinalgo.runtime.Main.fatalError("Background maps are not supported in 3D.\n" + "Do not specify a "
+            throw new SinalgoFatalException("Background maps are not supported in 3D.\n" + "Do not specify a "
                     + "map while running a simulation in 3D.");
         }
         double lengthX = 1 / xRatio;

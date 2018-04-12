@@ -169,6 +169,13 @@ public class Global {
 //    }
 
     /**
+     * @return The currently used project.
+     */
+    public static String getProjecName() {
+        return useProject ? projectName : Configuration.defaultProjectName;
+    }
+
+    /**
      * @return The temp-directory of the config-files of the currently used project.
      */
     public static String getProjecTempDir() {

@@ -36,8 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.connectivityModels;
 
-import sinalgo.configuration.CorruptConfigurationEntryException;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.nodes.Node;
 
 /**

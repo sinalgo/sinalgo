@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes.messages;
 
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.runtime.Main;
@@ -161,7 +162,7 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
         } else {
             Packet rP = freePackets.pop();
             if (rP.message != null) {
-                Main.fatalError(Logging.getCodePosition()
+                throw new SinalgoFatalException(Logging.getCodePosition()
                         + " Packet factory failed! About to return a packet that was already returned. (Probably, free() was called > 1 on this packet.)");
             }
             rP.ID = getNextFreeID();

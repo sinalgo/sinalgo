@@ -37,7 +37,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.nodes.edges;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.helper.Arrow;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
@@ -45,8 +46,7 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.nodes.messages.Message;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.tools.logging.Logging;
 import sinalgo.tools.storage.DoublyLinkedListEntry;
 
@@ -166,7 +166,7 @@ public class Edge implements DoublyLinkedListEntry {
             defaultEdgeColorPassive = Color.decode(s);
         } catch (CorruptConfigurationEntryException ignored) { // there is no config entry -> take default
         } catch (NumberFormatException e) {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "Invalid color specification for the configuration entry Edge/PassiveColor. Expected a hexadecimal number of the form 0xrrggbb");
         }
         try {
@@ -174,7 +174,7 @@ public class Edge implements DoublyLinkedListEntry {
             defaultEdgeColorActive = Color.decode(s);
         } catch (CorruptConfigurationEntryException ignored) { // there is no config entry -> take default
         } catch (NumberFormatException e) {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "Invalid color specification for the configuration entry Edge/ActiveColor. Expected a hexadecimal number of the form 0xrrggbb");
         }
     }
@@ -398,7 +398,7 @@ public class Edge implements DoublyLinkedListEntry {
         // TODO: this is expensive!
         if (edge != null) { // we can recycle an edge
             if (edge.startNode != null || edge.endNode != null) { // sanity check
-                Main.fatalError(Logging.getCodePosition()
+                throw new SinalgoFatalException(Logging.getCodePosition()
                         + " Edge factory failed! About to return an edge that was already returned. (Probably, free() was called > 1 on this edge.)");
             }
         } else {
@@ -425,14 +425,14 @@ public class Edge implements DoublyLinkedListEntry {
                 }
                 edge = (Edge) constructor.newInstance();
             } catch (ClassNotFoundException cNFE) {
-                Main.fatalError("The implementation of the edge '" + nameOfSearchedEdge + "' could not be found.\n"
+                throw new SinalgoFatalException("The implementation of the edge '" + nameOfSearchedEdge + "' could not be found.\n"
                         + "Change the Type in the XML-File or implement it." + "");
             } catch (IllegalArgumentException | SecurityException | IllegalAccessException | InstantiationException e) {
-                Main.fatalError("Exception caught while creating edge '" + nameOfSearchedEdge + "'.\n" + e);
+                throw new SinalgoFatalException("Exception caught while creating edge '" + nameOfSearchedEdge + "'.\n" + e);
             } catch (InvocationTargetException e) {
-                Main.fatalError("Exception caught while creating edge '" + nameOfSearchedEdge + "'.\n" + e.getCause());
+                throw new SinalgoFatalException("Exception caught while creating edge '" + nameOfSearchedEdge + "'.\n" + e.getCause());
             } catch (NoSuchMethodException e) {
-                Main.fatalError("Cannot instanciate an edge of type '" + nameOfSearchedEdge
+                throw new SinalgoFatalException("Cannot instanciate an edge of type '" + nameOfSearchedEdge
                         + "' for two nodes of type \n(" + from.getClass().getName() + ", " + to.getClass().getName()
                         + ").\n" + "To select a different edge type, change the config.xml file\n"
                         + "or use the settings dialog in the GUI.");
@@ -469,7 +469,7 @@ public class Edge implements DoublyLinkedListEntry {
             // This is quite slow as it iterates over all pending events. However,
             // synchronous simulations are not mobile, therefore this method is not called
             // often.
-            Runtime.eventQueue.invalidatePacketEventsForThisEdge(this);
+            SinalgoRuntime.eventQueue.invalidatePacketEventsForThisEdge(this);
         } else {
             this.endNode.getInboxPacketBuffer().invalidatePacketsSentOverThisEdge(this);
         }
@@ -528,7 +528,7 @@ public class Edge implements DoublyLinkedListEntry {
      */
     private static long getNextFreeID() {
         if (nextId == 0) {
-            Main.fatalError("The Edge ID counter overflowed.");
+            throw new SinalgoFatalException("The Edge ID counter overflowed.");
         }
         return Edge.nextId++;// implicit post-increment
     }

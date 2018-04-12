@@ -37,14 +37,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.runtime.events;
 
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.NackBox;
 import sinalgo.nodes.messages.Packet;
 import sinalgo.nodes.messages.Packet.PacketType;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.tools.logging.Logging;
 
 import java.util.Stack;
@@ -75,8 +75,8 @@ public class PacketEvent extends Event {
      * Creates a new PacketEvent for a given packet, a given time and a given node.
      * This event represents that the packet reaches eventNode at time.
      *
-     * @param packet    The packet that reaches its target.
-     * @param time      The time the packet reaches its target.
+     * @param packet The packet that reaches its target.
+     * @param time   The time the packet reaches its target.
      */
     private PacketEvent(Packet packet, double time) {
         super(time);
@@ -96,7 +96,7 @@ public class PacketEvent extends Event {
         if (unusedPacketEvents.size() > 0) {
             pe = unusedPacketEvents.pop();
             if (pe.packet != null) { // sanity check
-                Main.fatalError(Logging.getCodePosition()
+                throw new SinalgoFatalException(Logging.getCodePosition()
                         + " PacketEvent factory failed! About to return a packet-event that was already returned. (Probably, free() was called > 1 on this packet event.)");
             }
             pe.packet = packet;
@@ -131,8 +131,8 @@ public class PacketEvent extends Event {
     public void handle() {
         // the arrival of a packet in the asynchronous case
         if (Configuration.interference) {
-            Runtime.packetsInTheAir.performInterferenceTestBeforeRemove();
-            Runtime.packetsInTheAir.remove(packet);
+            SinalgoRuntime.packetsInTheAir.performInterferenceTestBeforeRemove();
+            SinalgoRuntime.packetsInTheAir.remove(packet);
         }
         if (packet.edge != null) {
             packet.edge.removeMessageForThisEdge(packet.message);
@@ -150,7 +150,7 @@ public class PacketEvent extends Event {
     public void drop() {
         // similar to the arrival of a packet in the asynchronous case
         if (Configuration.interference) {
-            Runtime.packetsInTheAir.remove(packet);
+            SinalgoRuntime.packetsInTheAir.remove(packet);
         }
         if (packet.edge != null) {
             packet.edge.removeMessageForThisEdge(packet.message);

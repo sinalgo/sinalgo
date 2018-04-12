@@ -37,7 +37,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.gui;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.helper.Animations;
 import sinalgo.gui.helper.Arrow;
 import sinalgo.gui.helper.NodeSelectionHandler;
@@ -52,7 +53,7 @@ import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.tools.Tuple;
 import sinalgo.tools.logging.LogL;
 import sinalgo.tools.logging.Logging;
@@ -304,7 +305,7 @@ public class GraphPanel extends JPanel {
             pt.drawBackground(g);
 
             if (Configuration.useMap) {
-                Runtime.map.paintMap(g, pt);
+                SinalgoRuntime.map.paintMap(g, pt);
             }
 
             g.setColor(Color.BLACK);
@@ -314,7 +315,7 @@ public class GraphPanel extends JPanel {
                 // First draw all edges, only then the nodes
                 Enumeration<Node> nodeEnumer;
                 if (Configuration.drawEdges) {
-                    nodeEnumer = Runtime.nodes.getSortedNodeEnumeration(true);
+                    nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
                     while (nodeEnumer.hasMoreElements()) {
                         Node node = nodeEnumer.nextElement();
                         // first draw all outgoing edges of this node
@@ -326,7 +327,7 @@ public class GraphPanel extends JPanel {
                 // Draw the nodes in a separate loop
                 if (Configuration.drawNodes) {
                     // Draw the nodes in a separate loop
-                    nodeEnumer = Runtime.nodes.getSortedNodeEnumeration(true);
+                    nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
                     while (nodeEnumer.hasMoreElements()) {
                         Node node = nodeEnumer.nextElement();
                         node.draw(g, pt, false);
@@ -514,7 +515,7 @@ public class GraphPanel extends JPanel {
 
         Edge edgeUnderPos = null;
 
-        Enumeration<Node> nodeEnumer = Runtime.nodes.getSortedNodeEnumeration(false);
+        Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(false);
         while (nodeEnumer.hasMoreElements()) {
             Node node = nodeEnumer.nextElement();
             if (node.isInside(event.getX(), event.getY(), pt)) {
@@ -549,7 +550,7 @@ public class GraphPanel extends JPanel {
      */
     public void getNodeSelectedByUser(NodeSelectionHandler handler, String text) {
         if (!Global.isGuiMode) {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "Invalid call to 'GUI.getNodeSelectedByUser()'. This method is not supported in batch mode.");
         }
         userSelectsNodeHandler.push(new Tuple<>(handler, text));
@@ -624,7 +625,7 @@ public class GraphPanel extends JPanel {
      * no node covers this position.
      */
     public Node getFirstNodeAtPosition(int x, int y) {
-        Enumeration<Node> nodeEnumer = Runtime.nodes.getSortedNodeEnumeration(false);
+        Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(false);
         while (nodeEnumer.hasMoreElements()) {
             Node node = nodeEnumer.nextElement();
             if (node.isInside(x, y, pt)) {
@@ -817,7 +818,7 @@ public class GraphPanel extends JPanel {
                 Edge clickedEdge = null;
                 // go throught all the nodes and their edges to find out, if one is under the
                 // cursor
-                Enumeration<Node> nodeEnumer = Runtime.nodes.getSortedNodeEnumeration(false);
+                Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(false);
                 while (nodeEnumer.hasMoreElements()) {
                     Node node = nodeEnumer.nextElement();
                     if (node.isInside(event.getX(), event.getY(), pt)) {

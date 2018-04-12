@@ -39,7 +39,7 @@ package sinalgo.gui.popups;
 import sinalgo.gui.GUI;
 import sinalgo.gui.dialogs.EdgeInfoDialog;
 import sinalgo.nodes.edges.Edge;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -90,7 +90,7 @@ public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
         if (e.getActionCommand().equals(info.getActionCommand())) {
             new EdgeInfoDialog(parent, edge);
         } else if (e.getActionCommand().equals(delete.getActionCommand())) {
-            Runtime.removeEdge(edge);
+            SinalgoRuntime.removeEdge(edge);
             parent.redrawGUINow();
         }
     }

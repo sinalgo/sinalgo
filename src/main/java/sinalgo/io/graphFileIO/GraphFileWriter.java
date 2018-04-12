@@ -76,7 +76,7 @@ public class GraphFileWriter {
     // fOut.write(("DIMENSION="+Configuration.dimX+","+Configuration.dimY+";").getBytes());
     // fOut.write(("EDGETYPE="+Configuration.getEdgeType()+"\n").getBytes());
     //
-    // Enumeration<Node> nodeEnumer = Runtime.nodes.getNodeEnumeration();
+    // Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
     //
     // while(nodeEnumer.hasMoreElements()){
     // Node node = nodeEnumer.nextElement();

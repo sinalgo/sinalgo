@@ -37,7 +37,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.runtime.nodeCollection;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.gui.transformation.Transformation3D;
 import sinalgo.nodes.Node;
@@ -88,10 +89,10 @@ public class Geometric3DNodeCollection extends NodeCollectionInterface {
         try {
             rMax = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
         } catch (CorruptConfigurationEntryException e) {
-            Main.fatalError(e.getMessage());
+            throw new SinalgoFatalException(e.getMessage());
         }
         if (rMax <= 0) {
-            Main.fatalError("Geometric3DNodeCollection: The value of rMax from the config file entry "
+            throw new SinalgoFatalException("Geometric3DNodeCollection: The value of rMax from the config file entry "
                     + "<GeometricNodeCollection rMax=\"" + rMax + "\"/>"
                     + "is not valid. The value of rMax must be positive.");
         }
@@ -220,7 +221,7 @@ public class Geometric3DNodeCollection extends NodeCollectionInterface {
         CubePos pos = (CubePos) n.nodeCollectionInfo;
         if (!list[pos.x][pos.y][pos.z].removeNode(n)) {
             // the node was not located where it said! ERROR!
-            Main.fatalError("Geometric3DNodeCollection.removeNode(Node):\n" + "A node is being removed, but it is not "
+            throw new SinalgoFatalException("Geometric3DNodeCollection.removeNode(Node):\n" + "A node is being removed, but it is not "
                     + "located in the matrix cell " + "in which it claims to be.");
         }
         flatList.remove(n);
@@ -247,7 +248,7 @@ public class Geometric3DNodeCollection extends NodeCollectionInterface {
             // the node needs to be stored in a different cell of the matrix
             // remove it from the old matrix cell...
             if (!list[oldPos.x][oldPos.y][oldPos.z].removeNode(n)) {
-                Main.fatalError(
+                throw new SinalgoFatalException(
                         "Geometric3DNodeCollection.updateNodeCollection(Node):\nA node is being removed from the matrix, but it is not located in the matrix cell in which it claims to be.");
             }
             // ... and add it to the new matrix cell

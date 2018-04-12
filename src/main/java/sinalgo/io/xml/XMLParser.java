@@ -42,11 +42,11 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 
 /**
@@ -88,8 +88,9 @@ public class XMLParser {
             }
             String value = child.getAttributeValue("value");
             if (value == null) { // did not find
-                Main.fatalError("Error while parsing the configuration file: The entry '" + fieldName
-                        + "' contains attributes, but none is called 'value'.");
+                throw new SinalgoFatalException(fieldName,
+                        "Error while parsing the configuration file: The entry " +
+                                "'%s' contains attributes, but none is called 'value'.");
             }
             Configuration.setFrameworkConfigurationEntry(fieldName, value);
         }
@@ -129,28 +130,28 @@ public class XMLParser {
     /**
      * This method parses a xml-file and stores the data in the configuration.
      *
-     * @param inputStream The input stream of the xml-file.
+     * @param reader The input reader of the xml-file.
      */
-    public static void parse(InputStream inputStream) {
+    public static void parse(Reader reader) {
         if (!blockParse) {
             try {
-                Document doc = new SAXBuilder().build(inputStream);
+                Document doc = new SAXBuilder().build(reader);
                 Element root = doc.getRootElement();
                 Element framework = root.getChild("Framework");
                 Element custom = root.getChild("Custom");
                 if (framework == null) {
-                    Main.fatalError("Corrupt XML configuration file: The element '<Framework>' is missing.");
+                    throw new SinalgoFatalException("Corrupt XML configuration file: The element '<Framework>' is missing.");
                 }
                 if (custom == null) {
-                    Main.fatalError("Corrupt XML configuration file: The element '<Custom>' is missing.");
+                    throw new SinalgoFatalException("Corrupt XML configuration file: The element '<Custom>' is missing.");
                 }
                 parseFrameworkConfig(framework);
                 parseCustom(custom, "");
             } catch (JDOMException e) {
-                Main.fatalError("Currupt XML configuration file (" + inputStream + "):\n" + e);
+                throw new SinalgoFatalException(String.valueOf(reader), e, "Currupt XML configuration file (%s):\n%s");
             } catch (IOException e) {
                 if (Global.useProject) {
-                    Main.fatalError("Cannot find the XML-configuration file (" + inputStream + "):\n" + e);
+                    throw new SinalgoFatalException(String.valueOf(reader), e, "Cannot find the XML-configuration file (%s):\n%s");
                 }
             }
         }

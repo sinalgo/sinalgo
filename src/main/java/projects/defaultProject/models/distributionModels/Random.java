@@ -36,10 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.distributionModels;
 
-import sinalgo.configuration.Configuration;
 import sinalgo.models.DistributionModel;
 import sinalgo.nodes.Position;
-import sinalgo.runtime.Main;
 import sinalgo.tools.Tools;
 import sinalgo.tools.statistics.Distribution;
 

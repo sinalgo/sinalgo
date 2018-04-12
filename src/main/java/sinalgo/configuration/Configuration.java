@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.configuration;
 
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
 import sinalgo.tools.statistics.Distribution;
@@ -88,11 +90,11 @@ public class Configuration {
         try {
             return new Scanner(Configuration.class.getClassLoader().getResourceAsStream("VERSION"),
                     StandardCharsets.UTF_8.displayName()).useDelimiter("\\A").next();
-        } catch (Exception e){
-            Main.fatalError("Could not read version information from the VERSION file.\n\n" + e);
+        } catch (Exception e) {
+            throw new SinalgoFatalException("Could not read version information from the VERSION file.\n\n" + e);
         }
-        return null;
     }
+
     /**
      * The annotation to be used for fields that are included by default in the
      * configuration file. The description contains a brief description of this
@@ -899,13 +901,12 @@ public class Configuration {
      */
     public final static String tempFolder = getTemporaryFolder();
 
-    private static String getTemporaryFolder(){
+    private static String getTemporaryFolder() {
         try {
             return Files.createTempDirectory(appName.toLowerCase()).toString().replace(File.separatorChar, '/');
         } catch (Exception e) {
-            Main.fatalError("Could not create a temporary working directory:\n\n" + e);
+            throw new SinalgoFatalException("Could not create a temporary working directory:\n\n" + e);
         }
-        return null;
     }
 
     /**
@@ -1006,11 +1007,11 @@ public class Configuration {
                 field = Configuration.class.getField(fieldName);
 
                 if (!Modifier.isPublic(field.getModifiers())) {
-                    Main.fatalError("Error while parsing the configuration file: The entry '" + fieldName
+                    throw new SinalgoFatalException("Error while parsing the configuration file: The entry '" + fieldName
                             + "' in Configuration.java is not public.");
                 }
                 if (!Modifier.isStatic(field.getModifiers())) {
-                    Main.fatalError("Error while parsing the configuration file: The entry '" + fieldName
+                    throw new SinalgoFatalException("Error while parsing the configuration file: The entry '" + fieldName
                             + "' in Configuration.java is not static.");
                 }
 
@@ -1019,7 +1020,7 @@ public class Configuration {
                     try {
                         field.setInt(null, Integer.parseInt(value));
                     } catch (NumberFormatException ex) {
-                        Main.fatalError("Error while parsing the specified parameters: Cannot convert '" + value
+                        throw new SinalgoFatalException("Error while parsing the specified parameters: Cannot convert '" + value
                                 + "' to an integer value for the configuration entry '" + fieldName + "'.");
                     }
                 }
@@ -1032,7 +1033,7 @@ public class Configuration {
                     } else if (value.compareTo("false") == 0) {
                         field.setBoolean(null, false);
                     } else {
-                        Main.fatalError("Error while parsing the specified parameters: Cannot convert '" + value
+                        throw new SinalgoFatalException("Error while parsing the specified parameters: Cannot convert '" + value
                                 + "' to a boolean value for the configuration entry '" + fieldName + "'.");
                     }
                 }
@@ -1041,7 +1042,7 @@ public class Configuration {
                     try {
                         field.setLong(null, Long.parseLong(value));
                     } catch (NumberFormatException ex) {
-                        Main.fatalError("Error while parsing the specified parameters: Cannot convert '" + value
+                        throw new SinalgoFatalException("Error while parsing the specified parameters: Cannot convert '" + value
                                 + "' to a long value for the configuration entry '" + fieldName + "'.");
                     }
                 }
@@ -1050,27 +1051,27 @@ public class Configuration {
                     try {
                         field.setDouble(null, Double.parseDouble(value));
                     } catch (NumberFormatException ex) {
-                        Main.fatalError("Error while parsing the specified parameters: Cannot convert '" + value
+                        throw new SinalgoFatalException("Error while parsing the specified parameters: Cannot convert '" + value
                                 + "' to a double value for the configuration entry '" + fieldName + "'.");
                     }
                 } else {
                     try {
                         field.set(null, textToObject(field.getType(), value));
                     } catch (Exception e) {
-                        Main.fatalError("Error while parsing the configuration file: Cannot set the field '" + fieldName
+                        throw new SinalgoFatalException("Error while parsing the configuration file: Cannot set the field '" + fieldName
                                 + "' of type '" + field.getType().getName() + "' to '" + value + "'." + "\n\n"
                                 + e.getMessage());
                     }
                 }
             } catch (NumberFormatException e) {
-                Main.fatalError("Error while parsing the configuration file: Cannot set the field '" + fieldName
+                throw new SinalgoFatalException("Error while parsing the configuration file: Cannot set the field '" + fieldName
                         + "' of type '" + field.getType().getName() + "' to '" + value
                         + "'. Cannot convert the given value to the desired type:\n" + e);
             } catch (SecurityException | IllegalAccessException | IllegalArgumentException e) {
-                Main.fatalError("Error while parsing the configuration file: Cannot set the field '" + fieldName
+                throw new SinalgoFatalException("Error while parsing the configuration file: Cannot set the field '" + fieldName
                         + "' to '" + value + "':\n" + e);
             } catch (NoSuchFieldException e) {
-                Main.fatalError("Invalid configuration file: " + "The field '" + fieldName
+                throw new SinalgoFatalException("Invalid configuration file: " + "The field '" + fieldName
                         + "' is not a valid framework entry as it is not " + "contained in Configuration.java. "
                         + "Check the spelling of this field or " + "move it to the custom entries.");
 

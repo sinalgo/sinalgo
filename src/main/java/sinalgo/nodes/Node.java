@@ -37,8 +37,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.nodes;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.models.*;
@@ -47,7 +48,6 @@ import sinalgo.nodes.messages.*;
 import sinalgo.nodes.messages.Packet.PacketType;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.runtime.*;
-import sinalgo.runtime.Runtime;
 import sinalgo.runtime.events.PacketEvent;
 import sinalgo.runtime.nodeCollection.NodeCollectionInfoInterface;
 import sinalgo.tools.logging.LogL;
@@ -323,7 +323,7 @@ public abstract class Node implements DoublyLinkedListEntry {
         position.yCoord = y;
         position.zCoord = z;
         cropPos(position);
-        Runtime.nodes.updateNodeCollection(this); // note that this method tests whether the node is already added to
+        SinalgoRuntime.nodes.updateNodeCollection(this); // note that this method tests whether the node is already added to
         // the node collection
         nodePositionUpdated();
     }
@@ -433,7 +433,7 @@ public abstract class Node implements DoublyLinkedListEntry {
         Packet sentP = sendMessage(m, connection, this, target, intensity);
         if (Configuration.interference) { // only add the message in the packetsInTheAirBuffer, if interference is
             // turned on
-            Runtime.packetsInTheAir.add(sentP);
+            SinalgoRuntime.packetsInTheAir.add(sentP);
         }
     }
 
@@ -469,7 +469,7 @@ public abstract class Node implements DoublyLinkedListEntry {
     public final void sendDirect(Message msg, Node target) {
         Message clonedMsg = msg.clone(); // send a copy of the message
         if (clonedMsg == null) {
-            Main.fatalError("The clone() method of '" + msg.getClass().getName() + "' returns null \n"
+            throw new SinalgoFatalException("The clone() method of '" + msg.getClass().getName() + "' returns null \n"
                     + "instead of a copy of the message.");
         }
         Packet packet = Packet.fabricatePacket(clonedMsg);
@@ -489,7 +489,7 @@ public abstract class Node implements DoublyLinkedListEntry {
 
         if (Global.isAsynchronousMode) {
             // add a packet event to the event list
-            Runtime.eventQueue.insert(PacketEvent.getNewPacketEvent(packet, Global.currentTime + transmissionTime));
+            SinalgoRuntime.eventQueue.insert(PacketEvent.getNewPacketEvent(packet, Global.currentTime + transmissionTime));
         } else { // Synchronous
             // check whether the simulation is currently running or not.
             if (!Global.isRunning) {
@@ -498,7 +498,7 @@ public abstract class Node implements DoublyLinkedListEntry {
                 // send messages outside of their simulation cycle due to synchronisazion
                 // issues. Instead
                 // of calling the send-method directly please use a timer.
-                Main.fatalError("The node " + this.ID + " tried to send a message outside of its simulation "
+                throw new SinalgoFatalException("The node " + this.ID + " tried to send a message outside of its simulation "
                         + "cycle. Due to synchroniazion issues, this is not allowed.\n"
                         + "This problem probably came up due to a call from a nodes popup method.\n"
                         + "Do not directly call the send-method but start a timer\n"
@@ -1144,7 +1144,7 @@ public abstract class Node implements DoublyLinkedListEntry {
         try {
             defaultDrawingSizeInPixels = Configuration.getIntegerParameter("Node/defaultSize");
         } catch (CorruptConfigurationEntryException e) {
-            Main.fatalError(e.getMessage());
+            throw new SinalgoFatalException(e.getMessage());
         }
         // assign the next free ID
         this.ID = ++idCounter;
@@ -1273,7 +1273,7 @@ public abstract class Node implements DoublyLinkedListEntry {
             if (addToRuntime) {
                 init();
                 checkRequirements();
-                Runtime.addNode(this);
+                SinalgoRuntime.addNode(this);
             }
         } catch (NullPointerException nPE) {
             Global.log.logln(LogL.ERROR_DETAIL,
@@ -1304,11 +1304,10 @@ public abstract class Node implements DoublyLinkedListEntry {
             // send messages outside of their simulation cycle due to synchronisazion
             // issues. Instead
             // of calling the broadcast method directly please use a timer.
-            Main.fatalError("The node " + this.ID + " tried to broadcast a message outside of its simulation "
+            throw new SinalgoFatalException("The node " + this.ID + " tried to broadcast a message outside of its simulation "
                     + "cycle. Due to synchroniazion issues, this is not allowed.\n"
                     + "This problem probably came up due to a call from a nodes popup method.\n"
                     + "Do not directly call the broadcast-method but start a timer so that the node sends during its simulation cycle.");
-            return;
         }
         // only add the message in the packetsInTheAirBuffer, if interference is turned
         // on
@@ -1321,7 +1320,7 @@ public abstract class Node implements DoublyLinkedListEntry {
                 Edge e = edgeIteratorInstance.next();
                 Packet sentP = sendMessage(m, e, e.startNode, e.endNode, intensity);
                 sentP.type = PacketType.MULTICAST;
-                Runtime.packetsInTheAir.addPassivePacket(sentP);
+                SinalgoRuntime.packetsInTheAir.addPassivePacket(sentP);
                 if (longestPacket == null || longestPacket.arrivingTime < sentP.arrivingTime) { // NOTE that the second
                     // statement is not
                     // esecuted if the first
@@ -1330,14 +1329,14 @@ public abstract class Node implements DoublyLinkedListEntry {
                 }
             }
             if (longestPacket != null) {
-                Runtime.packetsInTheAir.upgradeToActivePacket(longestPacket);
+                SinalgoRuntime.packetsInTheAir.upgradeToActivePacket(longestPacket);
             } else { // there was no neighbor
                 // For the interference, we need to send a packet anyways. Send it to this
                 // node itself.
                 Packet sentP = sendMessage(m, null, this, this, intensity);
                 sentP.type = PacketType.MULTICAST;
                 sentP.denyDelivery(); // ensure that the packet never arrives at this node
-                Runtime.packetsInTheAir.add(sentP);
+                SinalgoRuntime.packetsInTheAir.add(sentP);
             }
         } else { // no interference
             edgeIteratorInstance.reset();
@@ -1388,7 +1387,7 @@ public abstract class Node implements DoublyLinkedListEntry {
 
         Message clonedMsg = msg.clone(); // send a copy of the message
         if (clonedMsg == null) {
-            Main.fatalError("The clone() method of '" + msg.getClass().getName() + "' returns null \n"
+            throw new SinalgoFatalException("The clone() method of '" + msg.getClass().getName() + "' returns null \n"
                     + "instead of a copy of the message.");
         }
         Packet packet = Packet.fabricatePacket(clonedMsg);
@@ -1413,7 +1412,7 @@ public abstract class Node implements DoublyLinkedListEntry {
         Global.numberOfMessagesOverAll++; // statistics (don't increment the counter that counts the number of sent
         // messages per round. This counter has no meaning in the async mode.)
 
-        Runtime.eventQueue.insert(PacketEvent.getNewPacketEvent(packet, Global.currentTime + transmissionTime));
+        SinalgoRuntime.eventQueue.insert(PacketEvent.getNewPacketEvent(packet, Global.currentTime + transmissionTime));
 
         return packet;
     }
@@ -1437,16 +1436,14 @@ public abstract class Node implements DoublyLinkedListEntry {
             // send messages outside of their simulation cycle due to synchronisazion
             // issues. Instead
             // of calling the send-method directly please use a timer.
-            Main.fatalError("The node " + this.ID + " tried to send a message outside of its simulation "
+            throw new SinalgoFatalException("The node " + this.ID + " tried to send a message outside of its simulation "
                     + "cycle. Due to synchroniazion issues, this is not allowed.\n"
                     + "This problem probably came up due to a call from a nodes popup method.\n"
                     + "Do not directly call the send-method but start a timer so that the node sends during its simulation cycle.");
-            // this will never happen because the fatal error will kill the application.
-            return null;
         } else {
             Message clonedMsg = msg.clone(); // send a copy of the message
             if (clonedMsg == null) {
-                Main.fatalError("The clone() method of '" + msg.getClass().getName() + "' returns null \n"
+                throw new SinalgoFatalException("The clone() method of '" + msg.getClass().getName() + "' returns null \n"
                         + "instead of a copy of the message.");
             }
             Packet packet = Packet.fabricatePacket(clonedMsg);

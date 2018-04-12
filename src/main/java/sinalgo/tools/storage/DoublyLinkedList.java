@@ -340,9 +340,8 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      *              0 for the first element, 1 for the second, ..., (size-1) for the
      *              last.
      * @return The element at the given index
-     * @throws ArrayIndexOutOfBoundsException
-     * if the index is negative or not less than the current size of
-     * this Vector object. given.
+     * @throws ArrayIndexOutOfBoundsException if the index is negative or not less than the current size of
+     *                                        this Vector object. given.
      */
     public E elementAt(int index) throws ArrayIndexOutOfBoundsException {
         for (E e : this) {
@@ -362,9 +361,8 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      *              0 for the first element, 1 for the second, ..., (size-1) for the
      *              last.
      * @return The element at the given index
-     * @throws ArrayIndexOutOfBoundsException
-     * if the index is negative or not less than the current size of
-     * this Vector object. given.
+     * @throws ArrayIndexOutOfBoundsException if the index is negative or not less than the current size of
+     *                                        this Vector object. given.
      */
     public E remove(int index) throws ArrayIndexOutOfBoundsException {
         E e = elementAt(index);

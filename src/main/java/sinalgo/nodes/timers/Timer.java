@@ -36,10 +36,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes.timers;
 
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.runtime.events.TimerEvent;
 
 /**
@@ -75,12 +75,12 @@ public abstract class Timer implements Comparable<Timer> {
      */
     public final void startGlobalTimer(double relativeTime) {
         if (relativeTime <= 0) {
-            Main.fatalError("A relative time indicating when a timer should start must be strictly positive.");
+            throw new SinalgoFatalException("A relative time indicating when a timer should start must be strictly positive.");
         }
         node = null;
         fireTime = Global.currentTime + relativeTime;
         if (Global.isAsynchronousMode) {
-            Runtime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
+            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
         } else {
             Global.customGlobal.globalTimers.add(this);
         }
@@ -100,12 +100,12 @@ public abstract class Timer implements Comparable<Timer> {
      */
     public final void startRelative(double relativeTime, Node n) {
         if (relativeTime <= 0) {
-            Main.fatalError("A relative time indicating when a timer should start must be strictly positive.");
+            throw new SinalgoFatalException("A relative time indicating when a timer should start must be strictly positive.");
         }
         node = n;
         fireTime = Global.currentTime + relativeTime;
         if (Global.isAsynchronousMode) {
-            Runtime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
+            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
         } else {
             node.getTimers().add(this);
         }
@@ -122,12 +122,12 @@ public abstract class Timer implements Comparable<Timer> {
      */
     public final void startAbsolute(double absoluteTime, Node n) {
         if (absoluteTime <= Global.currentTime) {
-            Main.fatalError("The absolute time when a timer goes off must be strictly larger than the current time.");
+            throw new SinalgoFatalException("The absolute time when a timer goes off must be strictly larger than the current time.");
         }
         node = n;
         fireTime = absoluteTime;
         if (Global.isAsynchronousMode) {
-            Runtime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
+            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
         } else {
             node.getTimers().add(this);
         }

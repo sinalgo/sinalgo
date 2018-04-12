@@ -37,11 +37,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.gui.popups;
 
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.dialogs.NodeInfoDialog;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.Main;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -141,7 +142,7 @@ public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
         if (event.getActionCommand().equals(info.getActionCommand())) {
             new NodeInfoDialog(parent, node);
         } else if (event.getActionCommand().equals(delete.getActionCommand())) {
-            Runtime.removeNode(node);
+            SinalgoRuntime.removeNode(node);
             parent.redrawGUI();
         } else if (event.getActionCommand().equals(showCoordinateCube.getActionCommand())) {
             parent.getGraphPanel().setNodeToDrawCoordinateCube(node);
@@ -153,8 +154,7 @@ public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
             // try to execute a custom-command
             Method clickedMethod = methodsAndDescriptions.get(event.getActionCommand());
             if (clickedMethod == null) {
-                Main.fatalError("Cannot find method associated with menu item " + event.getActionCommand());
-                return;
+                throw new SinalgoFatalException("Cannot find method associated with menu item " + event.getActionCommand());
             }
             try {
                 synchronized (parent.getTransformator()) {

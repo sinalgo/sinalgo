@@ -37,9 +37,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package projects.defaultProject.models.distributionModels;
 
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.models.DistributionModel;
 import sinalgo.nodes.Position;
-import sinalgo.runtime.Main;
 
 /**
  * Aligns the nodes about equally spaced on a gird covering the entire
@@ -58,7 +58,7 @@ public class Grid2D extends DistributionModel {
         double c = Configuration.dimX * Configuration.dimY;
         double tmp = b * b - 4 * a * c;
         if (tmp < 0) {
-            Main.fatalError("negative sqrt");
+            throw new SinalgoFatalException("negative sqrt");
         }
         size = (-b - Math.sqrt(tmp)) / (2 * a);
         numNodesPerLine = (int) Math.round(Configuration.dimX / size) - 1;

@@ -171,7 +171,7 @@ public abstract class AbstractCustomGlobal {
 
     /**
      * This method is called when the user clicks to exit the application in GUI
-     * mode, or when sinalgo.runtime.Runtime#exitApplication() is called directly
+     * mode, or when sinalgo.runtime.SinalgoRuntime#exitApplication() is called directly
      * from within your code.
      * <p>
      * Override this method in the project specific CustomGlobal class to perform

@@ -41,7 +41,7 @@ import projects.sample6.nodes.nodeImplementations.TreeNode;
 import sinalgo.configuration.Configuration;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.AbstractCustomGlobal;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.tools.Tools;
 
 import java.awt.*;
@@ -121,7 +121,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
         }
 
         // remove all nodes (if any)
-        Runtime.clearAllNodes();
+        SinalgoRuntime.clearAllNodes();
         treeNodes.clear();
         leaves.clear();
         // Reset ID counter of leaf-nodes

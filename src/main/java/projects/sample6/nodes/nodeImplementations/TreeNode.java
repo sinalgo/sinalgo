@@ -2,7 +2,7 @@ package projects.sample6.nodes.nodeImplementations;
 
 import projects.defaultProject.nodes.timers.MessageTimer;
 import projects.sample6.nodes.messages.MarkMessage;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.messages.Inbox;

@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package projects.defaultProject.models.mobilityModels;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.models.MobilityModel;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
@@ -125,7 +125,7 @@ public class RandomDirection extends MobilityModel {
      *
      * @param node      The node for which the new destination is determined.
      * @param moveSpeed The speed at which the node will move.
-     * @param moveTime The time during which the node is supposed to move
+     * @param moveTime  The time during which the node is supposed to move
      */
     private void initializeNextMove(Node node, double moveSpeed, double moveTime) {
         double angleXY = 2 * Math.PI * random.nextDouble(); // 0 .. 360

@@ -38,7 +38,7 @@ package sinalgo.gui.dialogs;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GuiHelper;
 import sinalgo.gui.helper.NonRegularGridLayout;
@@ -48,7 +48,7 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.tools.Tools;
 
 import javax.swing.*;
@@ -404,7 +404,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 
                 if (canceled) {
                     for (Node n : addedNodes) {
-                        Runtime.nodes.removeNode(n);
+                        SinalgoRuntime.nodes.removeNode(n);
                         i--;
                         pf.setPercentage(100.0d * ((double) i / (double) numberOfNodes));
                     }

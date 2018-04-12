@@ -37,7 +37,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package projects.defaultProject.models.distributionModels;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.models.DistributionModel;
 import sinalgo.nodes.Position;
 
@@ -76,7 +77,7 @@ public class Line2D extends DistributionModel {
                 dx = Configuration.getDoubleParameter("DistributionModel/Line/ToX") - previousPositionX;
                 dy = Configuration.getDoubleParameter("DistributionModel/Line/ToY") - previousPositionY;
             } catch (CorruptConfigurationEntryException e) {
-                sinalgo.runtime.Main.fatalError(e);
+                throw new SinalgoWrappedException(e);
             }
             if (numberOfNodes <= 1) { // place the single node in the middle
                 dx /= 2;

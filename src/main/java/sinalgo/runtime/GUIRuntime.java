@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.runtime;
 
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.dialogs.PercentualProgressDialog;
@@ -45,7 +46,7 @@ import sinalgo.gui.dialogs.ProgressBarUser;
 /**
  * The runtime handling the runtime in the gui mode.
  */
-public class GUIRuntime extends Runtime implements ProgressBarUser {
+public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
 
     private GUI gui = new GUI(this);
 
@@ -71,7 +72,7 @@ public class GUIRuntime extends Runtime implements ProgressBarUser {
                     this.wait();
                 }
             } catch (InterruptedException e) {
-                Main.fatalError(e);
+                throw new SinalgoWrappedException(e);
             }
         }
 
@@ -80,7 +81,7 @@ public class GUIRuntime extends Runtime implements ProgressBarUser {
         // In async mode, the user may specify to evaluate the connections immediately
         // at startup
         if (Global.isAsynchronousMode && Configuration.initializeConnectionsOnStartup) {
-            if (Runtime.nodes.size() > 0) {
+            if (SinalgoRuntime.nodes.size() > 0) {
                 // when there are no nodes created yet, perform the initialization
                 // only during the first step.
                 AsynchronousRuntimeThread.initializeConnectivity();

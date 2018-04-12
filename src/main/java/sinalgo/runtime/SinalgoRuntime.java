@@ -38,7 +38,9 @@ package sinalgo.runtime;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.SinalgoWrappedException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -66,7 +68,7 @@ import java.util.Vector;
  * of the framework and handles the simulation. It is extended by the gui- and
  * the batch-runtime which handle the simulation in the particular case.
  */
-public abstract class Runtime {
+public abstract class SinalgoRuntime {
 
     /**
      * The collection of nodes stored in a slever way to fast retrieve the possible
@@ -123,15 +125,15 @@ public abstract class Runtime {
     protected boolean nodeCreationFinished = true;
 
     /**
-     * The constructor for the Runtime class. It initializes some basic variables.
+     * The constructor for the SinalgoRuntime class. It initializes some basic variables.
      * (like the map)
      */
-    public Runtime() {
+    public SinalgoRuntime() {
         if (Configuration.useMap) {
             try {
                 map = new Map("projects/" + Global.projectName + "/" + Configuration.map);
             } catch (FileNotFoundException e) {
-                Main.fatalError(e);
+                throw new SinalgoWrappedException(e);
             }
         }
     }
@@ -180,19 +182,18 @@ public abstract class Runtime {
     }
 
     /**
-     * This method initializes the Runtime. It parses the input from the command
+     * This method initializes the SinalgoRuntime. It parses the input from the command
      * line. This is the part of the initialisazion which both runtime systems need.
      *
      * @param args The String Array the user passed on the command line.
-     * @throws WrongConfigurationException        Thrown if the user misconfigured the simulation somehow.
+     * @throws WrongConfigurationException Thrown if the user misconfigured the simulation somehow.
      */
     public void initializeRuntimeSystem(String[] args)
             throws WrongConfigurationException {
 
         if (Configuration.mobility && Configuration.asynchronousMode) {
-            Main.fatalError("You tried to run the simulation in the asynchronous mode and mobility is turned on. "
+            throw new SinalgoFatalException("You tried to run the simulation in the asynchronous mode and mobility is turned on. "
                     + "In the asynchronous mode mobility is not allowed.");
-            Configuration.mobility = false;
         }
 
         int numberOfParameters = args.length;
@@ -200,26 +201,26 @@ public abstract class Runtime {
 
             if (args[i].equals("-rounds")) {
                 if (i + 1 >= args.length) {
-                    Main.fatalError("Missing parameter: The command-line flag '-rounds' must "
+                    throw new SinalgoFatalException("Missing parameter: The command-line flag '-rounds' must "
                             + "be followed by the number of rounds to execute.");
                 }
                 try {
                     numberOfRounds = Integer.parseInt(args[i + 1]);
                     i++; // don't have to look at args[i+1] anymore
                 } catch (NumberFormatException e) {
-                    Main.fatalError("Cannot convert the number of rounds to execute (" + args[i + 1] + ") "
+                    throw new SinalgoFatalException("Cannot convert the number of rounds to execute (" + args[i + 1] + ") "
                             + "to an integer: The '-rounds' flag must be followed by an integer value.\n " + e);
                 }
             } else if (args[i].equals("-refreshRate")) {
                 if (i + 1 >= args.length) {
-                    Main.fatalError("Missing parameter: The command-line flag '-refreshRate' must "
+                    throw new SinalgoFatalException("Missing parameter: The command-line flag '-refreshRate' must "
                             + "be followed by the number of rounds between consecutive screen refreshs.");
                 }
                 try {
                     Configuration.refreshRate = Integer.parseInt(args[i + 1]);
                     i++; // don't have to look at args[i+1] anymore
                 } catch (NumberFormatException e) {
-                    Main.fatalError("Cannot convert the refreshrate (" + args[i + 1] + ") "
+                    throw new SinalgoFatalException("Cannot convert the refreshrate (" + args[i + 1] + ") "
                             + "to an integer: The '-refreshRate' flag must be followed by an integer value.\n " + e);
                 }
             } else if (args[i].equals("-gen")) {
@@ -227,7 +228,7 @@ public abstract class Runtime {
 
                 // format: #nodes nodeType DistModel [(params)] [{M [(params)]}*]
                 if (args.length <= i + 3) {
-                    Main.fatalError("Invalid parameters for the flag '-gen', which takes at least 3 parameters:\n"
+                    throw new SinalgoFatalException("Invalid parameters for the flag '-gen', which takes at least 3 parameters:\n"
                             + "-gen #nodes nodeType DistModel [(params)] [{M [(params)]}*]"
                             + "where each model appears at most once. (if you don't specify the model,\n"
                             + "the default model is taken. (The MessageTransmissionModel must not be used,\n"
@@ -239,7 +240,7 @@ public abstract class Runtime {
                     i++;
                     numNodes = Integer.parseInt(args[i]);
                 } catch (NumberFormatException e) {
-                    Main.fatalError("Invalid parameters for the flag '-gen', which takes at least 3 parameters:\n"
+                    throw new SinalgoFatalException("Invalid parameters for the flag '-gen', which takes at least 3 parameters:\n"
                             + "-gen #nodes nodeType DistModel [(params)] [{M [(params)]}*]"
                             + "where each model appears at most once. (if you don't specify the model,\n"
                             + "the default model is taken. (The MessageTransmissionModel must not be used,\n"
@@ -264,7 +265,7 @@ public abstract class Runtime {
                         break; // there are no further models or optional parameters for the models.
                     }
                     if (numSpecifiedModels >= 4) { // too many models specified
-                        Main.fatalError("Invalid command-line argument: The -gen flag takes at most 4 models\n"
+                        throw new SinalgoFatalException("Invalid command-line argument: The -gen flag takes at most 4 models\n"
                                 + "after the distribution model: (in arbitrary order)\n"
                                 + "Connectivity, Interference, Mobility, Reliability\n"
                                 + "each of which may be post-fixed with one optional parameter placed in \n"
@@ -301,7 +302,7 @@ public abstract class Runtime {
                         }
                     }
                 } catch (InterruptedException e) {
-                    Main.fatalError(e);
+                    throw new SinalgoWrappedException(e);
                 }
 
                 i--; // point to last processed entry, for-loop increments i afterwards
@@ -315,7 +316,7 @@ public abstract class Runtime {
             } else if (args[i].equals("-overwrite")) {
                 // omitting -overwrite as is was already used in the main class.
             } else if (args[i].startsWith("-")) {
-                Main.fatalError("Unknown modifier " + args[i]);
+                throw new SinalgoFatalException("Unknown modifier " + args[i]);
             }
         }
 
@@ -355,7 +356,7 @@ public abstract class Runtime {
             }
         }
         if (!found) {
-            Main.fatalError("Invalid optoinal parameters on the command-line: The optional \n"
+            throw new SinalgoFatalException("Invalid optoinal parameters on the command-line: The optional \n"
                     + "parameter is supposed to be terminated with a ')': " + result);
         }
         result = new StringBuilder(result.substring(2, result.length() - 1)); // cut off the initial ' (' and the trailing ')'
@@ -385,7 +386,7 @@ public abstract class Runtime {
                     gp.forceDrawInNextPaint();
                 }
             } catch (NotInGUIModeException e) {
-                Main.fatalError(e);
+                throw new SinalgoWrappedException(e);
             }
         }
     }
@@ -468,7 +469,7 @@ public abstract class Runtime {
         } else if (Configuration.dimensions == 3) {
             name = Configuration.nodeCollection3D;
         } else {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "The 'dimensions' field in the configuration file is invalid. Valid values are either '2' for 2D or '3' for 3D. (Cannot create corresponding node collection.)");
         }
         try {
@@ -476,22 +477,22 @@ public abstract class Runtime {
             Constructor<?> cons = c.getConstructor();
             result = (NodeCollectionInterface) cons.newInstance();
         } catch (ClassNotFoundException e) {
-            Main.fatalError("Cannot find the class " + name
+            throw new SinalgoFatalException("Cannot find the class " + name
                     + " which contains the implementation for the node collection. Please check the nodeCollection field in the config file.");
         } catch (SecurityException e) {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "Cannot generate the node collection object due to a security exception:\n\n" + e.getMessage());
         } catch (NoSuchMethodException | IllegalArgumentException e) {
-            Main.fatalError("The node collection " + name + " must provide a constructor taking no arguments.\n\n"
+            throw new SinalgoFatalException("The node collection " + name + " must provide a constructor taking no arguments.\n\n"
                     + e.getMessage());
         } catch (InstantiationException e) {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "Classes usable as node collections must be instantiable classes, i.e. no interfaces and not abstract.\n\n"
                             + e.getMessage());
         } catch (IllegalAccessException e) {
-            Main.fatalError("Cannot generate the node collection object due to illegal access:\n\n" + e.getMessage());
+            throw new SinalgoFatalException("Cannot generate the node collection object due to illegal access:\n\n" + e.getMessage());
         } catch (InvocationTargetException e) {
-            Main.fatalError("Exception while instanciating " + name + ":\n\n" + e.getCause().getMessage());
+            throw new SinalgoFatalException("Exception while instanciating " + name + ":\n\n" + e.getCause().getMessage());
         }
         return result;
     }
@@ -555,7 +556,7 @@ public abstract class Runtime {
             try {
                 node = Node.createNodeByClassname(nodeTypeName);
             } catch (WrongConfigurationException e) {
-                Main.fatalError(e);
+                throw new SinalgoWrappedException(e);
             }
             node.setPosition(nodeDistribution.getNextPosition());
 

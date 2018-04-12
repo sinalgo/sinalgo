@@ -46,16 +46,19 @@ import org.jdom2.output.XMLOutputter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.gui.helper.NonRegularGridLayout;
 import sinalgo.gui.helper.UnborderedJTextField;
 import sinalgo.gui.multiLineTooltip.MultiLineToolTipJComboBox;
 import sinalgo.gui.multiLineTooltip.MultiLineToolTipJTextArea;
 import sinalgo.gui.multiLineTooltip.MultiLineToolTipJTextField;
+import sinalgo.io.IOUtils;
 import sinalgo.io.xml.XMLParser;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
-import sinalgo.tools.Tools;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -64,7 +67,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Vector;
@@ -154,7 +156,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         // gather all projects
         String[] projects = getAllProjectNames();
         if (projects == null) {
-            Main.fatalError("Cannot find the project folder. Please ensure that the framework is installed properly.");
+            throw new SinalgoFatalException("Cannot find the project folder. " +
+                    "Please ensure that the framework is installed properly.");
         }
         Arrays.sort(projects); // sort the projects in ascending order
 
@@ -173,8 +176,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     appConfig.projectSelectorWindowWidth = ProjectSelector.this.getWidth();
                     appConfig.projectSelectorWindowHeight = ProjectSelector.this.getHeight();
                 }
-                customParameters.setSize(100, customParameters.getHeight()); // needed to ensure that the text field
-                // shrinks as well
+                customParameters.setSize(100, customParameters.getHeight());
+                // needed to ensure that the text field shrinks as well
             }
 
             @Override
@@ -358,16 +361,14 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      */
     protected JButton createFrameworkIconButton(String actionCommand, String imageName, String toolTip) {
         // To support jar files, we cannot access the file directly
-        ClassLoader cldr = this.getClass().getClassLoader();
         JButton b;
         try {
-            URL url = cldr.getResource(Configuration.imageDir + "/" + imageName);
-            ImageIcon icon = new ImageIcon(url);
+            InputStream is = IOUtils.getResourceAsStream(Configuration.imageDir + "/" + imageName);
+            ImageIcon icon = new ImageIcon(ImageIO.read(is));
             b = new JButton(icon);
-        } catch (NullPointerException e) {
-            Main.fatalError("Cannot access the application icon " + imageName + ", which should be stored in\n"
+        } catch (IOException e) {
+            throw new SinalgoFatalException("Cannot access the application icon " + imageName + ", which should be stored in\n"
                     + "resources" + Configuration.imageDir + "/" + imageName + ".");
-            return null;
         }
         // b.setPreferredSize(new Dimension(29, 29));
         b.setPreferredSize(new Dimension(0, 9));
@@ -473,19 +474,19 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 frameworkElement = root.getChild("Framework");
                 Element custom = root.getChild("Custom");
                 if (custom == null) {
-                    Main.fatalError("Invalid configuration file: A Custom entry is missing.\n"
+                    throw new SinalgoFatalException("Invalid configuration file: A Custom entry is missing.\n"
                             + "The file needs to be of the following form: \n"
                             + "<Document>\n  <Framework>...</Framework>\n  <Custom></Custom>\n</Document>");
                 }
                 if (frameworkElement == null) {
-                    Main.fatalError("Invalid configuration file: A 'framework' entry is missing.\n"
+                    throw new SinalgoFatalException("Invalid configuration file: A 'framework' entry is missing.\n"
                             + "The file needs to be of the following form: \n"
                             + "<Document>\n  <Framework>...</Framework>\n  <Custom></Custom>\n</Document>");
                 }
             } catch (JDOMException e1) {
-                Main.fatalError("Invalid configuration file:\n\n" + e1.getMessage());
+                throw new SinalgoFatalException(e1.getMessage(), "Invalid configuration file:\n\n%s");
             } catch (IOException e1) {
-                Main.fatalError("Cannot open or read from configuration file:\n\n" + e1.getMessage());
+                throw new SinalgoFatalException(e1.getMessage(), "Cannot open or read from configuration file:\n\n%s");
             }
         }
 
@@ -547,7 +548,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     }
                 }
             } catch (IllegalArgumentException | IllegalAccessException e) {
-                Main.fatalError(e);
+                throw new SinalgoWrappedException(e);
             }
         }
 
@@ -791,7 +792,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         String outputPath = (isTemporary ? Configuration.tempFolder : Configuration.appConfigDir)
                 + "/" + Configuration.userProjectDir + "/" + selectedProjectName;
-        Tools.createDir(outputPath);
+        IOUtils.createDir(outputPath);
         File outputFile = new File(outputPath + "/" + Configuration.configfileFileName + (isTemporary ? ".run" : ""));
 
         // And write the xml tree to the file
@@ -801,7 +802,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         outputter.setFormat(f);
         String tempOutputFolder = Configuration.tempFolder + "/" + Configuration.userProjectDir
                 + "/" + selectedProjectName;
-        Tools.createDir(tempOutputFolder);
+        IOUtils.createDir(tempOutputFolder);
         File tempOutputFile = new File(tempOutputFolder + "/" + Configuration.configfileFileName + ".temp");
 
         try {
@@ -856,7 +857,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
             if (e.valueComponent == null) {
                 continue; // this entry does not have a value - its probably a section header
             }
-            String value = "";
+            String value;
             if (e.valueComponent instanceof JComboBox) {
                 value = (String) ((JComboBox) e.valueComponent).getSelectedItem();
             } else {
@@ -876,7 +877,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 try {
                     storeConfig(false);
                 } catch (Exception ex) {
-                    Main.fatalError(ex);
+                    throw new SinalgoWrappedException(ex);
                 }
             }
         } else if (e.getSource().equals(ok)) { // --------------------------------------------------------------------
@@ -893,7 +894,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                         try {
                             storeConfig(false);
                         } catch (Exception ex) {
-                            Main.fatalError(ex);
+                            throw new SinalgoWrappedException(ex);
                         }
                     }
                     if (decision == JOptionPane.CANCEL_OPTION) {
@@ -946,7 +947,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     try {
                         storeConfig(false);
                     } catch (Exception ex) {
-                        Main.fatalError(ex);
+                        throw new SinalgoWrappedException(ex);
                     }
                 }
                 if (decision == JOptionPane.CANCEL_OPTION) {
@@ -980,7 +981,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     try {
                         storeConfig(false);
                     } catch (Exception ex) {
-                        Main.fatalError(ex);
+                        throw new SinalgoWrappedException(ex);
                     }
                 }
                 if (decision == JOptionPane.CANCEL_OPTION) {

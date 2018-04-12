@@ -37,10 +37,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.gui.transformation;
 
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.GraphPanel;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.nodes.Position;
-import sinalgo.runtime.Main;
 
 import java.awt.*;
 import java.lang.reflect.Constructor;
@@ -435,7 +435,7 @@ public abstract class PositionTransformation {
         } else if (Configuration.dimensions == 3) {
             name = Configuration.guiPositionTransformation3D;
         } else {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "The 'dimensions' field in the configuration file is invalid. Valid values are either '2' for 2D or '3' for 3D. (Cannot create corresponding position transformation instance.)");
         }
         try {
@@ -443,23 +443,23 @@ public abstract class PositionTransformation {
             Constructor<?> cons = c.getConstructor();
             result = (PositionTransformation) cons.newInstance();
         } catch (ClassNotFoundException e) {
-            Main.fatalError("Cannot find the class " + name
+            throw new SinalgoFatalException("Cannot find the class " + name
                     + " which contains the implementation for the field transformation. Please check the guiPositionTransformation field in the config file.");
         } catch (SecurityException e) {
-            Main.fatalError("Cannot generate the field transformation object due to a security exception:\n\n"
+            throw new SinalgoFatalException("Cannot generate the field transformation object due to a security exception:\n\n"
                     + e.getMessage());
         } catch (NoSuchMethodException | IllegalArgumentException e) {
-            Main.fatalError("The field transformation " + name + " must provide a constructor taking no arguments.\n\n"
+            throw new SinalgoFatalException("The field transformation " + name + " must provide a constructor taking no arguments.\n\n"
                     + e.getMessage());
         } catch (InstantiationException e) {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "Classes usable as field transformators must be instantiable classes, i.e. no interfaces and not abstract.\n\n"
                             + e.getMessage());
         } catch (IllegalAccessException e) {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "Cannot generate the field transformator object due to illegal access:\n\n" + e.getMessage());
         } catch (InvocationTargetException e) {
-            Main.fatalError("Exception while instanciating " + name + ":\n\n" + e.getCause().getMessage());
+            throw new SinalgoFatalException("Exception while instanciating " + name + ":\n\n" + e.getCause().getMessage());
         }
         return result;
     }

@@ -36,13 +36,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.sample2.nodes.nodeImplementations;
 
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.messages.Inbox;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.tools.Tools;
 
 import java.awt.*;
@@ -126,7 +126,7 @@ public class S2Node extends Node implements Comparable<S2Node> {
     @NodePopupMethod(menuText = "Undo Coloring")
     public void UndoColoring() { // NOTE: Do not change method name!
         // undo the coloring for all nodes
-        for (Node n : Runtime.nodes) {
+        for (Node n : SinalgoRuntime.nodes) {
             ((S2Node) n).drawAsNeighbor = false;
         }
         isColored = false;

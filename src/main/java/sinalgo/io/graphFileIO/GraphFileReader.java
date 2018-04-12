@@ -44,15 +44,15 @@ package sinalgo.io.graphFileIO;
 public class GraphFileReader {
     //
     // private File file = null;
-    // private Runtime runtime = null;
+    // private SinalgoRuntime runtime = null;
     //
     // /**
     // * @param f The File to read from.
-    // * @param r The instance of the Runtime. This is needed to reset some global
+    // * @param r The instance of the SinalgoRuntime. This is needed to reset some global
     // settings at
     // * loading the graphFile.
     // */
-    // public GraphFileReader(File f, Runtime r){
+    // public GraphFileReader(File f, SinalgoRuntime r){
     // runtime = r;
     // file = f;
     // }
@@ -62,7 +62,7 @@ public class GraphFileReader {
     // */
     // public void read(){
     // int lineCounter = 0;
-    // Runtime.clearAllNodes();
+    // SinalgoRuntime.clearAllNodes();
     //
     // BufferedReader bR;
     // try {
@@ -104,7 +104,7 @@ public class GraphFileReader {
     // params[2].length()-1).split(",")[1]);
     //
     // oneNode.setPosition(new Position(posX, posY, 0));
-    // Runtime.addNode(oneNode);
+    // SinalgoRuntime.addNode(oneNode);
     // oneLine = bR.readLine();
     // lineCounter++;
     //
@@ -122,7 +122,7 @@ public class GraphFileReader {
     //
     // oneLine = bR.readLine();
     // while(oneLine != null){
-    // Enumeration<Node> nodeEnumer = Runtime.nodes.getNodeEnumeration();
+    // Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
     // int ID = Integer.parseInt(oneLine.split(";")[1].split("=")[1]);
     //
     // while(nodeEnumer.hasMoreElements()){
@@ -139,13 +139,13 @@ public class GraphFileReader {
     // bR.close();
     //
     // }
-    // catch (java.io.FileNotFoundException e){
-    // Runtime.clearAllNodes();
+    // catch (java.io.FileReadException e){
+    // SinalgoRuntime.clearAllNodes();
     // Main.minorError("Error loading the graph: The specified graph-file named " +
     // file.getName() + " cannot be found:\n" + e);
     // }
     // catch (ArrayIndexOutOfBoundsException e) {
-    // Runtime.clearAllNodes();
+    // SinalgoRuntime.clearAllNodes();
     // Main.minorError("Error loading the graph: The specified graph-file named " +
     // file.getName() + " seems to be corrupt at line " + lineCounter + " :\n" + e);
     // }

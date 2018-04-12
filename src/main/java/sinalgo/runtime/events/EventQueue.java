@@ -38,6 +38,7 @@ package sinalgo.runtime.events;
 
 import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
+import sinalgo.runtime.SinalgoRuntime;
 
 import java.util.*;
 
@@ -171,7 +172,7 @@ public class EventQueue extends TreeSet<Event> {
             }
         }
         super.clear(); // kill this set
-        sinalgo.runtime.Runtime.eventQueue = eq; // replace the event queue
+        SinalgoRuntime.eventQueue = eq; // replace the event queue
         notifyListeners();
     }
 

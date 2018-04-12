@@ -38,7 +38,8 @@ package projects.sample1;
 
 import projects.sample1.nodes.nodeImplementations.S1Node;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.runtime.GUIRuntime;
 import sinalgo.runtime.Global;
@@ -202,7 +203,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     @Override
     public void checkProjectRequirements() {
         if (Global.isAsynchronousMode) {
-            Main.fatalError(
+            throw new SinalgoFatalException(
                     "SampleProject1 is written to be executed in synchronous mode. It doesn't work in asynchronous mode.");
         }
     }

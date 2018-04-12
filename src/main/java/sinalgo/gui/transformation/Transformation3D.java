@@ -37,10 +37,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.gui.transformation;
 
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.GraphPanel;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.nodes.Position;
-import sinalgo.runtime.Main;
 
 import java.awt.*;
 
@@ -1052,9 +1052,9 @@ public class Transformation3D extends PositionTransformation {
      * Same as translateToGUIPosition, but utilizes the specified transformation
      * matrix
      *
-     * @param x The offset's x component
-     * @param y The offset's y component
-     * @param z The offset's z component
+     * @param x      The offset's x component
+     * @param y      The offset's y component
+     * @param z      The offset's z component
      * @param matrix The matrix which defines the transformation
      */
     private void translateToGUIPosition(double x, double y, double z, double[][] matrix, boolean usePerspective) {
@@ -1108,7 +1108,7 @@ public class Transformation3D extends PositionTransformation {
 
     @Override
     public void translateToLogicPosition(int x, int y) {
-        Main.fatalError("Trying to translate a GUI coordinate to a 3D coordinate, even though this "
+        throw new SinalgoFatalException("Trying to translate a GUI coordinate to a 3D coordinate, even though this "
                 + "is not supported in 3D!");
     }
 

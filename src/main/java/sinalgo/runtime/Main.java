@@ -38,9 +38,12 @@ package sinalgo.runtime;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.SinalgoWrappedException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.ProjectSelector;
+import sinalgo.io.IOUtils;
 import sinalgo.io.versionTest.VersionTester;
 import sinalgo.io.xml.XMLParser;
 import sinalgo.models.Model;
@@ -50,21 +53,18 @@ import sinalgo.tools.logging.Logging;
 import sinalgo.tools.statistics.Distribution;
 
 import javax.swing.*;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * The main class to start with.
  */
 public class Main {
 
-    private static Runtime runtime;
+    static SinalgoRuntime runtime;
     public static String[] cmdLineArgs; // the command line arguments
 
     /**
@@ -80,7 +80,7 @@ public class Main {
 
     // just an internal method to not have it static...
     private void go(String[] args) {
-        UncaughtExceptionHandler mUEH = new MyUncaughtExceptionHandler();
+        UncaughtExceptionHandler mUEH = new SinalgoUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(mUEH);
 
         for (String s : args) { // any argument '-help' triggers the help to be printed
@@ -108,26 +108,14 @@ public class Main {
                         wait();
                     }
                 } catch (InterruptedException e) {
-                    Main.fatalError(e);
+                    throw new SinalgoWrappedException(e);
                 }
             }
         }
 
         // read in the XML-File and save it in the lookup-table
         // if there is a Config.xml.run file, use this temporary file
-        InputStream tempPath;
-        try {
-            tempPath = Files.newInputStream(Paths.get(Global.getProjecTempDir() + "/" + Configuration.configfileFileName + ".run"));
-        } catch (Exception e) {
-            tempPath = null;
-        }
-        ClassLoader cldr = getClass().getClassLoader();
-        InputStream normalPath = cldr.getResourceAsStream(Global.getProjectResourceDir() + "/" + Configuration.configfileFileName);
-        if (tempPath != null) {
-            XMLParser.parse(tempPath);
-        } else if (normalPath != null) {
-            XMLParser.parse(normalPath);
-        }
+        XMLParser.parse(IOUtils.getProjectConfigurationAsReader(Global.getProjecName()));
 
         // parse the -overwrite parameters
         parseOverwriteParameters(args, true);
@@ -172,7 +160,7 @@ public class Main {
                         + "'. Using the DefaultCustomGlobal.");
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
                     | SecurityException | InvocationTargetException | IllegalArgumentException e) {
-                Main.fatalError("Cannot instanciate the project specific CustomGlobal object:\n" + e);
+                throw new SinalgoFatalException(String.valueOf(e), "Cannot instanciate the project specific CustomGlobal object:\n%s");
             }
         } else {
             Global.log.logln(LogL.WARNING,
@@ -205,7 +193,7 @@ public class Main {
             runtime.run(runtime.getNumberOfRounds(), false); // possibly call it with 0 (in batch mode, we run until the
             // stopping criteria is met in this case.
         } catch (WrongConfigurationException e) {
-            Main.fatalError(e);
+            throw new SinalgoWrappedException(e);
         }
     }
 
@@ -244,51 +232,11 @@ public class Main {
      *
      * @return the runtime of the simulation.
      */
-    public static Runtime getRuntime() {
+    public static SinalgoRuntime getRuntime() {
         if (runtime == null) {
-            Main.fatalError("Call to Main.getRuntime() before the runtime has been created.");
+            throw new SinalgoFatalException("Call to Main.getRuntime() before the runtime has been created.");
         }
         return runtime;
-    }
-
-    /**
-     * Exits the application due to a fatal error.
-     * <p>
-     * Before exiting, an error-message is diplayed if in GUI-mode. In any case, the
-     * error is written to System.err.
-     *
-     * @param message The message containing the error description.
-     */
-    public static void fatalError(String message) {
-        if (Global.isGuiMode) {
-            if (runtime != null) {
-                JOptionPane.showMessageDialog(((GUIRuntime) runtime).getGUI(), Tools.wrapAndCutToLines(message, 30),
-                        "Fatal Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, Tools.wrapAndCutToLines(message, 30), "Fatal Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        if (Logging.isActivated()) {
-            Global.log.logln(LogL.ALWAYS, "\n" + message + "\n\n" + Logging.getStackTrace());
-        } else {
-            System.err.println("\n" + "-------------------------------------------------------\n" + "Fatal Error\n"
-                    + "-------------------------------------------------------\n" + message + "\n"
-                    + "-------------------------------------------------------\n" + "Stack Trace\n"
-                    + "-------------------------------------------------------\n" + Logging.getStackTrace()
-                    + "-------------------------------------------------------\n");
-        }
-
-        try {
-            // The main thread has an exception handler installed, that would again call
-            // fatalError, and possibly cause an infinite loop
-            Global.customGlobal.onFatalErrorExit();
-        } catch (Throwable t) {
-            System.err.println(
-                    "\n\n Furthermore, an exception was thrown in CustomGlobal.onFatalErrorExit():\n" + t.getMessage());
-        }
-        cleanup();
-        System.exit(1);
     }
 
     /**
@@ -375,31 +323,6 @@ public class Main {
                 message.append("\tat ").append(aST.toString()).append("\n");
             }
             minorError(message.toString());
-        }
-    }
-
-    /**
-     * Exits the application due to a fatal error.
-     * <p>
-     * Before exiting, an error-message is diplayed if in GUI-mode. In any case, the
-     * error is written to System.err.
-     *
-     * @param t The exception causing the error.
-     */
-    public static void fatalError(Throwable t) {
-        if (t.getCause() != null) {
-            fatalError("----------------------------------------------\n" + t + "\n"
-                    + "----------------------------------------------\n" + "Message:\n" + t.getMessage() + "\n"
-                    + "----------------------------------------------\n" + "Cause:\n"
-                    + "----------------------------------------------\n" + t.getCause() + "\n"
-                    + "----------------------------------------------\n");
-        } else {
-            String message = t.toString() + "\n\n" + "Message: " + t.getMessage() + "\n\n";
-            // StackTraceElement[] sT = t.getStackTrace();
-            // for(int i = 0; i < sT.length; i++){
-            // message+="\tat "+sT[i].toString()+"\n";
-            // }
-            fatalError(message);
         }
     }
 
@@ -501,7 +424,7 @@ public class Main {
                                 }
                                 Configuration.putPropertyEntry(nameVal[0], nameVal[1]);
                             } catch (IllegalArgumentException | IllegalAccessException e) {
-                                Main.fatalError(e);
+                                throw new SinalgoWrappedException(e);
                             }
                         }
                     }
@@ -524,7 +447,7 @@ public class Main {
     /**
      * Framework specific cleanup;
      */
-    private static void cleanup() {
+    static void cleanup() {
         // write the app config
         AppConfig.getAppConfig().writeConfig();
     }

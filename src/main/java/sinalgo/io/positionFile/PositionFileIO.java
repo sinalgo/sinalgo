@@ -2,7 +2,7 @@ package sinalgo.io.positionFile;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.io.eps.Exporter.PositionFileFilter;
 import sinalgo.io.eps.Exporter.SingleFileFilter;
 import sinalgo.nodes.Node;
@@ -24,7 +24,7 @@ public class PositionFileIO {
      * by the framework.
      *
      * @param name The name of the file, null if the user should be asked using a
-     *            file-dialog
+     *             file-dialog
      * @return true upon success, otherwise false.
      */
     public static boolean printPos(String name) {

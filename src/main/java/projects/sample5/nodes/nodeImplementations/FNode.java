@@ -7,7 +7,7 @@ import projects.sample5.nodes.messages.PayloadMsg;
 import projects.sample5.nodes.timers.PayloadMessageTimer;
 import projects.sample5.nodes.timers.RetryFloodingTimer;
 import projects.sample5.nodes.timers.RetryPayloadMessageTimer;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;

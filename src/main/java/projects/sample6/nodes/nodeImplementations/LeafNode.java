@@ -1,7 +1,7 @@
 package projects.sample6.nodes.nodeImplementations;
 
 import projects.sample6.nodes.messages.MarkMessage;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;

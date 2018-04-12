@@ -38,6 +38,7 @@ package sinalgo.gui.controlPanel;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.multiLineTooltip.MultilineToolTipJList;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -45,7 +46,7 @@ import sinalgo.gui.transformation.Transformation3D;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.runtime.events.Event;
 import sinalgo.tools.Tuple;
 
@@ -151,9 +152,8 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
             ImageIcon icon = new ImageIcon(url);
             b = new JButton(icon);
         } catch (NullPointerException e) {
-            Main.fatalError("Cannot access the application icon " + imageName + ", which should be stored in\n"
+            throw new SinalgoFatalException("Cannot access the application icon " + imageName + ", which should be stored in\n"
                     + Configuration.imageDir + "/" + imageName + ".");
-            return null;
         }
         b.setPreferredSize(new Dimension(29, 29));
         return finishButton(b, actionCommand, toolTip);
@@ -166,10 +166,9 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
             URL url = cldr.getResource(Configuration.imageDir + "/" + imageName);
             return new ImageIcon(url);
         } catch (NullPointerException e) {
-            Main.fatalError("Cannot access the application icon " + imageName + ", which should be stored in\n"
+            throw new SinalgoFatalException("Cannot access the application icon " + imageName + ", which should be stored in\n"
                     + Configuration.imageDir + "/" + imageName + ".");
         }
-        return null;
     }
 
     /**
@@ -185,10 +184,10 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     protected JButton createCustomIconButton(String actionCommand, String imageName, String toolTip) {
         JButton b;
         ClassLoader cldr = getClass().getClassLoader();
-        if(Global.useProject){
+        if (Global.useProject) {
             URL url = cldr.getResource(Global.getProjectResourceDir() + "/images/" + imageName);
-            if (url == null){
-                Main.fatalError("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
+            if (url == null) {
+                throw new SinalgoFatalException("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
                         + Global.getProjectResourceDir() + "/images/" + imageName + ".");
             }
             ImageIcon icon = new ImageIcon(url);
@@ -196,7 +195,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         } else {
             URL url = cldr.getResource(Global.getProjectResourceDir() + "/images/" + imageName);
             if (url == null) {
-                Main.fatalError("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
+                throw new SinalgoFatalException("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
                         + Global.getProjectResourceDir() + "/images/" + imageName + ".");
             }
             ImageIcon icon = new ImageIcon(url);
@@ -458,7 +457,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         } else if (e.getActionCommand().equals("addNodes")) {
             parent.addNodes();
         } else if (e.getActionCommand().equals("connectNodes")) {
-            Runtime.reevaluateConnections(); // could ask...
+            SinalgoRuntime.reevaluateConnections(); // could ask...
             parent.redrawGUI();
         } else {
             // test whether its a custom button
@@ -471,14 +470,14 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
                             t.second.invoke(Global.customGlobal);
                         }
                     } catch (IllegalArgumentException | IllegalAccessException e1) {
-                        Main.fatalError("Error while invoking custom method, triggered through button:\n"
+                        throw new SinalgoFatalException("Error while invoking custom method, triggered through button:\n"
                                 + e1.getMessage() + "\n\n" + e1);
                     } catch (InvocationTargetException e1) {
                         if (e1.getCause() != null) {
                             Main.minorError("Exception thrown while executing '" + t.second.getName() + "'.\n"
                                     + e1.getCause().getMessage() + "\n\n" + e1.getCause());
                         } else {
-                            Main.fatalError("Exception thrown while executing '" + t.second.getName() + "'.\n"
+                            throw new SinalgoFatalException("Exception thrown while executing '" + t.second.getName() + "'.\n"
                                     + e1.getMessage() + "\n\n" + e1);
                         }
                     }

@@ -36,9 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.models;
 
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.nodes.Node;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 
 import java.util.Enumeration;
 
@@ -68,7 +68,7 @@ public abstract class ConnectivityModelHelper extends ConnectivityModel {
         // is possible because of the rMax filed of the GeometricNodeCollection, which
         // indicates the maximum
         // distance between any two connected points.
-        Enumeration<Node> pNE = Runtime.nodes.getPossibleNeighborsEnumeration(n);
+        Enumeration<Node> pNE = SinalgoRuntime.nodes.getPossibleNeighborsEnumeration(n);
         while (pNE.hasMoreElements()) {
             Node possibleNeighbor = pNE.nextElement();
             if (n.ID != possibleNeighbor.ID) {

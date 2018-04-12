@@ -37,7 +37,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.gui.dialogs;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.exception.SinalgoWrappedException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GuiHelper;
 import sinalgo.models.Model;
@@ -242,7 +243,7 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
                 }
 
             } catch (WrongConfigurationException ex) {
-                sinalgo.runtime.Main.fatalError(ex);
+                throw new SinalgoWrappedException(ex);
             }
         }
         this.setVisible(false);

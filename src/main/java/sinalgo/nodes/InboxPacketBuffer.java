@@ -42,7 +42,7 @@ import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Packet;
 import sinalgo.nodes.messages.PacketCollection;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Runtime;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.tools.storage.DoublyLinkedList;
 import sinalgo.tools.storage.ReusableListIterator;
 
@@ -103,7 +103,7 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
                 // only if added
                 if (Configuration.interference) {
                     // remove it from the global queue
-                    Runtime.packetsInTheAir.remove(p);
+                    SinalgoRuntime.packetsInTheAir.remove(p);
                 }
 
                 bufferIterator.remove();

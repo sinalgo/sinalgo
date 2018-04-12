@@ -42,7 +42,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import sinalgo.tools.Tools;
+import sinalgo.io.IOUtils;
 import sinalgo.tools.statistics.Distribution;
 
 import javax.swing.filechooser.FileSystemView;
@@ -136,7 +136,7 @@ public class AppConfig {
             configInputStream = cldr.getResourceAsStream(Configuration.sinalgoResourceDirPrefix + "/" + configFileName);
         }
 
-        if(configInputStream == null){
+        if (configInputStream == null) {
             return;
         }
 
@@ -357,7 +357,7 @@ public class AppConfig {
     public void writeConfig() {
         String dir = Configuration.appConfigDir;
         if (!Objects.equals("", dir)) {
-            Tools.createDir(dir);
+            IOUtils.createDir(dir);
         }
 
         Document doc = new Document();

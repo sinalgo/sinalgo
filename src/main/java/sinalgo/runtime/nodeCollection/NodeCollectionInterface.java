@@ -140,7 +140,7 @@ public abstract class NodeCollectionInterface implements Iterable<Node> {
     /**
      * This method removes a node from the local datastructure. This method is
      * primarily called by the framework. To remove a node from user code, you
-     * probably should call Runtime.removeNode(Node).
+     * probably should call SinalgoRuntime.removeNode(Node).
      * <p>
      * This method needs to set the filed holdInNodeCollection of the removed node
      * to false.
