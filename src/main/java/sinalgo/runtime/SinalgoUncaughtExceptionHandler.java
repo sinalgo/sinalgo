@@ -127,8 +127,7 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
             }
         }
         if (Logging.isActivated()) {
-            Global.log.logln(LogL.ALWAYS, "\n" + message + "\n\n" +
-                    (cause != null ? getStackTrace(cause) : Logging.getStackTrace()));
+            Global.log.logln(LogL.ALWAYS, "\n" + message + "\n\n" + getStackTrace(cause));
         } else {
             System.err.println("\n" + "-------------------------------------------------------\n"
                     + "Fatal Error\n"
@@ -137,7 +136,7 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
                     + "-------------------------------------------------------\n"
                     + "Stack Trace\n"
                     + "-------------------------------------------------------\n"
-                    + (cause != null ? getStackTrace(cause) : Logging.getStackTrace())
+                    + getStackTrace(cause)
                     + "-------------------------------------------------------\n");
         }
 

@@ -469,25 +469,6 @@ public class Logging {
     }
 
     /**
-     * @return The current stacktrace as a string.
-     */
-    public static String getStackTrace() {
-        StringBuilder s = new StringBuilder();
-        StackTraceElement[] list = Thread.currentThread().getStackTrace();
-        if (list.length <= 2) {
-            return ""; // no stack trace
-        }
-        for (int i = 2; true; i++) {
-            s.append(list[i].toString());
-            if (i >= list.length - 1) {
-                break;
-            }
-            s.append("\n");
-        }
-        return s.toString();
-    }
-
-    /**
      * @return Returns a string representing the current time in the form
      * Day.Month.Year-Hour:Minutes:Seconds.MilliSeconds
      */
