@@ -41,6 +41,7 @@ import projects.sample4.nodes.messages.S4Message;
 import projects.sample4.nodes.timers.S4SendDirectTimer;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
@@ -181,7 +182,7 @@ public class S4Node extends Node {
             try {
                 simpleDraw = Configuration.getBooleanParameter("S4Node/simpleDraw");
             } catch (CorruptConfigurationEntryException e) {
-                Tools.fatalError("Invalid config field S4Node/simpleDraw: Expected a boolean.\n" + e.getMessage());
+                throw new SinalgoFatalException("Invalid config field S4Node/simpleDraw: Expected a boolean.\n" + e.getMessage());
             }
         } else {
             simpleDraw = false;

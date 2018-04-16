@@ -38,7 +38,7 @@ package sinalgo.exception;
 
 /**
  * An Exception to indicate an error during the simulation or its
- * initialization. *
+ * initialization.
  */
 public class SimulationException extends Exception {
 

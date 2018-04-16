@@ -4,6 +4,7 @@ import projects.sample3.nodes.messages.*;
 import projects.sample3.nodes.timers.SmsTimer;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.helper.Arrow;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -115,7 +116,7 @@ public class MobileNode extends Node {
         try {
             this.defaultDrawingSizeInPixels = Configuration.getIntegerParameter("MobileNode/Size");
         } catch (CorruptConfigurationEntryException e) {
-            Tools.fatalError(e.getMessage());
+            throw new SinalgoFatalException(e.getMessage());
         }
     }
 

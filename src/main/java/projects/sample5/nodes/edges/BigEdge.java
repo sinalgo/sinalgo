@@ -2,6 +2,7 @@ package projects.sample5.nodes.edges;
 
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.helper.Arrow;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -28,7 +29,7 @@ public class BigEdge extends Edge {
         try {
             strokeWidth = Configuration.getIntegerParameter("BigEdge/strokeWidth");
         } catch (CorruptConfigurationEntryException e) {
-            Tools.fatalError(e.getMessage());
+            throw new SinalgoFatalException(e.getMessage());
         }
     }
 

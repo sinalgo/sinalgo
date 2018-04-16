@@ -84,13 +84,13 @@ public class CustomGlobal extends AbstractCustomGlobal {
             try {
                 exitAfterFixedRounds = Configuration.getBooleanParameter("exitAfter");
             } catch (CorruptConfigurationEntryException e1) {
-                Tools.fatalError("The 'exitAfter' needs to be a valid boolean.");
+                throw new SinalgoFatalException("The 'exitAfter' needs to be a valid boolean.");
             }
             if (exitAfterFixedRounds) {
                 try {
                     exitAfterNumRounds = Configuration.getIntegerParameter("exitAfter/rounds");
                 } catch (CorruptConfigurationEntryException e) {
-                    Tools.fatalError(
+                    throw new SinalgoFatalException(
                             "The 'exitAfter/rounds' parameter specifies the maximum time the simulation runs. It needs to be a valid integer.");
                 }
             }
@@ -133,7 +133,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
                 n.start(); // start from a random node
             }
         } catch (CorruptConfigurationEntryException e) {
-            Tools.fatalError("The 'AutoStart' option in the configuration file specifies whether a node"
+            throw new SinalgoFatalException("The 'AutoStart' option in the configuration file specifies whether a node"
                     + "should be automatically selected to start the communication process. This flag needs to be"
                     + "of type boolean (true|false).");
         }

@@ -160,7 +160,7 @@ public class Main {
                         + "'. Using the DefaultCustomGlobal.");
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
                     | SecurityException | InvocationTargetException | IllegalArgumentException e) {
-                throw new SinalgoFatalException(String.valueOf(e), "Cannot instanciate the project specific CustomGlobal object:\n%s");
+                throw new SinalgoFatalException("Cannot instanciate the project specific CustomGlobal object:\n" + e);
             }
         } else {
             Global.log.logln(LogL.WARNING,

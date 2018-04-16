@@ -4,6 +4,7 @@ import projects.sample3.nodes.messages.InviteMessage;
 import projects.sample3.nodes.nodeImplementations.Antenna;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.tools.Tools;
 import sinalgo.tools.statistics.Distribution;
@@ -27,7 +28,7 @@ public class InviteMsgTimer extends Timer {
             dist = Distribution.getDistributionFromConfigFile("Antenna/InviteIntervall");
             refreshRate = Configuration.getIntegerParameter("Antenna/refreshRate");
         } catch (CorruptConfigurationEntryException e) {
-            Tools.fatalError(e.getMessage());
+            throw new SinalgoFatalException(e.getMessage());
         }
     }
 
@@ -44,7 +45,7 @@ public class InviteMsgTimer extends Timer {
         this.node.broadcast(msg);
         double time = dist.nextSample();
         if (time <= 0) {
-            Tools.fatalError("Invalid offset time for inviteInterval: " + time + " is <= 0.");
+            throw new SinalgoFatalException("Invalid offset time for inviteInterval: " + time + " is <= 0.");
         }
         this.startRelative(time, this.node);
     }

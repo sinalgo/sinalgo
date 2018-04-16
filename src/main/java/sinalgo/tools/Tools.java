@@ -76,6 +76,8 @@ import java.util.Vector;
  */
 public class Tools {
 
+    private static final int MEGABYTE_SIZE = 1048576;
+
     // **************************************************************************************
     // Error handling
     // **************************************************************************************
@@ -104,18 +106,6 @@ public class Tools {
      */
     public static void minorError(String message) {
         Main.minorError(message);
-    }
-
-    /**
-     * Exits the application due to a fatal error.
-     * <p>
-     * Before exiting, an error-message is diplayed if in GUI-mode. In any case, the
-     * error is written to System.err.
-     *
-     * @param message The message containing the error description.
-     */
-    public static void fatalError(String message) {
-        throw new SinalgoFatalException(message);
     }
 
     // **************************************************************************************
@@ -893,10 +883,10 @@ public class Tools {
         ps.print("General Memory:\n");
         java.lang.Runtime r = java.lang.Runtime.getRuntime();
         int usedP = Math.round(100 * (r.totalMemory() - r.freeMemory()) / r.maxMemory());
-        ps.print("  Used: " + usedP + "%\t" + ((r.totalMemory() - r.freeMemory()) / 1048576) + " MB\n");
-        ps.print("  Free: " + (100 - usedP) + "%\t" + (r.freeMemory() / 1048576) + " MB\n");
-        ps.print("  Total Alloc.:\t" + (r.totalMemory() / 1048576) + " MB\n");
-        ps.print("  Max:  \t" + (r.maxMemory() / 1048576) + " MB\n");
+        ps.print("  Used: " + usedP + "%\t" + ((r.totalMemory() - r.freeMemory()) / MEGABYTE_SIZE) + " MB\n");
+        ps.print("  Free: " + (100 - usedP) + "%\t" + (r.freeMemory() / MEGABYTE_SIZE) + " MB\n");
+        ps.print("  Total Alloc.:\t" + (r.totalMemory() / MEGABYTE_SIZE) + " MB\n");
+        ps.print("  Max:  \t" + (r.maxMemory() / MEGABYTE_SIZE) + " MB\n");
     }
 
     /**
@@ -917,11 +907,11 @@ public class Tools {
         System.gc();
         ps.print("\nGarbage Collected (in MB):\n");
         int usedP = Math.round(100 * (r.totalMemory() - r.freeMemory()) / r.maxMemory());
-        ps.print("  Used:  " + usedP + "%\t" + (used / 1048576) + " -> "
-                + ((r.totalMemory() - r.freeMemory()) / 1048576) + "\n");
-        ps.print("  Free:  " + (100 - usedP) + "%\t" + (free / 1048576) + " -> " + (r.freeMemory() / 1048576) + "\n");
-        ps.print("  Total Alloc.:\t" + (total / 1048576) + " -> " + (r.totalMemory() / 1048576) + "\n");
-        ps.print("  Max:\t" + (max / 1048576) + " -> " + (r.maxMemory() / 1048576) + "\n");
+        ps.print("  Used:  " + usedP + "%\t" + (used / MEGABYTE_SIZE) + " -> "
+                + ((r.totalMemory() - r.freeMemory()) / MEGABYTE_SIZE) + "\n");
+        ps.print("  Free:  " + (100 - usedP) + "%\t" + (free / MEGABYTE_SIZE) + " -> " + (r.freeMemory() / MEGABYTE_SIZE) + "\n");
+        ps.print("  Total Alloc.:\t" + (total / MEGABYTE_SIZE) + " -> " + (r.totalMemory() / MEGABYTE_SIZE) + "\n");
+        ps.print("  Max:\t" + (max / MEGABYTE_SIZE) + " -> " + (r.maxMemory() / MEGABYTE_SIZE) + "\n");
     }
 
     /**

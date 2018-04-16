@@ -46,7 +46,6 @@ import org.jdom2.output.XMLOutputter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile;
-import sinalgo.exception.ResourceReadException;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.gui.helper.NonRegularGridLayout;
@@ -465,7 +464,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         LineNumberReader configFile;
         try {
             configFile = IOUtils.getProjectConfigurationAsReader(projectName);
-        } catch (ResourceReadException e) {
+        } catch (SinalgoFatalException e) {
             configFile = null;
         }
         if (configFile == null) {
@@ -487,9 +486,9 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                             + "<Document>\n  <Framework>...</Framework>\n  <Custom></Custom>\n</Document>");
                 }
             } catch (JDOMException e1) {
-                throw new SinalgoFatalException(e1.getMessage(), "Invalid configuration file:\n\n%s");
+                throw new SinalgoFatalException("Invalid configuration file:\n\n" + e1.getMessage());
             } catch (IOException e1) {
-                throw new SinalgoFatalException(e1.getMessage(), "Cannot open or read from configuration file:\n\n%s");
+                throw new SinalgoFatalException("Cannot open or read from configuration file:\n\n" + e1.getMessage());
             }
         }
 

@@ -7,6 +7,7 @@ import projects.sample3.nodes.timers.AntennaNeighborhoodClearTimer;
 import projects.sample3.nodes.timers.InviteMsgTimer;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
@@ -127,7 +128,7 @@ public class Antenna extends Node {
         try {
             radius = Configuration.getIntegerParameter("GeometricNodeCollection/rMax");
         } catch (CorruptConfigurationEntryException e) {
-            Tools.fatalError(e.getMessage());
+            throw new SinalgoFatalException(e.getMessage());
         }
     }
 
@@ -148,7 +149,7 @@ public class Antenna extends Node {
         try {
             this.defaultDrawingSizeInPixels = Configuration.getIntegerParameter("Antenna/Size");
         } catch (CorruptConfigurationEntryException e) {
-            Tools.fatalError(e.getMessage());
+            throw new SinalgoFatalException(e.getMessage());
         }
     }
 

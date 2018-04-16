@@ -140,8 +140,8 @@ public class Run {
 
             System.exit(0); // important, otherwise, this process does not terminate
         } catch (IOException | SecurityException | InterruptedException | IllegalArgumentException | UnsupportedOperationException e) {
-            throw new SinalgoFatalException(String.valueOf(command) + "\n\n" + e.getMessage(),
-                    "Failed to create the simulation process with the following command:\n%s");
+            throw new SinalgoFatalException(
+                    "Failed to create the simulation process with the following command:\n" + command + "\n\n" + e.getMessage());
         }
     }
 

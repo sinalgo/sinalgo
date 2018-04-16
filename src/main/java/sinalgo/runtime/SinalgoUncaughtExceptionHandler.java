@@ -65,12 +65,8 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
             fatalError("Sinalgo ran out of memory. (" + maxMem + " MB is not enough). \n"
                     + "To allow the VM to use more memory, modify the javaVMmaxMem entry of the config file.", e);
         } else if (e instanceof SinalgoFatalException) {
-            fatalError(String.format(
-                    Optional.ofNullable(((SinalgoFatalException) e).getFormat())
-                            .orElse(((SinalgoFatalException) e).getDefaultFormat())
-                            + (e.getCause() != null ? ":\n%s" : ""),
-                    e.getMessage(),
-                    (e.getCause() != null ? e.getCause().getCause() : "")), e);
+            fatalError(String.format("%s" + (e.getCause() != null ? ":\n%s" : ""),
+                    e.getMessage(), (e.getCause() != null ? e.getCause().getCause() : "")), e);
         }
 
         StringBuilder st = new StringBuilder("    ");

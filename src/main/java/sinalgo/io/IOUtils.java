@@ -1,11 +1,13 @@
 package sinalgo.io;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.DirectoryCreationException;
-import sinalgo.exception.FileReadException;
-import sinalgo.exception.ResourceReadException;
+import sinalgo.exception.SinalgoFatalException;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,13 +19,13 @@ public class IOUtils {
      * developer.</b> Creates a directory if it does not already exist.
      *
      * @param dir The directory path
-     * @throws DirectoryCreationException if the folder structure cannot be created
+     * @throws SinalgoFatalException if the folder structure cannot be created
      */
     public static void createDir(String dir) {
         try {
             Files.createDirectories(Paths.get(dir));
         } catch (IOException e) {
-            throw new DirectoryCreationException(dir, e);
+            throw new SinalgoFatalException("Failed to create the folder structure '" + dir + "'.", e);
         }
     }
 
@@ -35,7 +37,7 @@ public class IOUtils {
      * isn't, it loads the default from the resources.
      *
      * @param projectName The project's name
-     * @throws FileReadException if the file cannot be read
+     * @throws SinalgoFatalException if the file cannot be read
      */
     public static BufferedInputStream getProjectTempConfigurationAsStream(String projectName) {
         Path tempConfigFilePath = Paths.get(Configuration.APP_TMP_FOLDER + "/" + Configuration.USER_PROJECTS_DIR
@@ -44,7 +46,7 @@ public class IOUtils {
             try {
                 return new BufferedInputStream(Files.newInputStream(tempConfigFilePath));
             } catch (IOException e) {
-                throw new FileReadException(tempConfigFilePath.toString(), e);
+                throw new SinalgoFatalException("Failed to read temporary project configuration file '" + tempConfigFilePath + "'.", e);
             }
         }
         return getProjectConfigurationAsStream(projectName);
@@ -58,7 +60,7 @@ public class IOUtils {
      * isn't, it loads the default from the resources.
      *
      * @param projectName The project's name
-     * @throws FileReadException if the file cannot be read
+     * @throws SinalgoFatalException if the file cannot be read
      */
     public static LineNumberReader getProjectTempConfigurationAsReader(String projectName) {
         Path tempConfigFilePath = Paths.get(Configuration.APP_TMP_FOLDER + "/" + Configuration.USER_PROJECTS_DIR
@@ -67,7 +69,7 @@ public class IOUtils {
             try {
                 return new LineNumberReader(new InputStreamReader(Files.newInputStream(tempConfigFilePath)));
             } catch (IOException e) {
-                throw new FileReadException(tempConfigFilePath.toString(), e);
+                throw new SinalgoFatalException("Failed to read temporary project configuration file '" + tempConfigFilePath + "'.", e);
             }
         }
         return getProjectConfigurationAsReader(projectName);
@@ -80,7 +82,7 @@ public class IOUtils {
      * default from the resources.
      *
      * @param projectName The project's name
-     * @throws FileReadException if the file cannot be read
+     * @throws SinalgoFatalException if the file cannot be read
      */
     public static BufferedInputStream getProjectConfigurationAsStream(String projectName) {
         Path userConfigFilePath = Paths.get(Configuration.APP_CONFIG_DIR + "/" + Configuration.USER_PROJECTS_DIR
@@ -89,11 +91,15 @@ public class IOUtils {
             try {
                 return new BufferedInputStream(Files.newInputStream(userConfigFilePath));
             } catch (IOException e) {
-                throw new FileReadException(userConfigFilePath.toString(), e);
+                throw new SinalgoFatalException("Failed to read project configuration file '" + userConfigFilePath + "'.", e);
             }
         }
-        return getResourceAsStream(Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/"
-                + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
+        try {
+            return getResourceAsStream(Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/"
+                    + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
+        } catch (SinalgoFatalException e) {
+            throw new SinalgoFatalException("Failed to read the default configuration file for project '" + projectName + "''");
+        }
     }
 
     /**
@@ -103,7 +109,7 @@ public class IOUtils {
      * default from the resources.
      *
      * @param projectName The project's name
-     * @throws FileReadException if the file cannot be read
+     * @throws SinalgoFatalException if the file cannot be read
      */
     public static LineNumberReader getProjectConfigurationAsReader(String projectName) {
         Path userConfigFilePath = Paths.get(Configuration.APP_CONFIG_DIR + "/" + Configuration.USER_PROJECTS_DIR
@@ -112,11 +118,15 @@ public class IOUtils {
             try {
                 return new LineNumberReader(new InputStreamReader((Files.newInputStream(userConfigFilePath))));
             } catch (IOException e) {
-                throw new FileReadException(userConfigFilePath.toString(), e);
+                throw new SinalgoFatalException("Failed to read project configuration file '" + userConfigFilePath + "'.", e);
             }
         }
-        return getResourceAsReader(Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/"
-                + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
+        try {
+            return getResourceAsReader(Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/"
+                    + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
+        } catch (SinalgoFatalException e) {
+            throw new SinalgoFatalException("Failed to read the default configuration file for project '" + projectName + "''");
+        }
     }
 
     /**
@@ -124,13 +134,13 @@ public class IOUtils {
      * developer.</b> Loads a resource as a input stream.
      *
      * @param path The path to the resource file
-     * @throws ResourceReadException if the resource cannot be read
+     * @throws SinalgoFatalException if the resource cannot be read
      */
     public static BufferedInputStream getResourceAsStream(String path) {
         ClassLoader cldr = ClassLoader.getSystemClassLoader();
         InputStream resource = cldr.getResourceAsStream(path);
         if (resource == null) {
-            throw new ResourceReadException(path);
+            throw new SinalgoFatalException("Failed to read resource '" + path + "'.");
         }
         return new BufferedInputStream(resource);
     }
@@ -140,13 +150,13 @@ public class IOUtils {
      * developer.</b> Loads a resource as a line number reader.
      *
      * @param path The path to the resource file
-     * @throws ResourceReadException if the resource cannot be read
+     * @throws SinalgoFatalException if the resource cannot be read
      */
     public static LineNumberReader getResourceAsReader(String path) {
         ClassLoader cldr = ClassLoader.getSystemClassLoader();
         InputStream resource = cldr.getResourceAsStream(path);
         if (resource == null) {
-            throw new ResourceReadException(path);
+            throw new SinalgoFatalException("Failed to read resource '" + path + "'.");
         }
         return new LineNumberReader(new InputStreamReader(resource));
     }

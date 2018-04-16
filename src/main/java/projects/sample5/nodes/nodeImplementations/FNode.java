@@ -7,6 +7,7 @@ import projects.sample5.nodes.messages.PayloadMsg;
 import projects.sample5.nodes.timers.PayloadMessageTimer;
 import projects.sample5.nodes.timers.RetryFloodingTimer;
 import projects.sample5.nodes.timers.RetryPayloadMessageTimer;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
@@ -63,7 +64,7 @@ public class FNode extends Node {
         // The message delivery time must be constant, this allows the project
         // to easily predict the waiting times
         if (!(Tools.getMessageTransmissionModel() instanceof ConstantTime)) {
-            Tools.fatalError(
+            throw new SinalgoFatalException(
                     "This project requires that messages are sent with the ConstantTime MessageTransmissionModel.");
         }
     }

@@ -88,9 +88,9 @@ public class XMLParser {
             }
             String value = child.getAttributeValue("value");
             if (value == null) { // did not find
-                throw new SinalgoFatalException(fieldName,
+                throw new SinalgoFatalException(
                         "Error while parsing the configuration file: The entry " +
-                                "'%s' contains attributes, but none is called 'value'.");
+                                fieldName + "' contains attributes, but none is called 'value'.");
             }
             Configuration.setFrameworkConfigurationEntry(fieldName, value);
         }
@@ -148,10 +148,10 @@ public class XMLParser {
                 parseFrameworkConfig(framework);
                 parseCustom(custom, "");
             } catch (JDOMException e) {
-                throw new SinalgoFatalException(String.valueOf(reader), e, "Currupt XML configuration file (%s):\n%s");
+                throw new SinalgoFatalException("Currupt XML configuration file (" + reader + ").", e);
             } catch (IOException e) {
                 if (Global.useProject) {
-                    throw new SinalgoFatalException(String.valueOf(reader), e, "Cannot find the XML-configuration file (%s):\n%s");
+                    throw new SinalgoFatalException("Cannot find the XML-configuration file (" + reader + ").", e);
                 }
             }
         }

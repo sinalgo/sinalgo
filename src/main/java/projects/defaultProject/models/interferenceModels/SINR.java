@@ -38,6 +38,7 @@ package projects.defaultProject.models.interferenceModels;
 
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.models.InterferenceModel;
 import sinalgo.nodes.Position;
 import sinalgo.nodes.messages.Packet;
@@ -76,17 +77,17 @@ public class SINR extends InterferenceModel {
         try {
             alpha = Configuration.getIntegerParameter("SINR/alpha");
         } catch (CorruptConfigurationEntryException e) {
-            Tools.fatalError("The configuration entry SINR/alpha is not a valid double:\n\n" + e.getMessage());
+            throw new SinalgoFatalException("The configuration entry SINR/alpha is not a valid double:\n\n" + e.getMessage());
         }
         try {
             beta = Configuration.getDoubleParameter("SINR/beta");
         } catch (CorruptConfigurationEntryException e) {
-            Tools.fatalError("The configuration entry SINR/beta is not a valid double:\n\n" + e.getMessage());
+            throw new SinalgoFatalException("The configuration entry SINR/beta is not a valid double:\n\n" + e.getMessage());
         }
         try {
             ambientNoise = Configuration.getDoubleParameter("SINR/noise");
         } catch (CorruptConfigurationEntryException e) {
-            Tools.fatalError("The configuration entry SINR/noise is not a valid double:\n\n" + e.getMessage());
+            throw new SinalgoFatalException("The configuration entry SINR/noise is not a valid double:\n\n" + e.getMessage());
         }
     }
 
