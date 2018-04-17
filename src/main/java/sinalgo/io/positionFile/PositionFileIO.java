@@ -2,7 +2,7 @@ package sinalgo.io.positionFile;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.WrongConfigurationException;
+import sinalgo.exception.PositionFileException;
 import sinalgo.io.eps.Exporter.PositionFileFilter;
 import sinalgo.io.eps.Exporter.SingleFileFilter;
 import sinalgo.nodes.Node;
@@ -10,7 +10,12 @@ import sinalgo.nodes.Position;
 import sinalgo.tools.Tools;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.PrintStream;
 
 /**
  * @author rflury
@@ -130,15 +135,6 @@ public class PositionFileIO {
             }
         } catch (IOException e) {
             throw new PositionFileException(e.getMessage());
-        }
-    }
-
-    public static class PositionFileException extends WrongConfigurationException { // needs not be caught
-
-        private static final long serialVersionUID = -2584122313897498869L;
-
-        public PositionFileException(String msg) {
-            super(msg);
         }
     }
 }

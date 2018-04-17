@@ -36,8 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.helper;
 
+import sinalgo.exception.NotYetImplementedException;
 import sinalgo.gui.multiLineTooltip.MultiLineToolTipJTextField;
-import sinalgo.nodes.NotYetImplementedException;
 
 import javax.swing.*;
 import java.awt.*;

@@ -34,22 +34,22 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package sinalgo.runtime;
+package sinalgo.exception;
 
 /**
- * An exception that is thrown when the application was started in batch mode,
- * but some code expects it to be running in GUI mode.
+ * This Exception is thrown, if a user tried to send a message to a node, to
+ * which the source-node has no connection.
  */
-public class NotInGUIModeException extends Exception {
+public class NoConnectionException extends Exception {
 
-    private static final long serialVersionUID = 487157741357666251L;
+    private static final long serialVersionUID = 1023865317275420612L;
 
     /**
-     * Constructor.
+     * The constructor for the NoConnectionException class.
      *
-     * @param msg Exception message to be propagated.
+     * @param message The message for the Exception.
      */
-    public NotInGUIModeException(String msg) {
-        super(msg);
+    public NoConnectionException(String message) {
+        super(message);
     }
 }

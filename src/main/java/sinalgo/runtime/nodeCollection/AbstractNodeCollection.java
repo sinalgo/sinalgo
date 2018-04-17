@@ -60,7 +60,7 @@ import java.util.Vector;
  * initialized after the node has been added to the node collection by calling
  * the addNode() method.
  */
-public abstract class NodeCollectionInterface implements Iterable<Node> {
+public abstract class AbstractNodeCollection implements Iterable<Node> {
 
     /**
      * This method returns an enumeration over all the nodes.

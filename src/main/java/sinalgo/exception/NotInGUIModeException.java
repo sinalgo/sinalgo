@@ -34,22 +34,22 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package sinalgo.nodes;
+package sinalgo.exception;
 
 /**
- * The exception that is thrown when a method is called that is not yet
- * implemented.
+ * An exception that is thrown when the application was started in batch mode,
+ * but some code expects it to be running in GUI mode.
  */
-public class NotYetImplementedException extends RuntimeException {
+public class NotInGUIModeException extends Exception {
 
-    private static final long serialVersionUID = -3878647966455920675L;
+    private static final long serialVersionUID = 487157741357666251L;
 
     /**
-     * The one and only constructor of this Exception.
+     * Constructor.
      *
-     * @param s The message this exception has to be constructed for.
+     * @param msg Exception message to be propagated.
      */
-    public NotYetImplementedException(String s) {
-        super(s);
+    public NotInGUIModeException(String msg) {
+        super(msg);
     }
 }

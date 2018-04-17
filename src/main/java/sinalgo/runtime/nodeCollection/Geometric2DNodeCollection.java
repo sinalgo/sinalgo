@@ -50,7 +50,7 @@ import java.util.Vector;
  * The class to save the nodes depending on their position. They are stored in a
  * grid. Like this the possible neighbors can fast and easy be discovered.
  */
-public class Geometric2DNodeCollection extends NodeCollectionInterface {
+public class Geometric2DNodeCollection extends AbstractNodeCollection {
 
     // the dimension of the array. This means how many squares with sidelength rMax
     // are needed to

@@ -38,9 +38,9 @@ package projects.defaultProject.models.connectivityModels;
 
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
+import sinalgo.exception.NotYetImplementedException;
 import sinalgo.models.ConnectivityModelHelper;
 import sinalgo.nodes.Node;
-import sinalgo.nodes.NotYetImplementedException;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
 import sinalgo.tools.statistics.Distribution;

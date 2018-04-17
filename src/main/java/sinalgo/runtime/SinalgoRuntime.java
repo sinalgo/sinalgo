@@ -38,6 +38,7 @@ package sinalgo.runtime;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.NotInGUIModeException;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.exception.WrongConfigurationException;
@@ -52,7 +53,7 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.runtime.events.Event;
 import sinalgo.runtime.events.EventQueue;
-import sinalgo.runtime.nodeCollection.NodeCollectionInterface;
+import sinalgo.runtime.nodeCollection.AbstractNodeCollection;
 import sinalgo.runtime.packetsInTheAir.PacketsInTheAirBuffer;
 import sinalgo.tools.Tools;
 import sinalgo.tools.Tuple;
@@ -74,7 +75,7 @@ public abstract class SinalgoRuntime {
      * The collection of nodes stored in a slever way to fast retrieve the possible
      * neighbors.
      */
-    public static NodeCollectionInterface nodes = createNewNodeCollection();
+    public static AbstractNodeCollection nodes = createNewNodeCollection();
 
     /**
      * The datastructure for all the messages, that are in the air in this moment.
@@ -460,9 +461,9 @@ public abstract class SinalgoRuntime {
      * collection by a new one, you should ensure that the existing node collection
      * does not contain any nodes anymore, such that they are recycled correctly.
      */
-    private static NodeCollectionInterface createNewNodeCollection() {
+    private static AbstractNodeCollection createNewNodeCollection() {
         // load the node collection specified in the config file
-        NodeCollectionInterface result = null;
+        AbstractNodeCollection result = null;
         String name = null;
         if (Configuration.dimensions == 2) {
             name = Configuration.nodeCollection2D;
@@ -475,7 +476,7 @@ public abstract class SinalgoRuntime {
         try {
             Class<?> c = Class.forName(name);
             Constructor<?> cons = c.getConstructor();
-            result = (NodeCollectionInterface) cons.newInstance();
+            result = (AbstractNodeCollection) cons.newInstance();
         } catch (ClassNotFoundException e) {
             throw new SinalgoFatalException("Cannot find the class " + name
                     + " which contains the implementation for the node collection. Please check the nodeCollection field in the config file.");

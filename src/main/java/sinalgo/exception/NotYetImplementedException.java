@@ -34,19 +34,22 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package sinalgo.gui.multiLineTooltip;
-
-import javax.swing.*;
+package sinalgo.exception;
 
 /**
- * A JList having a Tooltip which can have more than one line.
+ * The exception that is thrown when a method is called that is not yet
+ * implemented.
  */
-public class MultilineToolTipJList extends JList {
+public class NotYetImplementedException extends RuntimeException {
 
-    private static final long serialVersionUID = -1778917939929406346L;
+    private static final long serialVersionUID = -3878647966455920675L;
 
-    @Override
-    public JToolTip createToolTip() {
-        return new MultiLineToolTip();
+    /**
+     * The one and only constructor of this Exception.
+     *
+     * @param s The message this exception has to be constructed for.
+     */
+    public NotYetImplementedException(String s) {
+        super(s);
     }
 }

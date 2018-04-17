@@ -42,7 +42,7 @@ import sinalgo.gui.GUI;
 import sinalgo.gui.helper.MultiLineFlowLayout;
 import sinalgo.gui.helper.NonRegularGridLayout;
 import sinalgo.gui.multiLineTooltip.MultiLineToolTip;
-import sinalgo.gui.multiLineTooltip.MultilineToolTipJList;
+import sinalgo.gui.multiLineTooltip.MultiLineToolTipJList;
 import sinalgo.gui.popups.EventPopupMenu;
 import sinalgo.gui.transformation.Transformation3D;
 import sinalgo.runtime.Global;
@@ -337,7 +337,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
             events.setLayout(new BorderLayout());
 
             String[] elements = {currentEventString};
-            eventJList = new MultilineToolTipJList();
+            eventJList = new MultiLineToolTipJList();
             eventJList.setListData(elements);
             eventJList.setToolTipText(
                     "The last Event that has been executed.\nDouble click the event to get more information.");

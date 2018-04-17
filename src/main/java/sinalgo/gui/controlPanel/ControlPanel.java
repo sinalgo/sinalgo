@@ -40,7 +40,7 @@ import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.GUI;
-import sinalgo.gui.multiLineTooltip.MultilineToolTipJList;
+import sinalgo.gui.multiLineTooltip.MultiLineToolTipJList;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.gui.transformation.Transformation3D;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -85,7 +85,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     protected JTextField mousePositionField = new JTextField(8);
     protected JPanel info = new JPanel();
 
-    protected MultilineToolTipJList eventJList = new MultilineToolTipJList();
+    protected MultiLineToolTipJList eventJList = new MultiLineToolTipJList();
     protected static String currentEventString = "No event";
     protected static String currentEventToolTip = "No event executed until now.";
 

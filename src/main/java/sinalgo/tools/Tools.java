@@ -37,6 +37,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.tools;
 
 import sinalgo.configuration.Configuration;
+import sinalgo.exception.NotInBatchModeException;
+import sinalgo.exception.NotInGUIModeException;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.exception.WrongConfigurationException;
@@ -45,17 +47,29 @@ import sinalgo.gui.GraphPanel;
 import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.mapIO.Map;
-import sinalgo.models.*;
+import sinalgo.models.ConnectivityModel;
+import sinalgo.models.DistributionModel;
+import sinalgo.models.InterferenceModel;
+import sinalgo.models.MessageTransmissionModel;
+import sinalgo.models.MobilityModel;
+import sinalgo.models.Model;
+import sinalgo.models.ModelType;
+import sinalgo.models.ReliabilityModel;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.edges.EdgePool;
 import sinalgo.nodes.messages.Packet;
-import sinalgo.runtime.*;
+import sinalgo.runtime.AbstractCustomGlobal;
+import sinalgo.runtime.BatchRuntime;
+import sinalgo.runtime.GUIRuntime;
+import sinalgo.runtime.Global;
+import sinalgo.runtime.Main;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.runtime.events.EventQueue;
 import sinalgo.runtime.events.PacketEvent;
 import sinalgo.runtime.events.TimerEvent;
-import sinalgo.runtime.nodeCollection.NodeCollectionInterface;
+import sinalgo.runtime.nodeCollection.AbstractNodeCollection;
 import sinalgo.runtime.packetsInTheAir.PacketsInTheAirBuffer;
 import sinalgo.tools.logging.Logging;
 import sinalgo.tools.statistics.Distribution;
@@ -361,7 +375,7 @@ public class Tools {
     /**
      * @return A list of all nodes currently added to the framework.
      */
-    public static NodeCollectionInterface getNodeList() {
+    public static AbstractNodeCollection getNodeList() {
         return SinalgoRuntime.nodes;
     }
 

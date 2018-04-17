@@ -34,31 +34,19 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package sinalgo.tools.storage;
+package sinalgo.gui.multiLineTooltip;
+
+import javax.swing.*;
 
 /**
- * Thrown by the linked list implementation upon failure.
+ * A JList having a Tooltip which can have more than one line.
  */
-public class DoublyLinkedListErrorException extends Exception {
+public class MultiLineToolTipJList extends JList {
 
-    private static final long serialVersionUID = -6354233490716531606L;
+    private static final long serialVersionUID = -1778917939929406346L;
 
-    /**
-     * Thrown by the linked list implementation upon failure.
-     *
-     * @param msg Description of the reason for this exception.
-     */
-    public DoublyLinkedListErrorException(String msg) {
-        super(msg);
-    }
-
-    /**
-     * Thrown by the linked list implementation upon failure.
-     *
-     * @param msg Description of the reason for this exception.
-     * @param e   The reason / causing exception for this exception
-     */
-    public DoublyLinkedListErrorException(String msg, Throwable e) {
-        super(msg, e);
+    @Override
+    public JToolTip createToolTip() {
+        return new MultiLineToolTip();
     }
 }

@@ -34,22 +34,23 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package sinalgo.io.eps;
+package sinalgo.exception;
 
 /**
- * This is the exception that is thrown when an error happend during the export
- * process.
+ * An exception that is thrown when the application was started in gui mode, but
+ * some code expects it to be running in batch mode.
  */
-public class ExportException extends Exception {
+public class NotInBatchModeException extends Exception {
 
-    private static final long serialVersionUID = -7301338592343472510L;
+    private static final long serialVersionUID = 6663694293740915780L;
 
     /**
-     * Creates a ExportException with the given message.
+     * Constructor.
      *
-     * @param message The message
+     * @param msg Exception message to be propagated.
      */
-    public ExportException(String message) {
-        super(message);
+    public NotInBatchModeException(String msg) {
+        super(msg);
     }
+
 }

@@ -45,7 +45,11 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * This 3D node collection implementation stores nodes placed in a 3 dimensional
@@ -56,7 +60,7 @@ import java.util.*;
  * of potentail neighbors of a node, given the position of the node by returning
  * the matrix cells adjacent to the cell containing the node.
  */
-public class Geometric3DNodeCollection extends NodeCollectionInterface {
+public class Geometric3DNodeCollection extends AbstractNodeCollection {
 
     private int numX, numY, numZ; // cardinality of matrix in each dimension
 

@@ -34,22 +34,31 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package sinalgo.nodes;
+package sinalgo.exception;
 
 /**
- * This Exception is thrown, if a user tried to send a message to a node, to
- * which the source-node has no connection.
+ * Thrown by the linked list implementation upon failure.
  */
-public class NoConnectionException extends Exception {
+public class DoublyLinkedListErrorException extends Exception {
 
-    private static final long serialVersionUID = 1023865317275420612L;
+    private static final long serialVersionUID = -6354233490716531606L;
 
     /**
-     * The constructor for the NoConnectionException class.
+     * Thrown by the linked list implementation upon failure.
      *
-     * @param message The message for the Exception.
+     * @param msg Description of the reason for this exception.
      */
-    public NoConnectionException(String message) {
-        super(message);
+    public DoublyLinkedListErrorException(String msg) {
+        super(msg);
+    }
+
+    /**
+     * Thrown by the linked list implementation upon failure.
+     *
+     * @param msg Description of the reason for this exception.
+     * @param e   The reason / causing exception for this exception
+     */
+    public DoublyLinkedListErrorException(String msg, Throwable e) {
+        super(msg, e);
     }
 }
