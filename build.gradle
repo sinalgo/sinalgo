@@ -77,5 +77,18 @@ task wrapper(type: Wrapper) {
 }
 
 processResources {
-    from 'VERSION'
+    with copySpec {
+        from 'VERSION'
+    }
+
+    with copySpec {
+        from 'icon/sinalgo_512.png'
+        rename { 'sinalgo.png' }
+        into 'sinalgo/images'
+    }
+
+    with copySpec {
+        from 'icon/sinalgo_21.png'
+        into 'sinalgo/images'
+    }
 }

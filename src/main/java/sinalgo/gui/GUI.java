@@ -119,7 +119,7 @@ public class GUI extends JFrame implements ActionListener {
         settingsMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_S);
         aboutMenuItem.addActionListener(this);
         aboutMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_A);
-        aboutMenuItem.setIcon(GuiHelper.getIcon("appIcon21.gif"));
+        aboutMenuItem.setIcon(GuiHelper.getIcon("sinalgo_21.png"));
         helpMenuItem.addActionListener(this);
         helpMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_H);
         helpMenuItem.setIcon(GuiHelper.getIcon("helpSmall.gif"));
@@ -142,6 +142,12 @@ public class GUI extends JFrame implements ActionListener {
         viewZoomFitMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_T);
         viewZoomFitMenuItem.setIcon(GuiHelper.getIcon("zoomtofit.gif"));
         viewZoomFitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException
+                | IllegalAccessException | InstantiationException ignore) {
+        }
 
         runtime = r;
     }

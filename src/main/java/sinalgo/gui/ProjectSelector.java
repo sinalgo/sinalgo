@@ -338,6 +338,12 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
             generateGUIGonfiguration(selectedProjectName);
         }
 
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException
+                | IllegalAccessException | InstantiationException ignore) {
+        }
+
         this.add(right, BorderLayout.CENTER);
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
