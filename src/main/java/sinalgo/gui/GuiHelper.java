@@ -10,7 +10,7 @@ public class GuiHelper {
 
     public static ImageIcon getIcon(String fileName) {
         ClassLoader cldr = ClassLoader.getSystemClassLoader();
-        URL url = cldr.getResource(Configuration.IMAGE_DIR + "/" + fileName);
+        URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + fileName);
         if (url != null) {
             return new ImageIcon(url);
         }
@@ -25,7 +25,7 @@ public class GuiHelper {
     public static void setWindowIcon(JFrame frame) {
         // set the icon
         ClassLoader cldr = frame.getClass().getClassLoader();
-        URL url = cldr.getResource(Configuration.IMAGE_DIR + "/" + "sinalgo.png");
+        URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + "sinalgo.png");
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
             frame.setIconImage(ii.getImage());
@@ -39,7 +39,7 @@ public class GuiHelper {
      */
     public static void setWindowIcon(Window w) {
         ClassLoader cldr = w.getClass().getClassLoader();
-        URL url = cldr.getResource(Configuration.IMAGE_DIR + "/" + "sinalgo.png");
+        URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + "sinalgo.png");
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
             if (w instanceof JFrame) { // TODO: only Java >= 6.0 supports Window.setIconImage()

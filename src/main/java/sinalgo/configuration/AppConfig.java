@@ -127,13 +127,13 @@ public class AppConfig {
      * Singleton constructor
      */
     private AppConfig() {
-        Path configFilePath = Paths.get(Configuration.APP_CONFIG_DIR, configFileName);
+        Path configFilePath = Paths.get(Configuration.appConfigDir, configFileName);
         InputStream configInputStream;
         try {
             configInputStream = Files.newInputStream(configFilePath);
         } catch (Exception e) {
             ClassLoader cldr = getClass().getClassLoader();
-            configInputStream = cldr.getResourceAsStream(Configuration.SINALGO_RESOURCE_DIR_PREFIX + "/" + configFileName);
+            configInputStream = cldr.getResourceAsStream(Configuration.sinalgoResourceDirPrefix + "/" + configFileName);
         }
 
         if (configInputStream == null) {
@@ -355,7 +355,7 @@ public class AppConfig {
      * Writes the application wide config
      */
     public void writeConfig() {
-        String dir = Configuration.APP_CONFIG_DIR;
+        String dir = Configuration.appConfigDir;
         if (!Objects.equals("", dir)) {
             IOUtils.createDir(dir);
         }
@@ -414,7 +414,7 @@ public class AppConfig {
         outputter.setFormat(f);
 
         try {
-            FileWriter fW = new FileWriter(new File(Configuration.APP_CONFIG_DIR + "/" + configFileName));
+            FileWriter fW = new FileWriter(new File(Configuration.appConfigDir + "/" + configFileName));
             outputter.output(doc, fW);
         } catch (IOException ignored) {
         }

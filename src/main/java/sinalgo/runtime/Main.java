@@ -38,11 +38,7 @@ package sinalgo.runtime;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.NotInBatchModeException;
-import sinalgo.exception.NotInGUIModeException;
-import sinalgo.exception.SinalgoFatalException;
-import sinalgo.exception.SinalgoWrappedException;
-import sinalgo.exception.WrongConfigurationException;
+import sinalgo.exception.*;
 import sinalgo.gui.GUI;
 import sinalgo.gui.ProjectSelector;
 import sinalgo.io.IOUtils;
@@ -131,11 +127,11 @@ public class Main {
         // initialize the chosen runtime system
         if (guiBatch <= 1) { // GUI MODE
             Global.isGuiMode = true;
-            Global.log.logln(LogL.ALWAYS, "> Starting " + Configuration.APP_NAME + " in GUI-Mode"
+            Global.log.logln(LogL.ALWAYS, "> Starting " + Configuration.appName + " in GUI-Mode"
                     + (Global.useProject ? " for project " + Global.projectName + "." : "."));
             runtime = new GUIRuntime();
         } else { // BATCH MODE
-            Global.log.log(LogL.ALWAYS, "> Starting " + Configuration.APP_NAME + " in BATCH-Mode"
+            Global.log.log(LogL.ALWAYS, "> Starting " + Configuration.appName + " in BATCH-Mode"
                     + (Global.useProject ? " for project " + Global.projectName + "." : "."));
             runtime = new BatchRuntime();
         }

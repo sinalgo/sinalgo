@@ -150,9 +150,9 @@ public class Global {
      */
     public static String getProjectResourceDir() {
         if (useProject) {
-            return Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/" + projectName;
+            return Configuration.projectResourceDirPrefix + "/" + projectName;
         } else {
-            return Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/" + Configuration.DEFAULT_PROJECT_NAME;
+            return Configuration.projectResourceDirPrefix + "/" + Configuration.defaultProjectName;
         }
     }
 
@@ -161,10 +161,10 @@ public class Global {
 //     */
 //    public static String getProjectSrcDir() {
 //        if (useProject) {
-//            return Configuration.SOURCE_DIR_PREFIX + "/" + Configuration.USER_PROJECTS_PATH.replace('.', '/') + "/"
+//            return Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPackage.replace('.', '/') + "/"
 //                    + projectName;
 //        } else {
-//            return Configuration.SOURCE_DIR_PREFIX + "/" + Configuration.DEFAULT_PROJECT_PATH.replace('.', '/');
+//            return Configuration.sourceDirPrefix + "/" + Configuration.defaultProjectPackage.replace('.', '/');
 //        }
 //    }
 
@@ -172,7 +172,7 @@ public class Global {
      * @return The currently used project.
      */
     public static String getProjecName() {
-        return useProject ? projectName : Configuration.DEFAULT_PROJECT_NAME;
+        return useProject ? projectName : Configuration.defaultProjectName;
     }
 
     /**
@@ -180,10 +180,10 @@ public class Global {
      */
     public static String getProjecTempDir() {
         if (useProject) {
-            return Configuration.APP_TMP_FOLDER + "/" + Configuration.USER_PROJECTS_PATH.replace('.', '/') + "/"
+            return Configuration.appTmpFolder + "/" + Configuration.userProjectsPackage.replace('.', '/') + "/"
                     + projectName;
         } else {
-            return Configuration.APP_TMP_FOLDER + "/" + Configuration.DEFAULT_PROJECT_PATH.replace('.', '/');
+            return Configuration.appTmpFolder + "/" + Configuration.defaultProjectPackage.replace('.', '/');
         }
     }
 
@@ -192,10 +192,10 @@ public class Global {
      */
     public static String getProjectConfigDir() {
         if (useProject) {
-            return Configuration.APP_CONFIG_DIR + "/" + Configuration.USER_PROJECTS_PATH.replace('.', '/') + "/"
+            return Configuration.appConfigDir + "/" + Configuration.userProjectsPackage.replace('.', '/') + "/"
                     + projectName;
         } else {
-            return Configuration.APP_CONFIG_DIR + "/" + Configuration.DEFAULT_PROJECT_PATH.replace('.', '/');
+            return Configuration.appConfigDir + "/" + Configuration.defaultProjectPackage.replace('.', '/');
         }
     }
 
@@ -204,9 +204,9 @@ public class Global {
      */
     public static String getProjectBinPath() {
         if (useProject) {
-            return Configuration.USER_PROJECTS_PATH + "." + projectName;
+            return Configuration.userProjectsPackage + "." + projectName;
         } else {
-            return Configuration.DEFAULT_PROJECT_PATH;
+            return Configuration.defaultProjectPackage;
         }
     }
 
@@ -247,21 +247,21 @@ public class Global {
         }
         if (allProjects) {
             // default project before the user implementations
-            includeDirForImplementations(Configuration.BINARY_DIR + "/" + Configuration.DEFAULT_PROJECT_DIR + "/" + subDir,
+            includeDirForImplementations(Configuration.binaryDir + "/" + Configuration.defaultProjectDir + "/" + subDir,
                     "defaultProject", result);
             for (String projectName : ProjectSelector.getAllProjectNames()) {
                 includeDirForImplementations(
-                        Configuration.BINARY_DIR + "/" + Configuration.USER_PROJECTS_DIR + "/" + projectName + "/" + subDir,
+                        Configuration.binaryDir + "/" + Configuration.userProjectsDir + "/" + projectName + "/" + subDir,
                         projectName, result);
             }
         } else {
             if (useProject) {
                 includeDirForImplementations(
-                        Configuration.BINARY_DIR + "/" + Configuration.USER_PROJECTS_DIR + "/" + projectName + "/" + subDir,
+                        Configuration.binaryDir + "/" + Configuration.userProjectsDir + "/" + projectName + "/" + subDir,
                         projectName, result);
             }
             // default project after the user implementations
-            includeDirForImplementations(Configuration.BINARY_DIR + "/" + Configuration.DEFAULT_PROJECT_DIR + "/" + subDir,
+            includeDirForImplementations(Configuration.binaryDir + "/" + Configuration.defaultProjectDir + "/" + subDir,
                     "defaultProject", result);
         }
         return result;

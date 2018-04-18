@@ -613,9 +613,9 @@ public class Configuration {
             edgeType = "sinalgo.nodes.edges.BidirectionalEdge";
         } else if (selectedType.contains(":")) { // edge specification of the form project:edgeName
             String[] modelParts = selectedType.split(":");
-            edgeType = Configuration.USER_PROJECTS_PATH + "." + modelParts[0] + ".nodes.edges." + modelParts[1];
+            edgeType = Configuration.userProjectsPackage + "." + modelParts[0] + ".nodes.edges." + modelParts[1];
         } else if (!selectedType.contains(".")) { // just the name of an edge (without '.') -> from the default project
-            edgeType = Configuration.DEFAULT_PROJECT_PATH + ".nodes.edges." + selectedType;
+            edgeType = Configuration.defaultProjectPackage + ".nodes.edges." + selectedType;
         } else { // the edge is given already in explicit form
             edgeType = selectedType;
             edgeTypeShortName = Global.toShortName(edgeType);
@@ -889,21 +889,21 @@ public class Configuration {
     /**
      * The name of this application.
      */
-    public final static String APP_NAME = "Sinalgo";
+    public static String appName = "Sinalgo";
 
     /**
      * The folder where configurations, logs, etc. will be stored.
      */
-    public final static String APP_CONFIG_DIR = System.getProperty("user.home", "") + "/." + APP_NAME.toLowerCase();
+    public static String appConfigDir = System.getProperty("user.home", "") + "/." + appName.toLowerCase();
 
     /**
      * The folder where the temporary files are generated
      */
-    public final static String APP_TMP_FOLDER = getTemporaryFolder();
+    public static String appTmpFolder = getTemporaryFolder();
 
     private static String getTemporaryFolder() {
         try {
-            return Files.createTempDirectory(APP_NAME.toLowerCase()).toString().replace(File.separatorChar, '/');
+            return Files.createTempDirectory(appName.toLowerCase()).toString().replace(File.separatorChar, '/');
         } catch (Exception e) {
             throw new SinalgoFatalException("Could not create a temporary working directory:\n\n" + e);
         }
@@ -912,82 +912,78 @@ public class Configuration {
     /**
      * The directory where the logfiles are stored.
      */
-    public static final String LOG_FILE_DIRECTORY = APP_CONFIG_DIR + "/logs";
-
-    /**
-     * The default project's name
-     */
-    public static final String DEFAULT_PROJECT_NAME = "defaultProject";
-
-    /**
-     * The path where the default project is stored.
-     */
-    public static final String DEFAULT_PROJECT_PATH = "projects." + DEFAULT_PROJECT_NAME;
-
-    /**
-     * The directory where the default project is stored.
-     */
-    public static final String DEFAULT_PROJECT_DIR = DEFAULT_PROJECT_PATH.replace(".", "/");
-
-    /**
-     * The path where user-specific projects are stored. This path has to be
-     * postfixed with the users project name.
-     */
-    public static final String USER_PROJECTS_PATH = "projects";
+    public static String logFileDirectory = appConfigDir + "/logs";
 
     /**
      * The directory where user-specific projects are stored. This path has to be
      * postfixed with the users project name.
      */
-    public static final String USER_PROJECTS_DIR = "projects";
+    public static String userProjectsDir = "projects";
+
+    /**
+     * The path where user-specific projects are stored. This path has to be
+     * postfixed with the users project name.
+     */
+    public static String userProjectsPackage = userProjectsDir;
+
+    /**
+     * The default project's name
+     */
+    public static String defaultProjectName = "defaultProject";
+
+    /**
+     * The directory where the default project is stored.
+     */
+    public static String defaultProjectDir = userProjectsPackage + "." + defaultProjectName;
+
+    /**
+     * The path where the default project is stored.
+     */
+    public static String defaultProjectPackage = defaultProjectDir.replace("/", ".");
+    ;
 
     /**
      * The directory where the source tree starts.
      */
-    public static final String SOURCE_DIR_PREFIX = "src/main/java";
-
-    /**
-     * The directory where the resources for sinalgo are stored;
-     */
-    public static final String SINALGO_RESOURCE_DIR_PREFIX = "sinalgo";
-
-    /**
-     * The directory where the project tree starts in the source dir.
-     */
-    public static final String PROJECT_DIR_IN_SOURCE_FOLDER = "projects";
-
-    /**
-     * The name of the description file in the project folder.
-     */
-    public static final String DESCRIPTION_FILE_NAME = "description.txt";
-
-    /**
-     * The name of the description file in the project folder.
-     */
-    public static final String CONFIGFILE_FILE_NAME = "Config.xml";
+    public static String sourceDirPrefix = "src/main/java";
 
     /**
      * The directory where the class files are located.
      */
-    public static final String BINARY_DIR = "build/classes/java/main";
+    public static String binaryDir = "build/classes/java/main";
+
+    /**
+     * The name of the description file in the project folder.
+     */
+    public static String descriptionFileName = "description.txt";
+
+    /**
+     * The name of the description file in the project folder.
+     */
+    public static String configfileFileName = "Config.xml";
+
+    /**
+     * The directory where the resources for sinalgo are stored;
+     */
+    public static String sinalgoResourceDirPrefix = "sinalgo";
 
     /**
      * The directory where the images are stored. Remember to use the
      * ClassLoader.getResource() method to map the file name to a url, such that the
      * images can be accessed when they are stored in a jar file.
      */
-    public static final String IMAGE_DIR = SINALGO_RESOURCE_DIR_PREFIX + "/images";
+    public static String sinalgoImageDir = sinalgoResourceDirPrefix + "/images";
 
     /**
      * The directory where the resources for the projects are stored
      */
-    public static final String PROJECT_RESOURCE_DIR_PREFIX = USER_PROJECTS_DIR;
+    public static String projectResourceDirPrefix = userProjectsDir;
 
     /**
      * A semicolon separated list of folder-names that should not be considered as
      * user-projects
      */
-    public static final String NON_USER_PROJECT_DIR_NAMES = "defaultProject;template";
+    public static String nonUserProjectDirNames = "defaultProject;template";
 
     /**
      * Assigns a value to the configuration file. This method should only be called

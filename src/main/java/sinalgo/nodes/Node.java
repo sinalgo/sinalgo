@@ -43,18 +43,10 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
-import sinalgo.models.ConnectivityModel;
-import sinalgo.models.InterferenceModel;
-import sinalgo.models.MobilityModel;
-import sinalgo.models.Model;
-import sinalgo.models.ReliabilityModel;
+import sinalgo.models.*;
 import sinalgo.nodes.edges.Edge;
-import sinalgo.nodes.messages.Inbox;
-import sinalgo.nodes.messages.Message;
-import sinalgo.nodes.messages.NackBox;
-import sinalgo.nodes.messages.Packet;
+import sinalgo.nodes.messages.*;
 import sinalgo.nodes.messages.Packet.PacketType;
-import sinalgo.nodes.messages.PacketCollection;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.runtime.GUIRuntime;
 import sinalgo.runtime.Global;
@@ -1512,10 +1504,10 @@ public abstract class Node implements DoublyLinkedListEntry {
         if (!classPath.contains(".")) { // is a relative path
             if (classPath.contains(":")) { // project implementation
                 String[] splitter = classPath.split(":");
-                classPath = Configuration.USER_PROJECTS_PATH + "." + splitter[0] + ".nodes.nodeImplementations."
+                classPath = Configuration.userProjectsPackage + "." + splitter[0] + ".nodes.nodeImplementations."
                         + splitter[1];
             } else {
-                classPath = Configuration.DEFAULT_PROJECT_PATH + ".nodes.nodeImplementations." + classPath;
+                classPath = Configuration.defaultProjectPackage + ".nodes.nodeImplementations." + classPath;
             }
         }
 

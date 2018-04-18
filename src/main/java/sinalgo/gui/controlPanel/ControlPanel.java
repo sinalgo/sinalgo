@@ -139,7 +139,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      *
      * @param actionCommand Name of the action that is performed when this button is pressed
      * @param imageName     The name of the image file, which is stored in the directory
-     *                      specified by Configuration.IMAGE_DIR
+     *                      specified by Configuration.sinalgoImageDir
      * @param toolTip       Tooltip text to be shown for this button
      * @return A new JButton with an icon
      */
@@ -148,12 +148,12 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         ClassLoader cldr = this.getClass().getClassLoader();
         JButton b;
         try {
-            URL url = cldr.getResource(Configuration.IMAGE_DIR + "/" + imageName);
+            URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + imageName);
             ImageIcon icon = new ImageIcon(url);
             b = new JButton(icon);
         } catch (NullPointerException e) {
             throw new SinalgoFatalException("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + Configuration.IMAGE_DIR + "/" + imageName + ".");
+                    + Configuration.sinalgoImageDir + "/" + imageName + ".");
         }
         b.setPreferredSize(new Dimension(29, 29));
         return finishButton(b, actionCommand, toolTip);
@@ -163,11 +163,11 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         // To support jar files, we cannot access the file directly
         ClassLoader cldr = this.getClass().getClassLoader();
         try {
-            URL url = cldr.getResource(Configuration.IMAGE_DIR + "/" + imageName);
+            URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + imageName);
             return new ImageIcon(url);
         } catch (NullPointerException e) {
             throw new SinalgoFatalException("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + Configuration.IMAGE_DIR + "/" + imageName + ".");
+                    + Configuration.sinalgoImageDir + "/" + imageName + ".");
         }
     }
 
@@ -177,7 +177,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      *
      * @param actionCommand Name of the action that is performed when this button is pressed
      * @param imageName     The name of the image file, which is stored in the directory
-     *                      specified by Configuration.IMAGE_DIR
+     *                      specified by Configuration.sinalgoImageDir
      * @param toolTip       Tooltip text to be shown for this button
      * @return A new JButton with an icon
      */

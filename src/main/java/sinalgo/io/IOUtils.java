@@ -3,11 +3,7 @@ package sinalgo.io;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoFatalException;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,8 +36,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static BufferedInputStream getProjectTempConfigurationAsStream(String projectName) {
-        Path tempConfigFilePath = Paths.get(Configuration.APP_TMP_FOLDER + "/" + Configuration.USER_PROJECTS_DIR
-                + "/" + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME + ".run");
+        Path tempConfigFilePath = Paths.get(Configuration.appTmpFolder + "/" + Configuration.userProjectsDir
+                + "/" + projectName + "/" + Configuration.configfileFileName + ".run");
         if (Files.isReadable(tempConfigFilePath)) {
             try {
                 return new BufferedInputStream(Files.newInputStream(tempConfigFilePath));
@@ -63,8 +59,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static LineNumberReader getProjectTempConfigurationAsReader(String projectName) {
-        Path tempConfigFilePath = Paths.get(Configuration.APP_TMP_FOLDER + "/" + Configuration.USER_PROJECTS_DIR
-                + "/" + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME + ".run");
+        Path tempConfigFilePath = Paths.get(Configuration.appTmpFolder + "/" + Configuration.userProjectsDir
+                + "/" + projectName + "/" + Configuration.configfileFileName + ".run");
         if (Files.isReadable(tempConfigFilePath)) {
             try {
                 return new LineNumberReader(new InputStreamReader(Files.newInputStream(tempConfigFilePath)));
@@ -85,8 +81,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static BufferedInputStream getProjectConfigurationAsStream(String projectName) {
-        Path userConfigFilePath = Paths.get(Configuration.APP_CONFIG_DIR + "/" + Configuration.USER_PROJECTS_DIR
-                + "/" + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
+        Path userConfigFilePath = Paths.get(Configuration.appConfigDir + "/" + Configuration.userProjectsDir
+                + "/" + projectName + "/" + Configuration.configfileFileName);
         if (Files.isReadable(userConfigFilePath)) {
             try {
                 return new BufferedInputStream(Files.newInputStream(userConfigFilePath));
@@ -95,8 +91,8 @@ public class IOUtils {
             }
         }
         try {
-            return getResourceAsStream(Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/"
-                    + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
+            return getResourceAsStream(Configuration.projectResourceDirPrefix + "/"
+                    + projectName + "/" + Configuration.configfileFileName);
         } catch (SinalgoFatalException e) {
             throw new SinalgoFatalException("Failed to read the default configuration file for project '" + projectName + "''");
         }
@@ -112,8 +108,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static LineNumberReader getProjectConfigurationAsReader(String projectName) {
-        Path userConfigFilePath = Paths.get(Configuration.APP_CONFIG_DIR + "/" + Configuration.USER_PROJECTS_DIR
-                + "/" + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
+        Path userConfigFilePath = Paths.get(Configuration.appConfigDir + "/" + Configuration.userProjectsDir
+                + "/" + projectName + "/" + Configuration.configfileFileName);
         if (Files.isReadable(userConfigFilePath)) {
             try {
                 return new LineNumberReader(new InputStreamReader((Files.newInputStream(userConfigFilePath))));
@@ -122,8 +118,8 @@ public class IOUtils {
             }
         }
         try {
-            return getResourceAsReader(Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/"
-                    + projectName + "/" + Configuration.CONFIGFILE_FILE_NAME);
+            return getResourceAsReader(Configuration.projectResourceDirPrefix + "/"
+                    + projectName + "/" + Configuration.configfileFileName);
         } catch (SinalgoFatalException e) {
             throw new SinalgoFatalException("Failed to read the default configuration file for project '" + projectName + "''");
         }

@@ -43,12 +43,7 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.controlPanel.ControlPanel;
 import sinalgo.gui.controlPanel.MaximizedControlPanel;
 import sinalgo.gui.controlPanel.MinimizedControlPanel;
-import sinalgo.gui.dialogs.AboutDialog;
-import sinalgo.gui.dialogs.GenerateNodesDialog;
-import sinalgo.gui.dialogs.GlobalSettingsDialog;
-import sinalgo.gui.dialogs.GraphInfoDialog;
-import sinalgo.gui.dialogs.GraphPreferencesDialog;
-import sinalgo.gui.dialogs.HelpDialog;
+import sinalgo.gui.dialogs.*;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.Exporter;
 import sinalgo.nodes.Position;
@@ -64,13 +59,7 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -122,7 +111,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param r The runtime instance for which the gui was created.
      */
     public GUI(SinalgoRuntime r) {
-        super(Global.useProject ? (Configuration.APP_NAME + " - " + Global.projectName) : (Configuration.APP_NAME));
+        super(Global.useProject ? (Configuration.appName + " - " + Global.projectName) : (Configuration.appName));
         GuiHelper.setWindowIcon(this);
 
         // load the buttons for the menu - these settings should be done only once

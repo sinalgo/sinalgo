@@ -131,9 +131,9 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      * @return The names of all projects, sorted alphabetically (ascending).
      */
     public static String[] getAllProjectNames() {
-        String[] list = Configuration.NON_USER_PROJECT_DIR_NAMES.split(";");
+        String[] list = Configuration.nonUserProjectDirNames.split(";");
         Vector<String> blocklist = new Vector<>(Arrays.asList(list));
-        File file = new File(Configuration.SOURCE_DIR_PREFIX + "/" + Configuration.PROJECT_DIR_IN_SOURCE_FOLDER);
+        File file = new File(Configuration.binaryDir + "/" + Configuration.userProjectsDir);
         String[] projects = file.list((dir, name) -> {
             // only allow projects not calles CVS and only the ones that have a compiled
             // version in the binaries folder.
@@ -141,11 +141,11 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 return false;
             }
             File compiledFolder = new File(
-                    Configuration.BINARY_DIR + "/" + Configuration.PROJECT_DIR_IN_SOURCE_FOLDER + "/" + name);
+                    Configuration.binaryDir + "/" + Configuration.userProjectsDir + "/" + name);
             return compiledFolder.exists() && compiledFolder.isDirectory();
         });
         // sort alphabetically
-        java.util.Arrays.sort(projects);
+        Arrays.sort(projects);
         return projects;
     }
 
@@ -355,7 +355,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      *
      * @param actionCommand Name of the action that is performed when this button is pressed
      * @param imageName     The name of the image file, which is stored in the directory
-     *                      specified by Configuration.IMAGE_DIR
+     *                      specified by Configuration.sinalgoImageDir
      * @param toolTip       Tooltip text to be shown for this button
      * @return A new JButton with an icon
      */
@@ -363,12 +363,12 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         // To support jar files, we cannot access the file directly
         JButton b;
         try {
-            InputStream is = IOUtils.getResourceAsStream(Configuration.IMAGE_DIR + "/" + imageName);
+            InputStream is = IOUtils.getResourceAsStream(Configuration.sinalgoImageDir + "/" + imageName);
             ImageIcon icon = new ImageIcon(ImageIO.read(is));
             b = new JButton(icon);
         } catch (IOException e) {
             throw new SinalgoFatalException("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + "resources" + Configuration.IMAGE_DIR + "/" + imageName + ".");
+                    + "resources" + Configuration.sinalgoImageDir + "/" + imageName + ".");
         }
         // b.setPreferredSize(new Dimension(29, 29));
         b.setPreferredSize(new Dimension(0, 9));
@@ -389,7 +389,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      */
     private void generateGUIDescription(String projectName) {
         ClassLoader cldr = getClass().getClassLoader();
-        InputStream proj = cldr.getResourceAsStream(Configuration.PROJECT_RESOURCE_DIR_PREFIX + "/" + projectName + "/" + Configuration.DESCRIPTION_FILE_NAME);
+        InputStream proj = cldr.getResourceAsStream(Configuration.projectResourceDirPrefix + "/" + projectName + "/" + Configuration.descriptionFileName);
         try {
             if (proj == null) {
                 descriptionText.setText("There is no description-file in the currently selected project.");
@@ -792,20 +792,20 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
             }
         }
 
-        String outputPath = (isTemporary ? Configuration.APP_TMP_FOLDER : Configuration.APP_CONFIG_DIR)
-                + "/" + Configuration.USER_PROJECTS_DIR + "/" + selectedProjectName;
+        String outputPath = (isTemporary ? Configuration.appTmpFolder : Configuration.appConfigDir)
+                + "/" + Configuration.userProjectsDir + "/" + selectedProjectName;
         IOUtils.createDir(outputPath);
-        File outputFile = new File(outputPath + "/" + Configuration.CONFIGFILE_FILE_NAME + (isTemporary ? ".run" : ""));
+        File outputFile = new File(outputPath + "/" + Configuration.configfileFileName + (isTemporary ? ".run" : ""));
 
         // And write the xml tree to the file
         XMLOutputter outputter = new XMLOutputter();
         Format f = Format.getPrettyFormat();
         f.setIndent("\t");
         outputter.setFormat(f);
-        String tempOutputFolder = Configuration.APP_TMP_FOLDER + "/" + Configuration.USER_PROJECTS_DIR
+        String tempOutputFolder = Configuration.appTmpFolder + "/" + Configuration.userProjectsDir
                 + "/" + selectedProjectName;
         IOUtils.createDir(tempOutputFolder);
-        File tempOutputFile = new File(tempOutputFolder + "/" + Configuration.CONFIGFILE_FILE_NAME + ".temp");
+        File tempOutputFile = new File(tempOutputFolder + "/" + Configuration.configfileFileName + ".temp");
 
         try {
             FileWriter fW = new FileWriter(tempOutputFile);

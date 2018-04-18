@@ -104,9 +104,9 @@ public abstract class Model {
                 name = className; // kind of a hack: the name is already absolute.
             } else if (className.contains(":")) { // the name is composed as 'project-name':'class-name'
                 String[] parts = className.split(":", 2);
-                name = Configuration.USER_PROJECTS_PATH + "." + parts[0] + ".models." + modelName + "." + parts[1];
+                name = Configuration.userProjectsPackage + "." + parts[0] + ".models." + modelName + "." + parts[1];
             } else {
-                name = Configuration.DEFAULT_PROJECT_PATH + ".models." + modelName + "." + className;
+                name = Configuration.defaultProjectPackage + ".models." + modelName + "." + className;
             }
             result = Class.forName(name);
         } catch (ClassNotFoundException e) {

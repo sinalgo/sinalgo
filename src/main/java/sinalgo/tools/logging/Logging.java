@@ -508,7 +508,7 @@ public class Logging {
      */
     private Logging(String aFileName, boolean append) {
         try {
-            String dir = Configuration.LOG_FILE_DIRECTORY;
+            String dir = Configuration.logFileDirectory;
             IOUtils.createDir(dir);
             dir += "/";
 
