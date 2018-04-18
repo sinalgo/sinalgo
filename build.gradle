@@ -82,7 +82,7 @@ processResources {
     }
 
     with copySpec {
-        from 'icon/sinalgo_512.png'
+        from 'icon/sinalgo_48.png'
         rename { 'sinalgo.png' }
         into 'sinalgo/images'
     }

@@ -143,12 +143,6 @@ public class GUI extends JFrame implements ActionListener {
         viewZoomFitMenuItem.setIcon(GuiHelper.getIcon("zoomtofit.gif"));
         viewZoomFitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | UnsupportedLookAndFeelException
-                | IllegalAccessException | InstantiationException ignore) {
-        }
-
         runtime = r;
     }
 
