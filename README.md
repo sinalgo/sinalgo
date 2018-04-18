@@ -1,4 +1,4 @@
-<img src="icon/sinalgo_144.png" align="right" />
+<img src="icon/sinalgo_72.png" align="left" />
 
 # Welcome to Sinalgo
 
