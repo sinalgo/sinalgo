@@ -1,3 +1,4 @@
+![Sinalgo icon (144x144 pixels)](icon/sinalgo_144.png?raw=true)
 # Welcome to Sinalgo
 
 Sinalgo is a simulation framework for testing and validating network algorithms. 
