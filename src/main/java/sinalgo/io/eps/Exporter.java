@@ -49,11 +49,7 @@ import sinalgo.runtime.SinalgoRuntime;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.Random;
 
@@ -107,6 +103,7 @@ public class Exporter {
         fc.addChoosableFileFilter(posFf);
         fc.addChoosableFileFilter(psFf);
         fc.addChoosableFileFilter(pdfFf);
+        fc.setFileFilter(posFf);
 
         fc.setAcceptAllFileFilterUsed(false); // only allow the above file types
 
