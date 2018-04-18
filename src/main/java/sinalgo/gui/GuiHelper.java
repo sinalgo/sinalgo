@@ -25,7 +25,7 @@ public class GuiHelper {
     public static void setWindowIcon(JFrame frame) {
         // set the icon
         ClassLoader cldr = frame.getClass().getClassLoader();
-        URL url = cldr.getResource(Configuration.IMAGE_DIR + "/" + "appIcon.gif");
+        URL url = cldr.getResource(Configuration.IMAGE_DIR + "/" + "sinalgo.png");
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
             frame.setIconImage(ii.getImage());
@@ -33,13 +33,13 @@ public class GuiHelper {
     }
 
     /**
-     * Sets the icon image of Sinalgo (currently the DCG logo) to a given window
+     * Sets the icon image of Sinalgo to a given window
      *
      * @param w The window to add the icon to
      */
     public static void setWindowIcon(Window w) {
         ClassLoader cldr = w.getClass().getClassLoader();
-        URL url = cldr.getResource(Configuration.IMAGE_DIR + "/" + "appIcon.gif");
+        URL url = cldr.getResource(Configuration.IMAGE_DIR + "/" + "sinalgo.png");
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
             if (w instanceof JFrame) { // TODO: only Java >= 6.0 supports Window.setIconImage()

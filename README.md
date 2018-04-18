@@ -1,3 +1,5 @@
+<img src="icon/sinalgo_192.png" align="right" />
+
 # Welcome to Sinalgo
 
 Sinalgo is a simulation framework for testing and validating network algorithms. 
@@ -50,7 +52,7 @@ arrives at its destination.
 DISCLAIMER:
 Sinalgo was originally developed by the DCG (Distributed Computing Group) of ETHzürich (https://disco.ethz.ch/)
 
-# Installation and usage
+## Installation and usage
 
 Sinalgo has been ported to use the Gradle build system beginning with version 0.77. It uses a Gradle Wrapper so 
 users don't have to download the specific Gradle version that's compatible with Sinalgo. Running and building 

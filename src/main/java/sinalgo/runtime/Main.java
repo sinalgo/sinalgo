@@ -133,7 +133,6 @@ public class Main {
             Global.isGuiMode = true;
             Global.log.logln(LogL.ALWAYS, "> Starting " + Configuration.APP_NAME + " in GUI-Mode"
                     + (Global.useProject ? " for project " + Global.projectName + "." : "."));
-
             runtime = new GUIRuntime();
         } else { // BATCH MODE
             Global.log.log(LogL.ALWAYS, "> Starting " + Configuration.APP_NAME + " in BATCH-Mode"

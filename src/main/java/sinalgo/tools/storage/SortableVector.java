@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.storage;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
 
@@ -72,7 +73,7 @@ public class SortableVector<T> extends Vector<T> {
      * Note: T needs to extend Comparable<T>
      */
     public void sort() {
-        java.util.Arrays.sort(super.elementData, 0, this.size());
+        Arrays.sort(super.elementData, 0, this.size());
     }
 
     /**
@@ -84,6 +85,6 @@ public class SortableVector<T> extends Vector<T> {
     @Override
     @SuppressWarnings("unchecked")
     public void sort(Comparator<? super T> c) {
-        java.util.Arrays.sort((T[]) super.elementData, 0, this.size(), c);
+        Arrays.sort((T[]) super.elementData, 0, this.size(), c);
     }
 }
