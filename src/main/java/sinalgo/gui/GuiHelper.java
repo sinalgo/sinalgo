@@ -1,5 +1,6 @@
 package sinalgo.gui;
 
+import com.apple.eawt.Application;
 import sinalgo.configuration.Configuration;
 
 import javax.swing.*;
@@ -28,6 +29,7 @@ public class GuiHelper {
         URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + "sinalgo.png");
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
+            Application.getApplication().setDockIconImage(ii.getImage());
             frame.setIconImage(ii.getImage());
         }
     }
@@ -42,7 +44,8 @@ public class GuiHelper {
         URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + "sinalgo.png");
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
-            if (w instanceof JFrame) { // TODO: only Java >= 6.0 supports Window.setIconImage()
+            if (w instanceof JFrame) {
+                Application.getApplication().setDockIconImage(ii.getImage());
                 w.setIconImage(ii.getImage());
             }
         }

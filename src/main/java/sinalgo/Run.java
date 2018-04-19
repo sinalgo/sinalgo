@@ -56,8 +56,8 @@ import java.util.Arrays;
 import java.util.Vector;
 
 /**
- * A helper function to start the simulator. Execute 'java -cp binaries/bin
- * sinalgo.Run' to start the simulator.
+ * A helper function to start the simulator.
+ * Execute './gradlew run' (or 'gradlew.bat run' on Windows) to start the simulator.
  */
 public class Run {
 
@@ -97,7 +97,7 @@ public class Run {
             String cp = System.getProperty("user.dir");
             cmds.add("-Xmx" + Configuration.javaVMmaxMem + "m");
             cmds.add("-cp");
-            // Uses the old Class Path as its set by gradle
+            // Uses the old Class Path as its set by Gradle
             cmds.add(System.getProperty("java.class.path"));
             cmds.add("sinalgo.runtime.Main");
 
