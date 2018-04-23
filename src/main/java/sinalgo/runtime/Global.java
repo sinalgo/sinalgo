@@ -243,8 +243,8 @@ public class Global {
         if (allProjects) {
             // default project before the user implementations
             includePackageForImplementations(subPackage, Configuration.defaultProjectName, result);
-            for (String projectPackage : projectNames) {
-                includePackageForImplementations(subPackage, projectPackage, result);
+            for (String projectName : projectNames) {
+                includePackageForImplementations(subPackage, projectName, result);
             }
         } else {
             if (useProject) {
@@ -258,30 +258,37 @@ public class Global {
     }
 
     /**
+     * A cache for class implementations
+     */
+    private static final Map<String, Vector<String>> classCache = new HashMap<>();
+
+    /**
      * Helper method to include implementations contained in a given package
      *
-     * @param subPackage     The package name to search
-     * @param projectPackage The name of the project in which the implementations are contained
-     * @param result         A vector to which the found implementaions are added in the form
-     *                       projectName:implName (for the default project just the implName)
+     * @param subPackage  The package name to search
+     * @param projectName The name of the project in which the implementations are contained
+     * @param result      A vector to which the found implementaions are added in the form
+     *                    projectName:implName (for the default project just the implName)
      */
-    private static void includePackageForImplementations(String subPackage, String projectPackage, Vector<String> result) {
-        ScanResult scanResult = new FastClasspathScanner(Configuration.userProjectsPackage + "." + projectPackage + "." + subPackage)
-                .disableRecursiveScanning().scan();
-        Map<String, ClassInfo> classInfoMap = scanResult.getClassNameToClassInfo();
-        scanResult.getNamesOfAllClasses().stream()
-                .map(classInfoMap::get)
-                .filter(ci -> !ci.isInnerClass())
-                .map(Global::getClassName)
-                .distinct()
-                .sorted()
-                .forEach(s -> {
-                    if (projectPackage.equals(Configuration.defaultProjectName)) {
-                        result.add(s);
-                    } else {
-                        result.add(projectPackage + ":" + s);
-                    }
-                });
+    private static void includePackageForImplementations(String subPackage, String projectName, Vector<String> result) {
+        String path = Configuration.userProjectsPackage + "." + projectName + "." + subPackage;
+        if (classCache.containsKey(path)) {
+            result.addAll(classCache.get(path));
+        } else {
+            ScanResult scanResult = new FastClasspathScanner(path)
+                    .disableRecursiveScanning().scan();
+            Map<String, ClassInfo> classInfoMap = scanResult.getClassNameToClassInfo();
+            Vector<String> subResult = scanResult.getNamesOfAllClasses().stream()
+                    .map(classInfoMap::get)
+                    .filter(ci -> !ci.isInnerClass())
+                    .map(Global::getClassName)
+                    .distinct()
+                    .sorted()
+                    .map(s -> projectName.equals(Configuration.defaultProjectName) ? s : projectName + ":" + s)
+                    .collect(Collectors.toCollection(Vector::new));
+            classCache.put(path, subResult);
+            result.addAll(subResult);
+        }
     }
 
     private static String getClassName(ClassInfo classInfo) {
