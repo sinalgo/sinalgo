@@ -272,7 +272,7 @@ public class Global {
         scanResult.getNamesOfAllClasses().stream()
                 .map(classInfoMap::get)
                 .filter(ci -> !ci.isInnerClass())
-                .map(Global::getPackageName)
+                .map(Global::getClassName)
                 .distinct()
                 .sorted()
                 .forEach(s -> {
@@ -284,11 +284,11 @@ public class Global {
                 });
     }
 
-    private static String getPackageName(ClassInfo classInfo) {
-        return getPackageName(classInfo.getClassName());
+    private static String getClassName(ClassInfo classInfo) {
+        return getClassName(classInfo.getClassName());
     }
 
-    private static String getPackageName(String className) {
+    private static String getClassName(String className) {
         if (className.contains(".")) {
             className = className.substring(0, className.lastIndexOf('.'));
             if (className.contains(".")) {
