@@ -88,7 +88,7 @@ public class Configuration {
 
     private static String getVersionString() {
         try {
-            return new Scanner(Configuration.class.getClassLoader().getResourceAsStream("VERSION"),
+            return new Scanner(Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION"),
                     StandardCharsets.UTF_8.displayName()).useDelimiter("\\A").next().trim();
         } catch (Exception e) {
             throw new SinalgoFatalException("Could not read version information from the VERSION file.\n\n" + e);
@@ -915,16 +915,10 @@ public class Configuration {
     public static String logFileDirectory = appConfigDir + "/logs";
 
     /**
-     * The directory where user-specific projects are stored. This path has to be
-     * postfixed with the users project name.
-     */
-    public static String userProjectsDir = "projects";
-
-    /**
      * The path where user-specific projects are stored. This path has to be
      * postfixed with the users project name.
      */
-    public static String userProjectsPackage = userProjectsDir;
+    public static String userProjectsPackage = "projects";
 
     /**
      * The default project's name
@@ -932,25 +926,9 @@ public class Configuration {
     public static String defaultProjectName = "defaultProject";
 
     /**
-     * The directory where the default project is stored.
-     */
-    public static String defaultProjectDir = userProjectsPackage + "." + defaultProjectName;
-
-    /**
      * The path where the default project is stored.
      */
-    public static String defaultProjectPackage = defaultProjectDir.replace("/", ".");
-    ;
-
-    /**
-     * The directory where the source tree starts.
-     */
-    public static String sourceDirPrefix = "src/main/java";
-
-    /**
-     * The directory where the class files are located.
-     */
-    public static String binaryDir = "build/classes/java/main";
+    public static String defaultProjectPackage = userProjectsPackage + "." + defaultProjectName;
 
     /**
      * The name of the description file in the project folder.
@@ -977,13 +955,13 @@ public class Configuration {
     /**
      * The directory where the resources for the projects are stored
      */
-    public static String projectResourceDirPrefix = userProjectsDir;
+    public static String projectResourceDirPrefix = userProjectsPackage;
 
     /**
-     * A semicolon separated list of folder-names that should not be considered as
+     * A semicolon separated list of project names that should not be considered as
      * user-projects
      */
-    public static String nonUserProjectDirNames = "defaultProject;template";
+    public static String nonUserProjectNames = "defaultProject;template";
 
     /**
      * Assigns a value to the configuration file. This method should only be called

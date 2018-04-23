@@ -36,16 +36,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
+import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import io.github.lukehutch.fastclasspathscanner.scanner.ClassInfo;
+import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 import sinalgo.configuration.Configuration;
-import sinalgo.gui.ProjectSelector;
+import sinalgo.exception.SinalgoFatalException;
 import sinalgo.models.MessageTransmissionModel;
 import sinalgo.runtime.AbstractCustomGlobal.GlobalMethod;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-import java.io.File;
-import java.util.Date;
-import java.util.Vector;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This is the class, where the global information is stored. Do not mistake it
@@ -156,18 +160,6 @@ public class Global {
         }
     }
 
-//    /**
-//     * @return The base-directory of the source-files of the currently used project.
-//     */
-//    public static String getProjectSrcDir() {
-//        if (useProject) {
-//            return Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPackage.replace('.', '/') + "/"
-//                    + projectName;
-//        } else {
-//            return Configuration.sourceDirPrefix + "/" + Configuration.defaultProjectPackage.replace('.', '/');
-//        }
-//    }
-
     /**
      * @return The currently used project.
      */
@@ -176,33 +168,35 @@ public class Global {
     }
 
     /**
-     * @return The temp-directory of the config-files of the currently used project.
+     * Stores in an unmodifiable list the names of all projects. This is initialized when this class is loaded and is then not
      */
-    public static String getProjecTempDir() {
-        if (useProject) {
-            return Configuration.appTmpFolder + "/" + Configuration.userProjectsPackage.replace('.', '/') + "/"
-                    + projectName;
-        } else {
-            return Configuration.appTmpFolder + "/" + Configuration.defaultProjectPackage.replace('.', '/');
+    public static final List<String> projectNames = getAllProjectNames();
+
+    /**
+     * @return The packages of all projects, sorted alphabetically (ascending).
+     */
+    private static List<String> getAllProjectNames() {
+        try {
+            List<String> blocklist = Arrays.asList(Configuration.nonUserProjectNames.split(";"));
+            ScanResult scannedClasses = new FastClasspathScanner(Configuration.userProjectsPackage).scan();
+            Pattern pattern = Pattern.compile("^" + Configuration.userProjectsPackage + "\\.(?!" + String.join("|", blocklist) + ")\\w+");
+            return Collections.unmodifiableList(scannedClasses.getNamesOfAllClasses().stream()
+                    .map(pattern::matcher)
+                    .filter(Matcher::find)
+                    .map(Matcher::group)
+                    .map(s -> s.substring(s.lastIndexOf('.') + 1, s.length()))
+                    .sorted()
+                    .distinct()
+                    .collect(Collectors.toList()));
+        } catch (Exception e) {
+            throw new SinalgoFatalException("Fatal exception. Could not read projects in the user projects package.", e);
         }
     }
 
     /**
-     * @return The base-directory of the config-files of the currently used project.
+     * @return The base-package of the currently used project.
      */
-    public static String getProjectConfigDir() {
-        if (useProject) {
-            return Configuration.appConfigDir + "/" + Configuration.userProjectsPackage.replace('.', '/') + "/"
-                    + projectName;
-        } else {
-            return Configuration.appConfigDir + "/" + Configuration.defaultProjectPackage.replace('.', '/');
-        }
-    }
-
-    /**
-     * @return The base-path (separated by '.') of the currently used project.
-     */
-    public static String getProjectBinPath() {
+    public static String getProjectPackage() {
         if (useProject) {
             return Configuration.userProjectsPackage + "." + projectName;
         } else {
@@ -238,59 +232,70 @@ public class Global {
      * default folder.
      * @see Global#getImplementations(String)
      */
-    public static Vector<String> getImplementations(String subDir, boolean allProjects) {
+    public static Vector<String> getImplementations(String subPackage, boolean allProjects) {
         Vector<String> result = new Vector<>();
-        if (subDir.equals("nodes/edges")) { // special case for the edges: the base implementaions are stored in the
+        subPackage = subPackage.replace('/', '.');
+        if (subPackage.equals("nodes.edges")) { // special case for the edges: the base implementaions are stored in the
             // framework
             result.add("Edge");
             result.add("BidirectionalEdge");
         }
         if (allProjects) {
             // default project before the user implementations
-            includeDirForImplementations(Configuration.binaryDir + "/" + Configuration.defaultProjectDir + "/" + subDir,
-                    "defaultProject", result);
-            for (String projectName : ProjectSelector.getAllProjectNames()) {
-                includeDirForImplementations(
-                        Configuration.binaryDir + "/" + Configuration.userProjectsDir + "/" + projectName + "/" + subDir,
-                        projectName, result);
+            includePackageForImplementations(subPackage, Configuration.defaultProjectName, result);
+            for (String projectPackage : projectNames) {
+                includePackageForImplementations(subPackage, projectPackage, result);
             }
         } else {
             if (useProject) {
-                includeDirForImplementations(
-                        Configuration.binaryDir + "/" + Configuration.userProjectsDir + "/" + projectName + "/" + subDir,
-                        projectName, result);
+                includePackageForImplementations(subPackage, projectName, result);
             }
             // default project after the user implementations
-            includeDirForImplementations(Configuration.binaryDir + "/" + Configuration.defaultProjectDir + "/" + subDir,
-                    "defaultProject", result);
+            includePackageForImplementations(subPackage, Configuration.defaultProjectName, result);
         }
+        Collections.sort(result);
         return result;
     }
 
     /**
-     * Helper method to include implementations contained in a given folder
+     * Helper method to include implementations contained in a given package
      *
-     * @param dirName     The folder name to search
-     * @param projectName The name of the project in which the implementations are contained
-     * @param result      A vector to which the found implementaions are added in the form
-     *                    projectName:implName (for the default project just the implName)
+     * @param subPackage     The package name to search
+     * @param projectPackage The name of the project in which the implementations are contained
+     * @param result         A vector to which the found implementaions are added in the form
+     *                       projectName:implName (for the default project just the implName)
      */
-    private static void includeDirForImplementations(String dirName, String projectName, Vector<String> result) {
-        File dir = new File(dirName);
-        String[] list = dir.list();
-        if (list != null) {
-            for (String s : list) {
-                // cut off the '.class', but prefix with the project name and a colon.
-                if (s.endsWith(".class") && !s.contains("$")) {
-                    if (projectName.equals("defaultProject")) {
-                        result.add(s.substring(0, s.lastIndexOf('.'))); // cut off the '.class'
+    private static void includePackageForImplementations(String subPackage, String projectPackage, Vector<String> result) {
+        ScanResult scanResult = new FastClasspathScanner(Configuration.userProjectsPackage + "." + projectPackage + "." + subPackage)
+                .disableRecursiveScanning().scan();
+        Map<String, ClassInfo> classInfoMap = scanResult.getClassNameToClassInfo();
+        scanResult.getNamesOfAllClasses().stream()
+                .map(classInfoMap::get)
+                .filter(ci -> !ci.isInnerClass())
+                .map(Global::getPackageName)
+                .distinct()
+                .sorted()
+                .forEach(s -> {
+                    if (projectPackage.equals(Configuration.defaultProjectName)) {
+                        result.add(s);
                     } else {
-                        result.add(projectName + ":" + s.substring(0, s.lastIndexOf('.'))); // prefix with the project
-                        // name
+                        result.add(projectPackage + ":" + s);
                     }
-                }
+                });
+    }
+
+    private static String getPackageName(ClassInfo classInfo) {
+        return getPackageName(classInfo.getClassName());
+    }
+
+    private static String getPackageName(String className) {
+        if (className.contains(".")) {
+            className = className.substring(0, className.lastIndexOf('.'));
+            if (className.contains(".")) {
+                className = className.substring(className.lastIndexOf('.') + 1, className.length());
             }
         }
+        return className;
     }
 
     /**

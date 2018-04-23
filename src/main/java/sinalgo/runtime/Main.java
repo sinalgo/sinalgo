@@ -38,11 +38,7 @@ package sinalgo.runtime;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.NotInBatchModeException;
-import sinalgo.exception.NotInGUIModeException;
-import sinalgo.exception.SinalgoFatalException;
-import sinalgo.exception.SinalgoWrappedException;
-import sinalgo.exception.WrongConfigurationException;
+import sinalgo.exception.*;
 import sinalgo.gui.GUI;
 import sinalgo.gui.ProjectSelector;
 import sinalgo.io.IOUtils;
@@ -151,7 +147,7 @@ public class Main {
                 // NOTE: we could also call newInstance() on the class-object. But this would
                 // not encapsulate
                 // exceptions that may be thrown in the constructor.
-                Class<?> custGlob = Class.forName(Global.getProjectBinPath() + ".CustomGlobal");
+                Class<?> custGlob = Class.forName(Global.getProjectPackage() + ".CustomGlobal");
                 Constructor<?> constructor = custGlob.getConstructor();
                 Global.customGlobal = (AbstractCustomGlobal) constructor.newInstance();
             } catch (ClassNotFoundException e) {

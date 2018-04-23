@@ -129,7 +129,7 @@ public class Exporter {
             } else if (file.getName().endsWith(psFf.getExtension())) {
                 graphToPS(file, boundingBox, pt);
             } else if (file.getName().endsWith(pdfFf.getExtension())) {
-                File tmpFile = new File(getEmptyTempFile(""));
+                File tmpFile = new File(getEmptyTempFile(Configuration.appTmpFolder));
                 graphToPS(tmpFile, boundingBox, pt);
                 psToPdf(tmpFile, file);
                 tmpFile.delete();

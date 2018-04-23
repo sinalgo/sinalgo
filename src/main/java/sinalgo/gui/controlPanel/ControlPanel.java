@@ -145,7 +145,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      */
     protected JButton createFrameworkIconButton(String actionCommand, String imageName, String toolTip) {
         // To support jar files, we cannot access the file directly
-        ClassLoader cldr = this.getClass().getClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         JButton b;
         try {
             URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + imageName);
@@ -161,7 +161,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
 
     protected ImageIcon getFrameworkIcon(String imageName) {
         // To support jar files, we cannot access the file directly
-        ClassLoader cldr = this.getClass().getClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         try {
             URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + imageName);
             return new ImageIcon(url);
@@ -183,7 +183,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      */
     protected JButton createCustomIconButton(String actionCommand, String imageName, String toolTip) {
         JButton b;
-        ClassLoader cldr = getClass().getClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         if (Global.useProject) {
             URL url = cldr.getResource(Global.getProjectResourceDir() + "/images/" + imageName);
             if (url == null) {

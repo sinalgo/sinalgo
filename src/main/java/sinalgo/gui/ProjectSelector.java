@@ -67,7 +67,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Vector;
 
@@ -128,38 +127,11 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
     }
 
     /**
-     * @return The names of all projects, sorted alphabetically (ascending).
-     */
-    public static String[] getAllProjectNames() {
-        String[] list = Configuration.nonUserProjectDirNames.split(";");
-        Vector<String> blocklist = new Vector<>(Arrays.asList(list));
-        File file = new File(Configuration.binaryDir + "/" + Configuration.userProjectsDir);
-        String[] projects = file.list((dir, name) -> {
-            // only allow projects not calles CVS and only the ones that have a compiled
-            // version in the binaries folder.
-            if (blocklist.contains(name)) {
-                return false;
-            }
-            File compiledFolder = new File(
-                    Configuration.binaryDir + "/" + Configuration.userProjectsDir + "/" + name);
-            return compiledFolder.exists() && compiledFolder.isDirectory();
-        });
-        // sort alphabetically
-        Arrays.sort(projects);
-        return projects;
-    }
-
-    /**
      * This method populates the ProjectSelector with all the subpanels and buttons
      */
     public void populate() {
         // gather all projects
-        String[] projects = getAllProjectNames();
-        if (projects == null) {
-            throw new SinalgoFatalException("Cannot find the project folder. " +
-                    "Please ensure that the framework is installed properly.");
-        }
-        Arrays.sort(projects); // sort the projects in ascending order
+        Vector<String> projects = new Vector<>(Global.projectNames);
 
         this.addComponentListener(new ComponentListener() {
 
@@ -388,7 +360,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      * @param projectName The project name
      */
     private void generateGUIDescription(String projectName) {
-        ClassLoader cldr = getClass().getClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         InputStream proj = cldr.getResourceAsStream(Configuration.projectResourceDirPrefix + "/" + projectName + "/" + Configuration.descriptionFileName);
         try {
             if (proj == null) {
@@ -793,7 +765,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         }
 
         String outputPath = (isTemporary ? Configuration.appTmpFolder : Configuration.appConfigDir)
-                + "/" + Configuration.userProjectsDir + "/" + selectedProjectName;
+                + "/" + Configuration.userProjectsPackage + "/" + selectedProjectName;
         IOUtils.createDir(outputPath);
         File outputFile = new File(outputPath + "/" + Configuration.configfileFileName + (isTemporary ? ".run" : ""));
 
@@ -802,7 +774,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         Format f = Format.getPrettyFormat();
         f.setIndent("\t");
         outputter.setFormat(f);
-        String tempOutputFolder = Configuration.appTmpFolder + "/" + Configuration.userProjectsDir
+        String tempOutputFolder = Configuration.appTmpFolder + "/" + Configuration.userProjectsPackage
                 + "/" + selectedProjectName;
         IOUtils.createDir(tempOutputFolder);
         File tempOutputFile = new File(tempOutputFolder + "/" + Configuration.configfileFileName + ".temp");

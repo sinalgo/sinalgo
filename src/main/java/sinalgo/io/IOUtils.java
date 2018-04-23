@@ -36,7 +36,7 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static BufferedInputStream getProjectTempConfigurationAsStream(String projectName) {
-        Path tempConfigFilePath = Paths.get(Configuration.appTmpFolder + "/" + Configuration.userProjectsDir
+        Path tempConfigFilePath = Paths.get(Configuration.appTmpFolder + "/" + Configuration.userProjectsPackage
                 + "/" + projectName + "/" + Configuration.configfileFileName + ".run");
         if (Files.isReadable(tempConfigFilePath)) {
             try {
@@ -59,7 +59,7 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static LineNumberReader getProjectTempConfigurationAsReader(String projectName) {
-        Path tempConfigFilePath = Paths.get(Configuration.appTmpFolder + "/" + Configuration.userProjectsDir
+        Path tempConfigFilePath = Paths.get(Configuration.appTmpFolder + "/" + Configuration.userProjectsPackage
                 + "/" + projectName + "/" + Configuration.configfileFileName + ".run");
         if (Files.isReadable(tempConfigFilePath)) {
             try {
@@ -81,7 +81,7 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static BufferedInputStream getProjectConfigurationAsStream(String projectName) {
-        Path userConfigFilePath = Paths.get(Configuration.appConfigDir + "/" + Configuration.userProjectsDir
+        Path userConfigFilePath = Paths.get(Configuration.appConfigDir + "/" + Configuration.userProjectsPackage
                 + "/" + projectName + "/" + Configuration.configfileFileName);
         if (Files.isReadable(userConfigFilePath)) {
             try {
@@ -108,7 +108,7 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static LineNumberReader getProjectConfigurationAsReader(String projectName) {
-        Path userConfigFilePath = Paths.get(Configuration.appConfigDir + "/" + Configuration.userProjectsDir
+        Path userConfigFilePath = Paths.get(Configuration.appConfigDir + "/" + Configuration.userProjectsPackage
                 + "/" + projectName + "/" + Configuration.configfileFileName);
         if (Files.isReadable(userConfigFilePath)) {
             try {
@@ -133,7 +133,7 @@ public class IOUtils {
      * @throws SinalgoFatalException if the resource cannot be read
      */
     public static BufferedInputStream getResourceAsStream(String path) {
-        ClassLoader cldr = ClassLoader.getSystemClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         InputStream resource = cldr.getResourceAsStream(path);
         if (resource == null) {
             throw new SinalgoFatalException("Failed to read resource '" + path + "'.");
@@ -149,7 +149,7 @@ public class IOUtils {
      * @throws SinalgoFatalException if the resource cannot be read
      */
     public static LineNumberReader getResourceAsReader(String path) {
-        ClassLoader cldr = ClassLoader.getSystemClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         InputStream resource = cldr.getResourceAsStream(path);
         if (resource == null) {
             throw new SinalgoFatalException("Failed to read resource '" + path + "'.");

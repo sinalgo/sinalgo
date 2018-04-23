@@ -59,7 +59,6 @@ import sinalgo.tools.logging.Logging;
 import sinalgo.tools.statistics.Distribution;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -1001,19 +1000,16 @@ public class Tools {
     public static void parseProject(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-project")) { // A specific project is specified
-                if (i + 1 >= args.length) {
-                    throw new SinalgoFatalException("The flag '-project' must be preceeded by the name of a project");
+                if (args.length <= i + 1) {
+                    throw new SinalgoFatalException("The flag '-project' must preceed the name of a project");
                 }
-                // Test that the project folder exists (in the source)
-                String path = Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPackage.replace('.', '/')
-                        + "/" + args[i + 1]; // <<RF>> Why not simply call getProejctSrcDir for path?
-                File testProj = new File(path);
-                if (testProj.exists()) {
+                if (Global.projectNames.contains(args[i + 1])) {
                     Global.useProject = true;
                     Global.projectName = args[i + 1];
                 } else {
                     throw new SinalgoFatalException("Cannot find the specified project '" + args[i + 1] + "'.\n"
-                            + "In order to create a project '" + args[i + 1] + "', create a folder '" + path + "'");
+                            + "In order to create a project '" + args[i + 1] + "', create a package '"
+                            + Configuration.userProjectsPackage + "." + args[i + 1] + "'");
                 }
             }
         }

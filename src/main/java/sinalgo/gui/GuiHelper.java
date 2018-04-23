@@ -10,7 +10,7 @@ import java.net.URL;
 public class GuiHelper {
 
     public static ImageIcon getIcon(String fileName) {
-        ClassLoader cldr = ClassLoader.getSystemClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + fileName);
         if (url != null) {
             return new ImageIcon(url);
@@ -25,11 +25,15 @@ public class GuiHelper {
      */
     public static void setWindowIcon(JFrame frame) {
         // set the icon
-        ClassLoader cldr = frame.getClass().getClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + "sinalgo.png");
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
-            Application.getApplication().setDockIconImage(ii.getImage());
+            try {
+                Application.getApplication().setDockIconImage(ii.getImage());
+            } catch (RuntimeException ignored) {
+                // fail silently
+            }
             frame.setIconImage(ii.getImage());
         }
     }
@@ -40,12 +44,16 @@ public class GuiHelper {
      * @param w The window to add the icon to
      */
     public static void setWindowIcon(Window w) {
-        ClassLoader cldr = w.getClass().getClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + "sinalgo.png");
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
             if (w instanceof JFrame) {
-                Application.getApplication().setDockIconImage(ii.getImage());
+                try {
+                    Application.getApplication().setDockIconImage(ii.getImage());
+                } catch (RuntimeException ignored) {
+                    // fail silently
+                }
                 w.setIconImage(ii.getImage());
             }
         }
