@@ -46,7 +46,13 @@ import sinalgo.runtime.AbstractCustomGlobal.GlobalMethod;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -63,12 +69,19 @@ import java.util.stream.Collectors;
 public class Global {
 
     /**
+     * Stores in an unmodifiable list the names of all projects. This is initialized when this class is loaded and is then not
+     */
+    public static final List<String> projectNames = getAllProjectNames();
+    /**
+     * A cache for class implementations
+     */
+    private static final Map<String, Vector<String>> classCache = new HashMap<>();
+    /**
      * A boolean flag indicating whether the simulation is runing or not. This flag
      * is used to block mouse input (like tooltip...) and zooming during the
      * simulation.
      */
     public static boolean isRunning = false;
-
     /**
      * This is the date of the last start of a simulation. This means this is the
      * time the user started the last number of rounds. This time is particularly
@@ -77,11 +90,14 @@ public class Global {
     public static Date startTime = null;
 
     /**
+     * Some Information about the global state of the simulation. You can add other
+     * variables here to collect the information
+     */
+    /**
      * This is the date of the start of the last round started. Only really
      * significant in the synchronous mode.
      */
     public static Date startTimeOfRound = null;
-
     /**
      * The default log file generated for each run. You may add your own log output,
      * or create a separete log file.
@@ -91,22 +107,14 @@ public class Global {
      * printed to the console.
      */
     public static Logging log = null; // only install after logging has been activated.
-
-    /**
-     * Some Information about the global state of the simulation. You can add other
-     * variables here to collect the information
-     */
-
     /**
      * Global information about the number of messages sent in this round.
      */
     public static int numberOfMessagesInThisRound = 0;
-
     /**
      * Global information about the number of messages sent in all previous rounds.
      */
     public static int numberOfMessagesOverAll = 0;
-
     /**
      * The current time of the simulation.
      * <p>
@@ -115,14 +123,12 @@ public class Global {
      * event.
      */
     public static double currentTime = 0;
-
     /**
      * A boolean whose value changes in every round s.t. in every second round, this
      * value is the same. This member may only be used in synchronous simulation
      * mode.
      */
     public static boolean isEvenRound = true;
-
     /**
      * The Message Transmission Model. This Model indicates how long it takes for a
      * message to go from one node to another. This model is global for all nodes.
@@ -130,24 +136,29 @@ public class Global {
      * @see MessageTransmissionModel
      */
     public static MessageTransmissionModel messageTransmissionModel = null;
-
     /**
      * This is the instance of the custom global class. It is initialized by default
      * with defaultCustomGlobal and if the user uses a project and has a custom
      * global, it sets the customGlobal to an instance of the appropriate class.
      */
     public static AbstractCustomGlobal customGlobal = new DefaultCustomGlobal();
-
     /**
      * A boolean to indicate whether the user wanted to use a specific project or
      * not.
      */
     public static boolean useProject = false;
-
     /**
      * The name of the actual Project. It is specified by the command line.
      */
     public static String projectName = "";
+    /**
+     * True if started in GUI mode, otherwise false.
+     */
+    public static boolean isGuiMode = false;
+    /**
+     * True if runing in asynchronousMode, false otherwise.
+     */
+    public static boolean isAsynchronousMode = true;
 
     /**
      * @return The base-directory of the resource-files of the currently used project.
@@ -166,11 +177,6 @@ public class Global {
     public static String getProjecName() {
         return useProject ? projectName : Configuration.defaultProjectName;
     }
-
-    /**
-     * Stores in an unmodifiable list the names of all projects. This is initialized when this class is loaded and is then not
-     */
-    public static final List<String> projectNames = getAllProjectNames();
 
     /**
      * @return The packages of all projects, sorted alphabetically (ascending).
@@ -203,16 +209,6 @@ public class Global {
             return Configuration.defaultProjectPackage;
         }
     }
-
-    /**
-     * True if started in GUI mode, otherwise false.
-     */
-    public static boolean isGuiMode = false;
-
-    /**
-     * True if runing in asynchronousMode, false otherwise.
-     */
-    public static boolean isAsynchronousMode = true;
 
     /**
      * Gathers all implementations contained in the project-folder and the default
@@ -253,14 +249,8 @@ public class Global {
             // default project after the user implementations
             includePackageForImplementations(subPackage, Configuration.defaultProjectName, result);
         }
-        Collections.sort(result);
         return result;
     }
-
-    /**
-     * A cache for class implementations
-     */
-    private static final Map<String, Vector<String>> classCache = new HashMap<>();
 
     /**
      * Helper method to include implementations contained in a given package
@@ -275,13 +265,10 @@ public class Global {
         if (classCache.containsKey(path)) {
             result.addAll(classCache.get(path));
         } else {
-            ScanResult scanResult = new FastClasspathScanner(path)
+            ScanResult scanResult = new FastClasspathScanner(path, "-sinalgo")
                     .disableRecursiveScanning().scan();
-            Map<String, ClassInfo> classInfoMap = scanResult.getClassNameToClassInfo();
-            Vector<String> subResult = scanResult.getNamesOfAllClasses().stream()
-                    .map(classInfoMap::get)
-                    .filter(ci -> !ci.isInnerClass())
-                    .map(Global::getClassName)
+            Vector<String> subResult = scanResult.getNamesOfAllStandardClasses().stream()
+                    .map(Global::getSimpleClassName)
                     .distinct()
                     .sorted()
                     .map(s -> projectName.equals(Configuration.defaultProjectName) ? s : projectName + ":" + s)
@@ -291,18 +278,12 @@ public class Global {
         }
     }
 
-    private static String getClassName(ClassInfo classInfo) {
-        return getClassName(classInfo.getClassName());
+    private static String getSimpleClassName(ClassInfo classInfo) {
+        return getSimpleClassName(classInfo.getClassName());
     }
 
-    private static String getClassName(String className) {
-        if (className.contains(".")) {
-            className = className.substring(0, className.lastIndexOf('.'));
-            if (className.contains(".")) {
-                className = className.substring(className.lastIndexOf('.') + 1, className.length());
-            }
-        }
-        return className;
+    private static String getSimpleClassName(String className) {
+        return className.substring(className.lastIndexOf('.') + 1, className.length());
     }
 
     /**
