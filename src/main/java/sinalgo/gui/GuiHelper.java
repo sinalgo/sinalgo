@@ -29,7 +29,11 @@ public class GuiHelper {
         URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + "sinalgo.png");
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
-            Application.getApplication().setDockIconImage(ii.getImage());
+            try {
+                Application.getApplication().setDockIconImage(ii.getImage());
+            } catch (RuntimeException ignore) {
+
+            }
             frame.setIconImage(ii.getImage());
         }
     }
@@ -45,7 +49,11 @@ public class GuiHelper {
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
             if (w instanceof JFrame) {
-                Application.getApplication().setDockIconImage(ii.getImage());
+                try {
+                    Application.getApplication().setDockIconImage(ii.getImage());
+                } catch (RuntimeException ignore) {
+
+                }
                 w.setIconImage(ii.getImage());
             }
         }
