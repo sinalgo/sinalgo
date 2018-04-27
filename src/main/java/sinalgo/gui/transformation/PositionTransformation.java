@@ -439,7 +439,7 @@ public abstract class PositionTransformation {
                     "The 'dimensions' field in the configuration file is invalid. Valid values are either '2' for 2D or '3' for 3D. (Cannot create corresponding position transformation instance.)");
         }
         try {
-            Class<?> c = Class.forName(name);
+            Class<?> c = Thread.currentThread().getContextClassLoader().loadClass(name);
             Constructor<?> cons = c.getConstructor();
             result = (PositionTransformation) cons.newInstance();
         } catch (ClassNotFoundException e) {

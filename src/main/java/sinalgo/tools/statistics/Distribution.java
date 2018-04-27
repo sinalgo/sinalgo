@@ -146,7 +146,7 @@ public abstract class Distribution {
         String distributionName = Configuration.getStringParameter(mainTagPath + "/distribution");
 
         try {
-            Class<?> c = Class.forName("sinalgo.tools.statistics." + distributionName + "Distribution");
+            Class<?> c = Thread.currentThread().getContextClassLoader().loadClass("sinalgo.tools.statistics." + distributionName + "Distribution");
             // construct the array of class-types of the objects
             Class<?>[] parameterTypes = {String.class};
             // find the corresponding constructor ...

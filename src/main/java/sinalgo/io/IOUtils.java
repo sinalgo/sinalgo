@@ -3,7 +3,11 @@ package sinalgo.io;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoFatalException;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -133,7 +137,7 @@ public class IOUtils {
      * @throws SinalgoFatalException if the resource cannot be read
      */
     public static BufferedInputStream getResourceAsStream(String path) {
-        ClassLoader cldr = ClassLoader.getSystemClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         InputStream resource = cldr.getResourceAsStream(path);
         if (resource == null) {
             throw new SinalgoFatalException("Failed to read resource '" + path + "'.");
@@ -149,7 +153,7 @@ public class IOUtils {
      * @throws SinalgoFatalException if the resource cannot be read
      */
     public static LineNumberReader getResourceAsReader(String path) {
-        ClassLoader cldr = ClassLoader.getSystemClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         InputStream resource = cldr.getResourceAsStream(path);
         if (resource == null) {
             throw new SinalgoFatalException("Failed to read resource '" + path + "'.");

@@ -88,7 +88,7 @@ public class Configuration {
 
     private static String getVersionString() {
         try {
-            return new Scanner(Configuration.class.getClassLoader().getResourceAsStream("VERSION"),
+            return new Scanner(Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION"),
                     StandardCharsets.UTF_8.displayName()).useDelimiter("\\A").next().trim();
         } catch (Exception e) {
             throw new SinalgoFatalException("Could not read version information from the VERSION file.\n\n" + e);

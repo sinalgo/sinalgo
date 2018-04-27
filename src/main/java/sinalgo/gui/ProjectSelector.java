@@ -64,8 +64,24 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
@@ -388,7 +404,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      * @param projectName The project name
      */
     private void generateGUIDescription(String projectName) {
-        ClassLoader cldr = getClass().getClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         InputStream proj = cldr.getResourceAsStream(Configuration.projectResourceDirPrefix + "/" + projectName + "/" + Configuration.descriptionFileName);
         try {
             if (proj == null) {

@@ -151,7 +151,7 @@ public class Main {
                 // NOTE: we could also call newInstance() on the class-object. But this would
                 // not encapsulate
                 // exceptions that may be thrown in the constructor.
-                Class<?> custGlob = Class.forName(Global.getProjectBinPath() + ".CustomGlobal");
+                Class<?> custGlob = Thread.currentThread().getContextClassLoader().loadClass(Global.getProjectBinPath() + ".CustomGlobal");
                 Constructor<?> constructor = custGlob.getConstructor();
                 Global.customGlobal = (AbstractCustomGlobal) constructor.newInstance();
             } catch (ClassNotFoundException e) {

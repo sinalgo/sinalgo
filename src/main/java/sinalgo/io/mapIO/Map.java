@@ -71,7 +71,7 @@ public class Map {
     public Map(String aMapImageFile) throws FileNotFoundException {
         // Read the image (preferably a bmp file)
         try {
-            ClassLoader cldr = this.getClass().getClassLoader();
+            ClassLoader cldr = Thread.currentThread().getContextClassLoader();
             InputStream in = cldr.getResourceAsStream(aMapImageFile);
             BufferedImage img;
             if ((img = ImageIO.read(in)) == null) {

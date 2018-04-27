@@ -132,7 +132,7 @@ public class AppConfig {
         try {
             configInputStream = Files.newInputStream(configFilePath);
         } catch (Exception e) {
-            ClassLoader cldr = getClass().getClassLoader();
+            ClassLoader cldr = Thread.currentThread().getContextClassLoader();
             configInputStream = cldr.getResourceAsStream(Configuration.sinalgoResourceDirPrefix + "/" + configFileName);
         }
 
