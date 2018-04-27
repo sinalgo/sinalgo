@@ -406,7 +406,7 @@ public class Edge implements DoublyLinkedListEntry {
                 if (Configuration.hasEdgeTypeChanged() || constructor == null) { //
                     constructor = null;
                     nameOfSearchedEdge = Configuration.getEdgeType();
-                    Class<?> edgeClass = Class.forName(nameOfSearchedEdge);
+                    Class<?> edgeClass = Thread.currentThread().getContextClassLoader().loadClass(nameOfSearchedEdge);
                     Constructor<?>[] list = edgeClass.getDeclaredConstructors();
                     // Test all constructors of the edge-class whether it has
                     // a corresponding constructor.

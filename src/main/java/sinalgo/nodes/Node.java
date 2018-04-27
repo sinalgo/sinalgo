@@ -43,10 +43,18 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
-import sinalgo.models.*;
+import sinalgo.models.ConnectivityModel;
+import sinalgo.models.InterferenceModel;
+import sinalgo.models.MobilityModel;
+import sinalgo.models.Model;
+import sinalgo.models.ReliabilityModel;
 import sinalgo.nodes.edges.Edge;
-import sinalgo.nodes.messages.*;
+import sinalgo.nodes.messages.Inbox;
+import sinalgo.nodes.messages.Message;
+import sinalgo.nodes.messages.NackBox;
+import sinalgo.nodes.messages.Packet;
 import sinalgo.nodes.messages.Packet.PacketType;
+import sinalgo.nodes.messages.PacketCollection;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.runtime.GUIRuntime;
 import sinalgo.runtime.Global;
@@ -1512,7 +1520,7 @@ public abstract class Node implements DoublyLinkedListEntry {
         }
 
         try {
-            nodeClass = Class.forName(classPath);
+            nodeClass = Thread.currentThread().getContextClassLoader().loadClass(classPath);
             Constructor<?> constructor = nodeClass.getConstructor();
             // NOTE: we could also call newInstance() on the class-object. But this would
             // not encapsulate

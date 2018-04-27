@@ -108,7 +108,7 @@ public abstract class Model {
             } else {
                 name = Configuration.defaultProjectPackage + ".models." + modelName + "." + className;
             }
-            result = Class.forName(name);
+            result = Thread.currentThread().getContextClassLoader().loadClass(name);
         } catch (ClassNotFoundException e) {
             throw new WrongConfigurationException(e, "Cannot generate class for the " + modelName + ". The class "
                     + className + " cannot be found. (" + e.getMessage() + ")");
