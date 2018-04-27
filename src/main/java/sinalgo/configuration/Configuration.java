@@ -934,7 +934,7 @@ public class Configuration {
     /**
      * The directory where the default project is stored.
      */
-    public static String defaultProjectDir = userProjectsPackage + "." + defaultProjectName;
+    public static String defaultProjectDir = userProjectsPackage + "/" + defaultProjectName;
 
     /**
      * The path where the default project is stored.
