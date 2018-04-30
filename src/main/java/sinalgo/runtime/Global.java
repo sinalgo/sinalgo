@@ -225,7 +225,7 @@ public class Global {
     public static Vector<String> getImplementations(String subDir, boolean allProjects) {
         Vector<String> result = new Vector<>();
         String subPackage = IOUtils.toPackage(subDir);
-        if (subDir.equals("nodes.edges")) { // special case for the edges: the base implementaions are stored in the
+        if (subPackage.equals("nodes.edges")) { // special case for the edges: the base implementaions are stored in the
             // framework
             result.add("Edge");
             result.add("BidirectionalEdge");
