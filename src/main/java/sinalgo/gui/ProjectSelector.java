@@ -763,20 +763,21 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
             }
         }
 
-        String outputPath = (isTemporary ? Configuration.appTmpFolder : Configuration.appConfigDir)
-                + "/" + Configuration.userProjectsPackage + "/" + selectedProjectName;
+        String outputPath = IOUtils.getAsPath(
+                (isTemporary ? Configuration.appTmpFolder : Configuration.appConfigDir),
+                Configuration.userProjectsPackage, selectedProjectName);
         IOUtils.createDir(outputPath);
-        File outputFile = new File(outputPath + "/" + Configuration.configfileFileName + (isTemporary ? ".run" : ""));
+        File outputFile = new File(IOUtils.getAsPath(outputPath, Configuration.configfileFileName + (isTemporary ? ".run" : "")));
 
         // And write the xml tree to the file
         XMLOutputter outputter = new XMLOutputter();
         Format f = Format.getPrettyFormat();
         f.setIndent("\t");
         outputter.setFormat(f);
-        String tempOutputFolder = Configuration.appTmpFolder + "/" + Configuration.userProjectsPackage
-                + "/" + selectedProjectName;
+        String tempOutputFolder = IOUtils.getAsPath(Configuration.appTmpFolder,
+                Configuration.userProjectsPackage, selectedProjectName);
         IOUtils.createDir(tempOutputFolder);
-        File tempOutputFile = new File(tempOutputFolder + "/" + Configuration.configfileFileName + ".temp");
+        File tempOutputFile = new File(IOUtils.getAsPath(tempOutputFolder, Configuration.configfileFileName + ".temp"));
 
         try {
             FileWriter fW = new FileWriter(tempOutputFile);
