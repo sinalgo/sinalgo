@@ -37,22 +37,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.runtime;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ClassInfo;
 import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoFatalException;
+import sinalgo.io.IOUtils;
 import sinalgo.models.MessageTransmissionModel;
 import sinalgo.runtime.AbstractCustomGlobal.GlobalMethod;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -228,10 +222,10 @@ public class Global {
      * default folder.
      * @see Global#getImplementations(String)
      */
-    public static Vector<String> getImplementations(String subPackage, boolean allProjects) {
+    public static Vector<String> getImplementations(String subDir, boolean allProjects) {
         Vector<String> result = new Vector<>();
-        subPackage = subPackage.replace('/', '.');
-        if (subPackage.equals("nodes.edges")) { // special case for the edges: the base implementaions are stored in the
+        String subPackage = IOUtils.toPackage(subDir);
+        if (subDir.equals("nodes.edges")) { // special case for the edges: the base implementaions are stored in the
             // framework
             result.add("Edge");
             result.add("BidirectionalEdge");
@@ -261,7 +255,7 @@ public class Global {
      *                    projectName:implName (for the default project just the implName)
      */
     private static void includePackageForImplementations(String subPackage, String projectName, Vector<String> result) {
-        String path = Configuration.userProjectsPackage + "." + projectName + "." + subPackage;
+        String path = IOUtils.getAsPackage(Configuration.userProjectsPackage, projectName, subPackage);
         if (classCache.containsKey(path)) {
             result.addAll(classCache.get(path));
         } else {
@@ -276,10 +270,6 @@ public class Global {
             classCache.put(path, subResult);
             result.addAll(subResult);
         }
-    }
-
-    private static String getSimpleClassName(ClassInfo classInfo) {
-        return getSimpleClassName(classInfo.getClassName());
     }
 
     private static String getSimpleClassName(String className) {

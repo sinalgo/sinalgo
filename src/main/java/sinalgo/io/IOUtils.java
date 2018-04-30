@@ -3,11 +3,7 @@ package sinalgo.io;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoFatalException;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -159,6 +155,50 @@ public class IOUtils {
             throw new SinalgoFatalException("Failed to read resource '" + path + "'.");
         }
         return new LineNumberReader(new InputStreamReader(resource));
+    }
+
+    /**
+     * Gets the joined elements as a path string.
+     * <br/><br/>
+     * Ex.: 'root, sinalgo, test' returns 'root/sinalgo/test'
+     *
+     * @param strings Each elements of the path.
+     * @return The path elements joined as a path string.
+     */
+    public static String getAsPath(String... strings) {
+        return String.join("/", strings);
+    }
+
+    /**
+     * Gets the joined elements as a package string.
+     * <br/><br/>
+     * Ex.: 'root, sinalgo, test' returns 'root.sinalgo.test'
+     *
+     * @param strings Each elements of the package.
+     * @return The path elements joined as a package string.
+     */
+    public static String getAsPackage(String... strings) {
+        return String.join(".", strings);
+    }
+
+    /**
+     * Transforms a package string to a path string.
+     *
+     * @param pkg The package string.
+     * @return A path string to the corresponding package.
+     */
+    public static String toPath(String pkg) {
+        return pkg.replace('.', '/');
+    }
+
+    /**
+     * Transforms a path string to a package string.
+     *
+     * @param path The path string.
+     * @return A package string to the corresponding path.
+     */
+    public static String toPackage(String path) {
+        return path.replace('/', '.');
     }
 
 }
