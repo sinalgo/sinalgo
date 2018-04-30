@@ -139,7 +139,7 @@ public class Global {
         String implPackage = IOUtils.getAsPackage(projectPackage, IOUtils.toPackage(type.getDir()));
         Stream<String> implStream = allImplementations.get(projectPackage)
                 .stream()
-                .filter(impl -> impl.matches("^" + implPackage + "\\.\\w+"))
+                .filter(impl -> impl.matches("^" + implPackage + "\\.\\w+$"))
                 .map(Global::getLastName)
                 .sorted()
                 .distinct();
