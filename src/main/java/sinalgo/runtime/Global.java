@@ -37,7 +37,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.runtime;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType;
 import sinalgo.exception.SinalgoFatalException;
@@ -50,12 +49,11 @@ import sinalgo.tools.logging.Logging;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -71,8 +69,18 @@ import java.util.stream.Stream;
  */
 public class Global {
 
+    /**
+     * A pattern used to match against user project implementation classes in the classpath.
+     * <br/><br/>
+     * WARNING: This is internal to the framework and should not be changed or used by regular users.
+     */
     private static final Pattern projectPattern = Pattern.compile("^" + Configuration.userProjectsPackage + "\\.\\w+");
 
+    /**
+     * A map used to store all implementation classes in the user projects package.
+     * <br/><br/>
+     * WARNING: This is internal to the framework and should not be changed or used by regular users.
+     */
     private static final Map<String, List<String>> allImplementations = getAllImplementations();
 
     private static Map<String, List<String>> getAllImplementations() {
@@ -90,13 +98,12 @@ public class Global {
     }
 
     /**
-     * Stores in an unmodifiable list the names of all projects. This is initialized when this class is loaded and is then not
+     * Stores the names of all projects in a list.
+     * <br/><br/>
+     * WARNING: This is internal to the framework and should not be changed or used by regular users.
      */
     public static final List<String> projectNames = getAllProjectNames();
 
-    /**
-     * @return The packages of all projects, sorted alphabetically (ascending).
-     */
     private static List<String> getAllProjectNames() {
         try {
             Set<String> blackList = Arrays.stream(Configuration.nonUserProjectNames.split(";"))
@@ -113,28 +120,27 @@ public class Global {
         }
     }
 
+    /**
+     * A map used to store the implementation classes of each type according to
+     * <br/><br/>
+     * WARNING: This is internal to the framework and should not be changed or used by regular users.
+     */
     private final static Map<ImplementationType, Map<String, List<String>>> implementationMap = scanForImplementations();
 
     private static Map<ImplementationType, Map<String, List<String>>> scanForImplementations() {
         try {
-            Map<ImplementationType, Map<String, List<String>>> resultMap = new ConcurrentHashMap<>();
-            Arrays.stream(ImplementationType.values())
+            return Arrays.stream(ImplementationType.values())
                     .parallel()
-                    .forEach(type -> {
-                        Map<String, List<String>> typeResultMap = new HashMap<>();
-                        for (String project : projectNames) {
-                            typeResultMap.put(project, addForProject(project, type));
-                        }
-                        typeResultMap.put(Configuration.defaultProjectName, addForProject(Configuration.defaultProjectName, type));
-                        resultMap.put(type, Collections.unmodifiableMap(typeResultMap));
-                    });
-            return Collections.unmodifiableMap(resultMap);
+                    .collect(Collectors.toMap(Function.identity(),
+                            type -> projectNames.stream()
+                                    .collect(Collectors.toMap(Function.identity(),
+                                            pn -> getImplForProject(pn, type)))));
         } catch (Exception e) {
             throw new SinalgoFatalException("Fatal exception. Could not read implementations classes in the user projects package.", e);
         }
     }
 
-    private static List<String> addForProject(String project, ImplementationType type) {
+    private static List<String> getImplForProject(String project, ImplementationType type) {
         String projectPackage = IOUtils.getAsPackage(Configuration.userProjectsPackage, project);
         String implPackage = IOUtils.getAsPackage(projectPackage, IOUtils.toPackage(type.getDir()));
         Stream<String> implStream = allImplementations.get(projectPackage)
@@ -142,66 +148,12 @@ public class Global {
                 .filter(impl -> impl.matches("^" + implPackage + "\\.\\w+$"))
                 .map(Global::getLastName)
                 .sorted()
-                .distinct();
+                .distinct()
+                .map(s -> project.equals(Configuration.defaultProjectName) ? s : project + ":" + s);
         if (ImplementationType.NODES_EDGES.equals(type)) {
             implStream = Stream.concat(Stream.of("Edge", "BidirectionalEdge"), implStream);
         }
-        return Collections.unmodifiableList(implStream.collect(Collectors.toList()));
-    }
-
-    /**
-     * @param allProjects If set to true, the implementations from all projects are included
-     * @return A list of all class-names that are contained in the project or
-     * default folder.
-     * @see Global#getImplementations(ImplementationType)
-     */
-    public static Vector<String> getImplementations(ImplementationType type, boolean allProjects) {
-        Vector<String> result = new Vector<>();
-        String subPackage = IOUtils.toPackage(type.getDir());
-        if (subPackage.equals("nodes.edges")) { // special case for the edges: the base implementaions are stored in the
-            // framework
-            result.add("Edge");
-            result.add("BidirectionalEdge");
-        }
-        if (allProjects) {
-            // default project before the user implementations
-            includePackageForImplementations(subPackage, Configuration.defaultProjectName, result);
-            for (String projectName : projectNames) {
-                includePackageForImplementations(subPackage, projectName, result);
-            }
-        } else {
-            if (useProject) {
-                includePackageForImplementations(subPackage, projectName, result);
-            }
-            // default project after the user implementations
-            includePackageForImplementations(subPackage, Configuration.defaultProjectName, result);
-        }
-        return result;
-    }
-
-    /**
-     * Helper method to include implementations contained in a given package
-     *
-     * @param subPackage  The package name to search
-     * @param projectName The name of the project in which the implementations are contained
-     * @param result      A vector to which the found implementaions are added in the form
-     *                    projectName:implName (for the default project just the implName)
-     */
-    private static void includePackageForImplementations(String subPackage, String projectName, Vector<String> result) {
-        String path = IOUtils.getAsPackage(Configuration.userProjectsPackage, projectName, subPackage);
-        if (classCache.containsKey(path)) {
-            result.addAll(classCache.get(path));
-        } else {
-            ScanResult scanResult = new FastClasspathScanner(path, "-sinalgo").disableRecursiveScanning().scan();
-            Vector<String> subResult = scanResult.getNamesOfAllStandardClasses().stream()
-                    .map(Global::getLastName)
-                    .distinct()
-                    .sorted()
-                    .map(s -> projectName.equals(Configuration.defaultProjectName) ? s : projectName + ":" + s)
-                    .collect(Collectors.toCollection(Vector::new));
-            classCache.put(path, subResult);
-            result.addAll(subResult);
-        }
+        return implStream.collect(Collectors.toList());
     }
 
     /**
@@ -359,52 +311,17 @@ public class Global {
      * @see Global#getImplementations(ImplementationType)
      */
     public static Vector<String> getImplementations(ImplementationType type, boolean allProjects) {
-        Vector<String> result = new Vector<>();
-        String subPackage = IOUtils.toPackage(type.getDir());
-        if (subPackage.equals("nodes.edges")) { // special case for the edges: the base implementaions are stored in the
-            // framework
-            result.add("Edge");
-            result.add("BidirectionalEdge");
-        }
+        Map<String, List<String>> implForType = implementationMap.getOrDefault(type, Collections.emptyMap());
+        Stream<String> projectNameStream = Stream.of(Configuration.defaultProjectName);
         if (allProjects) {
-            // default project before the user implementations
-            includePackageForImplementations(subPackage, Configuration.defaultProjectName, result);
-            for (String projectName : projectNames) {
-                includePackageForImplementations(subPackage, projectName, result);
-            }
-        } else {
-            if (useProject) {
-                includePackageForImplementations(subPackage, projectName, result);
-            }
-            // default project after the user implementations
-            includePackageForImplementations(subPackage, Configuration.defaultProjectName, result);
+            projectNameStream = Stream.concat(projectNameStream, projectNames.stream());
+        } else if (useProject) {
+            projectNameStream = Stream.concat(Stream.of(projectName), projectNameStream);
         }
-        return result;
-    }
-
-    /**
-     * Helper method to include implementations contained in a given package
-     *
-     * @param subPackage  The package name to search
-     * @param projectName The name of the project in which the implementations are contained
-     * @param result      A vector to which the found implementaions are added in the form
-     *                    projectName:implName (for the default project just the implName)
-     */
-    private static void includePackageForImplementations(String subPackage, String projectName, Vector<String> result) {
-        String path = IOUtils.getAsPackage(Configuration.userProjectsPackage, projectName, subPackage);
-        if (classCache.containsKey(path)) {
-            result.addAll(classCache.get(path));
-        } else {
-            ScanResult scanResult = new FastClasspathScanner(path, "-sinalgo").disableRecursiveScanning().scan();
-            Vector<String> subResult = scanResult.getNamesOfAllStandardClasses().stream()
-                    .map(Global::getLastName)
-                    .distinct()
-                    .sorted()
-                    .map(s -> projectName.equals(Configuration.defaultProjectName) ? s : projectName + ":" + s)
-                    .collect(Collectors.toCollection(Vector::new));
-            classCache.put(path, subResult);
-            result.addAll(subResult);
-        }
+        return projectNameStream
+                .map(implForType::get)
+                .flatMap(List::stream)
+                .collect(Collectors.toCollection(Vector::new));
     }
 
     /**
