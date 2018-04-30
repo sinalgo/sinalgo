@@ -259,8 +259,7 @@ public class Global {
         if (classCache.containsKey(path)) {
             result.addAll(classCache.get(path));
         } else {
-            ScanResult scanResult = new FastClasspathScanner(path, "-sinalgo")
-                    .disableRecursiveScanning().scan();
+            ScanResult scanResult = new FastClasspathScanner(path, "-sinalgo").disableRecursiveScanning().scan();
             Vector<String> subResult = scanResult.getNamesOfAllStandardClasses().stream()
                     .map(Global::getSimpleClassName)
                     .distinct()

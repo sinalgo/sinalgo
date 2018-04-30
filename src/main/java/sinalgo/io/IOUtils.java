@@ -36,8 +36,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static BufferedInputStream getProjectTempConfigurationAsStream(String projectName) {
-        Path tempConfigFilePath = Paths.get(Configuration.appTmpFolder + "/" + Configuration.userProjectsPackage
-                + "/" + projectName + "/" + Configuration.configfileFileName + ".run");
+        Path tempConfigFilePath = Paths.get(getAsPath(Configuration.appTmpFolder, Configuration.userProjectsPackage,
+                projectName, Configuration.configfileFileName + ".run"));
         if (Files.isReadable(tempConfigFilePath)) {
             try {
                 return new BufferedInputStream(Files.newInputStream(tempConfigFilePath));
@@ -59,8 +59,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static LineNumberReader getProjectTempConfigurationAsReader(String projectName) {
-        Path tempConfigFilePath = Paths.get(Configuration.appTmpFolder + "/" + Configuration.userProjectsPackage
-                + "/" + projectName + "/" + Configuration.configfileFileName + ".run");
+        Path tempConfigFilePath = Paths.get(getAsPath(Configuration.appTmpFolder, Configuration.userProjectsPackage,
+                projectName, Configuration.configfileFileName + ".run"));
         if (Files.isReadable(tempConfigFilePath)) {
             try {
                 return new LineNumberReader(new InputStreamReader(Files.newInputStream(tempConfigFilePath)));
@@ -81,8 +81,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static BufferedInputStream getProjectConfigurationAsStream(String projectName) {
-        Path userConfigFilePath = Paths.get(Configuration.appConfigDir + "/" + Configuration.userProjectsPackage
-                + "/" + projectName + "/" + Configuration.configfileFileName);
+        Path userConfigFilePath = Paths.get(getAsPath(Configuration.appConfigDir, Configuration.userProjectsPackage,
+                projectName, Configuration.configfileFileName));
         if (Files.isReadable(userConfigFilePath)) {
             try {
                 return new BufferedInputStream(Files.newInputStream(userConfigFilePath));
@@ -108,8 +108,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static LineNumberReader getProjectConfigurationAsReader(String projectName) {
-        Path userConfigFilePath = Paths.get(Configuration.appConfigDir + "/" + Configuration.userProjectsPackage
-                + "/" + projectName + "/" + Configuration.configfileFileName);
+        Path userConfigFilePath = Paths.get(getAsPath(Configuration.appConfigDir, Configuration.userProjectsPackage,
+                projectName, Configuration.configfileFileName));
         if (Files.isReadable(userConfigFilePath)) {
             try {
                 return new LineNumberReader(new InputStreamReader((Files.newInputStream(userConfigFilePath))));
