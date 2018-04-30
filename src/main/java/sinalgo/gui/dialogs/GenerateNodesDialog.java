@@ -38,6 +38,7 @@ package sinalgo.gui.dialogs;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
+import sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GuiHelper;
@@ -57,6 +58,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
+
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.*;
 
 /**
  * The Dialog to generate a number of new Nodes.
@@ -183,7 +186,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         // ----------------------------
         UnborderedJTextField distSelLabel = new UnborderedJTextField("Distribution Model:", Font.BOLD);
         distSel.add(distSelLabel);
-        fillChoice(distributionModelComboBox, "models/distributionModels", distributionSel);
+        fillChoice(distributionModelComboBox, MODELS_DISTRIBUTION, distributionSel);
         distSel.add(distributionModelComboBox);
         distributionParam.setText(distributionParamDefString);
         distSel.add(distributionParam);
@@ -202,7 +205,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         // ----------------------------
         UnborderedJTextField propSelLabel = new UnborderedJTextField("Node Implementation:", Font.BOLD);
         props.add(propSelLabel);
-        fillChoice(nodeTypeComboBox, "nodes/nodeImplementations", nodeTypeSel);
+        fillChoice(nodeTypeComboBox, NODES_IMPLEMENTATIONS, nodeTypeSel);
         props.add(nodeTypeComboBox);
         nodeTypeParam.setEditable(false);
         nodeTypeParam.setVisible(false);
@@ -212,7 +215,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         // ----------------------------
         UnborderedJTextField connSelLabel = new UnborderedJTextField("Connectivity Model:", Font.BOLD);
         props.add(connSelLabel);
-        fillChoice(connectivityModelComboBox, "models/connectivityModels", connectivitySel);
+        fillChoice(connectivityModelComboBox, MODELS_CONNECTIVITY, connectivitySel);
         props.add(connectivityModelComboBox);
         connectivityParam.setText(connectivityDefString);
         props.add(connectivityParam);
@@ -221,7 +224,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         // ----------------------------
         UnborderedJTextField interSelLabel = new UnborderedJTextField("Interference Model:", Font.BOLD);
         props.add(interSelLabel);
-        fillChoice(interferenceModelComboBox, "models/interferenceModels", interferenceSel);
+        fillChoice(interferenceModelComboBox, MODELS_INTERFERENCE, interferenceSel);
         props.add(interferenceModelComboBox);
         interferenceParam.setText(interferenceDefString);
         props.add(interferenceParam);
@@ -230,7 +233,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         // ----------------------------
         UnborderedJTextField mobSelLabel = new UnborderedJTextField("Mobility Model:", Font.BOLD);
         props.add(mobSelLabel);
-        fillChoice(mobilityModelComboBox, "models/mobilityModels", mobilitySel);
+        fillChoice(mobilityModelComboBox, MODELS_MOBILITY, mobilitySel);
         props.add(mobilityModelComboBox);
         mobilityParam.setText(mobilityDefString);
         props.add(mobilityParam);
@@ -239,7 +242,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         // ----------------------------
         UnborderedJTextField reliSelLabel = new UnborderedJTextField("Reliability Model:", Font.BOLD);
         props.add(reliSelLabel);
-        fillChoice(reliabilityModelComboBox, "models/reliabilityModels", reliabilitySel);
+        fillChoice(reliabilityModelComboBox, MODELS_RELIABILITY, reliabilitySel);
         props.add(reliabilityModelComboBox);
         reliabilityParam.setText(reliabilityDefString);
         props.add(reliabilityParam);
@@ -254,12 +257,12 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
             if (Configuration.showModelsOfAllProjects != allModelsCheckBox.isSelected()) {
                 Configuration.showModelsOfAllProjects = allModelsCheckBox.isSelected();
                 // reload the contents of the drop down fields
-                fillChoice(distributionModelComboBox, "models/distributionModels", distributionSel);
-                fillChoice(nodeTypeComboBox, "nodes/nodeImplementations", nodeTypeSel);
-                fillChoice(connectivityModelComboBox, "models/connectivityModels", connectivitySel);
-                fillChoice(interferenceModelComboBox, "models/interferenceModels", interferenceSel);
-                fillChoice(mobilityModelComboBox, "models/mobilityModels", mobilitySel);
-                fillChoice(reliabilityModelComboBox, "models/reliabilityModels", reliabilitySel);
+                fillChoice(distributionModelComboBox, MODELS_DISTRIBUTION, distributionSel);
+                fillChoice(nodeTypeComboBox, NODES_IMPLEMENTATIONS, nodeTypeSel);
+                fillChoice(connectivityModelComboBox, MODELS_CONNECTIVITY, connectivitySel);
+                fillChoice(interferenceModelComboBox, MODELS_INTERFERENCE, interferenceSel);
+                fillChoice(mobilityModelComboBox, MODELS_MOBILITY, mobilitySel);
+                fillChoice(reliabilityModelComboBox, MODELS_RELIABILITY, reliabilitySel);
                 GenerateNodesDialog.this.pack();
             }
         });
@@ -285,7 +288,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         this.setVisible(true);
     }
 
-    private void fillChoice(JComboBox c, String implDir, String selection) {
+    private void fillChoice(JComboBox c, ImplementationType implDir, String selection) {
         c.removeAllItems();
         Vector<String> names = Global.getImplementations(implDir);
         if (!names.contains(selection)) {

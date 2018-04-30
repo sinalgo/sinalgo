@@ -565,7 +565,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 }
                 if (e.key.equals("mobility")) {
                     mobilityCB = booleanChoice;
-                    if (asynchronousSimulationCB != null && asynchronousSimulationCB.getSelectedItem().equals("true")) {
+                    if (asynchronousSimulationCB != null && "true".equals(asynchronousSimulationCB.getSelectedItem())) {
                         mobilityCB.setSelectedItem("false");
                         mobilityCB.setEnabled(false);
                     }

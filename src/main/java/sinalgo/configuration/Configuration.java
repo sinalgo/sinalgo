@@ -62,6 +62,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.*;
+
 /**
  * This class provides globally visible constants and access to the custom
  * settings from the configuration file.
@@ -157,8 +159,33 @@ public class Configuration {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ImplementationChoiceInConfigFile {
 
+        enum ImplementationType {
+
+            NODES_EDGES("nodes/edges"),
+            NODES_IMPLEMENTATIONS("nodes/nodeImplementations"),
+            MODELS_MESSAGE_TRANSMISSION("models/messageTransmissionModels"),
+            MODELS_CONNECTIVITY("models/connectivityModels"),
+            MODELS_DISTRIBUTION("models/distributionModels"),
+            MODELS_INTERFERENCE("models/interferenceModels"),
+            MODELS_MOBILITY("models/mobilityModels"),
+            MODELS_RELIABILITY("models/reliabilityModels");
+
+            private String dir;
+
+            ImplementationType(String dir) {
+                this.dir = dir;
+            }
+
+            /**
+             * @return The directory used for this implementation type
+             */
+            public String getDir() {
+                return this.dir;
+            }
+        }
+
         /** */
-        String value();
+        ImplementationType value();
     }
 
     /**
@@ -248,7 +275,7 @@ public class Configuration {
      * The type of the edge to be created in the edge factory. This field is
      * private, but has a setter and getter method.
      */
-    @ImplementationChoiceInConfigFile("nodes/edges")
+    @ImplementationChoiceInConfigFile(NODES_EDGES)
     @PrivateInConfigFile("The type of the edges with which nodes are connected.")
     private static String edgeType = "Edge";
 
@@ -405,37 +432,37 @@ public class Configuration {
     // The models that are selected by default.
     // -------------------------------------------------------------------------
     @SectionInConfigFile("Models")
-    @ImplementationChoiceInConfigFile("models/messageTransmissionModels")
+    @ImplementationChoiceInConfigFile(MODELS_MESSAGE_TRANSMISSION)
     @OptionalInConfigFile("The message transmission model used when none is specified")
     public static String DefaultMessageTransmissionModel = "ConstantTime";
 
     /** */
-    @ImplementationChoiceInConfigFile("models/connectivityModels")
+    @ImplementationChoiceInConfigFile(MODELS_CONNECTIVITY)
     @OptionalInConfigFile("Default connectivity model used when none is specified")
     public static String DefaultConnectivityModel = "UDG";
 
     /** */
-    @ImplementationChoiceInConfigFile("models/distributionModels")
+    @ImplementationChoiceInConfigFile(MODELS_DISTRIBUTION)
     @OptionalInConfigFile("Default distribution model used when none is specified")
     public static String DefaultDistributionModel = "Random";
 
     /** */
-    @ImplementationChoiceInConfigFile("models/interferenceModels")
+    @ImplementationChoiceInConfigFile(MODELS_INTERFERENCE)
     @OptionalInConfigFile("Default interference model used when none is specified")
     public static String DefaultInterferenceModel = "NoInterference";
 
     /** */
-    @ImplementationChoiceInConfigFile("models/mobilityModels")
+    @ImplementationChoiceInConfigFile(MODELS_MOBILITY)
     @OptionalInConfigFile("Default mobility model used when none is specified")
     public static String DefaultMobilityModel = "NoMobility";
 
     /** */
-    @ImplementationChoiceInConfigFile("models/reliabilityModels")
+    @ImplementationChoiceInConfigFile(MODELS_RELIABILITY)
     @OptionalInConfigFile("Default reliability model used when none is specified")
     public static String DefaultReliabilityModel = "ReliableDelivery";
 
     /** */
-    @ImplementationChoiceInConfigFile("nodes/nodeImplementations")
+    @ImplementationChoiceInConfigFile(NODES_IMPLEMENTATIONS)
     @OptionalInConfigFile("Default node implementation used when none is specified")
     public static String DefaultNodeImplementation = "DummyNode";
 

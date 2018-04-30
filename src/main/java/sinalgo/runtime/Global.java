@@ -39,6 +39,7 @@ package sinalgo.runtime;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 import sinalgo.configuration.Configuration;
+import sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.io.IOUtils;
 import sinalgo.models.MessageTransmissionModel;
@@ -208,23 +209,23 @@ public class Global {
      * Gathers all implementations contained in the project-folder and the default
      * folder. e.g. to get all mobility-models, set path to models/mobilityModels.
      *
-     * @param subDir The name of the subdirectory for which to get the implementations
+     * @param type The name of the subdirectory for which to get the implementations
      * @return A list of all class-names that are contained in the project or
      * default folder.
      */
-    public static Vector<String> getImplementations(String subDir) {
-        return getImplementations(subDir, Configuration.showModelsOfAllProjects);
+    public static Vector<String> getImplementations(ImplementationType type) {
+        return getImplementations(type, Configuration.showModelsOfAllProjects);
     }
 
     /**
      * @param allProjects If set to true, the implementations from all projects are included
      * @return A list of all class-names that are contained in the project or
      * default folder.
-     * @see Global#getImplementations(String)
+     * @see Global#getImplementations(ImplementationType)
      */
-    public static Vector<String> getImplementations(String subDir, boolean allProjects) {
+    public static Vector<String> getImplementations(ImplementationType type, boolean allProjects) {
         Vector<String> result = new Vector<>();
-        String subPackage = IOUtils.toPackage(subDir);
+        String subPackage = IOUtils.toPackage(type.getDir());
         if (subPackage.equals("nodes.edges")) { // special case for the edges: the base implementaions are stored in the
             // framework
             result.add("Edge");
