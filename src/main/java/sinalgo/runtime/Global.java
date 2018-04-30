@@ -58,6 +58,7 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This is the class, where the global information is stored. Do not mistake it
@@ -124,6 +125,7 @@ public class Global {
                         for (String project : projectNames) {
                             typeResultMap.put(project, addForProject(project, type));
                         }
+                        typeResultMap.put(Configuration.defaultProjectName, addForProject(Configuration.defaultProjectName, type));
                         resultMap.put(type, Collections.unmodifiableMap(typeResultMap));
                     });
             return Collections.unmodifiableMap(resultMap);
@@ -135,13 +137,16 @@ public class Global {
     private static List<String> addForProject(String project, ImplementationType type) {
         String projectPackage = IOUtils.getAsPackage(Configuration.userProjectsPackage, project);
         String implPackage = IOUtils.getAsPackage(projectPackage, IOUtils.toPackage(type.getDir()));
-        return Collections.unmodifiableList(allImplementations.get(projectPackage)
+        Stream<String> implStream = allImplementations.get(projectPackage)
                 .stream()
                 .filter(impl -> impl.matches("^" + implPackage + "\\.\\w+"))
                 .map(Global::getLastName)
                 .sorted()
-                .distinct()
-                .collect(Collectors.toList()));
+                .distinct();
+        if (ImplementationType.NODES_EDGES.equals(type)) {
+            implStream = Stream.concat(Stream.of("Edge", "BidirectionalEdge"), implStream);
+        }
+        return Collections.unmodifiableList(implStream.collect(Collectors.toList()));
     }
 
     /**
