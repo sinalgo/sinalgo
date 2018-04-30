@@ -76,6 +76,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * The base class for all node implementations.
@@ -357,30 +358,21 @@ public abstract class Node implements DoublyLinkedListEntry {
         return position;
     }
 
-    /**
-     * @return true if the two objects are nodes and their ID is equal.
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Node) {
-            Node n = (Node) o;
-            return n.ID == this.ID;
+        if (this == o) {
+            return true;
         }
-        return false;
-    }
-
-    /**
-     * Comparison of this node to another node
-     *
-     * @param n The other node to test for equality
-     * @return True if the other node has the same ID as this node.
-     */
-    public boolean equals(Node n) {
-        if (n == null) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        return n.ID == this.ID;
+        Node node = (Node) o;
+        return ID == node.ID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ID);
     }
 
     // -----------------------------------------------------------------------------------

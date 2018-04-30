@@ -37,19 +37,35 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.tools;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.*;
+import sinalgo.exception.NotInBatchModeException;
+import sinalgo.exception.NotInGUIModeException;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.SinalgoWrappedException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.mapIO.Map;
-import sinalgo.models.*;
+import sinalgo.models.ConnectivityModel;
+import sinalgo.models.DistributionModel;
+import sinalgo.models.InterferenceModel;
+import sinalgo.models.MessageTransmissionModel;
+import sinalgo.models.MobilityModel;
+import sinalgo.models.Model;
+import sinalgo.models.ModelType;
+import sinalgo.models.ReliabilityModel;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.edges.EdgePool;
 import sinalgo.nodes.messages.Packet;
-import sinalgo.runtime.*;
+import sinalgo.runtime.AbstractCustomGlobal;
+import sinalgo.runtime.BatchRuntime;
+import sinalgo.runtime.GUIRuntime;
+import sinalgo.runtime.Global;
+import sinalgo.runtime.Main;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.runtime.events.EventQueue;
 import sinalgo.runtime.events.PacketEvent;
 import sinalgo.runtime.events.TimerEvent;
@@ -498,10 +514,10 @@ public class Tools {
                 // NOTE: we could also call newInstance() on the class-object. But this would
                 // not encapsulate
                 // exceptions that may be thrown in the constructor.
-                Constructor<?> constructor = tmp.second.getConstructor();
+                Constructor<?> constructor = tmp.getSecond().getConstructor();
                 Model m = (Model) constructor.newInstance();
                 m.setParamString(modelParams[k]); // set the parameter string for this model
-                switch (tmp.first) {
+                switch (tmp.getFirst()) {
                     case ConnectivityModel: {
                         node.setConnectivityModel((ConnectivityModel) m);
                     }
@@ -552,7 +568,7 @@ public class Tools {
         for (int j = 0; j < numSpecifiedModels; j++) {
             Tuple<ModelType, Class<?>> tmp = Model.getModelClass(modelNames[j]);
 
-            if (tmp.first == ModelType.DistributionModel) {
+            if (tmp.getFirst() == ModelType.DistributionModel) {
                 throw new SinalgoFatalException("Invalid command-line argument for the -gen flag:\n"
                         + "The optional parameters to specify the models for the nodes contains\n"
                         + "a DistributionModel.\n\n"
@@ -562,7 +578,7 @@ public class Tools {
                         + "the default model is taken.)  (The MessageTransmissionModel must not be used,\n"
                         + "it is set in the configuration file.)");
             }
-            if (tmp.first == ModelType.MessageTransmissionModel) {
+            if (tmp.getFirst() == ModelType.MessageTransmissionModel) {
                 throw new SinalgoFatalException("Invalid command-line argument for the -gen flag:\n"
                         + "The optional parameters to specify the models for the nodes contained\n"
                         + "MessageTransmissionModel. This model is globally unique and set through\n"
@@ -570,10 +586,10 @@ public class Tools {
             }
             // test that no duplicate
             for (int k = 0; k < j; k++) {
-                if (models.elementAt(k).first == tmp.first) {
+                if (models.elementAt(k).getFirst() == tmp.getFirst()) {
                     throw new SinalgoFatalException("Invalid command-line argument for the -gen flag:\n"
                             + "The optional parameters to specify the models for the nodes contains\n"
-                            + "more than one '" + tmp.first.name() + "' \n\n"
+                            + "more than one '" + tmp.getFirst().name() + "' \n\n"
                             + "The arguments for the -gen flag have to be formatted as following:\n"
                             + "-gen #nodes nodeType DistModel [(params)] [{M [(params)]}*]\n"
                             + "where each model appears AT MOST once. (if you don't specify the model,\n"

@@ -47,8 +47,15 @@ import sinalgo.runtime.AbstractCustomGlobal.GlobalMethod;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-import java.util.*;
-import java.util.regex.Matcher;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -63,20 +70,152 @@ import java.util.stream.Collectors;
  */
 public class Global {
 
+    private static final Pattern projectPattern = Pattern.compile("^" + Configuration.userProjectsPackage + "\\.\\w+");
+
+    private static final Map<String, List<String>> allImplementations = getAllImplementations();
+
+    private static Map<String, List<String>> getAllImplementations() {
+        try {
+            return Collections.unmodifiableMap(
+                    new FastClasspathScanner("-sinalgo", Configuration.userProjectsPackage)
+                            .scan(Math.min(Math.max(Runtime.getRuntime().availableProcessors(), 4), 1))
+                            .getNamesOfAllStandardClasses()
+                            .parallelStream()
+                            .filter(projectPattern.asPredicate())
+                            .collect(Collectors.groupingBy(s -> projectPattern.matcher(s).group())));
+        } catch (Exception e) {
+            throw new SinalgoFatalException("Fatal exception. Could not read projects in the user projects package.", e);
+        }
+    }
+
     /**
      * Stores in an unmodifiable list the names of all projects. This is initialized when this class is loaded and is then not
      */
     public static final List<String> projectNames = getAllProjectNames();
+
     /**
-     * A cache for class implementations
+     * @return The packages of all projects, sorted alphabetically (ascending).
      */
-    private static final Map<String, Vector<String>> classCache = new HashMap<>();
+    private static List<String> getAllProjectNames() {
+        try {
+            Set<String> blackList = Arrays.stream(Configuration.nonUserProjectNames.split(";"))
+                    .collect(Collectors.toSet());
+            return Collections.unmodifiableList(allImplementations.keySet()
+                    .parallelStream()
+                    .filter(s -> !blackList.contains(s))
+                    .map(Global::getLastName)
+                    .sorted()
+                    .distinct()
+                    .collect(Collectors.toList()));
+        } catch (Exception e) {
+            throw new SinalgoFatalException("Fatal exception. Could not read projects in the user projects package.", e);
+        }
+    }
+
+    private final static Map<ImplementationType, Map<String, List<String>>> implementationMap = scanForImplementations();
+
+    private static Map<ImplementationType, Map<String, List<String>>> scanForImplementations() {
+        try {
+            Map<ImplementationType, Map<String, List<String>>> resultMap = new ConcurrentHashMap<>();
+            Arrays.stream(ImplementationType.values())
+                    .parallel()
+                    .forEach(type -> {
+                        Map<String, List<String>> typeResultMap = new HashMap<>();
+                        for (String project : projectNames) {
+                            typeResultMap.put(project, addForProject(project, type));
+                        }
+                        resultMap.put(type, Collections.unmodifiableMap(typeResultMap));
+                    });
+            return Collections.unmodifiableMap(resultMap);
+        } catch (Exception e) {
+            throw new SinalgoFatalException("Fatal exception. Could not read implementations classes in the user projects package.", e);
+        }
+    }
+
+    private static List<String> addForProject(String project, ImplementationType type) {
+        String projectPackage = IOUtils.getAsPackage(Configuration.userProjectsPackage, project);
+        String implPackage = IOUtils.getAsPackage(projectPackage, IOUtils.toPackage(type.getDir()));
+        return Collections.unmodifiableList(allImplementations.get(projectPackage)
+                .stream()
+                .filter(impl -> impl.matches("^" + implPackage + "\\.\\w+"))
+                .map(Global::getLastName)
+                .sorted()
+                .distinct()
+                .collect(Collectors.toList()));
+    }
+
+    /**
+     * @param allProjects If set to true, the implementations from all projects are included
+     * @return A list of all class-names that are contained in the project or
+     * default folder.
+     * @see Global#getImplementations(ImplementationType)
+     */
+    public static Vector<String> getImplementations(ImplementationType type, boolean allProjects) {
+        Vector<String> result = new Vector<>();
+        String subPackage = IOUtils.toPackage(type.getDir());
+        if (subPackage.equals("nodes.edges")) { // special case for the edges: the base implementaions are stored in the
+            // framework
+            result.add("Edge");
+            result.add("BidirectionalEdge");
+        }
+        if (allProjects) {
+            // default project before the user implementations
+            includePackageForImplementations(subPackage, Configuration.defaultProjectName, result);
+            for (String projectName : projectNames) {
+                includePackageForImplementations(subPackage, projectName, result);
+            }
+        } else {
+            if (useProject) {
+                includePackageForImplementations(subPackage, projectName, result);
+            }
+            // default project after the user implementations
+            includePackageForImplementations(subPackage, Configuration.defaultProjectName, result);
+        }
+        return result;
+    }
+
+    /**
+     * Helper method to include implementations contained in a given package
+     *
+     * @param subPackage  The package name to search
+     * @param projectName The name of the project in which the implementations are contained
+     * @param result      A vector to which the found implementaions are added in the form
+     *                    projectName:implName (for the default project just the implName)
+     */
+    private static void includePackageForImplementations(String subPackage, String projectName, Vector<String> result) {
+        String path = IOUtils.getAsPackage(Configuration.userProjectsPackage, projectName, subPackage);
+        if (classCache.containsKey(path)) {
+            result.addAll(classCache.get(path));
+        } else {
+            ScanResult scanResult = new FastClasspathScanner(path, "-sinalgo").disableRecursiveScanning().scan();
+            Vector<String> subResult = scanResult.getNamesOfAllStandardClasses().stream()
+                    .map(Global::getLastName)
+                    .distinct()
+                    .sorted()
+                    .map(s -> projectName.equals(Configuration.defaultProjectName) ? s : projectName + ":" + s)
+                    .collect(Collectors.toCollection(Vector::new));
+            classCache.put(path, subResult);
+            result.addAll(subResult);
+        }
+    }
+
+    /**
+     * Gets the last name of a package or class given a full name separated by dots
+     *
+     * @param fullName The full name.
+     * @return The last name.
+     */
+    private static String getLastName(String fullName) {
+        return fullName.substring(fullName.lastIndexOf('.') + 1, fullName.length());
+    }
+
     /**
      * A boolean flag indicating whether the simulation is runing or not. This flag
      * is used to block mouse input (like tooltip...) and zooming during the
      * simulation.
      */
     public static boolean isRunning = false;
+
     /**
      * This is the date of the last start of a simulation. This means this is the
      * time the user started the last number of rounds. This time is particularly
@@ -85,14 +224,11 @@ public class Global {
     public static Date startTime = null;
 
     /**
-     * Some Information about the global state of the simulation. You can add other
-     * variables here to collect the information
-     */
-    /**
      * This is the date of the start of the last round started. Only really
      * significant in the synchronous mode.
      */
     public static Date startTimeOfRound = null;
+
     /**
      * The default log file generated for each run. You may add your own log output,
      * or create a separete log file.
@@ -102,14 +238,22 @@ public class Global {
      * printed to the console.
      */
     public static Logging log = null; // only install after logging has been activated.
+
+    /**
+     * Some Information about the global state of the simulation. You can add other
+     * variables here to collect the information
+     */
+
     /**
      * Global information about the number of messages sent in this round.
      */
     public static int numberOfMessagesInThisRound = 0;
+
     /**
      * Global information about the number of messages sent in all previous rounds.
      */
     public static int numberOfMessagesOverAll = 0;
+
     /**
      * The current time of the simulation.
      * <p>
@@ -118,12 +262,14 @@ public class Global {
      * event.
      */
     public static double currentTime = 0;
+
     /**
      * A boolean whose value changes in every round s.t. in every second round, this
      * value is the same. This member may only be used in synchronous simulation
      * mode.
      */
     public static boolean isEvenRound = true;
+
     /**
      * The Message Transmission Model. This Model indicates how long it takes for a
      * message to go from one node to another. This model is global for all nodes.
@@ -131,38 +277,33 @@ public class Global {
      * @see MessageTransmissionModel
      */
     public static MessageTransmissionModel messageTransmissionModel = null;
+
     /**
      * This is the instance of the custom global class. It is initialized by default
      * with defaultCustomGlobal and if the user uses a project and has a custom
      * global, it sets the customGlobal to an instance of the appropriate class.
      */
     public static AbstractCustomGlobal customGlobal = new DefaultCustomGlobal();
+
     /**
      * A boolean to indicate whether the user wanted to use a specific project or
      * not.
      */
     public static boolean useProject = false;
+
     /**
      * The name of the actual Project. It is specified by the command line.
      */
     public static String projectName = "";
-    /**
-     * True if started in GUI mode, otherwise false.
-     */
-    public static boolean isGuiMode = false;
-    /**
-     * True if runing in asynchronousMode, false otherwise.
-     */
-    public static boolean isAsynchronousMode = true;
 
     /**
      * @return The base-directory of the resource-files of the currently used project.
      */
     public static String getProjectResourceDir() {
         if (useProject) {
-            return Configuration.projectResourceDirPrefix + "/" + projectName;
+            return IOUtils.getAsPath(Configuration.projectResourceDirPrefix, projectName);
         } else {
-            return Configuration.projectResourceDirPrefix + "/" + Configuration.defaultProjectName;
+            return IOUtils.getAsPath(Configuration.projectResourceDirPrefix, Configuration.defaultProjectName);
         }
     }
 
@@ -174,36 +315,25 @@ public class Global {
     }
 
     /**
-     * @return The packages of all projects, sorted alphabetically (ascending).
-     */
-    private static List<String> getAllProjectNames() {
-        try {
-            List<String> blocklist = Arrays.asList(Configuration.nonUserProjectNames.split(";"));
-            ScanResult scannedClasses = new FastClasspathScanner(Configuration.userProjectsPackage).scan();
-            Pattern pattern = Pattern.compile("^" + Configuration.userProjectsPackage + "\\.(?!" + String.join("|", blocklist) + ")\\w+");
-            return Collections.unmodifiableList(scannedClasses.getNamesOfAllClasses().stream()
-                    .map(pattern::matcher)
-                    .filter(Matcher::find)
-                    .map(Matcher::group)
-                    .map(s -> s.substring(s.lastIndexOf('.') + 1, s.length()))
-                    .sorted()
-                    .distinct()
-                    .collect(Collectors.toList()));
-        } catch (Exception e) {
-            throw new SinalgoFatalException("Fatal exception. Could not read projects in the user projects package.", e);
-        }
-    }
-
-    /**
      * @return The base-package of the currently used project.
      */
     public static String getProjectPackage() {
         if (useProject) {
-            return Configuration.userProjectsPackage + "." + projectName;
+            return IOUtils.getAsPackage(Configuration.userProjectsPackage, projectName);
         } else {
             return Configuration.defaultProjectPackage;
         }
     }
+
+    /**
+     * True if started in GUI mode, otherwise false.
+     */
+    public static boolean isGuiMode = false;
+
+    /**
+     * True if runing in asynchronousMode, false otherwise.
+     */
+    public static boolean isAsynchronousMode = true;
 
     /**
      * Gathers all implementations contained in the project-folder and the default
@@ -262,7 +392,7 @@ public class Global {
         } else {
             ScanResult scanResult = new FastClasspathScanner(path, "-sinalgo").disableRecursiveScanning().scan();
             Vector<String> subResult = scanResult.getNamesOfAllStandardClasses().stream()
-                    .map(Global::getSimpleClassName)
+                    .map(Global::getLastName)
                     .distinct()
                     .sorted()
                     .map(s -> projectName.equals(Configuration.defaultProjectName) ? s : projectName + ":" + s)
@@ -270,10 +400,6 @@ public class Global {
             classCache.put(path, subResult);
             result.addAll(subResult);
         }
-    }
-
-    private static String getSimpleClassName(String className) {
-        return className.substring(className.lastIndexOf('.') + 1, className.length());
     }
 
     /**

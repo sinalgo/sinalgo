@@ -45,6 +45,7 @@ import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.transformation.PositionTransformation;
+import sinalgo.io.IOUtils;
 import sinalgo.io.mapIO.Map;
 import sinalgo.models.DistributionModel;
 import sinalgo.models.Model;
@@ -132,7 +133,7 @@ public abstract class SinalgoRuntime {
     public SinalgoRuntime() {
         if (Configuration.useMap) {
             try {
-                map = new Map("projects/" + Global.projectName + "/" + Configuration.map);
+                map = new Map(IOUtils.getAsPath(Configuration.userProjectsPackage, Global.projectName, Configuration.map));
             } catch (FileNotFoundException e) {
                 throw new SinalgoWrappedException(e);
             }
@@ -254,8 +255,8 @@ public abstract class SinalgoRuntime {
 
                 Tuple<String, Integer> optParam;
                 optParam = getOptionalParameters(args, i + 1);
-                String distributionModelParameters = optParam.first;
-                i = optParam.second; // i now points to the next arg to consider
+                String distributionModelParameters = optParam.getFirst();
+                i = optParam.getSecond(); // i now points to the next arg to consider
 
                 modelNames = new String[4]; // the optional models (the params are stored at same offset in modelParams)
                 modelParams = new String[4]; // the optional parameter-strings to the optoinal models.
@@ -280,8 +281,8 @@ public abstract class SinalgoRuntime {
                     }
                     modelNames[numSpecifiedModels] = args[i++]; // note: post-incremented i
                     optParam = getOptionalParameters(args, i); //
-                    modelParams[numSpecifiedModels] = optParam.first;
-                    i = optParam.second; // i now points to the next arg to consider
+                    modelParams[numSpecifiedModels] = optParam.getFirst();
+                    i = optParam.getSecond(); // i now points to the next arg to consider
                     numSpecifiedModels++;
                 }
 
