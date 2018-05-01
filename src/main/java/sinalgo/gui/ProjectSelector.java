@@ -779,11 +779,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         IOUtils.createDir(tempOutputFolder);
         File tempOutputFile = new File(IOUtils.getAsPath(tempOutputFolder, Configuration.configfileFileName + ".temp"));
 
-        try {
-            FileWriter fW = new FileWriter(tempOutputFile);
+        try (FileWriter fW = new FileWriter(tempOutputFile)) {
             outputter.output(doc, fW);
-            fW.flush();
-            fW.close();
         } catch (IOException e) {
             Main.minorError("Could not write a temporary configuration file!\n\n" + e.getMessage());
             return;
@@ -792,9 +789,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         // in a second step, parse the temp file, replace the _xml_nl_ by new-lines and
         // the _xml_custom_ by the custom text
 
-        try {
-            BufferedWriter output = new BufferedWriter(new FileWriter(outputFile));
-            LineNumberReader input = new LineNumberReader(new FileReader(tempOutputFile));
+        try (BufferedWriter output = new BufferedWriter(new FileWriter(outputFile));
+             LineNumberReader input = new LineNumberReader(new FileReader(tempOutputFile))) {
             String line = input.readLine();
             while (line != null) {
                 if (line.contains("<_xml_NL_")) {
@@ -807,9 +803,6 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 }
                 line = input.readLine();
             }
-            output.flush();
-            output.close();
-            input.close();
             tempOutputFile.delete();
         } catch (IOException e1) {
             Main.minorError("Could not write the configuration file!\n\n" + e1.getMessage());

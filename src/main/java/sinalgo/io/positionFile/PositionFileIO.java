@@ -10,12 +10,7 @@ import sinalgo.nodes.Position;
 import sinalgo.tools.Tools;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.PrintStream;
+import java.io.*;
 
 /**
  * @author rflury
@@ -48,8 +43,7 @@ public class PositionFileIO {
             }
         }
 
-        try {
-            PrintStream ps = new PrintStream(name);
+        try (PrintStream ps = new PrintStream(name)) {
             // header contains # of nodes and dimension of deployment field
             ps.println("Number of nodes: " + Tools.getNodeList().size());
             Configuration.printConfiguration(ps);
@@ -59,7 +53,6 @@ public class PositionFileIO {
                 Position p = n.getPosition();
                 ps.println(p.xCoord + ", " + p.yCoord + ", " + p.zCoord);
             }
-            ps.close();
             return true;
         } catch (FileNotFoundException e) {
             Tools.minorError(e.getMessage());
