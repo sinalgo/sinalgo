@@ -445,6 +445,6 @@ public abstract class Model {
      */
     public static Model getModelInstance(String className, Object... parameters) throws WrongConfigurationException {
         Tuple<ModelType, Class<?>> tmp = getModelClass(className);
-        return getModelInstance(tmp.second, className, parameters);
+        return getModelInstance(tmp.getSecond(), className, parameters);
     }
 }

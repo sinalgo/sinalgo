@@ -38,11 +38,7 @@ package sinalgo.runtime;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.NotInBatchModeException;
-import sinalgo.exception.NotInGUIModeException;
-import sinalgo.exception.SinalgoFatalException;
-import sinalgo.exception.SinalgoWrappedException;
-import sinalgo.exception.WrongConfigurationException;
+import sinalgo.exception.*;
 import sinalgo.gui.GUI;
 import sinalgo.gui.ProjectSelector;
 import sinalgo.io.IOUtils;
@@ -82,6 +78,7 @@ public class Main {
     // just an internal method to not have it static...
     private void go(String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new SinalgoUncaughtExceptionHandler());
+        Global.init();
 
         for (String s : args) { // any argument '-help' triggers the help to be printed
             if (s.equals("-help")) {
@@ -151,7 +148,7 @@ public class Main {
                 // NOTE: we could also call newInstance() on the class-object. But this would
                 // not encapsulate
                 // exceptions that may be thrown in the constructor.
-                Class<?> custGlob = Thread.currentThread().getContextClassLoader().loadClass(Global.getProjectBinPath() + ".CustomGlobal");
+                Class<?> custGlob = Thread.currentThread().getContextClassLoader().loadClass(Global.getProjectPackage() + ".CustomGlobal");
                 Constructor<?> constructor = custGlob.getConstructor();
                 Global.customGlobal = (AbstractCustomGlobal) constructor.newInstance();
             } catch (ClassNotFoundException e) {

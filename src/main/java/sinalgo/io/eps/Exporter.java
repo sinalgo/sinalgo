@@ -129,7 +129,7 @@ public class Exporter {
             } else if (file.getName().endsWith(psFf.getExtension())) {
                 graphToPS(file, boundingBox, pt);
             } else if (file.getName().endsWith(pdfFf.getExtension())) {
-                File tmpFile = new File(getEmptyTempFile(""));
+                File tmpFile = new File(getEmptyTempFile(Configuration.appTmpFolder));
                 graphToPS(tmpFile, boundingBox, pt);
                 psToPdf(tmpFile, file);
                 tmpFile.delete();
@@ -138,58 +138,53 @@ public class Exporter {
     }
 
     private void graphToPS(File psOutputFile, Rectangle boundingBox, PositionTransformation pt) {
+        try (EPSOutputPrintStream pw = new EPSOutputPrintStream(psOutputFile)) {
+            pw.setBoundingBox((int) boundingBox.getX() - 2, (int) boundingBox.getY() - 2, boundingBox.width + 2,
+                    boundingBox.height + 2);
 
-        EPSOutputPrintStream pw = null;
-        try {
-            pw = new EPSOutputPrintStream(psOutputFile);
+            pw.writeHeader();
+
+            // add the default macros.
+            pw.println("%default Macros");
+            pw.addMacro("line", "newpath moveto lineto stroke");
+            pw.addMacro("filledCircle", "newpath 0 360 arc fill stroke");
+            pw.addMacro("filled4Polygon", "newpath moveto lineto lineto lineto closepath fill stroke");
+            pw.addMacro("filledArrowHead", "newpath moveto lineto lineto closepath fill stroke");
+            pw.println();
+
+            // print the map prior to the background (such that the border is on top of the
+            // map
+            if (Configuration.useMap) {
+                SinalgoRuntime.map.drawToPostScript(pw, pt);
+            }
+
+            // draw the background
+            if (Configuration.epsDrawDeploymentAreaBoundingBox) {
+                pt.drawBackgroundToPostScript(pw);
+            }
+
+            // draw the edges
+            if (Configuration.drawEdges) {
+                Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
+                while (nodeEnumer.hasMoreElements()) {
+                    Node n = nodeEnumer.nextElement();
+                    for (Edge e : n.outgoingConnections) {
+                        e.drawToPostScript(pw, pt);
+                    }
+                }
+            }
+
+            if (Configuration.drawNodes) {
+                // draw the nodes
+                for (Node n : SinalgoRuntime.nodes) {
+                    n.drawToPostScript(pw, pt);
+                }
+            }
+
+            pw.writeEOF();
         } catch (FileNotFoundException e) {
             Main.minorError("Could not open the file to write the ps to.");
         }
-
-        pw.setBoundingBox((int) boundingBox.getX() - 2, (int) boundingBox.getY() - 2, boundingBox.width + 2,
-                boundingBox.height + 2);
-
-        pw.writeHeader();
-
-        // add the default macros.
-        pw.println("%default Macros");
-        pw.addMacro("line", "newpath moveto lineto stroke");
-        pw.addMacro("filledCircle", "newpath 0 360 arc fill stroke");
-        pw.addMacro("filled4Polygon", "newpath moveto lineto lineto lineto closepath fill stroke");
-        pw.addMacro("filledArrowHead", "newpath moveto lineto lineto closepath fill stroke");
-        pw.println();
-
-        // print the map prior to the background (such that the border is on top of the
-        // map
-        if (Configuration.useMap) {
-            SinalgoRuntime.map.drawToPostScript(pw, pt);
-        }
-
-        // draw the background
-        if (Configuration.epsDrawDeploymentAreaBoundingBox) {
-            pt.drawBackgroundToPostScript(pw);
-        }
-
-        // draw the edges
-        if (Configuration.drawEdges) {
-            Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
-            while (nodeEnumer.hasMoreElements()) {
-                Node n = nodeEnumer.nextElement();
-                for (Edge e : n.outgoingConnections) {
-                    e.drawToPostScript(pw, pt);
-                }
-            }
-        }
-
-        if (Configuration.drawNodes) {
-            // draw the nodes
-            for (Node n : SinalgoRuntime.nodes) {
-                n.drawToPostScript(pw, pt);
-            }
-        }
-
-        pw.writeEOF();
-        pw.close();
     }
 
     private void psToPdf(File psFile, File pdfFile) throws ExportException {
@@ -212,7 +207,7 @@ public class Exporter {
                         + command.substring(index + 2, command.length());
             }
 
-            Process p = java.lang.Runtime.getRuntime().exec(command);
+            Process p = Runtime.getRuntime().exec(command);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             StringBuilder errorMessage = new StringBuilder();

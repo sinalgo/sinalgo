@@ -52,8 +52,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.net.ServerSocket;
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A helper function to start the simulator.
@@ -63,17 +67,14 @@ public class Run {
 
     public static void main(String args[]) {
         Thread.currentThread().setUncaughtExceptionHandler(new SinalgoUncaughtExceptionHandler());
+        Global.init();
 
         testJavaVersion();
 
         StringBuilder command = new StringBuilder(); // the entire command
         try {
             { // Store the cmd line args s.t. we could restart Sinalgo
-                StringBuilder cmdLineArgs = new StringBuilder();
-                for (String s : args) {
-                    cmdLineArgs.append(s).append(" ");
-                }
-                AppConfig.getAppConfig().previousRunCmdLineArgs = cmdLineArgs.toString();
+                AppConfig.getAppConfig().previousRunCmdLineArgs = String.join(" ", args);
                 AppConfig.getAppConfig().writeConfig();
             }
 
@@ -93,6 +94,43 @@ public class Run {
             // cmd line each time
             // add the command string as specified in the config file
             Vector<String> cmds = new Vector<>(Arrays.asList(Configuration.javaCmd.split(" ")));
+
+            /*
+             * Workaround for enabling the debugger when running this from
+             * an IDE or other environments that feature graphical debuggers.
+             * This will set a port for debugging that will be either random
+             * or derived from the port set by the original debug command,
+             * if the random port selection fails. The application will NOT be
+             * suspended until the debugger is attached and it'll be started in
+             * server mode because it crashes if not in server mode.
+             */
+            Pattern debugPattern = Pattern.compile("^-Xdebug$|^-Xrunjdwp.*$|^-agentlib:jdwp.*$");
+            Pattern portPattern = Pattern.compile("address=\\d+");
+            ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+                    .map(debugPattern::matcher)
+                    .filter(Matcher::matches)
+                    .map(Matcher::group)
+                    .map(s -> {
+                        Matcher portMatcher = portPattern.matcher(s);
+                        if (portMatcher.find()) {
+                            int port;
+                            // Trying to find a random available port
+                            try (ServerSocket socket = new ServerSocket(0)) {
+                                port = socket.getLocalPort();
+                            } catch (IOException e) {
+                                port = Integer.parseInt(portMatcher.group(1));
+                                port += (port < 65535) ? 10 : -10;
+                            }
+                            // Setting the new port
+                            s = portMatcher.replaceFirst("address=" + port);
+                            // Setting it to server mode
+                            s = s.replaceFirst("server=n", "server=y");
+                            // Do NOT block until the debugger has attached
+                            s = s.replaceFirst("suspend=y", "suspend=n");
+                        }
+                        return s;
+                    })
+                    .forEachOrdered(cmds::add);
 
             String cp = System.getProperty("user.dir");
             cmds.add("-Xmx" + Configuration.javaVMmaxMem + "m");
@@ -211,10 +249,8 @@ public class Run {
             } catch (InterruptedException e) {
                 throw new SinalgoWrappedException(e);
             }
-            return Global.projectName;
-        } else {
-            return null; // already specified
         }
+        return Global.projectName;
     }
 
     private static Process mainProcess = null; // the simulation process, may be null

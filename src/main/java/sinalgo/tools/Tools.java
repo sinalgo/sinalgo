@@ -59,7 +59,6 @@ import sinalgo.tools.logging.Logging;
 import sinalgo.tools.statistics.Distribution;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -499,10 +498,10 @@ public class Tools {
                 // NOTE: we could also call newInstance() on the class-object. But this would
                 // not encapsulate
                 // exceptions that may be thrown in the constructor.
-                Constructor<?> constructor = tmp.second.getConstructor();
+                Constructor<?> constructor = tmp.getSecond().getConstructor();
                 Model m = (Model) constructor.newInstance();
                 m.setParamString(modelParams[k]); // set the parameter string for this model
-                switch (tmp.first) {
+                switch (tmp.getFirst()) {
                     case ConnectivityModel: {
                         node.setConnectivityModel((ConnectivityModel) m);
                     }
@@ -553,7 +552,7 @@ public class Tools {
         for (int j = 0; j < numSpecifiedModels; j++) {
             Tuple<ModelType, Class<?>> tmp = Model.getModelClass(modelNames[j]);
 
-            if (tmp.first == ModelType.DistributionModel) {
+            if (tmp.getFirst() == ModelType.DistributionModel) {
                 throw new SinalgoFatalException("Invalid command-line argument for the -gen flag:\n"
                         + "The optional parameters to specify the models for the nodes contains\n"
                         + "a DistributionModel.\n\n"
@@ -563,7 +562,7 @@ public class Tools {
                         + "the default model is taken.)  (The MessageTransmissionModel must not be used,\n"
                         + "it is set in the configuration file.)");
             }
-            if (tmp.first == ModelType.MessageTransmissionModel) {
+            if (tmp.getFirst() == ModelType.MessageTransmissionModel) {
                 throw new SinalgoFatalException("Invalid command-line argument for the -gen flag:\n"
                         + "The optional parameters to specify the models for the nodes contained\n"
                         + "MessageTransmissionModel. This model is globally unique and set through\n"
@@ -571,10 +570,10 @@ public class Tools {
             }
             // test that no duplicate
             for (int k = 0; k < j; k++) {
-                if (models.elementAt(k).first == tmp.first) {
+                if (models.elementAt(k).getFirst() == tmp.getFirst()) {
                     throw new SinalgoFatalException("Invalid command-line argument for the -gen flag:\n"
                             + "The optional parameters to specify the models for the nodes contains\n"
-                            + "more than one '" + tmp.first.name() + "' \n\n"
+                            + "more than one '" + tmp.getFirst().name() + "' \n\n"
                             + "The arguments for the -gen flag have to be formatted as following:\n"
                             + "-gen #nodes nodeType DistModel [(params)] [{M [(params)]}*]\n"
                             + "where each model appears AT MOST once. (if you don't specify the model,\n"
@@ -1001,19 +1000,16 @@ public class Tools {
     public static void parseProject(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-project")) { // A specific project is specified
-                if (i + 1 >= args.length) {
-                    throw new SinalgoFatalException("The flag '-project' must be preceeded by the name of a project");
+                if (args.length <= i + 1) {
+                    throw new SinalgoFatalException("The flag '-project' must preceed the name of a project");
                 }
-                // Test that the project folder exists (in the source)
-                String path = Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPackage.replace('.', '/')
-                        + "/" + args[i + 1]; // <<RF>> Why not simply call getProejctSrcDir for path?
-                File testProj = new File(path);
-                if (testProj.exists()) {
+                if (Global.getProjectNames().contains(args[i + 1])) {
                     Global.useProject = true;
                     Global.projectName = args[i + 1];
                 } else {
                     throw new SinalgoFatalException("Cannot find the specified project '" + args[i + 1] + "'.\n"
-                            + "In order to create a project '" + args[i + 1] + "', create a folder '" + path + "'");
+                            + "In order to create a project '" + args[i + 1] + "', create a package '"
+                            + Configuration.userProjectsPackage + "." + args[i + 1] + "'");
                 }
             }
         }

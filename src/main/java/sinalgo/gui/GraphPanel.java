@@ -61,7 +61,13 @@ import sinalgo.tools.logging.Logging;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.Stack;
@@ -432,7 +438,7 @@ public class GraphPanel extends JPanel {
             }
             if (!userSelectsNodeHandler.isEmpty()) {
                 Tuple<NodeSelectionHandler, String> h = userSelectsNodeHandler.peek();
-                String text = h.second;
+                String text = h.getSecond();
                 String textCancel = "Cancel";
                 Font font = new Font(null, Font.PLAIN, 12);
                 g.setFont(font);
@@ -787,7 +793,7 @@ public class GraphPanel extends JPanel {
                         userSelectsNodeMode = !userSelectsNodeHandler.isEmpty();
                         repaint(); // async call that does not repaint the network graph, but only the stuff on top
                         // of the graph
-                        h.first.handleNodeSelectedEvent(null); // abort
+                        h.getFirst().handleNodeSelectedEvent(null); // abort
                     } else {
                         userSelectsNodeMode = false;
                         repaint(); // async call that does not repaint the network graph, but only the stuff on top
@@ -852,7 +858,7 @@ public class GraphPanel extends JPanel {
                         setDefaultCursor();
                         repaint(); // async call that does not repaint the network graph, but only the stuff on top
                         // of the graph
-                        h.first.handleNodeSelectedEvent(selected);
+                        h.getFirst().handleNodeSelectedEvent(selected);
                     } else {
                         userSelectsNodeMode = false;
                     }

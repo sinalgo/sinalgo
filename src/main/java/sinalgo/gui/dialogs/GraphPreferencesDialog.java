@@ -51,6 +51,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
 
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_MESSAGE_TRANSMISSION;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.NODES_EDGES;
+
 /**
  * The Class for the dialog for the Graph preferences.
  */
@@ -181,7 +184,7 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
 
     private void fillTypesOfEdges() {
         // default + current project
-        Vector<String> names = new Vector<>(Global.getImplementations("nodes/edges"));
+        Vector<String> names = new Vector<>(Global.getImplementations(NODES_EDGES));
         if (!names.contains(Configuration.getEdgeTypeShortName())) {
             names.add(Configuration.getEdgeTypeShortName());
         }
@@ -196,7 +199,7 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
     private void fillTransmissionModel() {
         // default project && current
         // project
-        Vector<String> names = new Vector<>(Global.getImplementations("models/messageTransmissionModels"));
+        Vector<String> names = new Vector<>(Global.getImplementations(MODELS_MESSAGE_TRANSMISSION));
         if (!names.contains(Configuration.DefaultMessageTransmissionModel)) {
             names.add(Configuration.DefaultMessageTransmissionModel);
         }

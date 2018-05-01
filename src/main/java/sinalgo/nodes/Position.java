@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes;
 
+import java.util.Objects;
+
 /**
  * A simple vector implementation that describes the position of the nodes on
  * the deployment area.
@@ -70,9 +72,7 @@ public class Position {
      * The constructor for the Position class.
      */
     public Position() {
-        xCoord = 0;
-        yCoord = 0;
-        zCoord = 0;
+        this(0, 0, 0);
     }
 
     /**
@@ -83,9 +83,7 @@ public class Position {
      * @param z The z coordinate of the node to create.
      */
     public Position(double x, double y, double z) {
-        xCoord = x;
-        yCoord = y;
-        zCoord = z;
+        assign(x, y, z);
     }
 
     /**
@@ -94,9 +92,7 @@ public class Position {
      * @param p The position object from which to copy the x,y and z coordinates.
      */
     public void assign(Position p) {
-        xCoord = p.xCoord;
-        yCoord = p.yCoord;
-        zCoord = p.zCoord;
+        assign(p.xCoord, p.yCoord, p.zCoord);
     }
 
     /**
@@ -137,24 +133,22 @@ public class Position {
         return "[" + xCoord + ", " + yCoord + ", " + zCoord + "]";
     }
 
-    /**
-     * Test whether this point is equal to another point. Two points are equal if
-     * all of their coordinates are equal.
-     *
-     * @param p
-     * @return True if the positions have equal coordinates
-     */
-    public boolean equals(Position p) {
-        return p.xCoord == xCoord && p.yCoord == yCoord && p.zCoord == zCoord;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Position position = (Position) o;
+        return Double.compare(position.xCoord, xCoord) == 0 &&
+                Double.compare(position.yCoord, yCoord) == 0 &&
+                Double.compare(position.zCoord, zCoord) == 0;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof Position) {
-            Position p = (Position) o;
-            return p.xCoord == xCoord && p.yCoord == yCoord && p.zCoord == zCoord;
-        } else {
-            return false;
-        }
+    public int hashCode() {
+        return Objects.hash(xCoord, yCoord, zCoord);
     }
 }

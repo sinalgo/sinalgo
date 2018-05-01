@@ -36,16 +36,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
+import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import sinalgo.configuration.Configuration;
-import sinalgo.gui.ProjectSelector;
+import sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.io.IOUtils;
 import sinalgo.models.MessageTransmissionModel;
 import sinalgo.runtime.AbstractCustomGlobal.GlobalMethod;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-import java.io.File;
-import java.util.Date;
-import java.util.Vector;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This is the class, where the global information is stored. Do not mistake it
@@ -57,6 +64,20 @@ import java.util.Vector;
  * customGlobal variable in this class.
  */
 public class Global {
+
+    /**
+     * Stores the names of all projects in a list.
+     * <br/><br/>
+     * WARNING: This is internal to the framework and should not be changed or used by regular users.
+     */
+    private static List<String> projectNames;
+
+    /**
+     * A map used to store the implementation classes of each type for each project.
+     * <br/><br/>
+     * WARNING: This is internal to the framework and should not be changed or used by regular users.
+     */
+    private static Map<ImplementationType, Map<String, List<String>>> implementationMap;
 
     /**
      * A boolean flag indicating whether the simulation is runing or not. This flag
@@ -146,27 +167,87 @@ public class Global {
     public static String projectName = "";
 
     /**
+     * An atomic boolean used to indicate whether or not the framework has been initialized.
+     */
+    private static AtomicBoolean initialized = new AtomicBoolean(false);
+
+    /**
+     * Method used to initialize the framework's project scanning logic.
+     */
+    public synchronized static void init() {
+        if (initialized.getAndSet(true)) {
+            return;
+        }
+        try {
+            Pattern projectPattern = Pattern.compile("^(" + Configuration.userProjectsPackage + "\\.\\w+).*$");
+
+            Map<String, List<String>> allImplementations = new FastClasspathScanner("-sinalgo", Configuration.userProjectsPackage)
+                    .scan(Math.min(Math.max(Runtime.getRuntime().availableProcessors(), 4), 1))
+                    .getNamesOfAllStandardClasses().parallelStream()
+                    .map(projectPattern::matcher)
+                    .filter(Matcher::matches)
+                    .collect(Collectors.groupingBy(m -> m.group(1), Collectors.mapping(Matcher::group, Collectors.toList())));
+
+            Set<String> blackList = Arrays.stream(Configuration.nonUserProjectNames.split(";"))
+                    .collect(Collectors.toSet());
+            projectNames = allImplementations.keySet().parallelStream()
+                    .map(Global::getLastName)
+                    .filter(s -> !blackList.contains(s))
+                    .sorted()
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            implementationMap = Arrays.stream(ImplementationType.values()).parallel()
+                    .collect(Collectors.toMap(Function.identity(), type -> Stream.concat(Stream.of(Configuration.defaultProjectName), projectNames.stream())
+                            .collect(Collectors.toMap(Function.identity(), pn -> {
+                                String projectPackage = IOUtils.getAsPackage(Configuration.userProjectsPackage, pn);
+                                String implPackage = IOUtils.getAsPackage(projectPackage, IOUtils.toPackage(type.getDir()));
+                                Stream<String> implStream = allImplementations.get(projectPackage).stream()
+                                        .filter(impl -> impl.matches("^" + implPackage + "\\.\\w+$"))
+                                        .map(Global::getLastName)
+                                        .sorted()
+                                        .distinct()
+                                        .map(s -> pn.equals(Configuration.defaultProjectName) ? s : pn + ":" + s);
+                                if (ImplementationType.NODES_EDGES.equals(type)) {
+                                    implStream = Stream.concat(Stream.of("Edge", "BidirectionalEdge"), implStream);
+                                }
+                                return implStream.collect(Collectors.toList());
+                            }))));
+        } catch (Exception e) {
+            throw new SinalgoFatalException("Fatal exception. Could not read projects in the user projects package.", e);
+        }
+    }
+
+    /**
+     * Gets the last name of a package or class given a full name separated by dots
+     *
+     * @param fullName The full name.
+     * @return The last name.
+     */
+    private static String getLastName(String fullName) {
+        return fullName.substring(fullName.lastIndexOf('.') + 1, fullName.length());
+    }
+
+    /**
+     * @return A vector containing all project names scanned in the classpath.
+     */
+    public static Vector<String> getProjectNames() {
+        if (initialized.get()) {
+            init();
+        }
+        return new Vector<>(projectNames);
+    }
+
+    /**
      * @return The base-directory of the resource-files of the currently used project.
      */
     public static String getProjectResourceDir() {
         if (useProject) {
-            return Configuration.projectResourceDirPrefix + "/" + projectName;
+            return IOUtils.getAsPath(Configuration.projectResourceDirPrefix, projectName);
         } else {
-            return Configuration.projectResourceDirPrefix + "/" + Configuration.defaultProjectName;
+            return IOUtils.getAsPath(Configuration.projectResourceDirPrefix, Configuration.defaultProjectName);
         }
     }
-
-//    /**
-//     * @return The base-directory of the source-files of the currently used project.
-//     */
-//    public static String getProjectSrcDir() {
-//        if (useProject) {
-//            return Configuration.sourceDirPrefix + "/" + Configuration.userProjectsPackage.replace('.', '/') + "/"
-//                    + projectName;
-//        } else {
-//            return Configuration.sourceDirPrefix + "/" + Configuration.defaultProjectPackage.replace('.', '/');
-//        }
-//    }
 
     /**
      * @return The currently used project.
@@ -176,35 +257,11 @@ public class Global {
     }
 
     /**
-     * @return The temp-directory of the config-files of the currently used project.
+     * @return The base-package of the currently used project.
      */
-    public static String getProjecTempDir() {
+    public static String getProjectPackage() {
         if (useProject) {
-            return Configuration.appTmpFolder + "/" + Configuration.userProjectsPackage.replace('.', '/') + "/"
-                    + projectName;
-        } else {
-            return Configuration.appTmpFolder + "/" + Configuration.defaultProjectPackage.replace('.', '/');
-        }
-    }
-
-    /**
-     * @return The base-directory of the config-files of the currently used project.
-     */
-    public static String getProjectConfigDir() {
-        if (useProject) {
-            return Configuration.appConfigDir + "/" + Configuration.userProjectsPackage.replace('.', '/') + "/"
-                    + projectName;
-        } else {
-            return Configuration.appConfigDir + "/" + Configuration.defaultProjectPackage.replace('.', '/');
-        }
-    }
-
-    /**
-     * @return The base-path (separated by '.') of the currently used project.
-     */
-    public static String getProjectBinPath() {
-        if (useProject) {
-            return Configuration.userProjectsPackage + "." + projectName;
+            return IOUtils.getAsPackage(Configuration.userProjectsPackage, projectName);
         } else {
             return Configuration.defaultProjectPackage;
         }
@@ -224,73 +281,36 @@ public class Global {
      * Gathers all implementations contained in the project-folder and the default
      * folder. e.g. to get all mobility-models, set path to models/mobilityModels.
      *
-     * @param subDir The name of the subdirectory for which to get the implementations
+     * @param type The name of the subdirectory for which to get the implementations
      * @return A list of all class-names that are contained in the project or
      * default folder.
      */
-    public static Vector<String> getImplementations(String subDir) {
-        return getImplementations(subDir, Configuration.showModelsOfAllProjects);
+    public static Vector<String> getImplementations(ImplementationType type) {
+        return getImplementations(type, Configuration.showModelsOfAllProjects);
     }
 
     /**
      * @param allProjects If set to true, the implementations from all projects are included
      * @return A list of all class-names that are contained in the project or
      * default folder.
-     * @see Global#getImplementations(String)
+     * @see Global#getImplementations(ImplementationType)
      */
-    public static Vector<String> getImplementations(String subDir, boolean allProjects) {
-        Vector<String> result = new Vector<>();
-        if (subDir.equals("nodes/edges")) { // special case for the edges: the base implementaions are stored in the
-            // framework
-            result.add("Edge");
-            result.add("BidirectionalEdge");
+    public static Vector<String> getImplementations(ImplementationType type, boolean allProjects) {
+        if (!initialized.get()) {
+            init();
         }
+        Map<String, List<String>> implForType = implementationMap.getOrDefault(type, Collections.emptyMap());
+        Stream<String> projectNameStream = Stream.of(Configuration.defaultProjectName);
         if (allProjects) {
-            // default project before the user implementations
-            includeDirForImplementations(Configuration.binaryDir + "/" + Configuration.defaultProjectDir + "/" + subDir,
-                    "defaultProject", result);
-            for (String projectName : ProjectSelector.getAllProjectNames()) {
-                includeDirForImplementations(
-                        Configuration.binaryDir + "/" + Configuration.userProjectsDir + "/" + projectName + "/" + subDir,
-                        projectName, result);
-            }
-        } else {
-            if (useProject) {
-                includeDirForImplementations(
-                        Configuration.binaryDir + "/" + Configuration.userProjectsDir + "/" + projectName + "/" + subDir,
-                        projectName, result);
-            }
-            // default project after the user implementations
-            includeDirForImplementations(Configuration.binaryDir + "/" + Configuration.defaultProjectDir + "/" + subDir,
-                    "defaultProject", result);
+            projectNameStream = Stream.concat(projectNameStream, projectNames.stream());
+        } else if (useProject) {
+            projectNameStream = Stream.concat(Stream.of(projectName), projectNameStream);
         }
-        return result;
-    }
-
-    /**
-     * Helper method to include implementations contained in a given folder
-     *
-     * @param dirName     The folder name to search
-     * @param projectName The name of the project in which the implementations are contained
-     * @param result      A vector to which the found implementaions are added in the form
-     *                    projectName:implName (for the default project just the implName)
-     */
-    private static void includeDirForImplementations(String dirName, String projectName, Vector<String> result) {
-        File dir = new File(dirName);
-        String[] list = dir.list();
-        if (list != null) {
-            for (String s : list) {
-                // cut off the '.class', but prefix with the project name and a colon.
-                if (s.endsWith(".class") && !s.contains("$")) {
-                    if (projectName.equals("defaultProject")) {
-                        result.add(s.substring(0, s.lastIndexOf('.'))); // cut off the '.class'
-                    } else {
-                        result.add(projectName + ":" + s.substring(0, s.lastIndexOf('.'))); // prefix with the project
-                        // name
-                    }
-                }
-            }
-        }
+        return projectNameStream
+                .map(implForType::get)
+                .flatMap(List::stream)
+                .distinct()
+                .collect(Collectors.toCollection(Vector::new));
     }
 
     /**

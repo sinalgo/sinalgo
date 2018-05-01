@@ -62,6 +62,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.*;
+
 /**
  * This class provides globally visible constants and access to the custom
  * settings from the configuration file.
@@ -157,8 +159,33 @@ public class Configuration {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ImplementationChoiceInConfigFile {
 
+        enum ImplementationType {
+
+            NODES_EDGES("nodes/edges"),
+            NODES_IMPLEMENTATIONS("nodes/nodeImplementations"),
+            MODELS_MESSAGE_TRANSMISSION("models/messageTransmissionModels"),
+            MODELS_CONNECTIVITY("models/connectivityModels"),
+            MODELS_DISTRIBUTION("models/distributionModels"),
+            MODELS_INTERFERENCE("models/interferenceModels"),
+            MODELS_MOBILITY("models/mobilityModels"),
+            MODELS_RELIABILITY("models/reliabilityModels");
+
+            private String dir;
+
+            ImplementationType(String dir) {
+                this.dir = dir;
+            }
+
+            /**
+             * @return The directory used for this implementation type
+             */
+            public String getDir() {
+                return this.dir;
+            }
+        }
+
         /** */
-        String value();
+        ImplementationType value();
     }
 
     /**
@@ -248,7 +275,7 @@ public class Configuration {
      * The type of the edge to be created in the edge factory. This field is
      * private, but has a setter and getter method.
      */
-    @ImplementationChoiceInConfigFile("nodes/edges")
+    @ImplementationChoiceInConfigFile(NODES_EDGES)
     @PrivateInConfigFile("The type of the edges with which nodes are connected.")
     private static String edgeType = "Edge";
 
@@ -405,37 +432,37 @@ public class Configuration {
     // The models that are selected by default.
     // -------------------------------------------------------------------------
     @SectionInConfigFile("Models")
-    @ImplementationChoiceInConfigFile("models/messageTransmissionModels")
+    @ImplementationChoiceInConfigFile(MODELS_MESSAGE_TRANSMISSION)
     @OptionalInConfigFile("The message transmission model used when none is specified")
     public static String DefaultMessageTransmissionModel = "ConstantTime";
 
     /** */
-    @ImplementationChoiceInConfigFile("models/connectivityModels")
+    @ImplementationChoiceInConfigFile(MODELS_CONNECTIVITY)
     @OptionalInConfigFile("Default connectivity model used when none is specified")
     public static String DefaultConnectivityModel = "UDG";
 
     /** */
-    @ImplementationChoiceInConfigFile("models/distributionModels")
+    @ImplementationChoiceInConfigFile(MODELS_DISTRIBUTION)
     @OptionalInConfigFile("Default distribution model used when none is specified")
     public static String DefaultDistributionModel = "Random";
 
     /** */
-    @ImplementationChoiceInConfigFile("models/interferenceModels")
+    @ImplementationChoiceInConfigFile(MODELS_INTERFERENCE)
     @OptionalInConfigFile("Default interference model used when none is specified")
     public static String DefaultInterferenceModel = "NoInterference";
 
     /** */
-    @ImplementationChoiceInConfigFile("models/mobilityModels")
+    @ImplementationChoiceInConfigFile(MODELS_MOBILITY)
     @OptionalInConfigFile("Default mobility model used when none is specified")
     public static String DefaultMobilityModel = "NoMobility";
 
     /** */
-    @ImplementationChoiceInConfigFile("models/reliabilityModels")
+    @ImplementationChoiceInConfigFile(MODELS_RELIABILITY)
     @OptionalInConfigFile("Default reliability model used when none is specified")
     public static String DefaultReliabilityModel = "ReliableDelivery";
 
     /** */
-    @ImplementationChoiceInConfigFile("nodes/nodeImplementations")
+    @ImplementationChoiceInConfigFile(NODES_IMPLEMENTATIONS)
     @OptionalInConfigFile("Default node implementation used when none is specified")
     public static String DefaultNodeImplementation = "DummyNode";
 
@@ -915,16 +942,10 @@ public class Configuration {
     public static String logFileDirectory = appConfigDir + "/logs";
 
     /**
-     * The directory where user-specific projects are stored. This path has to be
-     * postfixed with the users project name.
-     */
-    public static String userProjectsDir = "projects";
-
-    /**
      * The path where user-specific projects are stored. This path has to be
      * postfixed with the users project name.
      */
-    public static String userProjectsPackage = userProjectsDir;
+    public static String userProjectsPackage = "projects";
 
     /**
      * The default project's name
@@ -932,25 +953,9 @@ public class Configuration {
     public static String defaultProjectName = "defaultProject";
 
     /**
-     * The directory where the default project is stored.
-     */
-    public static String defaultProjectDir = userProjectsPackage + "/" + defaultProjectName;
-
-    /**
      * The path where the default project is stored.
      */
-    public static String defaultProjectPackage = defaultProjectDir.replace("/", ".");
-    ;
-
-    /**
-     * The directory where the source tree starts.
-     */
-    public static String sourceDirPrefix = "src/main/java";
-
-    /**
-     * The directory where the class files are located.
-     */
-    public static String binaryDir = "build/classes/java/main";
+    public static String defaultProjectPackage = userProjectsPackage + "." + defaultProjectName;
 
     /**
      * The name of the description file in the project folder.
@@ -977,13 +982,13 @@ public class Configuration {
     /**
      * The directory where the resources for the projects are stored
      */
-    public static String projectResourceDirPrefix = userProjectsDir;
+    public static String projectResourceDirPrefix = userProjectsPackage;
 
     /**
-     * A semicolon separated list of folder-names that should not be considered as
+     * A semicolon separated list of project names that should not be considered as
      * user-projects
      */
-    public static String nonUserProjectDirNames = "defaultProject;template";
+    public static String nonUserProjectNames = "defaultProject;template";
 
     /**
      * Assigns a value to the configuration file. This method should only be called

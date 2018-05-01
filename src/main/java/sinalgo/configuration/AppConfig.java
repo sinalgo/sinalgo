@@ -133,7 +133,8 @@ public class AppConfig {
             configInputStream = Files.newInputStream(configFilePath);
         } catch (Exception e) {
             ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-            configInputStream = cldr.getResourceAsStream(Configuration.sinalgoResourceDirPrefix + "/" + configFileName);
+            configInputStream = cldr.getResourceAsStream(
+                    IOUtils.getAsPath(Configuration.sinalgoResourceDirPrefix, configFileName));
         }
 
         if (configInputStream == null) {
@@ -414,7 +415,7 @@ public class AppConfig {
         outputter.setFormat(f);
 
         try {
-            FileWriter fW = new FileWriter(new File(Configuration.appConfigDir + "/" + configFileName));
+            FileWriter fW = new FileWriter(new File(IOUtils.getAsPath(Configuration.appConfigDir, configFileName)));
             outputter.output(doc, fW);
         } catch (IOException ignored) {
         }

@@ -64,26 +64,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.StringReader;
+import java.awt.event.*;
+import java.io.*;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Vector;
 
@@ -144,38 +127,11 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
     }
 
     /**
-     * @return The names of all projects, sorted alphabetically (ascending).
-     */
-    public static String[] getAllProjectNames() {
-        String[] list = Configuration.nonUserProjectDirNames.split(";");
-        Vector<String> blocklist = new Vector<>(Arrays.asList(list));
-        File file = new File(Configuration.binaryDir + "/" + Configuration.userProjectsDir);
-        String[] projects = file.list((dir, name) -> {
-            // only allow projects not calles CVS and only the ones that have a compiled
-            // version in the binaries folder.
-            if (blocklist.contains(name)) {
-                return false;
-            }
-            File compiledFolder = new File(
-                    Configuration.binaryDir + "/" + Configuration.userProjectsDir + "/" + name);
-            return compiledFolder.exists() && compiledFolder.isDirectory();
-        });
-        // sort alphabetically
-        Arrays.sort(projects);
-        return projects;
-    }
-
-    /**
      * This method populates the ProjectSelector with all the subpanels and buttons
      */
     public void populate() {
         // gather all projects
-        String[] projects = getAllProjectNames();
-        if (projects == null) {
-            throw new SinalgoFatalException("Cannot find the project folder. " +
-                    "Please ensure that the framework is installed properly.");
-        }
-        Arrays.sort(projects); // sort the projects in ascending order
+        Vector<String> projects = Global.getProjectNames();
 
         this.addComponentListener(new ComponentListener() {
 
@@ -377,25 +333,25 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      */
     protected JButton createFrameworkIconButton(String actionCommand, String imageName, String toolTip) {
         // To support jar files, we cannot access the file directly
-        JButton b;
+        String path = IOUtils.getAsPath(Configuration.sinalgoImageDir, imageName);
         try {
-            InputStream is = IOUtils.getResourceAsStream(Configuration.sinalgoImageDir + "/" + imageName);
+            InputStream is = IOUtils.getResourceAsStream(path);
             ImageIcon icon = new ImageIcon(ImageIO.read(is));
-            b = new JButton(icon);
+            JButton b = new JButton(icon);
+            // b.setPreferredSize(new Dimension(29, 29));
+            b.setPreferredSize(new Dimension(0, 9));
+            b.setActionCommand(actionCommand);
+            b.setFocusable(false);
+            b.setBorderPainted(false);
+            // b.setBackground(bgColor);
+            b.addActionListener(this);
+            // b.addMouseListener(this); // move over the button => draw border
+            b.setToolTipText(toolTip);
+            return b;
         } catch (IOException e) {
-            throw new SinalgoFatalException("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + "resources" + Configuration.sinalgoImageDir + "/" + imageName + ".");
+            throw new SinalgoFatalException("Cannot access the application icon " + imageName
+                    + ", which should be stored in\n" + "resources" + path + ".");
         }
-        // b.setPreferredSize(new Dimension(29, 29));
-        b.setPreferredSize(new Dimension(0, 9));
-        b.setActionCommand(actionCommand);
-        b.setFocusable(false);
-        b.setBorderPainted(false);
-        // b.setBackground(bgColor);
-        b.addActionListener(this);
-        // b.addMouseListener(this); // move over the button => draw border
-        b.setToolTipText(toolTip);
-        return b;
     }
 
     /**
@@ -405,7 +361,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      */
     private void generateGUIDescription(String projectName) {
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        InputStream proj = cldr.getResourceAsStream(Configuration.projectResourceDirPrefix + "/" + projectName + "/" + Configuration.descriptionFileName);
+        InputStream proj = cldr.getResourceAsStream(IOUtils.getAsPath(Configuration.projectResourceDirPrefix, projectName, Configuration.descriptionFileName));
         try {
             if (proj == null) {
                 descriptionText.setText("There is no description-file in the currently selected project.");
@@ -609,7 +565,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 }
                 if (e.key.equals("mobility")) {
                     mobilityCB = booleanChoice;
-                    if (asynchronousSimulationCB != null && asynchronousSimulationCB.getSelectedItem().equals("true")) {
+                    if (asynchronousSimulationCB != null && "true".equals(asynchronousSimulationCB.getSelectedItem())) {
                         mobilityCB.setSelectedItem("false");
                         mobilityCB.setEnabled(false);
                     }
@@ -618,8 +574,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 e.valueComponent = null; // there's no component for the section
             } else {
                 // special case for some text fields that expect the name of an implementation.
-                // They
-                // should show the available implementations in a drop down field
+                // They should show the available implementations in a drop down field
                 ImplementationChoiceInConfigFile ian = e.field.getAnnotation(ImplementationChoiceInConfigFile.class);
                 if (ian != null) {
                     Vector<String> ch = Global.getImplementations(ian.value(), true);
@@ -808,26 +763,24 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
             }
         }
 
-        String outputPath = (isTemporary ? Configuration.appTmpFolder : Configuration.appConfigDir)
-                + "/" + Configuration.userProjectsDir + "/" + selectedProjectName;
+        String outputPath = IOUtils.getAsPath(
+                (isTemporary ? Configuration.appTmpFolder : Configuration.appConfigDir),
+                Configuration.userProjectsPackage, selectedProjectName);
         IOUtils.createDir(outputPath);
-        File outputFile = new File(outputPath + "/" + Configuration.configfileFileName + (isTemporary ? ".run" : ""));
+        File outputFile = new File(IOUtils.getAsPath(outputPath, Configuration.configfileFileName + (isTemporary ? ".run" : "")));
 
         // And write the xml tree to the file
         XMLOutputter outputter = new XMLOutputter();
         Format f = Format.getPrettyFormat();
         f.setIndent("\t");
         outputter.setFormat(f);
-        String tempOutputFolder = Configuration.appTmpFolder + "/" + Configuration.userProjectsDir
-                + "/" + selectedProjectName;
+        String tempOutputFolder = IOUtils.getAsPath(Configuration.appTmpFolder,
+                Configuration.userProjectsPackage, selectedProjectName);
         IOUtils.createDir(tempOutputFolder);
-        File tempOutputFile = new File(tempOutputFolder + "/" + Configuration.configfileFileName + ".temp");
+        File tempOutputFile = new File(IOUtils.getAsPath(tempOutputFolder, Configuration.configfileFileName + ".temp"));
 
-        try {
-            FileWriter fW = new FileWriter(tempOutputFile);
+        try (FileWriter fW = new FileWriter(tempOutputFile)) {
             outputter.output(doc, fW);
-            fW.flush();
-            fW.close();
         } catch (IOException e) {
             Main.minorError("Could not write a temporary configuration file!\n\n" + e.getMessage());
             return;
@@ -836,9 +789,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         // in a second step, parse the temp file, replace the _xml_nl_ by new-lines and
         // the _xml_custom_ by the custom text
 
-        try {
-            BufferedWriter output = new BufferedWriter(new FileWriter(outputFile));
-            LineNumberReader input = new LineNumberReader(new FileReader(tempOutputFile));
+        try (BufferedWriter output = new BufferedWriter(new FileWriter(outputFile));
+             LineNumberReader input = new LineNumberReader(new FileReader(tempOutputFile))) {
             String line = input.readLine();
             while (line != null) {
                 if (line.contains("<_xml_NL_")) {
@@ -851,9 +803,6 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 }
                 line = input.readLine();
             }
-            output.flush();
-            output.close();
-            input.close();
             tempOutputFile.delete();
         } catch (IOException e1) {
             Main.minorError("Could not write the configuration file!\n\n" + e1.getMessage());

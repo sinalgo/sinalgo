@@ -70,9 +70,8 @@ public class Map {
      */
     public Map(String aMapImageFile) throws FileNotFoundException {
         // Read the image (preferably a bmp file)
-        try {
             ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-            InputStream in = cldr.getResourceAsStream(aMapImageFile);
+        try (InputStream in = cldr.getResourceAsStream(aMapImageFile)) {
             BufferedImage img;
             if ((img = ImageIO.read(in)) == null) {
                 throw new FileNotFoundException("\n'" + aMapImageFile + "' - This image format is not supported.");
@@ -86,7 +85,6 @@ public class Map {
                     grid[i][j] = img.getRGB(i, j);
                 }
             }
-            in.close();
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("Background map: Cannot open the image file.\n" + e.getMessage());
         } catch (IOException e) {
