@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools;
 
+import java.util.Objects;
+
 /**
  * A triple-class which can hold two objects in a type-safe manner.
  *
@@ -48,17 +50,17 @@ public class Triple<A, B, C> {
     /**
      * The first value of this triple
      */
-    public A first;
+    private A first;
 
     /**
      * The second value of this triple
      */
-    public B second;
+    private B second;
 
     /**
      * The third value of this triple
      */
-    public C third;
+    private C third;
 
     /**
      * Constructs a new triple and initializes the three fields.
@@ -73,9 +75,49 @@ public class Triple<A, B, C> {
         third = c;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Triple<?, ?, ?> triple = (Triple<?, ?, ?>) o;
+        return Objects.equals(first, triple.first) &&
+                Objects.equals(second, triple.second) &&
+                Objects.equals(third, triple.third);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second, third);
+    }
+
     /**
-     * Default constructor for this class.
+     * Gets the first value of this triple.
+     *
+     * @return The first value of this triple.
      */
-    public Triple() {
+    public A getFirst() {
+        return first;
+    }
+
+    /**
+     * Gets the second value of this triple.
+     *
+     * @return The second value of this triple.
+     */
+    public B getSecond() {
+        return second;
+    }
+
+    /**
+     * Gets the third value of this triple.
+     *
+     * @return The third value of this triple.
+     */
+    public C getThird() {
+        return third;
     }
 }

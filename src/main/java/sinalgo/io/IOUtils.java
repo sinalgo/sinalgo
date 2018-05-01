@@ -3,7 +3,11 @@ package sinalgo.io;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoFatalException;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -91,8 +95,7 @@ public class IOUtils {
             }
         }
         try {
-            return getResourceAsStream(Configuration.projectResourceDirPrefix + "/"
-                    + projectName + "/" + Configuration.configfileFileName);
+            return getResourceAsStream(getAsPath(Configuration.projectResourceDirPrefix, projectName, Configuration.configfileFileName));
         } catch (SinalgoFatalException e) {
             throw new SinalgoFatalException("Failed to read the default configuration file for project '" + projectName + "''");
         }
@@ -118,8 +121,7 @@ public class IOUtils {
             }
         }
         try {
-            return getResourceAsReader(Configuration.projectResourceDirPrefix + "/"
-                    + projectName + "/" + Configuration.configfileFileName);
+            return getResourceAsReader(getAsPath(Configuration.projectResourceDirPrefix, projectName, Configuration.configfileFileName));
         } catch (SinalgoFatalException e) {
             throw new SinalgoFatalException("Failed to read the default configuration file for project '" + projectName + "''");
         }

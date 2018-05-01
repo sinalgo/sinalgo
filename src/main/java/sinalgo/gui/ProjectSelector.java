@@ -64,8 +64,24 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.Vector;
@@ -333,25 +349,25 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      */
     protected JButton createFrameworkIconButton(String actionCommand, String imageName, String toolTip) {
         // To support jar files, we cannot access the file directly
-        JButton b;
+        String path = IOUtils.getAsPath(Configuration.sinalgoImageDir, imageName);
         try {
-            InputStream is = IOUtils.getResourceAsStream(Configuration.sinalgoImageDir + "/" + imageName);
+            InputStream is = IOUtils.getResourceAsStream(path);
             ImageIcon icon = new ImageIcon(ImageIO.read(is));
-            b = new JButton(icon);
+            JButton b = new JButton(icon);
+            // b.setPreferredSize(new Dimension(29, 29));
+            b.setPreferredSize(new Dimension(0, 9));
+            b.setActionCommand(actionCommand);
+            b.setFocusable(false);
+            b.setBorderPainted(false);
+            // b.setBackground(bgColor);
+            b.addActionListener(this);
+            // b.addMouseListener(this); // move over the button => draw border
+            b.setToolTipText(toolTip);
+            return b;
         } catch (IOException e) {
-            throw new SinalgoFatalException("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + "resources" + Configuration.sinalgoImageDir + "/" + imageName + ".");
+            throw new SinalgoFatalException("Cannot access the application icon " + imageName
+                    + ", which should be stored in\n" + "resources" + path + ".");
         }
-        // b.setPreferredSize(new Dimension(29, 29));
-        b.setPreferredSize(new Dimension(0, 9));
-        b.setActionCommand(actionCommand);
-        b.setFocusable(false);
-        b.setBorderPainted(false);
-        // b.setBackground(bgColor);
-        b.addActionListener(this);
-        // b.addMouseListener(this); // move over the button => draw border
-        b.setToolTipText(toolTip);
-        return b;
     }
 
     /**
@@ -361,7 +377,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      */
     private void generateGUIDescription(String projectName) {
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        InputStream proj = cldr.getResourceAsStream(Configuration.projectResourceDirPrefix + "/" + projectName + "/" + Configuration.descriptionFileName);
+        InputStream proj = cldr.getResourceAsStream(IOUtils.getAsPath(Configuration.projectResourceDirPrefix, projectName, Configuration.descriptionFileName));
         try {
             if (proj == null) {
                 descriptionText.setText("There is no description-file in the currently selected project.");

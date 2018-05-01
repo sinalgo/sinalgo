@@ -43,6 +43,7 @@ import sinalgo.gui.GUI;
 import sinalgo.gui.multiLineTooltip.MultiLineToolTipJList;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.gui.transformation.Transformation3D;
+import sinalgo.io.IOUtils;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
@@ -74,53 +75,47 @@ import java.util.Vector;
 public abstract class ControlPanel extends JPanel implements ActionListener, MouseListener {
 
     private static final long serialVersionUID = 8395288187533107606L;
-
-    protected GUI parent = null;
     protected static JTextField roundsToPerform = new JTextField(5); // number of rounds to perform
     protected static JLabel roundsToPerformLabel = new JLabel();
-
     protected static JTextField refreshRate = new JTextField(5);
-    protected JTextField roundsPerformed = new JTextField(0);
-    protected JTextField timePerformed = new JTextField(0);
-    protected JTextField mousePositionField = new JTextField(8);
-    protected JPanel info = new JPanel();
-
-    protected MultiLineToolTipJList eventJList = new MultiLineToolTipJList();
     protected static String currentEventString = "No event";
     protected static String currentEventToolTip = "No event executed until now.";
-
     protected static JButton start = null; // reused to keep the picture
-    protected JButton abort = null;
-    protected JButton runMenuButton = null;
-    protected JButton exit = new JButton("Exit");
-    protected ZoomPanel zoomPanel = null;
-
     protected static JTextArea textField = new JTextArea();
-
     private static AppConfig appConfig = AppConfig.getAppConfig();
 
-    public ControlPanel() {
-        start = createFrameworkIconButton("Start", getRunButtonImageName(), "Run");
+    static { // static initialization
+        roundsToPerform.setText(String.valueOf(Configuration.defaultRoundNumber));
+        roundsToPerform.setEditable(appConfig.guiRunOperationIsLimited);
+        roundsToPerformLabel.setEnabled(appConfig.guiRunOperationIsLimited);
     }
 
     /**
      * The background color of the control panel.
      */
     public Color bgColor = new Color(getBackground().getRed(), getBackground().getGreen(), getBackground().getBlue());
-
+    protected GUI parent = null;
+    protected JTextField roundsPerformed = new JTextField(0);
+    protected JTextField timePerformed = new JTextField(0);
+    protected JTextField mousePositionField = new JTextField(8);
+    protected JPanel info = new JPanel();
+    protected MultiLineToolTipJList eventJList = new MultiLineToolTipJList();
+    protected JButton abort = null;
+    protected JButton runMenuButton = null;
+    protected JButton exit = new JButton("Exit");
+    protected ZoomPanel zoomPanel = null;
     // A list of all buttons that are disabled while a simulation runs
     private Vector<JButton> disabledButtonList = new Vector<>();
+    private Vector<Tuple<JButton, Method>> customButtons = new Vector<>();
+
+    public ControlPanel() {
+        start = createFrameworkIconButton("Start", getRunButtonImageName(), "Run");
+    }
 
     public void addToDisabledButtonList(JButton b) {
         if (!disabledButtonList.contains(b)) {
             disabledButtonList.add(b);
         }
-    }
-
-    static { // static initialization
-        roundsToPerform.setText(String.valueOf(Configuration.defaultRoundNumber));
-        roundsToPerform.setEditable(appConfig.guiRunOperationIsLimited);
-        roundsToPerformLabel.setEnabled(appConfig.guiRunOperationIsLimited);
     }
 
     /**
@@ -146,28 +141,29 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     protected JButton createFrameworkIconButton(String actionCommand, String imageName, String toolTip) {
         // To support jar files, we cannot access the file directly
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        JButton b;
+        String path = IOUtils.getAsPath(Configuration.sinalgoImageDir, imageName);
         try {
-            URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + imageName);
+            URL url = cldr.getResource(path);
             ImageIcon icon = new ImageIcon(url);
-            b = new JButton(icon);
+            JButton b = new JButton(icon);
+            b.setPreferredSize(new Dimension(29, 29));
+            return finishButton(b, actionCommand, toolTip);
         } catch (NullPointerException e) {
-            throw new SinalgoFatalException("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + Configuration.sinalgoImageDir + "/" + imageName + ".");
+            throw new SinalgoFatalException("Cannot access the application icon " + imageName
+                    + ", which should be stored in\n" + path + ".");
         }
-        b.setPreferredSize(new Dimension(29, 29));
-        return finishButton(b, actionCommand, toolTip);
     }
 
     protected ImageIcon getFrameworkIcon(String imageName) {
         // To support jar files, we cannot access the file directly
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
+        String path = IOUtils.getAsPath(Configuration.sinalgoImageDir, imageName);
         try {
-            URL url = cldr.getResource(Configuration.sinalgoImageDir + "/" + imageName);
+            URL url = cldr.getResource(path);
             return new ImageIcon(url);
         } catch (NullPointerException e) {
-            throw new SinalgoFatalException("Cannot access the application icon " + imageName + ", which should be stored in\n"
-                    + Configuration.sinalgoImageDir + "/" + imageName + ".");
+            throw new SinalgoFatalException("Cannot access the application icon " + imageName
+                    + ", which should be stored in\n" + path + ".");
         }
     }
 
@@ -182,25 +178,15 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * @return A new JButton with an icon
      */
     protected JButton createCustomIconButton(String actionCommand, String imageName, String toolTip) {
-        JButton b;
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        if (Global.useProject) {
-            URL url = cldr.getResource(Global.getProjectResourceDir() + "/images/" + imageName);
-            if (url == null) {
-                throw new SinalgoFatalException("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
-                        + Global.getProjectResourceDir() + "/images/" + imageName + ".");
-            }
-            ImageIcon icon = new ImageIcon(url);
-            b = new JButton(icon);
-        } else {
-            URL url = cldr.getResource(Global.getProjectResourceDir() + "/images/" + imageName);
-            if (url == null) {
-                throw new SinalgoFatalException("Cannot access the project specific icon " + imageName + ", which should be stored in\n"
-                        + Global.getProjectResourceDir() + "/images/" + imageName + ".");
-            }
-            ImageIcon icon = new ImageIcon(url);
-            b = new JButton(icon);
+        String path = IOUtils.getAsPath(Global.getProjectResourceDir(), "images", imageName);
+        URL url = cldr.getResource(path);
+        if (url == null) {
+            throw new SinalgoFatalException("Cannot access the project specific icon " + imageName
+                    + ", which should be stored in\n" + path + ".");
         }
+        ImageIcon icon = new ImageIcon(url);
+        JButton b = new JButton(icon);
         b.setPreferredSize(new Dimension(29, 29));
         return finishButton(b, actionCommand, toolTip);
     }
@@ -304,33 +290,6 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     public void appendTextToOutput(String s) {
         textField.append(s);
         textField.setCaretPosition(textField.getText().length());
-    }
-
-    /**
-     * A simple output streamer for the output text field.
-     */
-    public class TextOutputPrintStream extends PrintStream {
-
-        public TextOutputPrintStream(OutputStream out) {
-            super(out);
-        }
-
-        public void setCaretPosition() {
-            textField.setCaretPosition(textField.getText().length());
-        }
-
-        @Override
-        public void println(String s) {
-            textField.append(s);
-            textField.append("\n");
-            textField.setCaretPosition(textField.getText().length());
-        }
-
-        @Override
-        public void print(String s) {
-            textField.append(s);
-            textField.setCaretPosition(textField.getText().length());
-        }
     }
 
     /**
@@ -462,22 +421,22 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         } else {
             // test whether its a custom button
             for (Tuple<JButton, Method> t : customButtons) {
-                if (t.first == e.getSource()) {
+                if (t.getFirst() == e.getSource()) {
                     try {
                         synchronized (parent.getTransformator()) {
                             // synchronize it on the transformator to grant not to be concurrent with
                             // any drawing or modifying action
-                            t.second.invoke(Global.customGlobal);
+                            t.getSecond().invoke(Global.customGlobal);
                         }
                     } catch (IllegalArgumentException | IllegalAccessException e1) {
                         throw new SinalgoFatalException("Error while invoking custom method, triggered through button:\n"
                                 + e1.getMessage() + "\n\n" + e1);
                     } catch (InvocationTargetException e1) {
                         if (e1.getCause() != null) {
-                            Main.minorError("Exception thrown while executing '" + t.second.getName() + "'.\n"
+                            Main.minorError("Exception thrown while executing '" + t.getSecond().getName() + "'.\n"
                                     + e1.getCause().getMessage() + "\n\n" + e1.getCause());
                         } else {
-                            throw new SinalgoFatalException("Exception thrown while executing '" + t.second.getName() + "'.\n"
+                            throw new SinalgoFatalException("Exception thrown while executing '" + t.getSecond().getName() + "'.\n"
                                     + e1.getMessage() + "\n\n" + e1);
                         }
                     }
@@ -485,8 +444,6 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
             }
         }
     }
-
-    private Vector<Tuple<JButton, Method>> customButtons = new Vector<>();
 
     /**
      * Creates a set of custom buttons defined in the CustomGlobal of the current
@@ -567,10 +524,6 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         }
     }
 
-    // -----------------------------------------------------------------
-    // Code for the RUN button
-    // -----------------------------------------------------------------
-
     /**
      * Called whenever the type of RUN-operation is changed.
      *
@@ -584,6 +537,10 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         appConfig.guiRunOperationIsLimited = isLimited;
         start.setIcon(getFrameworkIcon(getRunButtonImageName()));
     }
+
+    // -----------------------------------------------------------------
+    // Code for the RUN button
+    // -----------------------------------------------------------------
 
     /**
      * @return The name of the Icon to use for the run button, according to the
@@ -602,6 +559,33 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
             } else {
                 return "runforever.gif";
             }
+        }
+    }
+
+    /**
+     * A simple output streamer for the output text field.
+     */
+    public class TextOutputPrintStream extends PrintStream {
+
+        public TextOutputPrintStream(OutputStream out) {
+            super(out);
+        }
+
+        public void setCaretPosition() {
+            textField.setCaretPosition(textField.getText().length());
+        }
+
+        @Override
+        public void println(String s) {
+            textField.append(s);
+            textField.append("\n");
+            textField.setCaretPosition(textField.getText().length());
+        }
+
+        @Override
+        public void print(String s) {
+            textField.append(s);
+            textField.setCaretPosition(textField.getText().length());
         }
     }
 

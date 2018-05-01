@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools;
 
+import java.util.Objects;
+
 /**
  * A tuple-class which can hold two objects in a type-safe manner.
  *
@@ -47,12 +49,12 @@ public class Tuple<A, B> {
     /**
      * The first value of this tuple.
      */
-    public A first;
+    private final A first;
 
     /**
      * The second value of this tuple
      */
-    public B second;
+    private final B second;
 
     /**
      * Constructs a new tuple and initializes the two fields.
@@ -65,33 +67,40 @@ public class Tuple<A, B> {
         second = b;
     }
 
-    /**
-     * Default constructor for this class.
-     */
-    public Tuple() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Tuple<?, ?> tuple = (Tuple<?, ?>) o;
+        return Objects.equals(first, tuple.first) &&
+                Objects.equals(second, tuple.second);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
     }
 
     /**
-     * Two tuples are equal if the two pairs of objects stored in the tuplets are
-     * equal. (non-Javadoc)
+     * Gets the first value of this tuple.
      *
-     * @see java.lang.Object#equals(java.lang.Object)
+     * @return The first value of this tuple.
      */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Tuple)) {
-            return false;
-        }
-        Tuple<?, ?> t = (Tuple<?, ?>) o;
-        if (first == null && second == null) {
-            return t.first == null && t.second == null;
-        }
-        if (first == null) {
-            return t.first == null && second.equals(t.second);
-        }
-        if (second == null) {
-            return t.second == null && first.equals(t.first);
-        }
-        return first.equals(t.first) && second.equals(t.second);
+    public A getFirst() {
+        return first;
     }
+
+    /**
+     * Gets the second value of this tuple.
+     *
+     * @return The second value of this tuple.
+     */
+    public B getSecond() {
+        return second;
+    }
+
 }
