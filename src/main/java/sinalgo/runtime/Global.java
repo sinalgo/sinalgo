@@ -46,14 +46,10 @@ import sinalgo.runtime.AbstractCustomGlobal.GlobalMethod;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -70,101 +66,18 @@ import java.util.stream.Stream;
 public class Global {
 
     /**
-     * A pattern used to match against user project implementation classes in the classpath.
-     * <br/><br/>
-     * WARNING: This is internal to the framework and should not be changed or used by regular users.
-     */
-    private static final Pattern projectPattern = Pattern.compile("^" + Configuration.userProjectsPackage + "\\.\\w+");
-
-    /**
-     * A map used to store all implementation classes in the user projects package.
-     * <br/><br/>
-     * WARNING: This is internal to the framework and should not be changed or used by regular users.
-     */
-    private static final Map<String, List<String>> allImplementations = getAllImplementations();
-
-    private static Map<String, List<String>> getAllImplementations() {
-        try {
-            return Collections.unmodifiableMap(
-                    new FastClasspathScanner("-sinalgo", Configuration.userProjectsPackage)
-                            .scan(Math.min(Math.max(Runtime.getRuntime().availableProcessors(), 4), 1))
-                            .getNamesOfAllStandardClasses()
-                            .parallelStream()
-                            .filter(projectPattern.asPredicate())
-                            .collect(Collectors.groupingBy(s -> projectPattern.matcher(s).group())));
-        } catch (Exception e) {
-            throw new SinalgoFatalException("Fatal exception. Could not read projects in the user projects package.", e);
-        }
-    }
-
-    /**
      * Stores the names of all projects in a list.
      * <br/><br/>
      * WARNING: This is internal to the framework and should not be changed or used by regular users.
      */
-    public static final List<String> projectNames = getAllProjectNames();
-
-    private static List<String> getAllProjectNames() {
-        try {
-            Set<String> blackList = Arrays.stream(Configuration.nonUserProjectNames.split(";"))
-                    .collect(Collectors.toSet());
-            return Collections.unmodifiableList(allImplementations.keySet()
-                    .parallelStream()
-                    .filter(s -> !blackList.contains(s))
-                    .map(Global::getLastName)
-                    .sorted()
-                    .distinct()
-                    .collect(Collectors.toList()));
-        } catch (Exception e) {
-            throw new SinalgoFatalException("Fatal exception. Could not read projects in the user projects package.", e);
-        }
-    }
+    private static List<String> projectNames;
 
     /**
-     * A map used to store the implementation classes of each type according to
+     * A map used to store the implementation classes of each type for each project.
      * <br/><br/>
      * WARNING: This is internal to the framework and should not be changed or used by regular users.
      */
-    private final static Map<ImplementationType, Map<String, List<String>>> implementationMap = scanForImplementations();
-
-    private static Map<ImplementationType, Map<String, List<String>>> scanForImplementations() {
-        try {
-            return Arrays.stream(ImplementationType.values())
-                    .parallel()
-                    .collect(Collectors.toMap(Function.identity(),
-                            type -> projectNames.stream()
-                                    .collect(Collectors.toMap(Function.identity(),
-                                            pn -> getImplForProject(pn, type)))));
-        } catch (Exception e) {
-            throw new SinalgoFatalException("Fatal exception. Could not read implementations classes in the user projects package.", e);
-        }
-    }
-
-    private static List<String> getImplForProject(String project, ImplementationType type) {
-        String projectPackage = IOUtils.getAsPackage(Configuration.userProjectsPackage, project);
-        String implPackage = IOUtils.getAsPackage(projectPackage, IOUtils.toPackage(type.getDir()));
-        Stream<String> implStream = allImplementations.get(projectPackage)
-                .stream()
-                .filter(impl -> impl.matches("^" + implPackage + "\\.\\w+$"))
-                .map(Global::getLastName)
-                .sorted()
-                .distinct()
-                .map(s -> project.equals(Configuration.defaultProjectName) ? s : project + ":" + s);
-        if (ImplementationType.NODES_EDGES.equals(type)) {
-            implStream = Stream.concat(Stream.of("Edge", "BidirectionalEdge"), implStream);
-        }
-        return implStream.collect(Collectors.toList());
-    }
-
-    /**
-     * Gets the last name of a package or class given a full name separated by dots
-     *
-     * @param fullName The full name.
-     * @return The last name.
-     */
-    private static String getLastName(String fullName) {
-        return fullName.substring(fullName.lastIndexOf('.') + 1, fullName.length());
-    }
+    private static Map<ImplementationType, Map<String, List<String>>> implementationMap;
 
     /**
      * A boolean flag indicating whether the simulation is runing or not. This flag
@@ -254,6 +167,78 @@ public class Global {
     public static String projectName = "";
 
     /**
+     * An atomic boolean used to indicate whether or not the framework has been initialized.
+     */
+    private static AtomicBoolean initialized = new AtomicBoolean(false);
+
+    /**
+     * Method used to initialize the framework's project scanning logic.
+     */
+    public synchronized static void init() {
+        if (initialized.getAndSet(true)) {
+            return;
+        }
+        try {
+            Pattern projectPattern = Pattern.compile("^(" + Configuration.userProjectsPackage + "\\.\\w+).*$");
+
+            Map<String, List<String>> allImplementations = new FastClasspathScanner("-sinalgo", Configuration.userProjectsPackage)
+                    .scan(Math.min(Math.max(Runtime.getRuntime().availableProcessors(), 4), 1))
+                    .getNamesOfAllStandardClasses().parallelStream()
+                    .map(projectPattern::matcher)
+                    .filter(Matcher::matches)
+                    .collect(Collectors.groupingBy(m -> m.group(1), Collectors.mapping(Matcher::group, Collectors.toList())));
+
+            Set<String> blackList = Arrays.stream(Configuration.nonUserProjectNames.split(";"))
+                    .collect(Collectors.toSet());
+            projectNames = allImplementations.keySet().parallelStream()
+                    .map(Global::getLastName)
+                    .filter(s -> !blackList.contains(s))
+                    .sorted()
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            implementationMap = Arrays.stream(ImplementationType.values()).parallel()
+                    .collect(Collectors.toMap(Function.identity(), type -> Stream.concat(Stream.of(Configuration.defaultProjectName), projectNames.stream())
+                            .collect(Collectors.toMap(Function.identity(), pn -> {
+                                String projectPackage = IOUtils.getAsPackage(Configuration.userProjectsPackage, pn);
+                                String implPackage = IOUtils.getAsPackage(projectPackage, IOUtils.toPackage(type.getDir()));
+                                Stream<String> implStream = allImplementations.get(projectPackage).stream()
+                                        .filter(impl -> impl.matches("^" + implPackage + "\\.\\w+$"))
+                                        .map(Global::getLastName)
+                                        .sorted()
+                                        .distinct()
+                                        .map(s -> pn.equals(Configuration.defaultProjectName) ? s : pn + ":" + s);
+                                if (ImplementationType.NODES_EDGES.equals(type)) {
+                                    implStream = Stream.concat(Stream.of("Edge", "BidirectionalEdge"), implStream);
+                                }
+                                return implStream.collect(Collectors.toList());
+                            }))));
+        } catch (Exception e) {
+            throw new SinalgoFatalException("Fatal exception. Could not read projects in the user projects package.", e);
+        }
+    }
+
+    /**
+     * Gets the last name of a package or class given a full name separated by dots
+     *
+     * @param fullName The full name.
+     * @return The last name.
+     */
+    private static String getLastName(String fullName) {
+        return fullName.substring(fullName.lastIndexOf('.') + 1, fullName.length());
+    }
+
+    /**
+     * @return A vector containing all project names scanned in the classpath.
+     */
+    public static Vector<String> getProjectNames() {
+        if (initialized.get()) {
+            init();
+        }
+        return new Vector<>(projectNames);
+    }
+
+    /**
      * @return The base-directory of the resource-files of the currently used project.
      */
     public static String getProjectResourceDir() {
@@ -311,6 +296,9 @@ public class Global {
      * @see Global#getImplementations(ImplementationType)
      */
     public static Vector<String> getImplementations(ImplementationType type, boolean allProjects) {
+        if (!initialized.get()) {
+            init();
+        }
         Map<String, List<String>> implForType = implementationMap.getOrDefault(type, Collections.emptyMap());
         Stream<String> projectNameStream = Stream.of(Configuration.defaultProjectName);
         if (allProjects) {
@@ -321,6 +309,7 @@ public class Global {
         return projectNameStream
                 .map(implForType::get)
                 .flatMap(List::stream)
+                .distinct()
                 .collect(Collectors.toCollection(Vector::new));
     }
 

@@ -271,9 +271,9 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 
         // the buttons OK / CANCEL
         JPanel buttons = new JPanel();
-        ok.setMnemonic(java.awt.event.KeyEvent.VK_O);
+        ok.setMnemonic(KeyEvent.VK_O);
         buttons.add(ok);
-        cancel.setMnemonic(java.awt.event.KeyEvent.VK_C);
+        cancel.setMnemonic(KeyEvent.VK_C);
         buttons.add(cancel);
 
         cp.add(buttons);

@@ -54,6 +54,7 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 
 /**
  * The default impelementation of a network edge, which connects a node to
@@ -133,15 +134,22 @@ public class Edge implements DoublyLinkedListEntry {
         return oppositeEdge;
     }
 
-    /**
-     * Test equality of this edge with another edge. They are considered equal if
-     * they connect the same pair of nodes in the same direciton.
-     *
-     * @param e The edge to compare to
-     * @return True if the edges are equal, otherwise false.
-     */
-    public boolean equals(Edge e) {
-        return ((this.startNode.ID == e.startNode.ID) && (this.endNode.ID == e.endNode.ID));
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Edge edge = (Edge) o;
+        return Objects.equals(startNode, edge.startNode) &&
+                Objects.equals(endNode, edge.endNode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startNode, endNode);
     }
 
     @Override

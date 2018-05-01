@@ -62,6 +62,19 @@ Sinalgo is as simple as running:
 ./gradlew run 
 ```
 
+If you need to pass command line arguments, you can use the following syntax:
+
+```
+./gradlew run -PappArgs="['arg1', 'arg2', 'arg3']"
+```
+
+And so on. As an example, the following command will run the sample2 project straight from the command line, 
+skipping the project selector window.
+
+```
+./gradlew run -PappArgs="['-project', 'sample2']"
+```
+
 When using Windows, replace ```./gradlew``` with ```gradlew.bat```.
 
 That will downloaded whichever Gradle version Sinalgo needs, build the application and run it. That includes 

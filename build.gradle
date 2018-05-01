@@ -94,3 +94,12 @@ processResources {
         into 'sinalgo/images'
     }
 }
+
+run {
+    if (project.hasProperty("appArgs")) {
+        appArgs = project.getProperties().get("appArgs")
+        if(appArgs instanceof String) {
+            args = Eval.me(appArgs)
+        }
+    }
+}

@@ -37,35 +37,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.tools;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.NotInBatchModeException;
-import sinalgo.exception.NotInGUIModeException;
-import sinalgo.exception.SinalgoFatalException;
-import sinalgo.exception.SinalgoWrappedException;
-import sinalgo.exception.WrongConfigurationException;
+import sinalgo.exception.*;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.mapIO.Map;
-import sinalgo.models.ConnectivityModel;
-import sinalgo.models.DistributionModel;
-import sinalgo.models.InterferenceModel;
-import sinalgo.models.MessageTransmissionModel;
-import sinalgo.models.MobilityModel;
-import sinalgo.models.Model;
-import sinalgo.models.ModelType;
-import sinalgo.models.ReliabilityModel;
+import sinalgo.models.*;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.edges.EdgePool;
 import sinalgo.nodes.messages.Packet;
-import sinalgo.runtime.AbstractCustomGlobal;
-import sinalgo.runtime.BatchRuntime;
-import sinalgo.runtime.GUIRuntime;
-import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
-import sinalgo.runtime.SinalgoRuntime;
+import sinalgo.runtime.*;
 import sinalgo.runtime.events.EventQueue;
 import sinalgo.runtime.events.PacketEvent;
 import sinalgo.runtime.events.TimerEvent;
@@ -1019,7 +1003,7 @@ public class Tools {
                 if (args.length <= i + 1) {
                     throw new SinalgoFatalException("The flag '-project' must preceed the name of a project");
                 }
-                if (Global.projectNames.contains(args[i + 1])) {
+                if (Global.getProjectNames().contains(args[i + 1])) {
                     Global.useProject = true;
                     Global.projectName = args[i + 1];
                 } else {

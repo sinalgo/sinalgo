@@ -43,8 +43,8 @@ import sinalgo.tools.logging.LogL;
 import sinalgo.tools.logging.Logging;
 
 import javax.swing.*;
+import java.awt.*;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.Optional;
 
 /**
  * This class implements a UncoughtExceptionHandler. It is used to catch all the
@@ -54,7 +54,10 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        if (e instanceof SinalgoWrappedException) {
+        if (e instanceof IllegalComponentStateException
+                && e.getMessage().equals("component must be showing on the screen to determine its location")) {
+            return;
+        } else if (e instanceof SinalgoWrappedException) {
             fatalError(e.getCause());
         } else if (e instanceof OutOfMemoryError) {
             SinalgoRuntime.nodes = null;

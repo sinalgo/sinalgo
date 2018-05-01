@@ -38,11 +38,7 @@ package sinalgo.runtime;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.NotInBatchModeException;
-import sinalgo.exception.NotInGUIModeException;
-import sinalgo.exception.SinalgoFatalException;
-import sinalgo.exception.SinalgoWrappedException;
-import sinalgo.exception.WrongConfigurationException;
+import sinalgo.exception.*;
 import sinalgo.gui.GUI;
 import sinalgo.gui.ProjectSelector;
 import sinalgo.io.IOUtils;
@@ -82,6 +78,7 @@ public class Main {
     // just an internal method to not have it static...
     private void go(String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new SinalgoUncaughtExceptionHandler());
+        Global.init();
 
         for (String s : args) { // any argument '-help' triggers the help to be printed
             if (s.equals("-help")) {
