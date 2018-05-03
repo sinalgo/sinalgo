@@ -69,7 +69,7 @@
         <td width="2" class="verticalLine"><img src="https://andrebrait.github.io/sinalgo/pics/blac_vert_line.gif"
                                                 width="2" height="1" alt=""></td>
         <td></td>
-        <td colspan="2" align="right" valign="bottom"><a class="nav_link_tiny" href="index.html?print">Printable
+        <td colspan="2" align="right" valign="bottom"><a class="nav_link_tiny" href="tutorial/Documentation.html?print">Printable
             Version</a></td>
     </tr>
 
@@ -87,7 +87,7 @@
                         <td>
                     </tr>
                     <tr>
-                        <td class='menu'><a href='index.html' class='selected_menuLink'>Home</a></td>
+                        <td class='menu'><a href='index.html' class='menuLink'>Home</a></td>
                     </tr>
                     <tr>
                         <td class='menu'><a href='news.html' class='menuLink'>News</a></td>
@@ -97,6 +97,39 @@
                     </tr>
                     <tr>
                         <td class='menu'><a href='tutorial/Documentation.html' class='menuLink'>Tutorial</a></td>
+                    </tr>
+                    <tr>
+                        <td class='subMenu'><a href='tutorial/Documentation.html' class='selected_SubMenuLink'>Getting
+                            Started</a></td>
+                    </tr>
+                    <tr>
+                        <td class='subMenu'><a href='tutorial/Installation.html' class='SubMenuLink'>Installation</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='subMenu'><a href='tutorial/Execution.html' class='SubMenuLink'>Execution</a></td>
+                    </tr>
+                    <tr>
+                        <td class='subMenu'><a href='tutorial/Project.html' class='SubMenuLink'>Projects</a></td>
+                    </tr>
+                    <tr>
+                        <td class='subMenu'><a href='tutorial/Implementation.html' class='SubMenuLink'>Node
+                            Implementation</a></td>
+                    </tr>
+                    <tr>
+                        <td class='subMenu'><a href='tutorial/Models.html' class='SubMenuLink'>Model Implementation</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='subMenu'><a href='tutorial/Configuration.html' class='SubMenuLink'>Configuration</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='subMenu'><a href='tutorial/Tools.html' class='SubMenuLink'>Tools</a></td>
+                    </tr>
+                    <tr>
+                        <td class='subMenu'><a href='tutorial/Architecture.html' class='SubMenuLink'>Architecture</a>
+                        </td>
                     </tr>
                     <tr>
                         <td class='menu'><a href='faq.html' class='menuLink'>FAQ</a></td>
@@ -114,105 +147,71 @@
 
         <td class="bodyText" width="100%">
 
-            <h1>Welcome to Sinalgo</h1>
-            <p>
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+            <h1>Getting Started</h1>
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-                Sinalgo is a simulation framework for testing and validating network
-                algorithms. Unlike most other network simulators, which spend most
-                time simulating the different layers of the network stack, Sinalgo focuses on the verification of
-                network algorithms, and abstracts from
-                the underlying layers: It offers a message passing view of the
-                network, which captures well the view of actual network devices.
-                Sinalgo was designed, but is not limited to simulate wireless
-                networks.
+            This tutorial gives you a brief introduction to Sinalgo. It covers
+            details from the installation process to a detailed look into the
+            clockwork of Sinalgo.
 
-            <p>The key to successful development of network algorithms is a
-                comprehensive test suite. Thanks to the fast algorithm prototyping in
-                JAVA, Sinalgo offers itself as a first test environment, prior to
-                deploy the algorithm to the hardware. Prototyping in JAVA instead of
-                the hardware specific language is not only much faster and easier,
-                but also simplifies debugging. Sinalgo offers a broad set of
-                network conditions, under which you may test your algorithms. In
-                addition, Sinalgo may be used as a stand-alone application to obtain
-                simulation results in network algorithms research.
+            <p>Running a simulation is actually quite easy. The real difficulty
+                is to understand what one has simulated, and to interpret the
+                obtained results in this context. With this in mind, we hope to give
+                you enough information to not only understand how you can use this
+                simulation framework, but also understand on a high level how the
+                simulation executes. For this purpose, we have added a section <a
+                        href="tutorial/Architecture.html" class="nav_link">Architecture</a>
+                that gives an insight into the clockwork of Sinalgo.
 
-            <p>Sinalgo's view of network devices is close
-                to the view of real hardware devices (e.g. in TinyOS): A node may
-                send a message to a specific neighbor or all its neighbors, react to
-                received messages, set timers to schedule actions in the future, and
-                much more.
+            <h2>Roadmap of this Tutorial</h2>
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-            <p>Some of the key features of Sinalgo:
+            <ul class="unstyled extra-space">
 
-            <ul class="unstiled extra-space">
-                <li>Quick prototyping of your network algorithms in JAVA</li>
-                <li>Straight forward extensibility to cover nearly any simulation scenario</li>
-                <li>Many built-in, but still adjustable plug-ins</li>
-                <li>High performance - run simulations with 100000s of nodes in acceptable time</li>
-                <li>Support for 2D and 3D</li>
-                <li>Asynchronous and synchronous simulation</li>
-                <li>Customizable visualization of the network graph</li>
-                <li>Platform independent - the project is written in Java</li>
-                <li>Sinalgo is for <i>free</i>, published under a BSD license</li>
+                <li>We start with some information on how to <a href="tutorial/Installation.html"
+                                                                class="nav_link">setup</a> Sinalgo on your machine.
+                    Don't worry, it's quite easy.
+                </li>
+
+                <li>The <a href="tutorial/Execution.html" class="nav_link">Execution</a> section describes the different
+                    ways to start Sinalgo, as well as the command-line arguments to pre-configure Sinalgo.
+                </li>
+
+                <li>In the <a href="tutorial/Project.html" class="nav_link">Projects</a> section, we describe how you
+                    can add your own project to Sinalgo...
+                </li>
+
+                <li>... and how to <a href="tutorial/Implementation.html" class="nav_link">implement</a> the desired
+                    behavior.
+                </li>
+
+                <li>The <a href="tutorial/Configuration.html" class="nav_link">Configuration</a> section shows how you
+                    can configure the framework to your needs, and also add your project-specific configuration
+                    settings.
+                </li>
+
+                <li>Don't miss the <a href="tutorial/Tools.html" class="nav_link">Tools</a> page! It contains many hints
+                    on how to use the framework and describes the tools Sinalgo already provides.
+                </li>
+
+                <li>Finally, some information on how Sinalgo works is given in the <a href="tutorial/Architecture.html"
+                                                                                      class="nav_link">Architecture</a>
+                    section.
+                </li>
+
             </ul>
 
-            To guarantee easy extensibility, Sinalgo offers a set of extension
-            points, the so called <i>models</i>. The following list gives an
-            overview of the available models, to each of which you may add your
-            own extension. To facilitate your life, Sinalgo ships with a
-            set of frequently used models.
 
-            <ul class="unstiled extra-space">
-                <li>The <i>mobility model</i> describes how the nodes change their
-                    position over time. Examples are <i>random waypoint</i>, <i>random
-                        walk</i>, <i>random direction</i>, and many others.
-                </li>
+            <h2>Printable Version of this Tutorial</h2>
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-                <li>The <i>connectivity model</i> defines when two nodes are in
-                    communication range. The best known examples are the <i>unit disk
-                        graph (UDG)</i> and the <i>quasi-UDG (QUDG)</i>.
-
-                <li>The <i>distribution model</i> is responsible to initially place
-                    the network nodes in the simulation area. E.g. place the nodes
-                    <i>randomly</i>, evenly distributed on a <i>line</i> or <i>grid</i>
-                    or according to a stationary regime of a mobility model.
-                </li>
-
-                <li>Use the <i>interference model</i> to define whether simultaneous
-                    message transmissions may interfere.
-                </li>
-
-                <li>The <i>reliability model</i> is a simplified form of the
-                    interference model and lets you define for every message whether it
-                    should arrive or not. E.g. drop one percent of all messages.
-                </li>
-
-                <li>Last but not least, the <i>transmission model</i> lets you define
-                    how long a message takes until it arrives at its destination.
-                </li>
-            </ul>
-
-            <p>Please refer to the <a href="tutorial/Documentation.html" class="nav_link">Tutorial</a> for more
-                information on how to get started.</p>
-
-            <p>This software was developed by the <a href="http://disco.ethz.ch/" class="nav_link" target="_blank">Distributed
-                Computing Group</a> at <a href="http://www.ethz.ch/" class="nav_link" target="_blank">ETH Zurich</a>.
-            </p>
-
-            <p>
-                <a href="pics/screenshot1.png" target="_blank" class="nav_link"><img src="pics/screenshotSmall1.png"
-                                                                                     alt="screenshot1"/></a>
-                <a href="pics/screenshot2.png" target="_blank" class="nav_link"><img src="pics/screenshotSmall2.png"
-                                                                                     alt="screenshot2"/></a>
-                <a href="pics/screenshot3.png" target="_blank" class="nav_link"><img src="pics/screenshotSmall3.png"
-                                                                                     alt="screenshot3"/></a>
-                <a href="pics/screenshot4.png" target="_blank" class="nav_link"><img src="pics/screenshotSmall4.png"
-                                                                                     alt="screenshot4"/></a>
-                <a href="pics/screenshot5.png" target="_blank" class="nav_link"><img src="pics/screenshotSmall5.png"
-                                                                                     alt="screenshot5"/></a>
-                <br>
-                <span class="caption">Screenshots</span>
-
+            If you wisth to print the entire tutorial, try the <a
+                href="tutorial/tuti.html" class="nav_link"><b><span class="red">All-in-One Tutorial</span></b></a>,
+            which contains all sections of the tutorial on a single website. To
+            print some pages of this tutorial, click on the <b>Printable
+            Version</b> link on top of each site to get a printer friendly
+            version of the page.
         </td>
         <td><img src="https://andrebrait.github.io/sinalgo/pics/spacer.gif" width="30" height="1" alt=""></td>
     </tr>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="generator" content="HTML Tidy for Linux/x86 (vers 6 November 2007), see www.w3.org" />
+<title>Distributed Computing Group</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="author" content="Damian Friedli" />
+<meta name="description" content="Distributed Computing Group" />
+<meta name="keywords" content="roger wattenhofer, wattenhofer, distributed computing, disco" />
+<meta name="robots" content="noarchive" />
+<link rel="shortcut icon" href="/images/favicon.gif" />
+<style type="text/css">
+                /*<![CDATA[*/
+                        @import url(/css/ns4.css);
+                        @import url(/css/colors_c010.css);
+                        @import url(/css/modernbrowsers.css);
+                        @import url(/css/silva.css);
+                        @import url(/css/customstyles.css);
+                        @import url(/css/disco.css);
+                /*]]>*/
+</style>
+
+<style type="text/css">
+                /*<![CDATA[*/
+                        .logo-bg  {
+                                background-image: url(/images/screen_disco_glow_04-01.jpg); background-repeat: no-repeat;
+                        }
+                        .logo-bg1 {
+                                background-image: url(/images/screen_disco_glow_04-02.jpg); background-repeat: no-repeat;
+                        }
+                        /*div.identity-image  {
+                                background-image: url(/images/screen_disco_glow_04.jpg); background-repeat: repeat
+                        }*/
+                        .mainnav, .screenhead, .color5-back, .color4-back, .color3-back, .color2-back, .color1-back, .servicenav, .transparent  {
+                                background-image: url(/images/transparent.gif)
+                        }
+                        body {
+                                margin:0;
+                                padding:0;
+                        }
+                /*]]>*/
+</style>
+
+<style media="print" type="text/css">
+                /*<![CDATA[*/
+                @import url(/css/print.css);
+                /*]]>*/
+</style>
+</head>
+<body onload="setup();" bgcolor="white" text="black" link="#0000E0" vlink="#0000E0" alink="#00A000" marginheight="0" marginwidth="0" topmargin="0" leftmargin="0">
+<a id="top" name="top"></a> <map name="Map" id="Map">
+<area shape="rect" coords="2,28,212,51" href="/" target="_self" alt="Distributed Computing Group" /></map> <map name="Map2" id="Map2">
+<area shape="rect" coords="9,25,198,78" href="/" target="_self" alt="Distributed Computing Group" /></map>
+<table border="0" cellspacing="0" cellpadding="0" width="120%">
+<tr>
+<td width="220" style="background-image:url(/images/screen_disco_glow_04-01.jpg)"><img src="/images/eth_logo_white_04.png" alt="ETH Zurich" width="220" height="105" border="0" usemap=
+"#Map2" /></td>
+<td width="100%" valign="top" style="background-image:url(/images/screen_disco_glow_04-02.jpg)"><img src="/images/disco_text_01a.png" alt="Distributed Computing Group" width="452" height="54"
+border="0" usemap="#Map" /></td>
+</tr>
+</table>
+<table>
+<tr>
+<td>
+<div class="pathline"><a class="path" href="http://www.ethz.ch/" title="ETH Zurich">ETH Zurich</a> – <a class="path" href="http://www.ee.ethz.ch/" title=
+"Department of Electrical Engineering (ITET)">ITET</a> – <a class="path" href="http://www.tik.ee.ethz.ch/" title="Computer Engineering and Networks Laboratory (TIK)">TIK</a> – <a class="path"
+href="/" title="Distributed Computing Group (DISCO)">Distributed Computing Group</a> <span style="color:black;">– Projects – <a class="path" href="/projects/sinalgo/">Sinalgo</a> – <a class=
+"path" href="/projects/sinalgo/index.html,%E2%80%9D">Index,%E2%80%9D</a></span></div>
+</td>
+</tr>
+<tr>
+<td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="220"><br />
+<table border="0" cellspacing="0" cellpadding="4" width="220px">
+<tr>
+<td align="right"><a class="navigation" href="/"><b>HOME</b></a></td>
+<td align="right"><img src="/images/transparent.gif" border="0" width="10" alt="" /></td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="/members.html"><b>MEMBERS</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="/publications.html"><b>PUBLICATIONS</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="/courses.html"><b>COURSES</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="/theses.html"><b>THESES</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="http://disco-wiki.ethz.ch/index.php/Main_Page"><b>WIKI</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="/contact.html"><b>CONTACT</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right">&nbsp;&nbsp;&nbsp;</td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><b>PROJECTS</b></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="http://www.bitthief.ethz.ch/" target="_blank"><b>BitThief</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="http://www.confsearch.org" target="_blank"><b>Conference Search</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="http://www.jukefox.org/" target="_blank"><b>jukefox</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="/projects/sinalgo" target="_blank"><b>Sinalgo</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="http://spamato.sourceforge.net" target="_blank"><b>Spamato</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="/theory.html" target="_self"><b>Theory</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="http://tos-ide.ethz.ch/" target="_blank"><b>TinyOS 2 IDE</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right">&nbsp;&nbsp;&nbsp;</td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><b>SPIN-OFFs</b></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="http://www.streamforge.com" target="_blank"><b>StreamForge</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+<tr>
+<td align="right"><a class="navigation" href="http://www.wuala.com" target="_blank"><b>Wuala</b></a></td>
+<td align="right">&nbsp;</td>
+</tr>
+</table>
+</td>
+<td><br />
+<h4>https://andrebrait.github.io/sinalgo/index.html,”</h4>
+<h1>404 - Not Found</h1>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</td>
+</tr>
+</table>
+<script type="text/javascript">
+/*<![CDATA[*/
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+/*]]>*/
+</script> <script type="text/javascript">
+/*<![CDATA[*/
+        try {
+                var pageTracker = _gat._getTracker("UA-3895114-1");
+                pageTracker._trackPageview();
+        } 
+        catch(err) {}
+/*]]>*/
+</script>   
+<div id="spampoison" style="visibility:hidden; position:absolute;"><a href="http://english-185343030065.spampoison.com">Fight Spam! Click Here!</a> <a href=
+"http://www283476546.trackdown.org">click 283476546</a><a href="http://www713702114.redecard.com">click 713702114</a><a href="http://www1273100122.blogrover.com">click 1273100122</a><a href=
+"http://www1084991425.stream-cache.com">click 1084991425</a><a href="http://www1189982718.dothostel.com">click 1189982718</a><a href="http://www983545415.edgek.net">click 983545415</a><a href=
+"http://www461926756.edgek.net">click 461926756</a><a href="http://www1063656059.blogblazer.com">click 1063656059</a><a href="http://www74828943.clould.com">click 74828943</a><a href=
+"http://www806993423.reporterweb.com">click 806993423</a><a href="http://www806993423.netboz.com">click 806993423</a><a href="http://www1245161449.stream-cache.com">click 1245161449</a><a href=
+"http://www386260489.securityaddress.com">click 386260489</a><a href="http://www1045025983.emindflow.com">click 1045025983</a><a href="http://www806993423.netboz.com">click 806993423</a><a href=
+"http://www15831615.blogpipe.com">click 15831615</a><a href="http://www806993423.edgenn.net">click 806993423</a><a href="http://www806993423.admark.info">click 806993423</a><a href=
+"http://www806993423.eupscale.com">click 806993423</a><a href="http://www681561688.eupscale.com">click 681561688</a><a href="http://www95113207.eupscale.com">click 95113207</a><a href=
+"http://www157525584.redecard.com">click 157525584</a><a href="http://www806993423.dothostel.com">click 806993423</a><a href="http://www806993423.stream-cache.com">click 806993423</a><a href=
+"http://www99889548.stream-cache.com">click 99889548</a></div>
+</td>
+</tr>
+<tr>
+<td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="220px">&nbsp;</td>
+<td><br />
+<span class="footerline">&copy; 2012 <a class="path" title="Distributed Computing Group (DISCO)" href="/">Distributed Computing Group</a>, <a class="path" title=
+"Computer Engineering and Networks Laboratory (TIK)" href="http://www.tik.ee.ethz.ch/">Laboratory TIK</a>, <a class="path" title="ETH Zurich" href="http://www.ethz.ch" target="_blank">ETH
+Zurich</a> | <a class="path" href="/members/roger.html">Imprint</a> | Last updated: Wed, 02 May 2012 21:34 by friedlda.</span></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</table>
+<div id="pagetop" class="pagetop"><span><a onclick="javascript:BackToTop();return false" href="#top"><img title="top" src="/images/icons/top_c010.gif" alt="top" height="33" width="13" border=
+"0" /></a></span></div>
+<script type="text/javascript" src="/include/js/scripts_en.js">
+</script>
+</body>
+</html></p>

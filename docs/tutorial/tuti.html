@@ -1,0 +1,3404 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <title>Sinalgo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+          content="roger wattenhofer, wattenhofer, distributed computing, simulation, network algorithm, validation, Sinalgo">
+    <link REL="SHORTCUT ICON" HREF="https://andrebrait.github.io/sinalgo/pics/favicon.ico">
+    <link rel=stylesheet href="https://andrebrait.github.io/sinalgo/printStyle.css" type="text/css">
+    <base href="https://andrebrait.github.io/sinalgo/">
+</head>
+
+<body class="text" bgcolor="#FFFFFF">
+
+<table align="center" width="100%" style="margin-bottom:0px" cellpadding="0" cellspacing="0" border="0">
+    <tr class="height60" valign="middle">
+        <td><a href="http://disco.ethz.ch/" target="_blank"><img
+                src="https://andrebrait.github.io/sinalgo/pics/dcgPrint.jpg" alt="Distributed Computing Group"
+                border="0" height="50" width="160"></a></td>
+        <td align="center"><a class="nav_link_header" href="https://andrebrait.github.io/sinalgo/">Sinalgo - Simulator
+            for Network Algorithms</a></td>
+    </tr>
+    <tr class="height2">
+        <td class="horizontalLine"></td>
+        <td class="horizontalLine"></td>
+    </tr>
+</table>
+<div class="bodyText">
+    <p class="tutiTitle" align="center">Sinalgo Tutorial</p>
+    <h1>Welcome to Sinalgo</h1>
+    <p>
+
+        Sinalgo is a simulation framework for testing and validating network
+        algorithms. Unlike most other network simulators, which spend most
+        time simulating the different layers of the network stack, Sinalgo focuses on the verification of network
+        algorithms, and abstracts from
+        the underlying layers: It offers a message passing view of the
+        network, which captures well the view of actual network devices.
+        Sinalgo was designed, but is not limited to simulate wireless
+        networks.
+
+    <p>The key to successful development of network algorithms is a
+        comprehensive test suite. Thanks to the fast algorithm prototyping in
+        JAVA, Sinalgo offers itself as a first test environment, prior to
+        deploy the algorithm to the hardware. Prototyping in JAVA instead of
+        the hardware specific language is not only much faster and easier,
+        but also simplifies debugging. Sinalgo offers a broad set of
+        network conditions, under which you may test your algorithms. In
+        addition, Sinalgo may be used as a stand-alone application to obtain
+        simulation results in network algorithms research.
+
+    <p>Sinalgo's view of network devices is close
+        to the view of real hardware devices (e.g. in TinyOS): A node may
+        send a message to a specific neighbor or all its neighbors, react to
+        received messages, set timers to schedule actions in the future, and
+        much more.
+
+    <p>Some of the key features of Sinalgo:
+
+    <ul class="unstiled extra-space">
+        <li>Quick prototyping of your network algorithms in JAVA</li>
+        <li>Straight forward extensibility to cover nearly any simulation scenario</li>
+        <li>Many built-in, but still adjustable plug-ins</li>
+        <li>High performance - run simulations with 100000s of nodes in acceptable time</li>
+        <li>Support for 2D and 3D</li>
+        <li>Asynchronous and synchronous simulation</li>
+        <li>Customizable visualization of the network graph</li>
+        <li>Platform independent - the project is written in Java</li>
+        <li>Sinalgo is for <i>free</i>, published under a BSD license</li>
+    </ul>
+
+    To guarantee easy extensibility, Sinalgo offers a set of extension
+    points, the so called <i>models</i>. The following list gives an
+    overview of the available models, to each of which you may add your
+    own extension. To facilitate your life, Sinalgo ships with a
+    set of frequently used models.
+
+    <ul class="unstiled extra-space">
+        <li>The <i>mobility model</i> describes how the nodes change their
+            position over time. Examples are <i>random waypoint</i>, <i>random
+                walk</i>, <i>random direction</i>, and many others.
+        </li>
+
+        <li>The <i>connectivity model</i> defines when two nodes are in
+            communication range. The best known examples are the <i>unit disk
+                graph (UDG)</i> and the <i>quasi-UDG (QUDG)</i>.
+
+        <li>The <i>distribution model</i> is responsible to initially place
+            the network nodes in the simulation area. E.g. place the nodes
+            <i>randomly</i>, evenly distributed on a <i>line</i> or <i>grid</i>
+            or according to a stationary regime of a mobility model.
+        </li>
+
+        <li>Use the <i>interference model</i> to define whether simultaneous
+            message transmissions may interfere.
+        </li>
+
+        <li>The <i>reliability model</i> is a simplified form of the
+            interference model and lets you define for every message whether it
+            should arrive or not. E.g. drop one percent of all messages.
+        </li>
+
+        <li>Last but not least, the <i>transmission model</i> lets you define
+            how long a message takes until it arrives at its destination.
+        </li>
+    </ul>
+
+    <p>Please refer to the <a href="tutorial/Documentation.html" class="nav_link">Tutorial</a> for more information on
+        how to get started.</p>
+
+    <p>This software was developed by the <a href="http://disco.ethz.ch/" class="nav_link" target="_blank">Distributed
+        Computing Group</a> at <a href="http://www.ethz.ch/" class="nav_link" target="_blank">ETH Zurich</a>.</p>
+
+    <p>
+        <a href="pics/screenshot1.png" target="_blank" class="nav_link"><img src="pics/screenshotSmall1.png"
+                                                                             alt="screenshot1"/></a>
+        <a href="pics/screenshot2.png" target="_blank" class="nav_link"><img src="pics/screenshotSmall2.png"
+                                                                             alt="screenshot2"/></a>
+        <a href="pics/screenshot3.png" target="_blank" class="nav_link"><img src="pics/screenshotSmall3.png"
+                                                                             alt="screenshot3"/></a>
+        <a href="pics/screenshot4.png" target="_blank" class="nav_link"><img src="pics/screenshotSmall4.png"
+                                                                             alt="screenshot4"/></a>
+        <a href="pics/screenshot5.png" target="_blank" class="nav_link"><img src="pics/screenshotSmall5.png"
+                                                                             alt="screenshot5"/></a>
+        <br>
+        <span class="caption">Screenshots</span>
+
+    <hr class="blue"><!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <h1>Getting Started</h1>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    This tutorial gives you a brief introduction to Sinalgo. It covers
+    details from the installation process to a detailed look into the
+    clockwork of Sinalgo.
+
+    <p>Running a simulation is actually quite easy. The real difficulty
+        is to understand what one has simulated, and to interpret the
+        obtained results in this context. With this in mind, we hope to give
+        you enough information to not only understand how you can use this
+        simulation framework, but also understand on a high level how the
+        simulation executes. For this purpose, we have added a section <a
+                href="tutorial/Architecture.html" class="nav_link">Architecture</a>
+        that gives an insight into the clockwork of Sinalgo.
+
+    <h2>Roadmap of this Tutorial</h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <ul class="unstyled extra-space">
+
+        <li>We start with some information on how to <a href="tutorial/Installation.html" class="nav_link">setup</a>
+            Sinalgo on your machine. Don't worry, it's quite easy.
+        </li>
+
+        <li>The <a href="tutorial/Execution.html" class="nav_link">Execution</a> section describes the different ways to
+            start Sinalgo, as well as the command-line arguments to pre-configure Sinalgo.
+        </li>
+
+        <li>In the <a href="tutorial/Project.html" class="nav_link">Projects</a> section, we describe how you can add
+            your own project to Sinalgo...
+        </li>
+
+        <li>... and how to <a href="tutorial/Implementation.html" class="nav_link">implement</a> the desired behavior.
+        </li>
+
+        <li>The <a href="tutorial/Configuration.html" class="nav_link">Configuration</a> section shows how you can
+            configure the framework to your needs, and also add your project-specific configuration settings.
+        </li>
+
+        <li>Don't miss the <a href="tutorial/Tools.html" class="nav_link">Tools</a> page! It contains many hints on how
+            to use the framework and describes the tools Sinalgo already provides.
+        </li>
+
+        <li>Finally, some information on how Sinalgo works is given in the <a href="tutorial/Architecture.html"
+                                                                              class="nav_link">Architecture</a> section.
+        </li>
+
+    </ul>
+
+
+    <h2>Printable Version of this Tutorial</h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    If you wisth to print the entire tutorial, try the <a
+        href="tutorial/tuti.html" class="nav_link"><b><span class="red">All-in-One Tutorial</span></b></a>,
+    which contains all sections of the tutorial on a single website. To
+    print some pages of this tutorial, click on the <b>Printable
+    Version</b> link on top of each site to get a printer friendly
+    version of the page.
+    <hr class="blue"><!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <h1>Sinalgo Setup</h1>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    There are two flavors of Sinalgo: The <a href="download.html"
+                                             class="nav_link" target="main">toy release</a> and the <a
+        href="download.html" class="nav_link" target="main">regular
+    release</a>. Download the toy release if you just want to have a
+    glance at the project, but do not intend to run any simulations. For
+    any other objectives, download the regular release for full access to
+    all features of Sinalgo.
+
+    <h2>Requirements<a name="Requirements"></a></h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <ul class="unstyled extra-space">
+        <li>Sinalgo requires <a href="http://java.sun.com/j2se/1.5.0/download.jsp"
+                                target="_blank" class="nav_link">Java 5.0 (J2SE 5.0 JDK)</a> or
+            a more recent version.
+        </li>
+
+        <li>Optionally, you may install a development tool, e.g. <a
+                href="http://www.eclipse.org" target="_blank"
+                class="nav_link">Eclipse</a>. In the following, we will briefly
+            sketch the setup of Sinalgo with Eclipse.
+        </li>
+
+        <li>Optionally, you may also install <a href="http://ant.apache.org/"
+                                                target="_blank" class="nav_link">Apache ANT</a>, a tool that
+            lets you easily build the framework from the command-line.
+        </li>
+    </ul>
+
+    <h2>Toy Release<a name="Toy Release"></a></h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    After downloading the toy release, unpack the compressed folder and
+    double click the included jar file.
+
+    <p>In case you have several versions of Java installed, ensure that
+        the default version is 5.0 or higher.
+
+    <p class="note"><b>Note:</b> If another application than java
+        executes jar files on your system, you may need to launch Sinalgo from
+        the command line. This is probably the case if you see a window showing
+        a directory structure after double clicking the jar file. To start
+        Sinalgo from the command line, open the a command line and change
+        to the unpacked directory of the toy release. Then, type <span
+                class="code">java -jar sinalgo.jar</span>
+    </p>
+
+    <h2>Regular Release<a name="Regular Release"></a></h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    After downloading the regular release, unpack the compressed folder
+    to your favorite location to work from. Depending on the IDE you are
+    using, the following steps may differ. We first describe the general
+    settings you need to achieve and then how to obtain these settings
+    with Eclipse.
+
+    <div class="subsubBody">
+        <h3>Class Paths<a name="Class Paths"></a></h3>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        The following settings need to be set, either in your IDE, or on the
+        command-line to compile and run the application.
+
+        <ul>
+            <li>The source-code is located in the folder <span class="code">src</span></li>
+            <li>The binaries are located in the folder <span class="code">binaries/bin</span></li>
+        </ul>
+
+        To compile from the command-line using ANT, call <span
+            class="code">ant compile</span>.
+
+        <p>To run the application from the command line, call (for
+            example)
+
+            <br> <span class="code">java -cp binaries/bin
+ sinalgo.Run</span>
+
+            <br> Refer to the <a href="tutorial/Execution.html#Cmd Args"
+                                 class="nav_link">Command Line Arguments</a> section of the tutorial
+            for more information about the command-line arguments to Sinalgo.
+    </div>
+
+    <div class="subsubBody">
+        <h3>Setup in Eclipse<a name="Setup in Eclipse"></a></h3>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        To setup Sinalgo for Eclipse, you need to create a new project in
+        Eclipse and associate it with the downloaded regular release of Sinalgo.
+
+        <ol>
+
+            <li>Start Eclipse, and create a new project ('File' -&gt; 'New' -&gt;
+                'Project')
+            </li>
+
+            <li>Select to create a 'Java Project' and click to proceed</li>
+
+            <li>Name the new project, e.g. 'sinalgo'</li>
+
+            <li>If you wish to import Sinalgo into your workspace, then
+                <ol>
+                    <li>Click on 'Finish' to create an empty project.</li>
+                    <li>Unpack the regular release to a temporary directory, and copy its content into the new project,
+                        overwriting the .classpath file.
+                    </li>
+                </ol>
+
+                If you wish to store the source of Sinalgo in any different
+                location, then
+                <ol>
+                    <li>Unpack the regular release to the desired location</li>
+                    <li>Select to create the project from an existing source, and point to
+                        the unpacked regular release of Sinalgo.
+                    </li>
+
+                    <li>Click on 'Finish' to create the project. The required settings are
+                        set automatically.
+                    </li>
+                </ol>
+            </li>
+
+            <li>Ensure that Eclipse is configured to use Java 5.0 or later:<br>
+                Open the Preferences dialog ('Window' -&gt; 'Preferences') and select
+                'Java' -&gt; 'Compiler'. The compiler compliance level should be set to
+                5.0 or higher. <br>
+                Also, ensure that Eclipse uses the JRE 5.0 or higher. In the
+                Preferences dialog, ('Window' -&gt; 'Preferences'), select 'Java' -&gt;
+                'Installed JREs'. Ensure that the installed JRE points to the correct
+                Java installation.
+            </li>
+        </ol>
+
+        <b>Note:</b> Do not use the option <i>Java Project from Existing Ant Build File</i>.
+        This feature creates symbolic links to the source of Sinalgo, and
+        creates a local copy of the binaries only. Such a setup is not supported
+        by Sinalgo, which expects the <span class="code">src</span> and <span class="code">bin</span>
+        folder to be located in the same directory.
+
+        <p>To start the application, right-click on the <span class="code">src</span>
+            folder in the Package Explorer or the Navigator of Eclipse, and select
+            'Run As' -&gt; 'Java Application'.</div>
+
+    <hr class="blue"><!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <h1>Running Sinalgo</h1>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    We have already seen that the toy release of Sinalgo only needs a double
+    click to start. This section describes the more advanced
+    possibilities to launch and configure Sinalgo.<br>
+
+    <ul class="unstyled extra-space">
+        <li>To launch Sinalgo from within your IDE, execute the <span
+                class="code">Run</span> class, which is located in the folder <span
+                class="code">sinalgo</span>. Remember that your IDE needs to have the
+            class paths set as described in the <a class="nav_link"
+                                                   href="tutorial/Installation.html#Class Paths">installation</a>
+            tutorial. <p class="note"><b>For Eclipse Users:</b> In the
+                <i>Navigator</i> or <i>Package Explorer</i> of Eclipse, open the
+                folder <span class="code">src/sinalgo/</span>. Right-click on <span
+                        class="code">Run.java</span> and select <i>Run As</i> -&gt; <i>Java
+                    Application</i>. (There are several alternatives to launch an
+                application in Eclipse, please consult the documentation of Eclipse
+                for more details.)
+            </p>
+        </li>
+
+        <li>To launch the framework from the command line, change to the root
+            directory of the Sinalgo installation and execute the following command<br>
+
+            <span class="code">java -cp binaries/bin sinalgo.Run</span></li>
+    </ul>
+
+    <h2>Increase the VM Memory<a name="VM Memory"></a></h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    With increasing size of the networks you simulate, Sinalgo requires more
+    memory. By default, Java provides only around 128MB. In order to increase the
+    amount of memory Java is allowed to use, modify the configuration file
+    of your project and set the entry <span class="code">javaVMmaxMem</span> to an appropriate
+    value (in MB).
+
+    <p><b>Note:</b> Do not use the <span class="code">-Xmx</span> flag for the
+        virtual machine. This flag only affects the <span class="code">Run</span> application,
+        which starts the simulation in a separate process. </p>
+
+
+    <h2>The <span class="code">Run</span> Command<a name="Run"></a></h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    The <span class="code">Run</span> command used to launch Sinalgo is a
+    helper process to start the simulation process. I.e. when starting Sinalgo
+    through <span class="code">java -cp binaries/bin Sinalgo.Run</span>, the
+    initial java process launches a second process, in which the simulation takes
+    place. This allows the first process to read the configuration file of the
+    selected project, set the maximum memory that may be used by the simulation process,
+    and start the simulation process using the additional commands specified in the
+    config file.
+
+    <p>Depending on your OS and installed applications, you may have several tools at hand that
+        may facilitate simulations with Sinalgo. Below is a brief list of how you may edit
+        the <span class="code">javaCmd</span> field in the config file:
+    <p>
+
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <td valign="top" class="code" width="30%">java</td>
+            <td>The default. Just start the simulation process.</td>
+        </tr>
+
+        <tr>
+            <td valign="top" class="code">nice -n XX java</td>
+            <td>Start Sinalgo with modified priority XX.</td>
+        </tr>
+
+        <tr>
+            <td valign="top" class="code">time java</td>
+            <td>Display the total running time of the simulation (after the simulation stopped).</td>
+        </tr>
+
+    </table>
+    <span class="caption">Suggestions on how to modify <span class="code">javaCmd</span> in the config file.</span>
+
+
+    <h2>Command Line Configuration of Sinalgo<a name="Cmd Args"></a></h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    Calling Sinalgo without any arguments opens the project selection
+    dialog. This dialog shows the available projects you may choose from,
+    and gives you the possibility to alter the configuration of the
+    projects. Refer to the <a class="nav_link"
+                              href="tutorial/Configuration.html">Configuration</a> section of the
+    tutorial to learn more about how to configure your project.
+
+    <p>By passing on arguments on the command line (or through your IDE),
+        you can influence the execution of Sinalgo. The following list describes
+        the recognized command line arguments.
+
+    <p>
+
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr>
+                <td valign="top" class="code" width="30%">-help</td>
+                <td>Prints the recognized command line arguments.</td>
+            </tr>
+
+            <tr>
+                <td valign="top" class="code">-gui</td>
+                <td>Starts the framework in GUI mode (default)</td>
+            </tr>
+
+            <tr>
+                <td valign="top" class="code">-batch</td>
+                <td>Starts the framework in batch mode, i.e. no windows. This mode is best suited to run long-lasting
+                    well-defined simulations.
+                </td>
+            </tr>
+
+            <tr>
+                <td valign="top" class="code">-project XX</td>
+                <td>Indicates that Sinalgo should be started for project XX. If this argument is missing, the project
+                    selector dialog will be displayed.
+                </td>
+            </tr>
+
+            <tr>
+                <td valign="top" class="code">-rounds XX</td>
+                <td>The framework performs XX simulation rounds immediately after startup. Defaults to zero.</td>
+            </tr>
+
+            <tr>
+                <td valign="top" class="code">-refreshRate XX</td>
+                <td>Sets that the GUI should be updated only every XX round. Defaults to 1.</td>
+            </tr>
+
+            <tr>
+                <td valign="top" class="code">-gen ...</td>
+                <td>
+                    This argument lets you automatically generate network nodes. It has
+                    the following form:<br><span class="code">-gen #n T D {(params)} {CIMR
+{(params)}}*</span>
+
+                    <br>The command generates <span class="code">#n</span> nodes of node-type <span
+                        class="code">T</span> and distributes them according to the
+                    distribution model <span class="code">D</span>. (Optionally, the
+                    distribution model may take parameters in parentheses.)
+    <p>
+        Optionally, you may specify in arbitrary order the connectivity,
+        interference, mobility, and reliability models by appending the
+        corresponding model name(*) to the <span class="code">-gen </span>
+        command. If a model is not specified, the default model (as specified
+        in the project's configuration file) is used. (Again, any of the
+        model names may be followed by model-specific arguments enclosed in
+        parentheses.)
+
+    <p>(*) <b>Model and Node Naming Convention:</b> The name of models is
+        composed of the project name in which the model is located and the
+        name of the model itself: <span
+                class="code">projectName:modelName</span>. The same holds for the
+        name of the node. <i>Exception:</i> Models and nodes stored in the
+        defaultProject of the framework need not be prefixed with
+        "<span class="code">defaultProject:</span>".
+
+    <p>For disambiguation, the models may be prefixed with <span
+            class="code">X=</span>, where <span
+            class="code">X={C|I|M|R}</span>. The mapping is as following:
+        <br><span class="code">C</span> - Connectivity Model
+        <br><span class="code">I</span> - Interference Model
+        <br><span class="code">M</span> - Mobility Model
+        <br><span class="code">R</span> - Reliability Model
+        </td>
+        </tr>
+
+        <tr>
+            <td valign="top" class="code">-overwrite key=value (key=value)*</td>
+
+            <td>Overwrites the configuration entry named <span
+                    class="code">key</span> to have the new value <span
+                    class="code">value</span>. <span class="code">key</span> may specify
+                a framework configuration entry, or a custom configuration entry
+                specified in the project's configuration file.
+            </td>
+        </tr>
+        </table>
+        <span class="caption">Command line parameters that may be used to configure a simulation.</span>
+
+    <h3>Example 1<a name="Examples"></a></h3>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    The following arguments open project <span
+        class="code">sample1</span>, and generate 1000 nodes of type <span
+        class="code">S1Node</span> from project <span
+        class="code">sample1</span>. The nodes are distributed according to
+    the <span class="code">Random</span> distribution model. After
+    generating the nodes, the framework performs 10 rounds, but only
+    draws the GUI every second round.
+
+    <p><span class="code">
+-project sample1 -gen 1000 sample1:S1Node Random -rounds 10 -refreshRate 2
+</span>
+
+    <h3>Example 2</h3>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    The following arguments open project <span
+        class="code">sample2</span>, and generate 10000 nodes of type <span
+        class="code">S2Node</span> from project sample2. The nodes are
+    distributed according to the <span class="code">Random</span>
+    distribution model. Furthermore, the connectivity model is set to
+    <span class="code">QUDG</span> (which is in the default project), and
+    the mobility model is set to <span class="code">LakeAvoid</span> from
+    project <span class="code">sample2</span>.
+
+    <p><span class="code">
+-project sample2 -gen 10000 sample2:S2Node Random C=QUDG M=sample2:LakeAvoid
+</span>
+
+    <p> Note that in this case, the disambiguation is not necessary, and the
+        following arguments result in the same behavior.
+
+    <p><span class="code">
+-project sample2 -gen 10000 sample2:S2Node Random QUDG sample2:LakeAvoid
+</span>
+
+    <h3>Example 3</h3>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    In order to enable mobility, disable interference, and set <span
+        class="code">rMax</span> of the <span
+        class="code">GeometricNodeCollection</span> to <span
+        class="code">50</span> you would add the following <span
+        class="code">-overwrite</span> argument:
+
+    <p><span class="code">
+-overwrite mobility=true interference=false GeometricNodeCollection/rMax=50
+</span>
+
+    <h3>Example 4</h3>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    You may place several <span class="code">-gen</span> arguments to
+    generate distinct sets of nodes:
+
+    <p><span class="code">
+-project sample1 -gen 100 sample1:S1Node Random UDG -gen 50 DummyNode Circle QUDG -gen 10 sample2:S2Node Random 
+</span>
+
+    <p>Thus, it is possible to use nodes and models from several
+        projects. But note that the configuration is loaded from the selected
+        project.
+
+
+    <h2>True batch mode without windows<a name="Headless"></a></h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    Running Sinalgo without any windows in
+    <it>true</it>
+    batch mode
+    may require that you start the application with the flag
+
+    <p><span class="code">
+ -Djava.awt.headless=true
+</span>
+    <p>
+
+        If you launch Sinalgo via the Run class, you may need to specify
+        this flag twice: once for calling Run, and once in the project
+        configuration through the <span class="code">javaCmd</span> property.
+        <br>
+        <span class="caption">Thanks to Denis Rochat for pointing out this issue.</span>
+
+
+    <h2>Running Sinalgo from Scripts<a name="Scripts"></a></h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    Instead of typing the basic java command for every run, you may make use of a
+    script (batch) file that encapsulates the call to java with the necessary
+    parameters described above. Two such scripts are included in the root directory
+    of the regular release: <span class="code">sinalgo.bat</span> for the Microsoft
+    Windows <i>cmd</i> shell, and <span class="code">sinalgo</span> for <i>bash</i>
+    shells. Instead of typing
+    <p>
+    <div class="code codeTab">
+        java -cp binaries/bin sinalgo.Run -project sample1
+    </div>
+    <p>only write:
+    <p>
+    <div class="code codeTab">
+        <b>sinalgo</b> -project sample1
+    </div>
+
+
+    <h3>Automating Sinalgo</h3>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    A simulation often consists of several runs of Sinalgo, each time with
+    slightly different parameters. The variation of the parameters is achieved easiest
+    by using the <span class="code">-overwrite</span> command line parameter, as
+    described above. To call Sinalgo automatically several times with the distinct
+    command line parameters, we propose to use a scripting language, the example below
+    uses <i>perl</i>.
+
+    <br><br><br>
+    <div class="subsubBody">
+        <table border="1" cellpadding="5" cellspacing="0" bgcolor="#eeeeee">
+            <tr>
+                <td>
+                    <div class="code codeTab">
+                        <span class="CKey">#!/usr/bin/perl</span><br>
+                        <br>
+                        <span class="CVar">$numRounds</span> = 100; <span class="CCom"># number of rounds to perform per simulation</span><br>
+                        <br>
+                        <span class="CKey">for</span>(<span class="CVar">$numNodes</span>=200; <span class="CVar">$numNodes</span>&lt;=500;
+                        <span class="CVar">$numNodes</span>+=100) {
+                        <div class="codeTab">
+                            <span class="CKey">system</span>("java -cp binaries/bin sinalgo.Run " .
+                            <div class="codeTab">
+                                "-project sample1 " .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="CCom"># choose the project</span><br>
+                                "-gen <span class="CVar">$numNodes</span> sample1:S1Node Random RandomDirection " .
+                                <span class="CCom"># generate nodes</span><br>
+                                "-overwrite " .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="CCom"># Overwrite configuration file parameters</span><br>
+                                "exitAfter=true exitAfter/Rounds=<span class="CVar">$numRounds</span> " . <span
+                                    class="CCom"># number of rounds to perform & stop</span><br>
+                                "exitOnTerminationInGUI=true " .&nbsp;&nbsp;<span class="CCom"># Close GUI when hasTerminated() returns true</span><br>
+                                "AutoStart=true " .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="CCom"># Automatically start communication protocol</span><br>
+                                "outputToConsole=false " .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="CCom"># Create a framework log-file for each run</span><br>
+                                "extendedControl=false " .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="CCom"># Don't show the extended control in the GUI</span><br>
+                                "-rounds <span class="CVar">$numRounds</span> " .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="CCom"># Number of rounds to start simulation</span><br>
+                                "-refreshRate 20");&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="CCom"># Don't draw GUI often</span><br>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <span class="caption">A sample perl script that demonstrates how Sinalgo may be called several
+times in sequence with modified command line arguments. In this example, project sample1 is started 
+with 200, 300, 400, and 500 nodes, respectively.</span>
+    </div>
+
+    <p>The flags <span class="code">-project</span>,
+        <span class="code">-gen</span>, <span class="code">-rounds</span>,
+        and <span class="code">-refreshRate</span> are presented above. The
+        remaining parameters overwrite the default entries in the project specific
+        configuration file. Alternatively, we could add the flag <span class="code">-batch</span>
+        to run the simulation in batch mode. For huge simulations with many nodes, this may
+        be preferable. But if memory is not a limiting factor, the GUI may provide a good
+        interface to supervise the simulation. Setting the refresh rate to a fairly high value,
+        the GUI does not use a significant amount of simulation time. Note that pressing
+        the stop button, and then continuing a simulation is perfectly OK and does not change
+        the simulation result.
+
+    <p><b>Note:</b> Project <span class="code">sample1</span> contains a more
+        sophisticated run-script to demonstrate the possibilities of perl.
+
+    <p><b>Remember:</b> Depending on your platform, you may need to adjust the class path
+        separator. In the example above, we used the semicolon. But for instance on Linux,
+        the separator is a colon, and yet other separators may be used on other platforms.
+
+    <p><b>Hint:</b> Set the <span class="code">logToTimeDirectory</span> such that
+        log-files are not overwritten by a subsequent simulation. To collect simulation data
+        from the different simulations, designate a log-file to which each simulation appends
+        to. See <a class="navLink" href="tutorial/Tools.html#Logging">Logging</a> for more
+        information.
+
+    <p><b>Installing perl: </b>You may obtain a copy of perl from <a class="nav_link"
+                                                                     href="http://www.perl.org">www.perl.org</a>.
+        Alternatively, install <a class="nav_link"
+                                  href="http://www.cygwin.com">Cygwin</a> and include the perl package.
+
+
+    <h2>Debugging<a name="Debugging"></a></h2>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    The <span class="code">Run</span> class launches Sinalgo in a separate process. This
+    has immediate consequences for running a debugger, as the simulation itself does not
+    run in launched application. In order to use the debugger of
+    your IDE to analyze the implemented algorithms, you probably need to do one of the steps
+    below.
+
+    <p><b>a)</b> Start Sinalgo directly using the following slightly modified command line.
+    <p>
+        <div class="subsubBody">
+            <span class="code">java <b>-Xmx800m</b> -cp binaries/bin sinalgo.<b>runtime.Main</b></span>
+
+    <p>This launches the simulation process directly, but does not allow to specify the maximum
+        memory to be used through the config file. The <span class="code">-Xmx800m</span> flag indicates
+        that the JVM may use at most 800 MB of memory, adjust the value to your needs.
+    </p></div>
+
+<p><b>b)</b> Use remote debugging: Some java debuggers can be attached to a remote process (even
+    running on a different machine). Remote debugging requires two steps.
+    <div class="subsubBody">
+<p><b>b.1)</b> First, modify the run
+    command for the simulation process s.t. it can communicate with the debugger. I.e. set the
+    <span class="code">javaCmd</span> entry of the config file to</p>
+
+<p><span class="code">java -agentlib:jdwp=transport=dt_socket,address=localhost:8000,suspend=n,server=y</span></p>
+
+<p>This configures the JVM to receive connections. You are free to choose any (unused) port
+    number in the address-flag.</p>
+
+<p><b>b.2)</b> After starting the simulation, launch the debugger and attach it to the application.
+    In Eclipse, call <span class="code">Run -&gt; Debug...</span> and create a new configuration for a
+    <i>Remote Java Application</i>. Select the Connection Type to be <i>Standard (Socket Attach)</i>, and the
+    Connection Properties to match the address specified in the <span class="code">javaCmd</span>. </p>
+</div>
+
+
+<h2>Hot Code Replace<a name="Hot Code Replace"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The exchange of class files at runtime is called 'hot code replace' and can be performed
+by most IDEs, e.g. Eclipse. For that purpose, your IDE transfers the new class files over
+the debugging channel to the JVM running Sinalgo. Therefore, hot code replace requires
+Sinalgo to run in <a class="navLink" href="tutorial/Execution.html#Debugging">debugging mode</a>.
+
+<p><b>Note:</b> Hot code replace is only possible if the signature of the replaced class
+    files remains the same. I.e. you may change the body of a method, but not the signature of
+    the method. It is neither possible to add/remove methods or global variables. </p>
+
+
+<h2>GUI Description<a name="GUI"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+This section summarizes the methods and helper-functions provided
+through the GUI of Sinalgo.
+
+<div class="subsubBody">
+    <h3>Menus</h3>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <p>The <span class="code"><b>Graph</b></span> menu provides the
+        following tasks:
+
+    <p>
+    <table border="1" cellpadding="5" cellspacing="0">
+
+        <tr>
+            <td valign="top"><span class="code">
+Generate Nodes
+ <img src="pics/addnodes.gif" alt="AddNodes"> 
+</span></td>
+            <td>
+                Opens a dialog that adds new nodes to the simulation. You can specify
+                the number of nodes to add, their initial distribution, as well as the
+                node specific models.
+            </td>
+        </tr>
+
+        <tr>
+            <td valign="top"><span class="code">
+Clear Graph
+ <img src="pics/cleargraph.gif" alt="ClearGraph">
+</span></td>
+            <td>
+                Removes all nodes from the simulation.
+            </td>
+        </tr>
+
+        <tr>
+            <td valign="top"><span class="code">
+Reevaluate Connections
+</span></td>
+            <td>
+                Loops over all nodes and determines for each node the set of neighbor
+                nodes, according to the node's connectivity model. This function is
+                especially useful in the asynchronous simulation mode, where the connections
+                are not updated automatically.
+            </td>
+        </tr>
+
+        <tr>
+            <td valign="top"><span class="code">
+Infos
+</span></td>
+            <td>
+                Prints some information about the current network graph, including
+                the number of nodes and the number of (unidirectional) edges.
+            </td>
+        </tr>
+
+        <tr>
+            <td valign="top"><span class="code">
+Export
+</span></td>
+            <td>
+                Creates a vector graphic image of the current view of the network graph and
+                writes it to an EPS or PDF file.
+                <br>
+                To output the graphic in PDF format, your machine needs to provide a
+                tool that can convert from EPS to PDF. By default, the framework
+                calls the <span class="code">epstopdf</span> application. Change the
+                field <span class="code">epsToPdfCommand</span> in the framework
+                section of the <a class="nav_link"
+                                  href="tutorial/Configuration.html">configuration file</a> to specify
+                a different application.
+            </td>
+        </tr>
+
+        <tr>
+            <td valign="top"><span class="code">
+Preferences
+</span></td>
+            <td>
+                Some preferences you are allowed to change at runtime. This includes
+                the type of the edges and the message transmission model, which is the
+                same for all nodes.
+            </td>
+        </tr>
+
+    </table>
+    <span class="caption">Methods provided in the <span class="code">Graph</span> menu</span>
+
+    <p>The <span class="code"><b>Global</b></span> menu contains all <a
+            href="tutorial/Implementation.html#CustomGlobal"
+            class="nav_link">global custom methods</a> and the <span
+            class="code">Settings</span> dialog, which displays a list of all
+        settings.
+
+</div>
+
+<div class="subsubBody">
+    <h3>GUI Interaction</h3>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <p>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr>
+                <td valign="top">
+                    Perform a simulation step / execute the next event
+                </td>
+                <td>
+                    Press the <img src="pics/GUI_run.gif" alt="RUN_BUTTON"> button. In
+                    synchronous simulation mode, this executes the number of rounds
+                    specified in the <i>Rounds to Perform</i> text field. In asynchronous
+                    simulation mode, this executes the number of events specified in the
+                    <i>Events to Perform</i> text field.
+                </td>
+            </tr>
+
+            <tr>
+                <td valign="top">
+                    Abort a running simulation
+                </td>
+                <td>
+                    Press the <img src="pics/GUI_abort.gif" alt="ABORT_BUTTON">
+                    button. After pressing the button, the simulation will finish the
+                    currently executing round/event before it stops. Thus, this button is
+                    only useful if you set the <i>Rounds to Perform</i> or <i>Events to
+                    Perform</i> field to a value above 1.
+
+    <p>The framework finishes the current round/event to ensure integrity of
+        the system, and that the simulation can be continued by pressing <img
+                src="pics/GUI_run.gif" alt="RUN_BUTTON">.
+        </td></tr>
+
+        <tr>
+            <td valign="top">
+                Add an edge from node <span class="code">A</span> to node <span class="code">B</span>.
+            </td>
+            <td>
+                Left-click on node <span class="code">A</span>. Keep the mouse pressed, move it to
+                node <span class="code">B</span> and release it.
+            </td>
+        </tr>
+
+        <tr>
+            <td valign="top">
+                Move a node in in 2D
+            </td>
+            <td>
+                Right-click on the node and drag it to the new place. Alternatively,
+                right-click on the node to obtain the popup menu for the node and select
+                the 'Info' dialog to key in the new coordinates. The latter approach
+                is also supported in 3D.
+            </td>
+        </tr>
+
+        <tr>
+            <td valign="top">
+                Zoom in / Zoom out
+            </td>
+            <td>
+                Position the mouse in the area containing the network and use the
+                wheel to change the zoom factor. Alternatively, use the zoom-in /
+                zoom-out buttons <img src="pics/zoominimage.gif" alt="zoom"> <img
+                    src="pics/zoomoutimage.gif" alt="zoom">.
+
+    <p>This operation may also be performed in the 'View' panel of the
+        extended control panel.
+        </td></tr>
+
+        <tr>
+            <td valign="top">
+                Zoom to Fit
+            </td>
+            <td>
+                Press the <img src="pics/zoomtofit.gif" alt="zoom"> button to set the
+                zoom factor such that the simulation area just fits on the screen.
+
+    <p> In 3D mode, press the <img src="pics/zoomtofit3d.gif" alt="zoom">
+        button to reset the default view of the cube.
+        </td></tr>
+
+        <tr>
+            <td valign="top">
+                Translate the displayed simulation area
+            </td>
+            <td>
+                Press the right mouse-button on a free spot of the simulation
+                area. Keep the mouse button pressed and move the mouse to translate
+                the simulation area.
+
+    <p>This operation may also be performed in the 'View' panel of the
+        extended control panel, with the difference that the network graph is
+        only updated once the mouse button is released. This may be handy for
+        huge networks graphs with a long drawing time.
+        </td></tr>
+
+        <tr>
+            <td valign="top">
+                Rotate the 3D cube
+            </td>
+            <td>
+                Press the left mouse-button on a free spot of the simulation
+                area. Keep the mouse button pressed and move the mouse to rotate the
+                simulation area. By default, the rotation keeps the Z-axis
+                vertical. To turn off this feature, press the <span
+                    class="code">Ctrl</span> button while pressing the left mouse-button.
+
+    <p>This operation may also be performed in the 'View' panel of the
+        extended control panel, with the difference that the network graph is
+        only updated once the mouse button is released. This may be handy for
+        huge networks graphs with a long drawing time.
+        </td></tr>
+        </table>
+
+    <p>
+    <table border=0 cellpadding="5" cellspacing="0">
+        <tr>
+            <td>
+                The view panel in the extended control shows the entire cube even
+                though the main view of the network graph only shows a cut-out. The
+                red rectangle indicates the portion of the simulation area currently
+                displayed. The zoom, translate and rotate operations may also be
+                performed in this area.
+
+            </td>
+            <td>
+                <img src="pics/gui3DView.png" alt="'View' panel of the GUI in 3D mode">
+            </td>
+        </tr>
+    </table>
+
+</div>
+<hr class="blue"><!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h1>Sinalgo Project</h1>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Once Sinalgo is installed, you may run several independent simulations
+with the same installation. To distinguish between the different
+simulations, the files belonging to one simulations are grouped in a
+project. This includes the project specific configurations and the
+actual network implementations. At startup of the framework, Sinalgo asks which project to use and then initializes as
+defined in the
+chosen project.
+
+<p><b>Note:</b> It is recommended to generate a project for each
+    algorithm one simulates. However, this often results in quite a lot
+    of common code, e.g. models that are used for several
+    projects. Instead of <i>copying</i> this code to all projects, it is
+    preferred to create a <i>dummy project</i> that holds this common
+    code from where all other projects access it. In fact, the <span
+            class="code">defaultProject</span> shipped with Sinalgo is such a dummy
+    project and gathers quite some default implementations that may be
+    handy for you.
+
+<h2>Creating a Project<a name="New Project"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+From the view of a developer, a project is nothing else than a folder
+located in the <span class="code">src/projects/</span> folder of
+Sinalgo. The name of the project is given by the name of this
+folder. The content of the project folder for a project named <span
+        class="code">sample1</span> may look as following:
+
+<p><img src="pics/projectFolders.png" alt=""><br></p>
+
+To create a new project, rename a copy of the <span
+        class="code">template</span> project. This gives you an empty folder
+structure as shown above.
+
+<h2>Project Content<a name="Project Content"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The project folder contains three sub-folders:
+<ul class="unstyled extra-space">
+    <li><span class="code">images</span> This folder contains the images for project specific buttons.</li>
+    <li><span class="code">models</span> All project specific model implementations are stored in the corresponding
+        sub-folder.
+    </li>
+    <li><span class="code">nodes</span> This folder contains network-node specific implementations, stored in the
+        following four sub-folders:
+        <ul class="unstyled extra-space">
+            <li><span class="code">edges</span> Classes describing project specific connection-behavior.</li>
+            <li><span class="code">messages</span> Classes describing the messages this project uses.</li>
+            <li><span class="code">nodeImplementations</span> Classes describing the network-nodes and their behavior.
+            </li>
+            <li><span class="code">timers</span> Classes describing project specific timers.</li>
+        </ul>
+    </li>
+</ul>
+
+<b>Note:</b> You may omit any of the folders if it does not contain any files.
+
+<p>Each project contains the four following files in the root directory:
+
+<ul class="unstyled extra-space">
+
+    <li><span class="code">Config.xml</span> contains the project specific
+        configuration. When you select Sinalgo to work with a project, the
+        framework initializes according to this configuration file in the
+        project's root folder. The file contains framework specific settings
+        as well as project specific setting, which you may extend
+        to fit your needs.
+    </li>
+
+    <li><span class="code">description.txt</span> contains a user-defined
+        description of the project. This text is shown in the project selector
+        dialog.
+    </li>
+
+    <li><span class="code">CustomGlobal.java</span> contains
+        framework-wide visible methods for this project.
+    </li>
+
+    <li><span class="code">LogL.java</span> is used to specify custom
+        Log-Levels to control the logging. Check the <a
+                href="tutorial/Tools.html#Logging" class="nav_link">documentation of
+            the Logger</a> to get more information about the logging
+        mechanism.
+    </li>
+
+</ul>
+
+<hr class="blue"><!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h1>Node Implementation</h1>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The implementation of a project consists of several tasks:
+
+<ul class="unstyled extra-space">
+    <li>Implement the node behavior</li>
+    <li>Implement additional models as needed</li>
+    <li>Configure the project using the configuration file</li>
+</ul>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Node Basics</h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Each simulated node is an instance of a subclass of <span
+        class="code">sinalgo.nodes.Node</span>. Each node has its proper
+instances of the Mobility, Connectivity, Interference, and
+Reliability model. These four model instances are created when the
+node is created. The Message Transmission Model is globally unique,
+and the distribution model is only used to initially place the nodes
+and is created for each set of generated nodes.
+
+<p>As in reality, the nodes implement their own behavior. Among
+    others, they have a method that is called when the node receives a
+    message, and they implement the functionality to send messages to
+    neighboring nodes. Depending on the simulation mode, the node's
+    methods are called in a slightly different way. The following shows a
+    high-level picture of the calling-sequences of the synchronous and
+    asynchronous mode, which are described in more detail in the <a
+            href="tutorial/Architecture.html#Sync vs Async"
+            class="nav_link">Architecture</a> section of this tutorial.
+
+<div class="subsubBody">
+    <h3>Calling Sequence in Synchronous Simulation<a name="Sync Call Sequence"></a></h3>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    In the synchronous simulation mode, the framework performs the
+    following actions for each <b>round</b>. Bold text indicates methods that
+    you may overwrite or implement to define the behavior of the network
+    nodes and the simulation. Note that the execution is strictly sequential,
+    i.e. a single thread executes the following actions. As a result, no
+    synchronization is needed to access global information.
+
+    <ol class="unstyled extra-space">
+        <li>The framework increments the global time by 1.</li>
+        <li><span class="code"><b>CustomGlobal.preRound();</b></span> <i class="smallBodyText">(Optional, project
+            specific code. This method is called at the beginning of every round.)</i></li>
+
+        <li>The framework handles <b>global timers</b> that fire in this round.</li>
+
+        <li>The framework moves the nodes according to their <b>mobility models</b>, if mobility is enabled.</li>
+
+        <li>The framework calls each node to update its set of outgoing connections according to its <b>connectivity
+            models</b>.
+        </li>
+
+        <li>The framework calls <b>interference</b> tests for all messages being sent, if interference is enabled.</li>
+
+        <li>The framework iterates over all nodes and calls <span
+                class="code">Node.<b>step()</b></span> on each node. <i class="smallBodyText"> The method 'step'
+            performs the following
+            actions for each node:</i><br>
+
+            <ol class="unstyled extra-space">
+                <li>The node gathers all messages that arrive in this round.</li>
+                <li><span class="code"><b>Node.preStep();</b></span> <i class="smallBodyText">(Optional, project
+                    specific code. This method is called at the beginning of very step.)</i></li>
+                <li>If this node's set of outgoing connections has changed in this round, the node calls <span
+                        class="code"><b>Node.neighborhoodChange();</b></span></li>
+                <li>The node handles <b>timers</b> that fire in this round.</li>
+                <li><span class="code"><b>Node.handleNAckMessages();</b></span> <i class="smallBodyText">(Handle dropped
+                    messages, if</i> <span class="code">generateNAckMessages</span><i class="smallBodyText"> is
+                    enabled.)</i></li>
+                <li><span class="code"><b>Node.handleMessages();</b></span> <i class="smallBodyText">(Handle the
+                    arriving messages.)</i></li>
+                <li><span class="code"><b>Node.postStep();</b></span> <i class="smallBodyText">(Optional, project
+                    specific code. This method is called at the end of each step.)</i></li>
+            </ol>
+
+        </li>
+
+        <li><span class="code"><b>CustomGlobal.postRound();</b></span> <i class="smallBodyText">(Optional, project
+            specific code. This method is called at the end of every round.)</i></li>
+
+        <li>If <span class="code"><b>CustomGlobal.hasTerminated();</b></span> returns true, the simulation exits.</li>
+    </ol>
+
+</div>
+
+<div class="subsubBody">
+    <h3>Events in Asynchronous Simulation<a name="Async Call Sequence"></a></h3>
+    <!-- - - - - - - - - - - - - - - -->
+
+    In asynchronous simulation mode, there are only two events upon which
+    nodes react: Arriving messages and timer events. Thus, only the
+    methods <span class="code">Node.<b>handleMessages()</b></span>,
+    (<span class="code">Node.<b>handleNAckMessages()</b></span>), and
+    <span class="code">Timer.<b>fire()</b></span> are called. Before
+    performing a scheduled event, the global time of the system is set to
+    the time when the event happens.
+
+    <p>Remember that mobility is not possible in the asynchronous
+        mode. However, the messages may be checked for interference if
+        interference is turned on in the configuration file.
+</div>
+
+
+<h2>Node Behavior<a name="Node Behavior"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+To implement the node behavior (this includes your algorithm), create
+a class which inherits from <span class="code">sinalgo.nodes.Node</span>
+and place the source file in the <span
+        class="code">node/nodeImplementation/</span> folder of your
+project. Implement the method <span
+        class="code"><b>Node.handleMessages();</b></span> and optionally any
+of the other abstract methods from the <span
+        class="code">sinalgo.nodes.Node</span> class.
+
+<p>The following list gives the most useful members of the <span
+        class="code">sinalgo.nodes.Node</span> class you may use. For a complete
+    description of their functionality, refer to the documentation in the
+    code.
+
+<p>
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <td colspan="2"><b>Public Member Variables</b></td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            int ID
+        </td>
+        <td>
+            Each node is assigned a unique ID when it is created. This ID may be used to distinguish the nodes.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            Connections outgoingConnections;
+        </td>
+        <td>
+            A collection of all edges outgoing from this node. Note that all edges are directed, the bidirectional edges
+            just ensure that there is an edge in both directions.
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="2"><b>Methods</b></td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void send(Message m, int target) throws NoConnectionException;
+        </td>
+        <td>
+            Sends a message to a neighbor node with the default intensity of the node.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void send(Message m, int target, double intensity) throws NoConnectionException;
+        </td>
+        <td>
+            Sends a message to a neighbor node with the given intensity.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void send(Message m, Node target) throws NoConnectionException;
+        </td>
+        <td>
+            Sends a message to a neighbor node with the default intensity of the node.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void send(Message m, Node target, double intensity) throws NoConnectionException;
+        </td>
+        <td>
+            Sends a message to a neighbor node with the given intensity.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void sendDirect(Message msg, Node target);
+        </td>
+        <td>
+            Sends a message to any node in the network, independent of whether there is a connection between the two
+            nodes or not.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void broadcast(Message m);
+        </td>
+        <td>
+            Broadcasts a message to all neighboring nodes with the default intensity of the node.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void broadcast(Message m, double intensity);
+        </td>
+        <td>
+            Broadcasts a message to all neighboring nodes with the given intensity.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            Position getPosition();
+        </td>
+        <td>
+            Returns the current position of the node.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            TimerCollection getTimers();
+        </td>
+        <td>
+            Returns a collection of all timers currently active at the node.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void setRadioIntensity(double i);
+        </td>
+        <td>
+            Sets the radio intensity of the node.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            double getRadioIntensity();
+        </td>
+        <td>
+            Gets the radio intensity of the node.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void setColor(Color c);
+        </td>
+        <td>
+            Sets the color in which the node is painted on the GUI.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            Color getColor();
+        </td>
+        <td>
+            Gets the color in which the node is painted on the GUI.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void draw(...);
+        </td>
+        <td>
+            Implements how the node is drawn on the GUI. You may overwrite this method in your subclass
+            of <span class="code">sinalgo.node.Node</span> to define a customized drawing.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void drawAsDisk(..., int sizeInPixels);
+        </td>
+        <td>
+            A helper method provided by <span class="code">sinalgo.node.Node</span> that draws the node
+            as a disk. Call this method in your <span class="code">draw(...)</span> method.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void drawNodeWithText(..., String text, int fontSize, Color textColor);
+        </td>
+        <td>
+            A helper method provided by <span class="code">sinalgo.node.Node</span> that draws the node
+            as a disk and with text. Call this method in your <span class="code">draw(...)</span> method.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" class="code">
+            void drawToPostScript(...);
+        </td>
+        <td>
+            Implements how the node is exported to PostScript. You may overwrite this method in your subclass
+            of <span class="code">sinalgo.node.Node</span> to define a customized drawing to PostScript.
+        </td>
+    </tr>
+
+</table>
+<span class="caption">Methods of the superclass <span class="code">sinalgo.nodes.Node</span> you may use to implement the node behavior.</span>
+
+
+<p>To control the creation of a node object, the super-class provides
+    the two methods <span class="code">init()</span> and <span
+            class="code">checkRequirements()</span> which you may overwrite in
+    your subclass:
+
+    <br><span class="code">Node.<b>init()</b></span> is called once at the
+    beginning of the lifecycle of a node object. It may be used to
+    initialize the start state of the node. Note that this function may
+    not depend on the neighborhood of the node as the init function is
+    called before the connections are set up and before the set of all
+    nodes is available.
+
+    <br><span class="code">Node.<b>checkRequirements()</b></span> is called
+    after the init() method to check whether all requirements to use this
+    node type are met. This may include a test whether appropriate models
+    have been selected.
+
+
+<h2>Project Specific Popup Methods<a name="Popup Menu"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+To facilitate interaction in the GUI mode, you may register methods
+of your <span class="code">Node</span> subclass to a popup menu that
+shows up when the user right-clicks on a node.
+
+<table border="0" width="100%">
+    <tr>
+        <td>
+
+            The annotation <span
+                class="code">@NodePopupMethod(menuText="XXX")</span> in the following
+            code sample declares the method <span
+                class="code">myPopupMenu()</span> to be included in the popup menu
+            with the menu text <span class="code">XXX</span>. Note that the
+            methods to register with the popup menu may not take any parameters
+            and need to be located in the source-file of the specific <span
+                class="code">Node</span> subclass.
+
+            <p>
+            <div class="code codeTab">
+                @NodePopupMethod(menuText="Multicast 2")<br>
+                <b>public</b> <b>void</b> myPopupMethod() {<br>
+                <div class="codeTab">IntMessage msg = <b>new</b> IntMessage(2);<br>
+                    MessageTimer timer = <b>new</b> MessageTimer(msg);<br>
+                    timer.startRelative(1, <b>this</b>);
+                </div>
+                }
+            </div>
+        </td>
+        <td align="center"><img src="pics/popup.png" alt="Image of popup menu">
+            <br><span class="caption">Customized node popup menu</span>
+        </td>
+    </tr>
+</table>
+
+<p>The sample code generates a message carrying an int-value, and
+    broadcasts it to all its neighbors. Note that the method does not
+    broadcast the message directly, but creates a timer, which will be
+    triggered in the next round when the node performs its step. This is
+    necessary for the synchronous simulation mode, because nodes are only
+    allowed to send messages while they are executing their <a
+            class="nav_link"
+            href="tutorial/Implementation.html#Sync Call Sequence">step</a>. However,
+    the user can only interact with the GUI while the simulation is not
+    running. Therefore, the methods called through the popup menu always
+    execute when the simulation is stopped. The preferred solution is to
+    create a timer which fires in the next round and performs the desired
+    action.
+
+<p><b>Note:</b> The <span class="code">MessageTimer</span> is
+    available in the <span class="code">defaultProject</span>. This timer
+    may send a unicast message to a given node, or multicast a message to
+    all immediate neighbors. Please consult the documentation of the
+    source code for more details.
+
+<p>In some cases, it may be desirable to determine only at runtime the set of
+    methods to be included in the menu, and on their menu text. This is possible
+    because the popup menu for the node is assembled every time the user right-clicks
+    on a node. The framework includes all methods annotated with the <span class="code">NodePopupMenu</span>
+    annotation of the corresponding node class. But before including such a method
+    in the list, the framework calls the node-method
+    <span class="code">includeMethodInPopupMenu(Method m, String defaultText)</span>,
+    which allows to decide at runtime whether the menu should be included or not, and,
+    change the menu text if necessary.
+
+<p>To obtain control over the included menu entries, overwrite the
+    <span class="code">includeMethodInPopupMenu(Method m, String defaultText)</span>
+    method in your node subclass. Return <span class="code">null</span> if the method
+    should not be included, otherwise the menu text to be displayed.
+
+<h2>Messages<a name="Messages"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Nodes communicate by the means of messages. To implement your own
+message class, derive from <span
+        class="code">sinalgo.nodes.messages.Message</span> and place your source
+file in the <span class="code">nodes/messages/</span> folder of your
+project.
+
+<p>The abstract class <span class="code">Message</span> requires you
+    to implement a single method that returns a clone of the message,
+    i.e. an exact <i>copy</i> of the message object:<br> <span
+            class="code codeTab"><b>public</b> Message clone()</span>
+
+<p class="note"><b>Implementation Note:</b> When a node sends a
+    message to a neighbor node, it is assumed that the destination
+    receives the message-content that was sent through the <span
+            class="code">send()</span> method. The framework has however no means
+    to test whether the sender still has a reference to the sent
+    message-object, and therefore may be able to alter its content. To
+    avoid such problems, the framework sends separate copies to all
+    receivers of a send() or multicast() call. Thus, for a multicast to
+    <i>n</i> neighbors, the framework obtains <i>n</i> copies of the
+    message and sends a copy to each of the neighbors.
+</p>
+
+<p>If <b>and only if</b> your project ensures that a message-object
+    is not altered after it was sent, you may omit the copying process by
+    providing the following implementation of the <span
+            class="code">clone()</span> method. (Note that the process of sending
+    or receiving a message does not alter the message-object. Thus, a
+    node may safely forward the same message-object it has received.)<br>
+
+<div class="code codeTab">
+    <b>public</b> Message clone() {<br>
+    <div class="codeTab"><b>return this</b>;<i>// This message requires a read-only policy</i></div>
+    }
+</div>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Inbox / handleMessages()<a name="Inbox"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Each node stores the messages it receives in an instance of the <span
+        class="code">Inbox</span> class. The inbox provides an iterator-like
+view over the set of messages that are received in the current round
+in synchronous simulation mode. In asynchronous simulation mode, the
+inbox contains only the single message that triggered the event. The
+method <span class="code">handleMessages(Inbox inbox)</span> provides
+this inbox as single parameter.
+
+<p>For each received message, this iterator stores meta-information,
+    such as the sender of the message. This meta-information is available
+    for the packet that was last returned through the <span class="code">next()</span>
+    method.
+
+<p>In order to iterate several times over the set of packets, you may
+    reset the inbox by calling <span class="code">reset()</span>, <span
+            class="code">size()</span> returns the number of messages in the
+    inbox. Call <span class="code">remove()</span> to remove the message
+    from the inbox that was returned by the last call to <span
+            class="code">next()</span>.
+
+<p>Typically, a node iterates over all messages in the inbox with the
+    following code:
+
+<p>
+<div class="code codeTab">
+    <b>while</b>(inbox.hasNext()) {<br>
+    <div class="codeTab">Message msg = inbox.next();<br>
+        <b>if</b>(msg <b>instanceof </b>...) {<br>
+        <div class="codeTab"><i>\\ handle this type of message</i></div>
+        }
+    </div>
+    }
+</div>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>NackBox / handleNAckMessages()<a name="NackBox"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Messages may be dropped, due to changes to the connectivity graph,
+interference, or the message transmission model. The framework
+provides a means to inform the sender node whenever a <i>unicast</i>
+message sent by the node does not reach the destination. This is an
+optional feature that needs to be enabled through the project
+configuration: set the entry <span
+        class="code">generateNAckMessages</span> to true. If your project
+does not drop messages at all, or if your nodes are not interested in
+this information, you should disable this feature to speed up the
+simulation.
+
+<p>In asynchronous simulation mode, messages are kept in
+    message-events, which are scheduled to execute when the message is
+    supposed to arrive. At the time of execution, the framework decides
+    whether the message arrives. If the message arrives, the method <span
+            class="code">handleMessages()</span> is called on the receiver
+    node. If the message does not arrive, the method <span
+            class="code">handleNAckMessages()</span> is called on the sender
+    node.
+
+<p>In synchronous simulation mode, a sender node can handle the set
+    of messages that were scheduled to arrive in the previous round, but
+    were dropped. The method <span
+            class="code">handleNAckMessages()</span> is called prior to handling
+    the messages that arrive on the node, and passes on the set of
+    dropped messages.
+
+<p>The use of the <span class="code">NackBox</span> object, which
+    holds the set of dropped messages, is equivalent to the <span
+            class="code">Inbox</span>.
+
+
+<p>A typical implementation of the <span
+        class="code">handleNAckMessages()</span>, which needs to be added to
+    your node implementation if you want to use this feature, looks as
+    following:
+
+<p>
+<div class="code codeTab">
+    <b>public void</b> handleNAckMessages(NackBox nackBox) {
+    <div class="codeTab"><b>while</b>(nackBox.hasNext()) {<br>
+        <div class="codeTab">Message msg = nackBox.next();<br>
+            <b>if</b>(msg <b>instanceof </b>...) {<br>
+            <div class="codeTab"><i>\\ handle this type of message</i></div>
+            }
+        </div>
+        }
+    </div>
+    }
+</div>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Edges<a name="Edges"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Nodes are connected by edges. Most projects may be happy with the
+default edge implementation (which is unidirectional!) or one of the
+implementations provided in the <span
+        class="code">defaultProject</span>. If you need a more specialized
+edge, create a subclass from <span
+        class="code">sinalgo.nodes.edges.Edge</span> and put the source file in
+the <span class="code">nodes/edges/</span> folder of your project.
+
+<p><b>Note:</b> The framework only supports one edge type at any
+    time. The type to use can be specified in the configuration file, and
+    it may be switched at runtime through the <span
+            class="code">Preferences</span> menu. Changing the edge type at
+    runtime only affects edges created after the change. It does not
+    replace the already existing edges.
+
+<p>The following edges are already available:
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <td valign="top"><span class="code">
+sinalgo.nodes.edges.Edge
+</span></td>
+        <td>
+
+            The default edge implementation, superclass of all edges. This edge
+            is directional. As a result, Sinalgo does not really support
+            bidirectional edges in the sense that there is a single object for a
+            bidirectional edge. The bidirectional edge implementation solves this problem
+            by adding an edge in both directions.
+            <br>By default, this edge draws itself as a black line between the
+            two end-nodes, and colors itself red when a message is sent over the
+            edge.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+sinalgo.nodes.edges.BidirectionalEdge
+</span></td>
+        <td>
+            The default bidirectional edge implementation. It ensures that there is an edge
+            in both directions between the two end nodes.
+            <br>By default, this edge draws itself as a black line between the
+            two end-nodes, and colors itself red when a message is sent over the
+            edge.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+projects.defaultProject.nodes<br>.edges.BooleanEdge
+</span></td>
+        <td>
+
+            The BooleanEdge extends the default edge implementation with a
+            boolean member <span class="code">flag</span> that may be used
+            arbitrarily. It also carries a static member <span
+                class="code">onlyUseFlagedEdges</span>, which may be used to enable
+            or disable globally the use of the flag.
+
+            <br>The provided implementation uses <span
+                class="code">onlyUseFlagedEdges</span> and <span
+                class="code">flag</span> to decide whether the edge is drawn or not:
+            If <span class="code">onlyUseFlagedEdges</span> is <span
+                class="code">true</span>, the edge only draws itself if <span
+                class="code">flag</span> is set to <span class="code">true</span>.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+projects.defaultProject.nodes<br>.edges.BidirectionalBooleanEdge
+</span></td>
+        <td>
+            A bidirectional edge with the features of the boolean edge.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+projects.defaultProject.nodes<br>.edges.GreenEdge
+</span></td>
+        <td>
+            The same as the default edge implementation, but it draws itself as a
+            green line between the two end-nodes.
+        </td>
+    </tr>
+</table>
+<span class="caption">Edge implementations which are available by default.</span>
+
+To manually insert a connection from node <span class="code">u</span>
+to node <span class="code">v</span>, you may use
+the method <span class="code">u.addConnectionTo(v)</span>. Project sample6
+demonstrates how a static network may be built.
+
+<h2>Timers<a name="Timers"></a></h2>
+<!-- - - - - - - - - - - - - - - -->
+
+A timer is an object that allows a node to schedule a task in the
+future. When the task is due, the timer wakes up the node and
+performs the given task. Any timer object is a subclass of <span
+        class="code">sinalgo.nodes.timers.Timer</span> and implements the method
+<span class="code"><b>void</b> fire()</span>, which contains the task
+this timer needs to perform.
+
+<p>To write a project specific timer, implement a subclass of <span
+        class="code">sinalgo.nodes.timers.Timer</span> and put the source file
+    in the <span class="code">nodes/timers/</span> folder of your
+    project. A timer instance is started by calling either the <span
+            class="code">startAbsolute(double absoluteTime, Node n)</span> method
+    or the <span class="code">startRelative(double relativeTime, Node
+ n)</span> method of the super class. The time specifies when the task
+    should be scheduled, and the node specifies the node on which the
+    task should be executed.
+
+<p><b>Hint:</b> The default project provides a <span
+        class="code">MessageTimer</span> that schedules to send a message at
+    a given time. The message may be unicast to a specified recipient, or
+    multicast to all immediate neighbors.
+
+    <div class="subsubBody">
+        <h3>Global Timers</h3>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        A timer object can also be used to perform a task for the simulation
+        framework at a given time. Such a global task is not executing
+        on a particular node, and is suited to perform simulation specific
+        tasks (e.g. add/drop some nodes, select a random node to perform
+        an action, change the network, ...) In synchronous simulation mode,
+        the global timers are handled after the
+        <span class="code">CustomGlobal.preRound()</span> method. In
+        asynchronous simulation mode, a global timer becomes an event that
+        executes when the simulation time reached the execution time of the
+        timer.
+
+<p>To create a global timer, implement a subclass of <span
+        class="code">sinalgo.nodes.timers.Timer</span> just as for the
+    regular node timers. But in contrast to the node related timers, start
+    the timer with its method <span class="code">startGlobalTimer(double relativeTime)</span>.
+
+<p><b>Hint:</b> You may use the same timer implementation as a node-related timer and
+    as a global timer. Just make sure that the <span class="code">fire()</span>
+    method of the timer class does not access the <span class="code">node</span> member
+    when the timer was started as a global timer. This member is set only when the
+    timer is started as a node-related timer.
+    </div>
+
+<h2>Customized, Globally Visible Methods: CustomGlobal.java<a name="CustomGlobal"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Each project comes with a <span class="code">CustomGlobal</span>
+class, which collects global methods specific to the project. This
+class extends <span
+        class="code">sinalgo.runtime.AbstractCustomGlobal</span> and is located
+in the root folder of your project.
+
+The following table gives an overview of the methods you may
+overwrite in your project specific <span
+        class="code">CustomGlobal.java</span>. (These methods are defined in
+the abstract superclass <span
+        class="code">AbstractCustomGlobal.java</span> with an empty body.)
+
+<p>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <td valign="top"><span class="code">
+customPaint(...)
+</span></td>
+            <td>
+                This paint method is called after the network graph has been drawn. It allows for customizing the
+                drawing of the graph by painting additional information onto the graphics.
+            </td>
+        </tr>
+
+        <tr>
+            <td valign="top"><span class="code">
+handleEmptyEventQueue()
+</span></td>
+            <td>
+                The framework calls this method when running in asynchronous mode and
+                there is no event left in the queue. You may generate new events in
+                this method to keep the simulation going.
+
+<p>Note that the batch mode terminates when the event queue is
+    emptied and this method does not insert any new events.
+    </td></tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+preRun()
+</span></td>
+        <td>
+            Called <i>once</i> prior to starting the first round in
+            synchronous mode, or prior to executing the first event in
+            asynchronous mode. Use this method to initialize the simulation.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+onExit()
+</span></td>
+        <td>
+            Called by the framework before shutting down. To ensure that this
+            method is called in all cases, you should use <span
+                class="code">sinalgo.tools.Tools.exit()</span> to exit, instead of
+            <span class="code">System.exit()</span>.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+preRound()
+</span></td>
+        <td>
+            Called in synchronous mode prior to every round. This method may be
+            suited to perform statistics and write log-files.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+postRound()
+</span></td>
+        <td>
+            Called in synchronous mode after every round. This method may be
+            suited to perform statistics and write log-files.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+checkProjectRequirements()
+</span></td>
+        <td>
+            The framework calls this method at startup after having selected a
+            project to check whether the necessary requirements for this project
+            are given. For algorithms that only work correctly in synchronous
+            mode this method check that the user didn't try to execute it in
+            asynchronous mode. If the requirements are not met, you may call
+            <span class="code">sinalgo.tools.Tools.fatalError(String msg)</span>
+            to terminate the application with a fatal error.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+nodeAddedEvent(Node n)
+</span></td>
+        <td>
+            Called by the framework whenever a node is added to the
+            framework (which is done through the method <span class="code">Runtime.addNode(Node n)</span>).
+            This event may be useful for applications that need to update
+            some graph properties whenever a new node is added (e.g. by the user
+            through the GUI).
+<p>Note that this method is also called individually for each node created through
+    the <span class="code">-gen</span> command-line tool, and when the user
+    creates nodes using the GUI menu.
+    </td></tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+nodeRemovedEvent(Node n)
+</span></td>
+        <td>
+            Called by the framework whenever a node is removed from the
+            framework (which is done through the method <span class="code">Runtime.removeNode(Node n)</span>).
+            This event may be useful for applications that need to update
+            some graph properties whenever a node is removed (e.g. by the user
+            through the GUI).
+<p>Note that this method is <i>not</i> called when the user removes
+    all nodes using the <span class="code">Runtime.clearAllNodes()</span> method.
+    </td></tr>
+
+
+    </table>
+    <span class="caption">Methods you may overwrite in the project owned <span
+            class="code">CustomGlobal</span> class.</span>
+
+
+    <div class="subsubBody">
+        <h3>Stopping the Simulation</h3>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        Most importantly for the batch mode, the <span
+            class="code"><b>hasTerminated()</b></span> method in the <span
+            class="code">CustomGlobal</span> class lets you specify whether a
+        <i>synchronous</i> simulation has reached the final state and the
+        framework may exit. See the <a class="nav_link"
+                                       href="tutorial/Implementation.html#Sync Call Sequence">calling
+        sequence</a> of the synchronous mode for details on when <span
+            class="code">hasTerminated()</span> is called.
+
+        In asynchronous simulation, the simulation terminates when all events
+        have been handled. To stop execution prior to handling all events, or
+        at an arbitrary place in synchronous mode, call <span
+            class="code"><b>sinalgo.tools.Tools.exit()</b></span>. This method
+        executes some cleanup and is preferred to calling <span
+            class="code">System.exit()</span>. In particular, <span
+            class="code">sinalgo.tools.Tools.exit()</span> calls <span
+            class="code">AbstractCustomGlobal.<b>onExit()</b></span>, which you
+        may overwrite in your project specific <span
+            class="">CustomGlobal.java</span> file.
+
+<p><b>Hint:</b> The <span class="code">onExit()</span> method may be
+    a good place to perform final logging steps and project specific
+    cleanup.
+    </div>
+
+
+    <div class="subsubBody">
+        <h3>Project Specific Drop Down Methods and Buttons</h3>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        You may extend the GUI with project specific drop down menus and
+        buttons: Add a dummy-method that takes no parameters to your <span
+            class="code">CustomGlobal</span> and implement the desired behavior
+        in its body. There are three different ways to register the method
+        with the GUI:
+
+<p><b>1) Drop Down Menu Entry:</b> Prefix the method with the annotation
+    <span class="code">@AbstractCustomGlobal.GlobalMethod</span> and
+    specify the <span class="code">menuText</span>. E.g.
+    <br>
+<div class="code codeTab">
+    @AbstractCustomGlobal.GlobalMethod( menuText="Toggle TC view")<br>
+    public void myMenuMethod() {<br>
+    <div class="codeTab">// ...</div>
+    }
+</div>
+
+<p><b>2) Icon Button:</b> Prefix the method with the annotation <span
+        class="code">@AbstractCustomGlobal.CustomButton</span> and specify
+    the <span class="code">imageName</span> and <span
+            class="code">toolTipText</span>. The <span
+            class="code">imageName</span> should be the name of a <span
+            class="code">gif</span> image of size 21x21 pixels, located in the
+    <span class="code">images</span> folder of the project.
+    E.g.
+    <br>
+<div class="code codeTab">
+    @CustomButton( imageName="myImage.gif", toolTipText="Click me!")<br>
+    public void myImageButtonMethod() {<br>
+    <div class="codeTab">// ...</div>
+    }
+</div>
+
+<p><b>3) Text Button:</b> Prefix the method with the annotation <span
+        class="code">@AbstractCustomGlobal.CustomButton</span> and specify
+    the <span class="code">buttonText</span> and <span
+            class="code">toolTipText</span>. E.g.
+    <br>
+<div class="code codeTab">
+    @CustomButton( buttonText="Clear", toolTipText="Click me!")<br>
+    public void myTextButtonMethod() {<br>
+    <div class="codeTab">// ...</div>
+    }
+</div>
+
+<p>
+<table border="0">
+    <tr>
+        <td>
+            <img src="pics/customMenu.png" alt="Image of Menu">
+            <br><span class="caption">Project specific menu</span>
+        </td>
+        <td>
+            <img src="pics/customButtons.png" alt="Image of buttons">
+            <br><span class="caption">Project specific buttons</span>
+        </td>
+    </tr>
+</table>
+
+<br>
+<p>The drop down menu entries (but not the buttons) may be adapted at
+    runtime: Every time the user opens the 'Global' menu,
+    the menu is assembled and includes methods annotated
+    with the <span class="code">GlobalMethod</span> annotation. Before including such a
+    method in the list, the framework calls
+    <span class="code">AbstractCustomGlobal.includeGlobalMethodInMenu(Method m, String defaultText)</span>
+    to allow the project to decide at runtime whether the method should be included or not, and,
+    if necessary, change the default menu text.
+<p>Overwrite the method <span class="code">includeGlobalMethodInMenu(Method m, String defaultText)</span>
+    in your project specific <span class="code">CustomGlobal.java</span> file to control the appearance
+    of the 'Global' menu at runtime. The method returns the text to be displayed for each method, or
+    <span class="code">null</span> if the method should not be included.
+
+    </div> <!-- End of subsubSection-->
+
+<hr class="blue"><!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h1>Model Implementation</h1>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The models are a plug-in based system to describe the environment in
+which the network is simulated. E.g. the mobility model describes how
+the nodes move in the synchronous simulation mode. Each node object
+carries an instance of the following four models: Connectivity,
+Mobility, Interference, and Reliability. As a result, the nodes may
+carry different model implementation and may act differently. The
+message-transmission model describes how long the messages travel
+until arrival. This model applies globally, the framework only holds
+one instance. Finally, the distribution model describes how the nodes
+are placed in the deployment upon creation.
+
+<h2>Connectivity Model<a name="Connectivity Model"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The connectivity model decides to which neighbors a node has a
+connection and inserts/removes the edges. To write your own
+connectivity model, create a subclass of <span
+        class="code">sinalgo.models.ConnectivityModel</span> and place the
+source-file in the <span
+        class="code">models/connectivityModels/</span> folder of your
+project. Instances of this model implement
+
+<br><span
+        class="code codeTab"><b>boolean</b> updateConnections(Node n) <b>throws</b>
+ WrongConfigurationException;</span>
+
+<br>which determines for a given node <span class="code">n</span> the
+set of neighbor nodes and returns whether the neighborhood has
+changed since the last call. This method needs to update the <span
+        class="code">outgoingConnections</span> member of node <span
+        class="code">n</span>, such that this collection contains an <a
+        href="tutorial/Implementation.html#Edges" class="nav_link">edge</a>
+to every neighbor of <span class="code">n</span>.
+
+<p>In synchronous simulation mode, each node updates its connections
+    in every round. Refer to the <a class="nav_link"
+                                    href="tutorial/Implementation.html#Sync Call Sequence">synchronous
+        calling sequence</a> section of this tutorial for more details. For
+    the asynchronous simulation, the framework does not support mobile
+    nodes. As a result, the framework does not call the connectivity
+    model at all, as it is often only necessary to setup the edges once
+    after the nodes have been created. Thus, the project is responsible
+    to call the following method at an appropriate time:<br>
+
+    <span class="code
+ codeTab">sinalgo.tools.Tools.reevaluateConnections();</span>
+
+    <br> This method calls the <span
+            class="code">updateConnections(Node n)</span> method on all nodes.
+
+<p>To facilitate the implementation of a new connectivity model, you
+    may create a subclass of <span
+            class="code">sinalgo.models.<b>ConnectivityModelHelper</b></span>. This
+    helper class implements the <span class="code">updateConnections(Node
+ n)</span> method, and asks the subclass to implement the method
+
+    <br><span class="code codeTab"><b>boolean</b> isConnected(Node from,
+ Node to);</span>
+
+    <br> which is often easier to implement.
+
+<p>The <span class="code">ConnectivityModelHelper</span> assumes that
+    the connectivity is geometric. I.e. there is a maximum distance
+    between connected nodes, above which no node pair is connected. This
+    assumption permits to drastically cut down the neighbor-nodes the
+    helper class needs to test. <b>Note</b> that this maximum distance
+    needs to be specified for each project. Refer to the <a class="nav_link"
+                                                            href="tutorial/Configuration.html">configuration</a> and <a
+            class="nav_link"
+            href="tutorial/Architecture.html">architecture</a> section of this
+    tutorial to learn more about how to configure a project and how the
+    <i>geometric node collection</i> stores the nodes to perform range
+    queries for neighbor nodes.
+
+<p>For your convenience, the <span class="code">defaultProject</span>
+    already contains the following connectivity models. Note that these
+    models are written as generic as possible. Therefore, you may need to
+    add <a class="nav_link"
+           href="tutorial/Configuration.html">configuration settings</a> to your
+    project, depending on which model you select.
+
+<p>
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <td valign="top"><span class="code">
+UDG
+</span></td>
+        <td>
+
+            The Unit Disk Graph connectivity is a purely geometric connectivity
+            model: Two nodes are within communication range iff their mutual
+            distance is below a given threshold. The maximal transmission radius,
+            <span class="code">rMax</span> needs to be specified in the
+            configuration file of the project with an entry of the form
+            <span class="code">&lt;UDG rMax="..."/&gt;</span>.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+QUDG
+</span></td>
+        <td>
+
+            The Quasi Unit Disk Graph is similar to the UDG model, but does not
+            have a sharp upper bound on the transmission range. In the QUDG
+            model, a pair of nodes is always connected if their mutual distance
+            is below a certain value <span class="code">rMin</span>, and is never
+            connected if their distance is above <span
+                class="code">rMax</span>. If the distance is between <span
+                class="code">rMin</span> and <span class="code">rMax</span>, the
+            nodes are connected with a certain probability, which has to be
+            specified in the project configuration. See the source documentation
+            of the <span class="code">QUDG</span> class for more details.
+
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+StaticUDG
+</span></td>
+        <td>
+            The static UDG model is the same as the UDG model, but it it
+            evaluates the connections only the very first time it is called. This
+            may be beneficial for projects where nodes do not move, and the
+            connectivity does not change over time.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+StaticConnectivity
+</span></td>
+        <td>
+            The static connectivity model does not change the edges of a node at
+            all. This model may be useful if the project has other means to
+            generate and update the edges between neighboring nodes.
+        </td>
+    </tr>
+</table>
+<span class="caption">Connectivity models provided by the <span class="code">defaultProject</span> project.</span>
+
+<h2>Interference Model<a name="Interference Model"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Each node carries an interference model instance that decides for
+each message sent to this node, whether the message may not arrive
+due to interference caused by other packets or other environmental
+noise. To create your own interference model, implement a subclass of
+<span class="code">sinalgo.models.InterferenceModel</span> and place the
+file in the <span class="code">models/interferenceModels/</span>
+folder of your project.
+
+<p>The model requires to implement the method <span
+        class="code"><b>boolean isDisturbed(Packet p)</b></span>, which
+    tests, whether a message arriving at this node may be disturbed by
+    interference.
+
+<p class="note"><b>Implementation Notes:</b> The <span
+        class="code">Packet</span> object passed to the <span
+        class="code">isDisturbed(Packet p)</span> method holds the message,
+    the sender and receiver node, the intensity at which the sender is
+    sending this packet, and other information that may be useful. To
+    obtain a collection of all messages being sent at this moment, call
+    <span class="code">sinalgo.tools.Tools.getPacketsInTheAir()</span>.
+</p>
+
+<p>
+
+<p>In synchronous simulation mode, the framework performs the
+    interference test in every round. Refer to the <a class="nav_link"
+                                                      href="tutorial/Implementation.html#Sync Call Sequence">synchronous
+        calling sequence</a> section of this tutorial for more details. For
+    asynchronous simulations, the interference test is performed whenever
+    an additional message is being sent or a message arrived.
+
+<p><b>Additive interference in asynchronous mode</b>: By default, the
+    asynchronous mode performs an interference test on all messages that
+    have not yet arrived whenever an additional message is sent, or a
+    message arrives. This is a quite expensive operation, and is not
+    necessary in most cases, where the interference is
+    <b>additive</b>. We call interference <i>additive</i>, if <br><span
+            class="codeTab">a) an additional message can only increase (or not
+ alter) the interference at any other receiver node, and</span>
+    <br><span class="codeTab">b) the interference decreases (or remains
+ the same) if any of the messages is not considered.</span><br>
+
+    If all used interference models are <i>additive</i>, the framework
+    can reduce the calls to the interference test drastically. Additive
+    interference can be enabled/disabled in the configuration file of the
+    project.
+
+<p>For your convenience, the <span class="code">defaultProject</span>
+    already contains the following interference models. Note that these
+    models are written as generic as possible. Therefore, you may need to add
+    <a class="nav_link" href="tutorial/Configuration.html">configuration
+        settings</a> to your project, depending on which model you select.
+
+
+<p>
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <td valign="top"><span class="code">
+ SINR
+</span></td>
+        <td>
+
+            The signal to interference model is probably the best known
+            interference model. It determines a quotient q = s / (i+n) between
+            the received signal s and the sum of the ambient background noise n and
+            the interference i caused by all concurrent transmissions. The
+            transmission succeeds if q &gt; beta, where beta is a small constant.
+            <br>
+            This model assumes that the intensity of an electric signal decays
+            exponentially with the distance from the sender. This decrease is
+            parameterized by the path-loss exponent alpha: Intensity(r) =
+            sendPower/r^alpha. The value of alpha is often chosen in the range
+            between 2 and 6.
+            <br>
+            To the interference caused by concurrent transmissions, we add an
+            ambient noise level N.
+            <br>
+            This model requires the following entry in the configuration file:
+            <br>
+            <span class="code">&lt;SINR alpha="..." beta="..." noise="..."/&gt;</span>
+            <br>
+            where alpha, beta, and noise are floating point values.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+ NoInterference
+</span></td>
+        <td>
+            A dummy interference model that does not drop any messages due to
+            interference. When using this model for all nodes, you should turn
+            off the support for interference in the project configuration.
+        </td>
+    </tr>
+
+</table>
+<span class="caption">Interference models provided by the <span class="code">defaultProject</span> project.</span>
+
+
+<h2>Mobility Model<a name="Mobility Model"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The mobility model on each node object describes how the node moves
+in the synchronous simulation. (Asynchronous simulation does not
+support mobile nodes.) To create your own mobility model, implement a
+subclass of <span class="code">sinalgo.models.MobilityModel</span> and
+place the file in the <span
+        class="code">models/mobilityModels/</span> folder of your project.
+
+<p>The model requires to implement the method <span
+        class="code"><b>Position getNextPos(Node n)</b></span>, which returns
+    the new position of node <span class="code">n</span>.
+
+<p>In Sinalgo, mobility is simulated in terms of rounds. At the
+    beginning of each round, the nodes are allowed to move to a new
+    position, where they remain for the remainder of the
+    round. (Refer to the <a class="nav_link"
+                            href="tutorial/Implementation.html#Sync Call Sequence">calling
+        sequence</a> for more details.)
+
+<p class="note"><b>Implementation Note:</b> The discretization of the
+    movement may be refined in the following way: Assume a simulation,
+    where nodes move 1 distance unit per round. At the same time, a
+    message takes 1 round to arrive at its destination. To achieve a
+    higher resolution of the movement, you may reduce the node speed to
+    0.1 distance units per round, and increase the message transmission
+    time to 10. Along this line, you may achieve arbitrarily close
+    approximations to a continuous system, paying with simulation
+    time. </p>
+
+<p>For your convenience, the <span class="code">defaultProject</span>
+    already contains the following mobility models. Note that these
+    models are written as generic as possible. Therefore, you may need to add
+    <a class="nav_link" href="tutorial/Configuration.html">configuration
+        settings</a> to your project, depending on which model you select.
+
+<p>
+    <table border="1" cellpadding="5" cellspacing="0">
+
+        <tr>
+            <td valign="top"><span class="code">
+RandomWayPoint
+</span></td>
+            <td>
+
+                A node that moves according to the random way point mobility model
+                moves on a straight line to a (uniformly and randomly selected)
+                position in the deployment field. Once arrived, it waits for a
+                predefined amount of time, before it selects a new position to walk
+                to.
+
+<p>The node speed and waiting time have to be configured through the
+    project configuration. Both of them are defined through <a
+            class="nav_link" href="tutorial/Tools.html">distributions</a>. An
+    entry in the configuration file may look as following:
+
+<div class="code codeTab">
+    &lt;RandomWayPoint&gt;
+    <div class="codeTab">
+        &lt;Speed distribution="Gaussian" mean="10" variance="20" /&gt;<br>
+        &lt;WaitingTime distribution="Poisson" lambda="10" /&gt;
+    </div>
+    &lt;/RandomWayPoint&gt;
+</div>
+
+<p class="note"><b>Note:</b> The stationary distribution of nodes
+    moving according to the random way point model is <i>not</i>
+    uniformly distributed. The nodes tend to be more often around the center
+    of the deployment area than close to the boundary.</p>
+
+</td></tr>
+
+<tr>
+    <td valign="top"><span class="code">
+RandomDirection
+</span></td>
+    <td>
+
+        Similarly to the random way point model, the random direction model
+        alternates between waiting and moving periods. The only difference is
+        the choice of the target: Instead of picking a random point from the
+        deployment field, the random direction chooses a direction in which
+        the node should walk, and how long the node should walk in this
+        direction. If the node hits the boundary of the deployment area, it
+        is reflected just as a billard ball.
+
+        <p>The node speed, move-time, and waiting time have to be configured
+            through the project configuration and are defined through <a
+                    class="nav_link" href="tutorial/Tools.html">distributions</a>. An
+            entry in the configuration file may look as following:
+
+        <div class="code codeTab">
+            &lt;RandomDirection&gt;
+            <div class="codeTab">
+                &lt;NodeSpeed distribution="Constant" constant="0.4" /&gt;<br>
+                &lt;WaitingTime distribution="Exponential" lambda="10" /&gt;<br>
+                &lt;MoveTime distribution="Uniform" min="5" max="20" /&gt;
+            </div>
+            &lt;/RandomDirection&gt;
+        </div>
+
+        <p class="note"><b>Note:</b> The stationary distribution of nodes
+            moving according to the random direction model is uniformly distributed.</p>
+
+    </td>
+</tr>
+
+<tr>
+    <td valign="top"><span class="code">
+NoMobility
+</span></td>
+    <td>
+
+        A dummy mobility model that does not move the nodes. When using
+        this model for all nodes, you should turn off the support for
+        mobility in the project configuration.
+
+    </td>
+</tr>
+
+</table>
+<span class="caption">Mobility models provided by the <span class="code">defaultProject</span> project.</span>
+
+
+<h2>Reliability Model<a name="Reliability Model"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The reliability model installed on each node decides for each
+message, whether it should arrive at the destination or not. This
+model may be interesting to simulate a lossy packet networks, where
+some messages do not arrive for various reasons. To create your own
+reliability model, implement a subclass of <span
+        class="code">sinalgo.models.ReliabilityModel</span> and place the file
+in the <span class="code">models/reliabilityModels/</span> folder of
+your project.
+
+<p>The model requires to implement the method <span
+        class="code"><b>boolean reachesDestination(Packet p)</b></span>,
+    which determines whether the message arrives at the destination or
+    not. Note that the interference model may overrule this decision and
+    drop a message due to interference. However, the interference model
+    cannot reincarnate an already dropped message.
+
+<p>For your convenience, the <span class="code">defaultProject</span>
+    already contains the following reliability models. Note that these
+    models are written as generic as possible. Therefore, you may need to
+    add <a class="nav_link"
+           href="tutorial/Configuration.html">configuration settings</a> to your
+    project, depending on which model you select.
+
+<p>
+<table border="1" cellpadding="5" cellspacing="0">
+
+    <tr>
+        <td valign="top"><span class="code">
+ LossyDelivery
+</span></td>
+        <td>
+
+            A lossy reliability model that drops messages with a constant
+            probability. The percentage of dropped messages has to be specified
+            in the configuration file:<br>
+            <div class="code codeTab">&lt;LossyDelivery dropRate="..."/&gt;</div>
+
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+ ReliableDelivery
+</span></td>
+        <td>
+            A dummy implementation of the reliability model that does not drop any messages.
+        </td>
+    </tr>
+
+</table>
+<span class="caption">Reliability models provided by the <span class="code">defaultProject</span> project.</span>
+
+
+<h2>Message Transmission Model<a name="Msg Transm. Model"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The message transmission model determines the time a message needs
+until it arrives at the destination node. The framework holds only
+one instance of this model, which applies for all nodes and all
+message types. To create your own message transmission model,
+implement a subclass of <span
+        class="code">sinalgo.models.MessageTransmissionModel</span> and place
+the file in the <span
+        class="code">models/messageTransmissionModels/</span> folder of your
+project.
+
+<p>The model requires to implement the method <span
+        class="code"><b>double timeToReach(Node startNode, Node endNode,
+ Message msg)</b></span>, which determines the time to send a message
+    from the <span class="code">startNode</span> to the <span
+            class="code">endNode</span>. For synchronous simulations, the time is
+    specified in rounds, where a time of <span class="code">1</span>
+    specifies the following round. In the asynchronous setting, this
+    method returns the time units after which the message should arrive.
+
+
+    ....
+
+<p>The <span class="code">defaultProject</span> contains the
+    following two message transmission models.
+
+<p>
+<table border="1" cellpadding="5" cellspacing="0">
+
+    <tr>
+        <td valign="top"><span class="code">
+ConstantTime
+</span></td>
+        <td>
+            Delivers the messages after a constant delay. It requires a
+            configuration entry of the following form to specify the delay:<br>
+            <div class="code codeTab">
+                &lt;MessageTransmission ConstantTime="..."/&gt;
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+RandomTime
+</span></td>
+        <td>
+            Delivers the messages after a random delay, which is defined through
+            a distribution. It requires a configuration entry of the following
+            form to specify the delay:<br>
+            <div class="code codeTab">
+                &lt;RandomMessageTransmission distribution="Uniform" min="0.1" max="4.2"/&gt;
+            </div>
+        </td>
+    </tr>
+</table>
+<span class="caption">Message transmission models provided by the <span
+        class="code">defaultProject</span> project.</span>
+
+
+<h2>Distribution Model<a name="Distribution Model"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The distribution model describes how the nodes are placed initially
+onto the deployment field when they are created. Whenever the
+framework creates a set of nodes, there needs to be an instance of a
+distribution model that places the nodes. To create your own
+distribution model, implement a subclass of <span
+        class="code">sinalgo.models.DistributionModel</span> and place the file
+in the <span class="code">models/distributionModels/</span> folder of
+your project.
+
+<p>The distribution models implement an iterator-like interface that
+    allows to retrieve the node positions in sequence. The model requires
+    to implement the method <span class="code"><b>Position
+ getNextPosition()</b></span>, which returns the position of a
+    node. The framework calls this method exactly once for each created node.
+
+<p><b>Initialization:</b> After creating an instance of the
+    distribution model, the framework sets the member variable <span
+            class="code">numberOfNodes</span>, and then calls the <span
+            class="code">initialize()</span> method. This method may be used to
+    pre-calculate the positions of the nodes and obtain an iterator
+    instance on the positions. The positions are retrieved only after
+    this call.
+
+<p>For your convenience, the <span class="code">defaultProject</span>
+    already contains the following distribution models. Note that these
+    models are written as generic as possible. Therefore, you may need to add
+    <a class="nav_link" href="tutorial/Configuration.html">configuration
+        settings</a> to your project, depending on which model you select.
+
+<p>
+<table border="1" cellpadding="5" cellspacing="0">
+
+    <tr>
+        <td valign="top"><span class="code">
+Random 
+</span></td>
+        <td>
+            Places the nodes randomly on the deployment area. This model may be used in 2D and 3D.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+Circle 
+</span></td>
+        <td>
+            Places the nodes on a circle.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+Grid2D
+</span></td>
+        <td>
+            Places the nodes on a regular grid in the XY plane.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+Line2D 
+</span></td>
+        <td>
+            Places the nodes evenly distributed on a line. You may specify the
+            start and end point of the line in the project configuration.
+        </td>
+    </tr>
+
+</table>
+<span class="caption">Distribution models provided by the <span class="code">defaultProject</span> project.</span>
+
+<hr class="blue"><!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h1>Tools</h1>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+This section covers some tools you may use for your project.
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Tools.java - a Collection of Useful Methods<a name="Tools.java"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The class <span class="code"><b>Tools</b></span> in the package
+<span class="code">sinalgo.tools</span> is a collection of <i>static</i>
+methods that may be useful in several circumstances. It contains
+
+<ul class="unstyled extra-space">
+    <li>Error handling</li>
+    <li>Settings of the framework</li>
+    <li>Information about the current simulation</li>
+    <li>Access to the set of nodes</li>
+    <li>Access to the set of messages currently being sent</li>
+    <li>Stop or exit the simulation</li>
+    <li>GUI related methods</li>
+    <li>And others...</li>
+</ul>
+
+<p class="note"><b>Note:</b> Most of the methods provided in this
+    class are wrapper methods. The <span class="code">Tools</span>
+    class just collects these helpful methods, which are sometimes
+    difficult to find in their original place.</p>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Random Numbers<a name="Random Numbers"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Many algorithms and models rely on random values to implement
+randomized decisions. At the same time, it is often desirable to run
+the exactly same simulation several times, either to understand its
+behavior, or to find errors. However, when the algorithms take some
+decisions purely randomly, it is impossible to rerun the exactly same
+simulation. To circumvent this problem, Sinalgo offers its own instance
+of a random number generator, which <b>should be used
+    exclusively</b>. To access this instance, write <p>
+<div class="code
+ codeTab"> java.util.Random rand =
+    sinalgo.tools.Tools.getRandomNumberGenerator();
+</div>
+
+<p>This random number generator instance depends on the <a
+        href="tutorial/Configuration.html" class="nav_link">configuration
+    file</a> of the project. If the framework entry <span
+        class="code">useFixedSeed</span> is set, the random number generator
+    is initialized with the <span class="code">fixedSeed</span>, also
+    provided in the configuration file. Otherwise, the random number
+    generator is initialized randomly, such that subsequent simulations
+    receive different random numbers.
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Random Distributions<a name="Random Distributions"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The package <span class="code">sinalgo.tools.statistics</span> provides
+several random number generators that return random numbers according
+to a certain distribution probability. Available distributions are:
+
+<p>
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <td valign="top"><span class="code">
+ExponentialDistribution
+</span></td>
+        <td>
+            Returns random values exponentially distributed with parameter lambda.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+PoissonDistribution
+</span></td>
+        <td>
+            Returns random values Poisson distributed with parameter lambda.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+GaussianDistribution
+</span></td>
+        <td>
+            Returns random values Gaussian distributed according to a given mean and variance.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+UniformDistribution
+</span></td>
+        <td>
+            Returns random values randomly chosen in a given interval.
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top"><span class="code">
+ConstantDistribution
+</span></td>
+        <td>
+            Returns a always the same constant. (Thus not really a random number.)
+        </td>
+    </tr>
+</table>
+<span class="caption">Available random number distributions in the package <span
+        class="code">sinalgo.tools.statistics</span>.</span>
+
+<p>All of these distributions extend from <span
+        class="code">sinalgo.tools.statistics.Distribution</span> and implement
+    the method <span class="code"><b>double nextSample()</b></span>,
+    which returns the next random sample of the distribution. To obtain
+    an instance of the Gaussian distribution, you can write:
+<p>
+<div class="code codeTab">
+    GaussianDistribution gauss = new GaussianDistribution(mean, var);<br>
+    gauss.nextSample(); <i>// returns a random variable, normally distributed with the given mean and var</i>
+</div>
+
+<p>Alternatively, you can specify the type and settings of the
+    distribution from within the <a href="tutorial/Configuration.html"
+                                    class="nav_link">configuration file</a> of the project. The
+    configuration entry needs to specify the name of the distribution as
+    well as the distribution-specific parameters. The key of the tag that
+    contains the attributes holding this information is used to retrieve
+    the information. E.g. add to your configuration file the following
+    entry in the <span class="code">Custom</span> section:
+<p>
+<div class="code codeTab">
+    &lt;MyNode&gt;<br>
+    <div class="codeTab"> &lt;speed distribution="Gaussian" mean="10" variance="20"/&gt;</div>
+    &lt;/MyNode&gt;
+</div>
+
+<p>In order to generate a distribution object from this entry, write
+
+<p>
+<div class="code codeTab">
+    Distribution dist = Distribution.getDistributionFromConfigFile("MyNode/speed");<br>
+    dist.nextSample(); <i>// Returns a random variable distributed according to the chosen distribution.</i>
+</div>
+
+<p><b>Note:</b> These classes base upon the random number generator
+    of the framework and implement the seed-feature described in the <a
+            href="tutorial/Tools.html#Random Numbers" class="nav_link">Random
+        Numbers</a> section. Thus, a rerun of the exact same simulation is
+    possible.
+
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Sampling Data<a name="Sampling Data"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The class <span class="code">DataSeries</span> in the package <span
+        class="code">sinalgo.tools.statistics</span> is a statistic tool to
+determine simple statistic properties such as the mean and standard
+deviation of a series of measurements.
+
+<p>For each series of data you want to have a statistical analysis
+    on, create a new object of this class and add the samples using the
+    <span class="code">addSample()</span> method. You can retrieve the
+    <b>mean</b>, <b>variance</b>, <b>standard deviance</b>, <b>sum</b>,
+    <b>minimum</b>, <b>maximum</b>, and <b>count</b> of the added samples.
+
+<p class="note"><b>Implementation Note:</b> A DataSeries object does
+    <i>not</i> store the added samples individually. Instead, it
+    processes the samples immediately upon addition. Therefore, you may
+    sample many huge data series without using up a lot of memory.
+</p>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Export Network Graph to EPS or PDF<a name="EPS / PDF"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Sinalgo can export the current view of the network graph to a vector
+graphic in EPS or PDF format. To export the current view, click on
+the <span class="code">Graph</span> menu, and select <span
+        class="code">Export</span>.
+
+<p>Sinalgo itself writes the graphics directly in EPS format. It does
+    not support PDF itself, and calls an external application to convert
+    the EPS file to a PDF file, if you choose to export to PDF. By
+    default, the framework calls the <span class="code">epstopdf</span>
+    application. Change the field <span
+            class="code">epsToPdfCommand</span> in the framework section of the
+    <a class="nav_link" href="tutorial/Configuration.html">configuration
+        file</a> to specify a different application.
+
+
+<p>The export is similar to drawing the network graph on the screen:
+    The framework iterates over all nodes and first draws for each node
+    the connections. In a second iteration, it also draws the nodes, such
+    that the nodes are not covered by the lines of the edges. For this
+    purpose, the <span class="code">sinalgo.nodes.Node</span> and <span
+            class="code">sinalgo.nodes.edges.Edge</span> classes implement the <span
+            class="code">drawToPostScript()</span> method. You may overwrite this
+    method in your own node or edge subclasses to customize their
+    appearance.
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Logging<a name="Logging"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Sinalgo provides tools to facilitate logging, i.e. write certain output
+to files. The logging support is located in <span
+        class="code">sinalgo.tools.logging</span>. The class Logging provides
+methods to create log-files and add logging statements to an existing
+log-file.
+
+<p>The creation of a log-file is straight forward: To create a log-file
+    with the name 'myLog.txt', write
+<p>
+<div class="code codeTab">
+    Logging myLog = Logging.getLogger("myLog.txt");
+</div>
+
+<p>By default, the log-files are placed in the <span
+        class="code">logs</span> folder in the root directory of Sinalgo. To put
+    the log-file in a sub-directory, write
+
+<p>
+<div class="code codeTab">
+    Logging myLog = Logging.getLogger("dir1/dir2/myLog.txt");
+</div>
+
+<p>Then, to add log-statements, use the methods log(String) and
+    logln(String). E.g.<br>
+<p>
+<div class="code codeTab">
+    myLog.log("Test");
+    myLog.logln("Test"); <i>// appends a new-line to the given string</i>
+</div>
+
+<p>Subsequent calls to <span
+        class="code">Logging.getLogger("myLog.txt")</span> will return the
+    same singleton Logging object. I.e. to access the same log-file from
+    several classes, you need not make the logging object public or
+    accessible, but can access it directly with the
+    Logging.getLogger(String) method.
+
+<p>The framework already provides one global log-file, which may be
+    used for logging, especially logging of errors. The file name of this
+    framework log-file is specified in the <a
+            href="tutorial/Configuration.html" class="nav_link">project
+        configuration file</a> of each project. For this framework log-file
+    (and only for this log-file), you can specify in the configuration
+    file, whether a file should be created, or whether its content should
+    be printed onto the standard output. You can access this framework
+    log-file by calling <span class="code">Logging.getLogger()</span> or
+    through <span class="code">sinalgo.runtime.Global.log</span>.
+
+<h3>Log to Time Directory</h3>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+By default, the log files are created in a folder <span
+        class="code">logs</span> of the root directory of the Sinalgo installation. I.e. subsequent runs of a simulation
+will overwrite the
+log-files. As this overwriting may be undesirable, the log-files may
+be placed in a unique folder, which gets created for each simulation
+run. The name of this unique folder is composed of the project-name
+and the time when the simulation started, these folders are placed in
+the 'logs' directory. You can turn on this feature in the <a
+        href="tutorial/Configuration.html" class="nav_link">project
+    configuration file</a>, by setting the entry <span
+        class="code">logToTimeDirectory</span> to <span
+        class="code">true</span>.
+
+<h3>Logging with Levels</h3>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Logging statements may be used to debug a system. But after
+debugging, these statements are often not needed anymore. However,
+removing manually the log statements may be time consuming and often
+not desirable, as they need to be re-inserted if the problem occurs
+again. To avoid the removal of log-statements in the code, we
+support the concept of logging with levels. I.e. each log-statement
+takes as optional parameter a boolean indicating whether it should be
+printed or not. Collecting all of these boolean variables in a single
+file lets you quickly turn on or off different sets of
+log-statements. Therefore, when adding log-statements for a certain
+topic, assign to all of them the same boolean flag, such that all of
+them can be enabled or disabled by this flag (at compile-time).
+
+<p>In theory, this flag can be stored anywhere. We suggest that you
+    collect all of these flags and store them in the class LogL in the
+    root directory of your project. The file <span
+            class="code">LogL.java</span> may look as following:
+
+<p>
+<div class="code codeTab">
+    <b>public class </b>LogL <b>extends</b> sinalgo.tools.logging.LogL {<br>
+    <div class="codeTab">
+        <b>public static final boolean</b> testLog = <b>false</b>;<br>
+        <b>public static final boolean</b> nodeSpeed = <b>true</b>;
+    </div>
+    }
+</div>
+
+<p>The log-statements now look as following:
+
+<p>
+<div class="code codeTab">
+    Logging myLog = Logging.getLogger("myLog.txt");<br>
+    myLog.log(LogL.testLog, "Test");<br>
+    myLog.logln(LogL.nodeSpeed, "Test");
+</div>
+
+<p>The first log-statement won't be printed, as <span
+        class="code">LogL.testLog</span> is set to false.
+
+<p class="note"><b>Implementation Remark:</b> In order to change the
+    log-levels at runtime, you need to remove the <span
+            class="code">final</span> modifier for the corresponding log-levels in
+    the <span class="code">LogL.java</span> file.
+<p>
+
+<h3>Appending to Log Files</h3>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+The logging class allows to append to an existing log-file from a
+previous run. To do so, call the <span
+        class="code">getLogger()</span> method with the second optional
+parameter set to <span class="code"><b>true</b></span>. Note that
+log-files created with the append flag set to true are always placed
+in the <span class="code">logs</span> folder and ignore the <span
+        class="code">logToTimeDirectory</span> flag.
+
+<h3>Logging the Code Position</h3>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+When a log-file collects log-statements from several code fragments, it
+is often difficult to remember which piece of code was responsible for a
+given log statement. Therefore, the logging class provides methods to
+automatically prefix a log-statement with the class name, method
+name, and line number of the source-file where the log-statement
+executed. To prefix a statement with the code position, use either
+<span class="code">logPos(...)</span> or <span class="code">logPosln(...)</span>.
+For personalized use, you may also consider the method
+<span class="">Logging.getCodePosition()</span>, which returns a string
+representation of the code position where the method is being called.
+
+<h3>Performance Issues</h3>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Turning off logging by setting the corresponding flag to false still
+triggers the corresponding log method to be called. Even more costly
+is often the composition of the string that is passed to the
+log-method. [The composition of the string is not only costly in
+terms of time, but also allocates new memory cells, which need to be
+reclaimed by the garbage collector later on.]<br> Most of the time,
+this is no problem. E.g. when the log-statement is placed in a part
+of the code that executes rarely. But when the log-statement
+is located in a piece of code that executes very often, e.g. in every
+step of every round, this may decrease simulation performance
+noticeably.<br> A possible work-around for such exposed
+log-statements is to not use the log-level flag in the method-call,
+but surround the log-statements with an <span
+        class="code">if()</span> clause, that only executes if the
+corresponding log-level is set to <span class="code">true</span>:
+
+<p>
+<div class="code codeTab">
+    <b>if</b>(LogL.testLog) {<br>
+    <div class="codeTab">myLog.log("Test"); <i> //we don't need the log-level anymore</i>
+    </div>
+    }
+</div>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Background Map<a name="Background Map"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+By default, the deployment area is a rectangular region in 2D, and a
+cuboid in 3D, whose dimensions are specified in the project specific
+configuration file. For the 2D case, Sinalgo offers an extension to
+display a picture on the deployment area. The interpretation of this
+background map is purely project specific. E.g. colored areas may
+denote obstacles, where no nodes can be placed.
+
+<p>The usage of the background image can be enabled in the
+    configuration file, which also contains the path of the image file to
+    use. The search path for the image is the root directory of the
+    project. The image formats that Sinalgo can decode depends on your JAVA
+    installation. Most likely, the following formats are supported: <span
+            class="code">GIF, PNG, BMP, JPG</span>.
+
+<p>The background image is scaled along the x and y axis to exactly
+    fit the deployment area. As a result, the provided image may be quite
+    small. In fact, huge images allow to encode more and finer details,
+    but take also more time to display.
+
+<p>The instance of <span class="code">sinalgo.io.mapIO.Map</span>, which
+    may be accessed through <span
+            class="code">Tools.getBackgroundMap()</span>, provides methods to
+    determine the color of any position on the deployment area.
+
+
+<hr class="blue"><!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h1>Insight Into the Clockwork of Sinalgo</h1>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Sinalgo is a simulation framework that helps you simulate computer
+networks in different scenarios. Its main target networks are
+wireless networks, which are well described by the message passing
+model.
+
+<p>While running any simulation, it is crucial to understand how the
+    simulation simplifies from a real network. For example, Sinalgo simulates the physical propagation of transmissions
+    only very
+    superficially (in contrast to other simulators, such as ns2). In the
+    remainder of this section, we describe the operating mode of
+    Sinalgo on a high level. We stick as close as possible to the
+    implementation, such that the simplifications/abstractions from
+    reality can be easily spotted.
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Node Storage<a name="Node Storage"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Many connectivity models such as UDG and QUDG have a well defined
+upper bound on the Euclidean distance between two connected
+nodes. Sinalgo uses this upper bound to speed up the connectivity model,
+which determines the set of neighbors to each node. (Remember that
+the connectivity model is called in every <a
+        href="tutorial/Implementation.html#Sync Call Sequence"
+        class="nav_link">round</a> of the synchronous simulation, and makes
+up a considerable part of the simulation time.) When the connectivity
+model is called for a given node <span class="code">n</span>, it
+could test whether <span class="code">n</span> is connected to any of
+the other nodes. However, if there is an upper bound on the Euclidean
+distance between any two connected nodes, it is sufficient to test a
+subset of nodes in an Euclidean proximity of <span
+        class="code">n</span>, which corresponds to a range query.
+
+<p>Sinalgo provides support to perform range queries, which return a set
+    of potential neighbors for a given node. To perform these range
+    queries, Sinalgo stores the nodes in a specialized data structure. In
+    the default distribution, Sinalgo stores the nodes in a <span
+            class="code">GeometricNodeCollection</span>, which implements the
+    <span class="code">NodeCollectionInterface</span>.
+
+    Because these range queries depend on the maximum distance between
+    any two connected nodes, the <span
+            class="code">GeometricNodeCollection</span> needs to be configured
+    through the project configuration file. It requires an entry of
+    the following form, where <span class="code">rMax</span> specifies
+    the maximum distance between any two connected nodes.
+
+    <br>
+<div class="code codeTab"><b>
+    &lt;GeometricNodeCollection rMax="150"/&gt;
+</b></div>
+
+<p>The <span class="code">NodeCollectionInterface</span> interface
+    provides a method <span
+            class="code">getPossibleNeighborsEnumeration(Node n)</span>, which
+    returns an enumeration over all potential neighbors of a given
+    node. Using this method, the connectivity model only needs to test a
+    subset of all nodes, which increases the simulation time
+    considerably. The <a href="tutorial/Models.html#Connectivity Model"
+                         class="nav_link">ConnectivityModelHelper</a> located in the
+    package <span class="code">sinalgo.models</span> gives an example on how
+    to use this range query.
+
+<p class="note"><b>Note: </b>The <span
+        class="code">GeometricNodeCollection</span> comes in two flavors, one
+    for 2D and one for 3D. However, you may implement your own subclass
+    of <span class="code">NodeCollectionInterface</span> to obtain range
+    queries that depend on other criteria. The project configuration file
+    contains an entry which specifies the node collection implementation
+    to use.</p>
+
+<p class="note"><b>Implementation Note: </b> The <span
+        class="code">GeometricNodeCollection</span> partitions the deployment
+    area in a 2-dimensional (3-dimensional) grid with cell-size <span
+            class="code">rMax</span>. Each cell stores the nodes that are
+    contained within its boundaries. Whenever a node moves into a different
+    cell, this data structure is updated to reflect the new situation. A
+    range query for a given node <span class="code">n</span> determines
+    the cell <span class="code">c</span> in which <span
+            class="code">n</span> is located, and returns the nodes contained in
+    <span class="code">c</span> and any cell adjacent to <span
+            class="code">c</span>. Thus, <span
+            class="code">getPossibleNeighborsEnumeration(Node n)</span> returns
+    the nodes contained in 9 cells in 2D, and the content of 27 cells in
+    3D.</p>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Synchronous vs Asynchronous Mode<a name="Sync vs Async"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Most importantly, Sinalgo either runs as an asynchronous, event
+triggered simulator, or in synchronous mode, where events happen in
+parallel in fixed time slots. The two modes result in different
+calling sequences of the methods implemented by the network
+nodes. The calling sequences are described in the <a
+        href="tutorial/Implementation.html#Sync Call Sequence"
+        class="nav_link">Node Implementation tutorial</a>.
+
+<p>The simulation mode determines when exactly the method <span
+        class="code">handleMessage()</span> is called when a node receives a
+    message, and when exactly the timers are fired when they expired.
+
+    <div class="subsubbody">
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <h3>Synchronous Simulation</h3>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        The synchronous simulation is based on <i>rounds</i>. At the
+        beginning of each round, the framework increments the global time by
+        one unit. Then, it moves the nodes according to their mobility models
+        and updates the connections according to the connectivity
+        model. After that, the framework iterates over the set of nodes and
+        performs the method <span class="code">step()</span> on each
+        node. The calling sequence of this method is described in the <a
+            href="tutorial/Implementation.html#Sync Call Sequence"
+            class="nav_link">Node Implementation tutorial</a>. The nodes are
+        visited in a framework specific order, which the simulation should
+        not rely on.
+
+<p>Each message and timer carries a time stamp that indicates at
+    which time the event (arrival of message, execution of timer-handler)
+    should happen. Because the time advances in steps of 1 unit, each
+    node handles in its <span class="code">step()</span> method all
+    events whose time stamp is smaller or equal to the current time. For
+    both, the set of messages and the set of timers, the node sorts the
+    events according to their time stamp, such that the events happen in
+    order on each individual node.
+
+<p class="note"><b>Note:</b> From a global view, the message
+    receptions and timer-handlers may not be executed <i>in order</i>:
+    Suppose the case where node A receives a message M1 at 15.23 and M2
+    at 15.88 and node B receives a message M3 at 15.17 and M4 at
+    15.77. If the framework first executes the step() method on node A,
+    then the messages M1 and M2 are handled prior to the messages M3 and
+    M4, which are only handled in the call to step() of node B.
+</p>
+
+<p class="note"><b>Implementation Note:</b> If your project simulates
+    mobile nodes, the position of the nodes is updated at the beginning
+    of every round. As a result, the nodes hop around, which does not
+    quite correspond a continuous path. To achieve a better
+    approximation, you may increase the time resolution of the simulation
+    by a given factor, e.g. 10: Decrease the node speed by this factor,
+    and increase the message delivery time, as well as the countdown-time
+    of all timers by the same factor. This inserts several (in this case
+    9) more rounds for the same distance a node moves, which gives a
+    better approximation of the movement.</p>
+</div>
+
+<div class="subsubbody">
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <h3>Asynchronous Simulation</h3>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    The asynchronous simulation is purely event based. The framework
+    holds a list of message events and timer events, which is sorted by
+    the time when these events should happen (arrival of message,
+    execution of timer-handler). The framework repeatedly picks the most
+    recent event and executes it.
+
+    <p>In a typical simulation, some of the events issue further events,
+        which prevent the event list from draining. If the list empties
+        anyways, the framework calls the <span
+                class="code">handleEmptyEventQueue</span> method of the project's
+        <span class="code">CustomGlobal</span> class. This method may issue
+        further events to continue the simulation.
+</div>
+
+<p>In general, the asynchronous simulation mode runs much faster than
+    the synchronous mode. The main reason lies in the fact that the
+    synchronous simulation mode loops over all nodes and performs for
+    each node the <span class="code">step()</span> method even if most of
+    the nodes may not do anything at all. This is in sharp contrast to
+    the asynchronous mode, where only message and timer events are
+    processed and no unnecessary cycles are wasted. But to achieve its
+    speed, the asynchronous mode is more limited: it does not support
+    mobility. I.e. the nodes cannot change their position over time. (The
+    framework configuration entry <span class="code">mobility</span>
+    needs to be set to <span class="code">false</span>, such that the
+    mobility model assigned to each node is not considered.) The reason
+    for this limitation on the asynchronous mode is the continuity of the
+    node movement, which does not allow to be described in terms of
+    events. (Note that also the synchronous mode does not perform
+    continuous moves, but moves the nodes in hops at the beginning of
+    every round.)
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Message Delivery<a name="Message Delivery"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Whenever a node sends a message to another node of the network, the
+framework encapsulates the message object in a <i>packet</i> object,
+which contains the following meta information for the message
+delivery.
+<ul>
+    <li>The sender of the message</li>
+    <li>The receiver of the message</li>
+    <li>The time when the message arrives</li>
+    <li>The time when the message was sent</li>
+    <li>The edge over which the message is being sent</li>
+    <li>The intensity at which the message is being sent</li>
+    <li>A unique ID for the packet</li>
+</ul>
+
+<p>The receiver of the message can retrieve this information for each
+    received message in the <span class="code">handleMessages()</span>
+    through the <span class="code">Inbox</span> object.
+
+<p>Project developers only get in touch with <span
+        class="code">Packet</span> objects when implementing a new
+    interference model. The member
+<p><span class="code codeTab">
+ <b>public boolean</b> positiveDelivery
+</span>
+<p>
+    indicates whether the message hold in the packet will be received
+    properly at the destination. If this flag is set to false, the
+    receiving node will not include the corresponding message in the
+    inbox, handed over to the <span class="code">handleMessages()</span>
+    method.
+
+<p>Refer to the <a class="nav_link"
+                   href="tutorial/Implementation.html#Messages">Node Implementation</a>
+    part of this tutorial for more information on how to implement
+    project specific messages.
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Network Edges<a name="Edges"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+In the network abstraction of Sinalgo, an edge is present between any
+two nodes in communication range. The <a class="nav_link"
+                                         href="tutorial/Models.html#Connectivity Model">Connectivity Model</a>
+is responsible to decide which node pairs are within communication
+range. Each node carries a list of its <i>outgoing
+    connections</i>. I.e. the set of edges through which the node is
+connected to its direct neighbors. Because the edges are
+<i>unidirectional</i>, an edge object is contained in exactly one set
+of outgoing connections. Furthermore, if two nodes are connected in
+both directions, there are <i>two</i> edge objects, one hold by each
+end node.
+
+<p>Sinalgo requires that the <i>same</i> edge object is present between
+    two nodes until the connection breaks. Upon reconnection of the two
+    nodes, a new edge object has to be used. To distinguish edges, each
+    edge object carries a <i>unique ID</i>.
+
+<p>The <span class="code">send</span> and <span
+        class="code">broadcast</span> methods provided by the node superclass
+    deliver messages only if the sending node has an outgoing edge to the
+    destination. The method <span class="code">sendDirect</span> is an
+    exception: it is the only method that does not test whether the sender
+    and receiver are really interconnected. This latter method may be
+    used to simulate a wired overlay network, or to send messages between
+    network nodes that are connected through another means.
+
+<p><b>Note:</b> Especially when manually adding an edge
+    in GUI mode, remember that the added edge is
+    <i>unidirectional</i>. To connect two nodes A and B in both
+    direction, you need to add an edge from A to B, and another edge from
+    B to A. To avoid this issue, you may want to use bidirectional edges.
+
+    <div class="subsubBody">
+        <h3>Bidirectional Edges</h3>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        The use of unidirectional links may be desirable to simulate lossy
+        and unpredictable networks. However, one may often want to abstract
+        from these low-level issues and only consider bidirectional links. To
+        ensure, that there is either no link at all between two nodes, or a
+        link in both directions (a bidirectional link), use the <span
+            class="code">BidirectionalEdge</span>. This edge implementation
+        automatically ensures that there is an edge in both directions
+        between a given pair of nodes.
+
+<p>To implement bidirectional edges, and to draw edges properly, each
+    edge (not only the bidirectional ones) has a member <span
+            class="code">oppositeEdge</span>, which points to the edge that
+    connects the two end-nodes in the opposite direction, or is null, if
+    there is no such edge.
+    </div>
+
+    <div class="subsubBody">
+        <h3>Edge Creation, <span class="code">valid</span> Flag</h3>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        At any time, Sinalgo uses the <i>same edge type for all edges</i> - the
+        framework holds one global factory that creates the new edges. The
+        type of edges to be used is defined in the configuration file, and
+        may be changed at runtime. But note that when changing the edge type
+        at runtime, the existing edge objects are not replaced and thus
+        implement the previous edge type. A change of the edge time at
+        runtime only affects edges that are added to the network graph
+        afterwards.
+
+<p>We have seen that the <a class="nav_link"
+                            href="tutorial/Models.html#Connectivity Model">Connectivity Model</a>
+    determines to which other nodes a given node N is connected by adding
+    and removing edges from the <span
+            class="code">outgoingConnections</span> list of N. In most cases,
+    this model is too powerful, and the simpler <span
+            class="code">ConnectivityModelHelper</span> class can be used, where
+    the subclass only needs to answer whether node N is connected to
+    another node B. If node N has a (unidirectional) connection to node
+    A, the model calls <span class="code">N.outgoingConnections.add(N, B,
+ true);</span>, which adds an edge NB to the set of outgoing
+    connections of node N. If the edge already exists, the call to <span
+            class="code">add</span> does <i>not</i> replace the existing edge.
+
+<p>The removal of the edges is somewhat more involved, because Sinalgo requires the <i>same</i> edge object to remain
+    installed until the
+    corresponding connection breaks up. Therefore, we may not just empty
+    the set of outgoing connections before calling the connectivity
+    model. Sinalgo proposes to handle this issue using the <span
+            class="code">valid</span> member of each edge: Whenever the
+    connectivity model calls <span
+            class="code">N.outgoingConnections.add(N,B,true)</span> to ensure
+    that there is an edge NB, the <span class="code">valid</span> flag of
+    the added (or already existing) edge is set to true. Before the
+    connectivity model returns, it calls
+    N.outgoingConnections.removeInvalidLinks(), which iterates over all
+    outgoing edges of N and removes the ones whose <span
+            class="code">valid</span> flag is false. (At the same time, the
+    method resets the <span class="code">valid</span> flags to false for
+    the next round.)
+    </div>
+
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Interference<a name="Interference"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Computing the interference created by a set of network nodes can be
+quite a challenge, especially if real physical characteristics of the
+wireless transportation medium, perhaps even reflection are
+considered. Sinalgo offers a simplified view of the node signals which
+may cause interference. At any point in time, the framework holds a
+list of all messages that are being sent at that time. This list is
+called <span class="code">PacketsInTheAir</span> and may be accessed
+through <span
+        class="code">Tools.getPacketsInTheAir()</span>. Note that this
+list only contains the packets if interference is enabled in the
+configuration file.
+
+<p>Each sender node can send its message with a given signal power,
+    which we call <i>intensity</i>. The interference model can use the
+    set of all messages and their corresponding intensity to determine
+    the noise-level a given receiver node experiences.
+
+<p>One example is the SINR interference model, which assumes a signal
+    decay exponential to the Euclidean distance to the sender. Roughly
+    speaking, SINR drops a message if the signal of the message at the
+    receiver is below the sum of all interfering signals times a given
+    constant. A sample implementation of SINR is provided in the <span
+            class="code">defaultProject</span>.
+
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<h2>Memory Management<a name="Memory Management"></a></h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+Our choice to use Java was mainly based on its platform independence,
+modularity, and its wide acceptance. However, running a simulation in
+the Java environment quickly brings up memory problems, mainly
+related to garbage collection.
+
+<p>It seems that Java's garbage collector (GC) has a hard time when
+    the application constantly creates a huge amount of small, short
+    living objects. But that's exactly what our simulation framework
+    does: For every message that is being sent, there are at least two
+    new objects allocated, and if the network graph changes frequently,
+    many edge objects need to be allocated.
+
+<p>To alleviate this problem, Sinalgo tries to <i>recycle</i> objects as
+    often as possible: Instead of returning a removed edge to the GC,
+    Sinalgo stores the edge object for reuse the next time an edge object of
+    this type is needed. The same holds for the packets, which
+    encapsulate the messages sent by the nodes. After a message arrived
+    at its destination, the corresponding packet object is returned to
+    Sinalgo for storage. Whenever a message is sent, Sinalgo only creates a new
+    packet object if there is no recycled packet left.
+
+<p class="note"><b>Note:</b> Remind from the <a class="nav_link"
+                                                href="tutorial/Implementation.html#Messages">message implementation
+    section</a> that a sent message object is cloned by default. To save
+    memory, a project may apply a read-only policy for all messages, in
+    which case the cloning of the messages can be circumvented. This
+    preserves a lot of memory, especially for broadcast messages.</p>
+</div>
+<br><br>
+<p>
+
+<div style="font-size:8pt;" align="right">&copy; <a
+        href="http://disco.ethz.ch/" style="font-size:8pt;">Distributed
+    Computing Group</a> <br>
+    <a href="http://sourceforge.net/projects/sinalgo/"><img
+            src="http://sflogo.sourceforge.net/sflogo.php?group_id=192227&amp;type=1" width="88" height="31" border="0"
+            alt="SourceForge.net Logo"/></a>
+    <a href="http://jigsaw.w3.org/css-validator/check/referer"> <img
+            style="border:0;width:44px;height:16px"
+            src="pics/vcss.png" alt="Valid CSS!"/>
+    </a>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+            src="pics/valid-html401.png"
+            style="border:0;width:44px;height:16px"
+            alt="Valid HTML 4.01 Transitional"></a>
+
+</div>
+</body>
+</html>
