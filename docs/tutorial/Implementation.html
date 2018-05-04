@@ -31,7 +31,7 @@
     }
 
     function getWindowHeight() {
-        if (typeof(window.innerWidth) == 'number') { //Non-IE
+        if (typeof(window.innerWidth) === 'number') { //Non-IE
             return window.innerHeight;
         } else if (document.documentElement && document.documentElement.clientHeight) { //IE 6+ in 'standards compliant mode'
             return document.documentElement.clientHeight;
