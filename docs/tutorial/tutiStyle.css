@@ -1,3 +1,7 @@
+@page {
+    size: A4;
+}
+
 body {
     width: 21cm;
     margin-left: auto;
