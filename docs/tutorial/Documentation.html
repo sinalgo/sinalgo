@@ -31,7 +31,7 @@
     }
 
     function getWindowHeight() {
-        if (typeof(window.innerWidth) == 'number') { //Non-IE
+        if (typeof(window.innerWidth) === 'number') { //Non-IE
             return window.innerHeight;
         } else if (document.documentElement && document.documentElement.clientHeight) { //IE 6+ in 'standards compliant mode'
             return document.documentElement.clientHeight;
@@ -48,7 +48,7 @@
 </head>
 
 <body class="text" bgcolor="#FFFFFF" onload="setup()">
-<table align="center" width="100%" style="margin-bottom:0px"
+<table align="center" width="100%" style="margin-bottom:0"
        cellpadding="0" cellspacing="0" border="0">
     <tr class="height80">
         <td><img src="../pics/spacer.gif" width="210" height="80"
@@ -200,6 +200,14 @@
                 </li>
 
             </ul>
+
+            <h2>Printable Version of this Tutorial</h2>
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+            If you wisth to print the entire tutorial, try the <a
+                href="tutorial.pdf" class="nav_link"><b><span class="red">All-in-One Tutorial</span></b></a>,
+            which contains all sections of the tutorial on a single PDF file.
+
         </td>
         <td><img src="../pics/spacer.gif" width="30" height="1" alt=""></td>
     </tr>
