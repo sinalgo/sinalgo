@@ -151,8 +151,8 @@ public class Configuration {
     /**
      * Annotation used for settings in this config file that contain the name of an
      * implementation. They are displayed as drop down choices in the project
-     * selector, containing the implementations in the given folder, e.g.
-     * 'nodes/edges' for the edges, or 'models/mobilityModels' for the mobility
+     * selector, containing the implementations in the given package, e.g.
+     * 'nodes.edges' for the edges, or 'models.mobilityModels' for the mobility
      * models.
      */
     @Target(ElementType.FIELD)
@@ -161,26 +161,26 @@ public class Configuration {
 
         enum ImplementationType {
 
-            NODES_EDGES("nodes/edges"),
-            NODES_IMPLEMENTATIONS("nodes/nodeImplementations"),
-            MODELS_MESSAGE_TRANSMISSION("models/messageTransmissionModels"),
-            MODELS_CONNECTIVITY("models/connectivityModels"),
-            MODELS_DISTRIBUTION("models/distributionModels"),
-            MODELS_INTERFERENCE("models/interferenceModels"),
-            MODELS_MOBILITY("models/mobilityModels"),
-            MODELS_RELIABILITY("models/reliabilityModels");
+            NODES_EDGES("nodes.edges"),
+            NODES_IMPLEMENTATIONS("nodes.nodeImplementations"),
+            MODELS_MESSAGE_TRANSMISSION("models.messageTransmissionModels"),
+            MODELS_CONNECTIVITY("models.connectivityModels"),
+            MODELS_DISTRIBUTION("models.distributionModels"),
+            MODELS_INTERFERENCE("models.interferenceModels"),
+            MODELS_MOBILITY("models.mobilityModels"),
+            MODELS_RELIABILITY("models.reliabilityModels");
 
-            private String dir;
+            private String pkg;
 
-            ImplementationType(String dir) {
-                this.dir = dir;
+            ImplementationType(String pkg) {
+                this.pkg = pkg;
             }
 
             /**
              * @return The directory used for this implementation type
              */
-            public String getDir() {
-                return this.dir;
+            public String getPkg() {
+                return this.pkg;
             }
         }
 

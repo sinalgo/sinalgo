@@ -201,7 +201,7 @@ public class Global {
                     .collect(Collectors.toMap(Function.identity(), type -> Stream.concat(Stream.of(Configuration.defaultProjectName), projectNames.stream())
                             .collect(Collectors.toMap(Function.identity(), pn -> {
                                 String projectPackage = IOUtils.getAsPackage(Configuration.userProjectsPackage, pn);
-                                String implPackage = IOUtils.getAsPackage(projectPackage, IOUtils.toPackage(type.getDir()));
+                                String implPackage = IOUtils.getAsPackage(projectPackage, type.getPkg());
                                 Stream<String> implStream = allImplementations.get(projectPackage).stream()
                                         .filter(impl -> impl.matches("^" + implPackage + "\\.\\w+$"))
                                         .map(Global::getLastName)
