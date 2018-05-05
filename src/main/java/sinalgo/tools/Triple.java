@@ -50,17 +50,17 @@ public class Triple<A, B, C> {
     /**
      * The first value of this triple
      */
-    private A first;
+    private final A first;
 
     /**
      * The second value of this triple
      */
-    private B second;
+    private final B second;
 
     /**
      * The third value of this triple
      */
-    private C third;
+    private final C third;
 
     /**
      * Constructs a new triple and initializes the three fields.

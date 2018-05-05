@@ -878,7 +878,7 @@ public class Tools {
         ps.print("  Edges \t(" + Edge.numEdgesOnTheFly + " / " + EdgePool.getNumFreedEdges() + ")\n");
 
         ps.print("General Memory:\n");
-        java.lang.Runtime r = java.lang.Runtime.getRuntime();
+        Runtime r = Runtime.getRuntime();
         int usedP = Math.round(100 * (r.totalMemory() - r.freeMemory()) / r.maxMemory());
         ps.print("  Used: " + usedP + "%\t" + ((r.totalMemory() - r.freeMemory()) / MEGABYTE_SIZE) + " MB\n");
         ps.print("  Free: " + (100 - usedP) + "%\t" + (r.freeMemory() / MEGABYTE_SIZE) + " MB\n");
@@ -895,7 +895,7 @@ public class Tools {
      * @param ps The stream to print the memory usage to.
      */
     public static void runGC(PrintStream ps) {
-        java.lang.Runtime r = java.lang.Runtime.getRuntime();
+        Runtime r = Runtime.getRuntime();
         long used = r.totalMemory() - r.freeMemory();
         long free = r.freeMemory();
         long total = r.totalMemory();
