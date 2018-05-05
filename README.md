@@ -1,6 +1,8 @@
 <img src="icon/sinalgo_192.png" align="right" />
 
-# Welcome to Sinalgo
+# Sinalgo - Simulator for Network Algorithms
+
+## Welcome to Sinalgo
 
 Sinalgo is a simulation framework for testing and validating network algorithms. 
 Unlike most other network simulators, which spend most time simulating the different 
