@@ -46,13 +46,13 @@ public class BidirectionalBooleanEdge extends BooleanEdge {
 
     @Override
     public void initializeEdge() {
-        if (oppositeEdge == null) {
+        if (getOppositeEdge() == null) {
             // this is a hack to ensure that this edge is already in the outgoing ot the
             // start node. Otherwise the two edges would
             // end in an infinite loop
-            startNode.outgoingConnections.hackyAppend(this);
+            getStartNode().getOutgoingConnections().hackyAppend(this);
 
-            endNode.outgoingConnections.add(endNode, startNode, true);
+            getEndNode().getOutgoingConnections().add(getEndNode(), getStartNode(), true);
             findOppositeEdge();
         }
     }

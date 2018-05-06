@@ -68,8 +68,8 @@ public class Circle extends DistributionModel {
     @Override
     public Position getNextPosition() {
         Position pos = new Position();
-        pos.xCoord = (Configuration.dimX / 2.0) + (radius * Math.cos(Math.toRadians((number * oneStep))));
-        pos.yCoord = (Configuration.dimY / 2.0) + (radius * Math.sin(Math.toRadians((number * oneStep))));
+        pos.setXCoord((Configuration.dimX / 2.0) + (radius * Math.cos(Math.toRadians((number * oneStep)))));
+        pos.setYCoord((Configuration.dimY / 2.0) + (radius * Math.sin(Math.toRadians((number * oneStep)))));
 
         number++;
 

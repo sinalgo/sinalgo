@@ -36,7 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools;
 
-import java.util.Objects;
+import lombok.Data;
 
 /**
  * A tuple-class which can hold two objects in a type-safe manner.
@@ -44,63 +44,21 @@ import java.util.Objects;
  * @param <A> The type of the first entry of the tuple instance.
  * @param <B> The type of the second entry of the tuple instance.
  */
-public class Tuple<A, B> {
+@Data
+public final class Tuple<A, B> {
 
     /**
      * The first value of this tuple.
+     *
+     * @return The first value of this tuple.
      */
     private final A first;
 
     /**
-     * The second value of this tuple
-     */
-    private final B second;
-
-    /**
-     * Constructs a new tuple and initializes the two fields.
-     *
-     * @param a The value for the first entry
-     * @param b The value for the second entry
-     */
-    public Tuple(A a, B b) {
-        first = a;
-        second = b;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Tuple<?, ?> tuple = (Tuple<?, ?>) o;
-        return Objects.equals(first, tuple.first) &&
-                Objects.equals(second, tuple.second);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(first, second);
-    }
-
-    /**
-     * Gets the first value of this tuple.
-     *
-     * @return The first value of this tuple.
-     */
-    public A getFirst() {
-        return first;
-    }
-
-    /**
-     * Gets the second value of this tuple.
+     * The second value of this tuple.
      *
      * @return The second value of this tuple.
      */
-    public B getSecond() {
-        return second;
-    }
+    private final B second;
 
 }

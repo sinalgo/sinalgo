@@ -129,11 +129,11 @@ public class S1Node extends Node {
     @Override
     public void neighborhoodChange() {
         next = null;
-        for (Edge e : this.outgoingConnections) {
+        for (Edge e : this.getOutgoingConnections()) {
             if (next == null) {
-                next = (S1Node) e.endNode;
+                next = (S1Node) e.getEndNode();
             } else {
-                if (e.endNode.ID < next.ID) {
+                if (e.getEndNode().ID < next.ID) {
                     next = (S1Node) e.endNode;
                 }
             }

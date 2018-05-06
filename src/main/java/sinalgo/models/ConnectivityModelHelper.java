@@ -78,7 +78,7 @@ public abstract class ConnectivityModelHelper extends ConnectivityModel {
                     // add it to the outgoing Edges of n. The EdgeCollection itself checks, if the
                     // Edge is already contained
 
-                    edgeAdded = !n.outgoingConnections.add(n, possibleNeighbor, true) || edgeAdded; // note: don't write
+                    edgeAdded = !n.getOutgoingConnections().add(n, possibleNeighbor, true) || edgeAdded; // note: don't write
                     // it the other way
                     // round, otherwise,
                     // the edge is not
@@ -90,7 +90,7 @@ public abstract class ConnectivityModelHelper extends ConnectivityModel {
         }
         // loop over all edges again and remove edges that have not been marked 'valid'
         // in this round
-        boolean dyingLinks = n.outgoingConnections.removeInvalidLinks();
+        boolean dyingLinks = n.getOutgoingConnections().removeInvalidLinks();
 
         return edgeAdded || dyingLinks; // return whether an edge has been added or removed.
     }

@@ -35,8 +35,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.franzbecker.gradle.lombok.task.DelombokTask
+
 plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.4'
+    id 'io.franzbecker.gradle-lombok' version '1.14'
 }
 
 version = rootProject.file('VERSION').text.trim()
@@ -102,4 +105,21 @@ run {
             args = Eval.me(appArgs)
         }
     }
+}
+
+// Delombok Task
+task delombok(type: DelombokTask, dependsOn: compileJava) {
+    ext.outputDir = file("$buildDir/delombok")
+    outputs.dir(outputDir)
+    sourceSets.main.java.srcDirs.each {
+        inputs.dir(it)
+        args(it, "-d", outputDir)
+    }
+}
+
+// Javadoc Task
+javadoc {
+    dependsOn delombok
+    source = delombok.outputDir
+    failOnError = false
 }

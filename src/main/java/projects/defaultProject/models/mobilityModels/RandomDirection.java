@@ -192,46 +192,46 @@ public class RandomDirection extends MobilityModel {
             double time = Math.abs(moveTimeDistribution.nextSample()); // rounds
             initializeNextMove(n, speed, time);
         }
-        double newx = n.getPosition().xCoord + moveVector.xCoord;
-        double newy = n.getPosition().yCoord + moveVector.yCoord;
-        double newz = n.getPosition().zCoord + moveVector.zCoord;
+        double newx = n.getPosition().getXCoord() + moveVector.getXCoord();
+        double newy = n.getPosition().getYCoord() + moveVector.getYCoord();
+        double newz = n.getPosition().getZCoord() + moveVector.getZCoord();
 
         // test that it is not outside the deployment area, otherwise reflect
         // We need to repeat the test for special cases where the node moves in really
         // long
         // steps and is reflected more than once at the same border.
-        boolean reflected = false;
+        boolean reflected;
         do {
             reflected = false;
 
             if (newx < 0) {
                 newx *= -1;
-                moveVector.xCoord *= -1;
+                moveVector.setXCoord(moveVector.getXCoord() * -1);
                 reflected = true;
             }
             if (newy < 0) {
                 newy *= -1;
-                moveVector.yCoord *= -1;
+                moveVector.setYCoord(moveVector.getYCoord() * -1);
                 reflected = true;
             }
             if (newz < 0) {
                 newz *= -1;
-                moveVector.zCoord *= -1;
+                moveVector.setZCoord(moveVector.getZCoord() * -1);
                 reflected = true;
             }
             if (newx > Configuration.dimX) {
                 newx = 2 * Configuration.dimX - newx;
-                moveVector.xCoord *= -1;
+                moveVector.setXCoord(moveVector.getXCoord() * -1);
                 reflected = true;
             }
             if (newy > Configuration.dimY) {
                 newy = 2 * Configuration.dimY - newy;
-                moveVector.yCoord *= -1;
+                moveVector.setYCoord(moveVector.getYCoord() * -1);
                 reflected = true;
             }
             if (newz > Configuration.dimZ) {
                 newz = 2 * Configuration.dimZ - newz;
-                moveVector.zCoord *= -1;
+                moveVector.setZCoord(moveVector.getZCoord() * -1);
                 reflected = true;
             }
         } while (reflected);

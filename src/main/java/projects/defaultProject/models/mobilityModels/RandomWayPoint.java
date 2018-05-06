@@ -146,27 +146,21 @@ public class RandomWayPoint extends MobilityModel {
             remaining_hops = (int) Math.ceil(rounds);
             // determine the moveVector which is added in each round to the position of this
             // node
-            double dx = nextDestination.xCoord - n.getPosition().xCoord;
-            double dy = nextDestination.yCoord - n.getPosition().yCoord;
-            double dz = nextDestination.zCoord - n.getPosition().zCoord;
-            moveVector.xCoord = dx / rounds;
-            moveVector.yCoord = dy / rounds;
-            moveVector.zCoord = dz / rounds;
+            double newx = (nextDestination.getXCoord() - n.getPosition().getXCoord()) / rounds;
+            double newy = (nextDestination.getYCoord() - n.getPosition().getYCoord()) / rounds;
+            double newz = (nextDestination.getZCoord() - n.getPosition().getZCoord()) / rounds;
+            moveVector.assign(newx, newy, newz);
         }
         if (remaining_hops <= 1) { // don't add the moveVector, as this may move over the destination.
-            nextPosition.xCoord = nextDestination.xCoord;
-            nextPosition.yCoord = nextDestination.yCoord;
-            nextPosition.zCoord = nextDestination.zCoord;
+            nextPosition.assign(nextDestination);
             // set the next waiting time that executes after this mobility phase
             remaining_waitingTime = (int) Math.ceil(waitingTimeDistribution.nextSample());
             remaining_hops = 0;
         } else {
-            double newx = n.getPosition().xCoord + moveVector.xCoord;
-            double newy = n.getPosition().yCoord + moveVector.yCoord;
-            double newz = n.getPosition().zCoord + moveVector.zCoord;
-            nextPosition.xCoord = newx;
-            nextPosition.yCoord = newy;
-            nextPosition.zCoord = newz;
+            double newx = n.getPosition().getXCoord() + moveVector.getXCoord();
+            double newy = n.getPosition().getYCoord() + moveVector.getYCoord();
+            double newz = n.getPosition().getZCoord() + moveVector.getZCoord();
+            nextPosition.assign(newx, newy, newz);
             remaining_hops--;
         }
         currentPosition.assign(nextPosition);

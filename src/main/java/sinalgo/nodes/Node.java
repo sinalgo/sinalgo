@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.exception.NotInGUIModeException;
@@ -43,18 +46,10 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
-import sinalgo.models.ConnectivityModel;
-import sinalgo.models.InterferenceModel;
-import sinalgo.models.MobilityModel;
-import sinalgo.models.Model;
-import sinalgo.models.ReliabilityModel;
+import sinalgo.models.*;
 import sinalgo.nodes.edges.Edge;
-import sinalgo.nodes.messages.Inbox;
-import sinalgo.nodes.messages.Message;
-import sinalgo.nodes.messages.NackBox;
-import sinalgo.nodes.messages.Packet;
+import sinalgo.nodes.messages.*;
 import sinalgo.nodes.messages.Packet.PacketType;
-import sinalgo.nodes.messages.PacketCollection;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.runtime.GUIRuntime;
 import sinalgo.runtime.Global;
@@ -76,11 +71,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.Objects;
 
 /**
  * The base class for all node implementations.
  */
+@EqualsAndHashCode(of = "ID")
 public abstract class Node implements DoublyLinkedListEntry {
 
     /**
@@ -275,12 +270,16 @@ public abstract class Node implements DoublyLinkedListEntry {
      *
      * @see Node#createNodeByClassname(String)
      */
-    public int ID;
+    @Getter
+    @Setter
+    private int ID;
 
     /**
      * The collection of all outgoing Links.
      */
-    public Connections outgoingConnections = new NodeOutgoingConnectionsList(true);
+    @Getter
+    @Setter
+    private Connections outgoingConnections = new NodeOutgoingConnectionsList(true);
 
     /**
      * Adds a (unidirectional) connection from this node to another node.
@@ -321,7 +320,7 @@ public abstract class Node implements DoublyLinkedListEntry {
      * @param p The new position.
      */
     public final void setPosition(Position p) {
-        setPosition(p.xCoord, p.yCoord, p.zCoord);
+        setPosition(p.getXCoord(), p.getYCoord(), p.getZCoord());
     }
 
     /**
@@ -332,9 +331,9 @@ public abstract class Node implements DoublyLinkedListEntry {
      * @param z The new z-coordinate of this node
      */
     public final void setPosition(double x, double y, double z) {
-        position.xCoord = x;
-        position.yCoord = y;
-        position.zCoord = z;
+        position.setXCoord(x);
+        position.setYCoord(y);
+        position.setZCoord(z);
         cropPos(position);
         SinalgoRuntime.nodes.updateNodeCollection(this); // note that this method tests whether the node is already added to
         // the node collection
@@ -356,23 +355,6 @@ public abstract class Node implements DoublyLinkedListEntry {
      */
     public final Position getPosition() {
         return position;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Node node = (Node) o;
-        return ID == node.ID;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ID);
     }
 
     // -----------------------------------------------------------------------------------
@@ -427,7 +409,7 @@ public abstract class Node implements DoublyLinkedListEntry {
         edgeIteratorInstance.reset();
         while (edgeIteratorInstance.hasNext()) {
             Edge edge = edgeIteratorInstance.next();
-            if (edge.endNode.equals(target)) {
+            if (edge.getEndNode().equals(target)) {
                 connection = edge;
                 break;
             }
@@ -1198,20 +1180,20 @@ public abstract class Node implements DoublyLinkedListEntry {
      * @param p The position to crop.
      */
     private void cropPos(Position p) {
-        if (p.xCoord < 0) {
-            p.xCoord = 0;
-        } else if (p.xCoord >= Configuration.dimX) {
-            p.xCoord = Configuration.dimX - Position.epsilonPosition;
+        if (p.getXCoord() < 0) {
+            p.setXCoord(0);
+        } else if (p.getXCoord() >= Configuration.dimX) {
+            p.setXCoord(Configuration.dimX - Position.epsilonPosition);
         }
-        if (p.yCoord < 0) {
-            p.yCoord = 0;
-        } else if (p.yCoord >= Configuration.dimY) {
-            p.yCoord = Configuration.dimY - Position.epsilonPosition;
+        if (p.getYCoord() < 0) {
+            p.setYCoord(0);
+        } else if (p.getYCoord() >= Configuration.dimY) {
+            p.setYCoord(Configuration.dimY - Position.epsilonPosition);
         }
-        if (p.zCoord < 0) {
-            p.zCoord = 0;
-        } else if (p.zCoord >= Configuration.dimZ) {
-            p.zCoord = Configuration.dimZ - Position.epsilonPosition;
+        if (p.getZCoord() < 0) {
+            p.setZCoord(0);
+        } else if (p.getZCoord() >= Configuration.dimZ) {
+            p.setZCoord(Configuration.dimZ - Position.epsilonPosition);
         }
     }
 
@@ -1322,7 +1304,7 @@ public abstract class Node implements DoublyLinkedListEntry {
             edgeIteratorInstance.reset();
             while (edgeIteratorInstance.hasNext()) {
                 Edge e = edgeIteratorInstance.next();
-                Packet sentP = sendMessage(m, e, e.startNode, e.endNode, intensity);
+                Packet sentP = sendMessage(m, e, e.getStartNode(), e.getEndNode(), intensity);
                 sentP.type = PacketType.MULTICAST;
                 SinalgoRuntime.packetsInTheAir.addPassivePacket(sentP);
                 if (longestPacket == null || longestPacket.arrivingTime < sentP.arrivingTime) { // NOTE that the second
@@ -1346,7 +1328,7 @@ public abstract class Node implements DoublyLinkedListEntry {
             edgeIteratorInstance.reset();
             while (edgeIteratorInstance.hasNext()) {
                 Edge e = edgeIteratorInstance.next();
-                Packet sentP = sendMessage(m, e, e.startNode, e.endNode, intensity);
+                Packet sentP = sendMessage(m, e, e.getStartNode(), e.getEndNode(), intensity);
                 sentP.type = PacketType.DUMMY;
             }
         }

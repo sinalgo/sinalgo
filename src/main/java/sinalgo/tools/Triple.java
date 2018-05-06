@@ -36,88 +36,37 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools;
 
-import java.util.Objects;
+import lombok.Data;
 
 /**
- * A triple-class which can hold two objects in a type-safe manner.
+ * A triple-class which can hold three objects in a type-safe manner.
  *
  * @param <A> The type of the first entry of the triple instance.
  * @param <B> The type of the second entry of the triple instance.
  * @param <C> The type of the third entry of the triple instance.
  */
-public class Triple<A, B, C> {
+@Data
+public final class Triple<A, B, C> {
 
     /**
      * The first value of this triple
+     *
+     * @return The first value of this triple.
      */
     private final A first;
 
     /**
      * The second value of this triple
+     *
+     * @return The second value of this triple.
      */
     private final B second;
 
     /**
      * The third value of this triple
-     */
-    private final C third;
-
-    /**
-     * Constructs a new triple and initializes the three fields.
-     *
-     * @param a The value for the first entry
-     * @param b The value for the second entry
-     * @param c The value for the third entry
-     */
-    public Triple(A a, B b, C c) {
-        first = a;
-        second = b;
-        third = c;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Triple<?, ?, ?> triple = (Triple<?, ?, ?>) o;
-        return Objects.equals(first, triple.first) &&
-                Objects.equals(second, triple.second) &&
-                Objects.equals(third, triple.third);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(first, second, third);
-    }
-
-    /**
-     * Gets the first value of this triple.
-     *
-     * @return The first value of this triple.
-     */
-    public A getFirst() {
-        return first;
-    }
-
-    /**
-     * Gets the second value of this triple.
-     *
-     * @return The second value of this triple.
-     */
-    public B getSecond() {
-        return second;
-    }
-
-    /**
-     * Gets the third value of this triple.
      *
      * @return The third value of this triple.
      */
-    public C getThird() {
-        return third;
-    }
+    private final C third;
+
 }

@@ -36,12 +36,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes;
 
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * A simple vector implementation that describes the position of the nodes on
  * the deployment area.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Position {
 
     /**
@@ -55,36 +60,27 @@ public class Position {
 
     /**
      * The x coordinate of the position.
+     *
+     * @param xCoord new x coordinate for this position.
+     * @return The x coordinate of the position.
      */
-    public double xCoord;
+    private double xCoord;
 
     /**
      * The y coordinate of the position.
+     *
+     * @param yCoord new y coordinate for this position.
+     * @return The y coordinate of the position.
      */
-    public double yCoord;
+    private double yCoord;
 
     /**
      * The z coordinate of the position.
-     */
-    public double zCoord;
-
-    /**
-     * The constructor for the Position class.
-     */
-    public Position() {
-        this(0, 0, 0);
-    }
-
-    /**
-     * The constructor for the Position class.
      *
-     * @param x The x coordinate of the node to create.
-     * @param y The y coordinate of the node to create.
-     * @param z The z coordinate of the node to create.
+     * @param zCoord new z coordinate for this position.
+     * @return The z coordinate of the position.
      */
-    public Position(double x, double y, double z) {
-        assign(x, y, z);
-    }
+    private double zCoord;
 
     /**
      * Assigns this position the values of anohter position.
@@ -99,9 +95,9 @@ public class Position {
      * Assigns this position the values of anohter position.
      */
     public void assign(double x, double y, double z) {
-        xCoord = x;
-        yCoord = y;
-        zCoord = z;
+        setXCoord(x);
+        setYCoord(y);
+        setZCoord(z);
     }
 
     /**
@@ -124,31 +120,14 @@ public class Position {
      * @return The squared distance between this point and another point.
      */
     public double squareDistanceTo(Position pos) {
-        return ((xCoord - pos.xCoord) * (xCoord - pos.xCoord)) + ((yCoord - pos.yCoord) * (yCoord - pos.yCoord))
-                + ((zCoord - pos.zCoord) * (zCoord - pos.zCoord));
+        return ((getXCoord() - pos.getXCoord()) * (getXCoord() - pos.getXCoord()))
+                + ((getYCoord() - pos.getYCoord()) * (getYCoord() - pos.getYCoord()))
+                + ((getZCoord() - pos.getZCoord()) * (getZCoord() - pos.getZCoord()));
     }
 
     @Override
     public String toString() {
-        return "[" + xCoord + ", " + yCoord + ", " + zCoord + "]";
+        return "[" + getXCoord() + ", " + getYCoord() + ", " + getZCoord() + "]";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Position position = (Position) o;
-        return Double.compare(position.xCoord, xCoord) == 0 &&
-                Double.compare(position.yCoord, yCoord) == 0 &&
-                Double.compare(position.zCoord, zCoord) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(xCoord, yCoord, zCoord);
-    }
 }

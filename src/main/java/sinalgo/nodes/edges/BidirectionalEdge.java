@@ -45,13 +45,13 @@ public class BidirectionalEdge extends Edge {
 
     @Override
     public void initializeEdge() {
-        if (oppositeEdge == null) {
+        if (this.getOppositeEdge() == null) {
             // this is a hack to ensure that this edge is already in the outgoing ot the
             // start node. Otherwise the two edges would
             // end in an infinite loop
-            startNode.outgoingConnections.hackyAppend(this);
+            getStartNode().outgoingConnections.hackyAppend(this);
 
-            endNode.outgoingConnections.add(endNode, startNode, true);
+            getEndNode().outgoingConnections.add(getEndNode(), getStartNode(), true);
             findOppositeEdge();
         }
     }

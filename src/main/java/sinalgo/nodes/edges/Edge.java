@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes.edges;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.exception.SinalgoFatalException;
@@ -54,7 +57,6 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Objects;
 
 /**
  * The default impelementation of a network edge, which connects a node to
@@ -63,6 +65,7 @@ import java.util.Objects;
  * All edges of this framework are unidirectional. The bidirectional edges just
  * ensure that there is an edge object in both directions.
  */
+@EqualsAndHashCode(of = {"startNode", "endNode"})
 public class Edge implements DoublyLinkedListEntry {
 
     /**
@@ -75,12 +78,16 @@ public class Edge implements DoublyLinkedListEntry {
     /**
      * The start node of the edge. Edges in this simulation are directed.
      */
-    public Node startNode;
+    @Getter
+    @Setter
+    private Node startNode;
 
     /**
      * The end node of the edge. Edges in this simulation are directed.
      */
-    public Node endNode;
+    @Getter
+    @Setter
+    private Node endNode;
 
     /**
      * Initializes the edge. This method can be overridden by subclasses to perform
@@ -114,42 +121,9 @@ public class Edge implements DoublyLinkedListEntry {
             Edge oe = this.oppositeEdge;
             this.oppositeEdge = null;
             oe.oppositeEdge = null; // set unlink oppositeEdges to avoid loops
-            this.endNode.outgoingConnections.remove(this.endNode, this.startNode); // remove the opposite edge
+            this.endNode.getOutgoingConnections().remove(this.endNode, this.startNode); // remove the opposite edge
             oe.free();
         }
-    }
-
-    /**
-     * @return The number of messages that are currently being sent over this edge.
-     */
-    public int getNumberOfMessagesOnThisEdge() {
-        return numberOfMessagesOnThisEdge;
-    }
-
-    /**
-     * @return The edge that connects the two end nodes of this edge in the other
-     * direction. Null if there is no such edge.
-     */
-    public Edge getOppositeEdge() {
-        return oppositeEdge;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Edge edge = (Edge) o;
-        return Objects.equals(startNode, edge.startNode) &&
-                Objects.equals(endNode, edge.endNode);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(startNode, endNode);
     }
 
     @Override
@@ -191,7 +165,7 @@ public class Edge implements DoublyLinkedListEntry {
      * The default color of the edge, to be used when no message is sent over this
      * edge.
      */
-    public Color defaultColor = defaultEdgeColorPassive;
+    private Color defaultColor = defaultEdgeColorPassive;
 
     /**
      * The color of this edge to be used when at least one message is sent over this
@@ -278,8 +252,13 @@ public class Edge implements DoublyLinkedListEntry {
      * <p>
      * This opposite edge is mainly used for drawing the edges properly, s.t. an
      * inactive edge does not overpaint an active edge.
+     *
+     * @return The edge that connects the two end nodes of this edge in the other
+     * direction. Null if there is no such edge.
      */
-    public Edge oppositeEdge = null;
+    @Getter
+    @Setter
+    private Edge oppositeEdge = null;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -287,8 +266,12 @@ public class Edge implements DoublyLinkedListEntry {
      * If its value is 0, there are no messages sent on this edge and it is drawn
      * with the default color. Otherwise the edge is drawn with the sending color.
      * Note that this number has to be set upon resceiving a mesage.
+     *
+     * @return The number of messages that are currently being sent over this edge.
      */
-    public int numberOfMessagesOnThisEdge = 0;
+    @Getter
+    @Setter
+    private int numberOfMessagesOnThisEdge = 0;
 
     /**
      * Called by the framework whenever a message is sent over this edge. This edge
@@ -332,7 +315,7 @@ public class Edge implements DoublyLinkedListEntry {
      * If there is no such edge, the field otherEdge is set to null.
      */
     protected final void findOppositeEdge() {
-        for (Edge e : endNode.outgoingConnections) {
+        for (Edge e : endNode.getOutgoingConnections()) {
             if ((e.startNode.ID == endNode.ID) && (e.endNode.ID == startNode.ID)) {
                 this.oppositeEdge = e;
                 e.oppositeEdge = this;

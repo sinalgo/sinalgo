@@ -87,22 +87,22 @@ public class PerfectRWP extends RandomWayPoint {
             nextDestination = getNextWayPoint();
             double mt = startPos.distanceTo(nextDestination) / speed; // time of the move
             double fraction = (wt + mt) * random.nextDouble();
-            double dx = nextDestination.xCoord - startPos.xCoord;
-            double dy = nextDestination.yCoord - startPos.yCoord;
+            double dx = nextDestination.getXCoord() - startPos.getXCoord();
+            double dy = nextDestination.getYCoord() - startPos.getYCoord();
             if (fraction < wt) {
                 // start waiting
                 remaining_waitingTime = (int) Math.ceil(wt - fraction);
                 remaining_hops = 0;
 
                 double movedFraction = random.nextDouble();
-                startPos.xCoord += dx * movedFraction;
-                startPos.yCoord += dy * movedFraction;
+                startPos.setXCoord(startPos.getXCoord() + dx * movedFraction);
+                startPos.setYCoord(startPos.getYCoord() + dy * movedFraction);
                 return startPos; // don't consider initial distribution
             } else {
                 double movedFraction = (fraction - wt) / mt; // how far the node has already moved on the line [0..1]
                 // the current position
-                startPos.xCoord += dx * movedFraction;
-                startPos.yCoord += dy * movedFraction;
+                startPos.setXCoord(startPos.getXCoord() + dx * movedFraction);
+                startPos.setYCoord(startPos.getYCoord() + dy * movedFraction);
 
                 // remaining vector to move
                 dx *= (1 - movedFraction);

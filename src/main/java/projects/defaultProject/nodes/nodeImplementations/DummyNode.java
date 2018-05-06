@@ -69,10 +69,10 @@ public class DummyNode extends Node {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder("Node(" + this.ID + ") [");
-        for (Edge e : this.outgoingConnections) {
-            Node n = e.endNode;
-            s.append(n.ID).append(" ");
+        StringBuilder s = new StringBuilder("Node(" + this.getID() + ") [");
+        for (Edge e : this.getOutgoingConnections()) {
+            Node n = e.getEndNode();
+            s.append(n.getID()).append(" ");
         }
         return s + "]";
     }
