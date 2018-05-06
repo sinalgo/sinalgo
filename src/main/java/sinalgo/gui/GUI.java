@@ -43,12 +43,7 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.controlPanel.ControlPanel;
 import sinalgo.gui.controlPanel.MaximizedControlPanel;
 import sinalgo.gui.controlPanel.MinimizedControlPanel;
-import sinalgo.gui.dialogs.AboutDialog;
-import sinalgo.gui.dialogs.GenerateNodesDialog;
-import sinalgo.gui.dialogs.GlobalSettingsDialog;
-import sinalgo.gui.dialogs.GraphInfoDialog;
-import sinalgo.gui.dialogs.GraphPreferencesDialog;
-import sinalgo.gui.dialogs.HelpDialog;
+import sinalgo.gui.dialogs.*;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.Exporter;
 import sinalgo.nodes.Position;
@@ -64,13 +59,7 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -178,7 +167,7 @@ public class GUI extends JFrame implements ActionListener {
     /**
      * The instance of the runtime to make changes comming from the gui.
      */
-    public SinalgoRuntime runtime = null;
+    public SinalgoRuntime runtime;
 
     // The zoom level used to draw the graph.
     private double zoomFactor = 1;
