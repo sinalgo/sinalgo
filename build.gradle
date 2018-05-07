@@ -119,6 +119,7 @@ task delombok(type: DelombokTask, dependsOn: compileJava) {
 
 // Javadoc Task
 javadoc {
+    includes = ['**/*.java']
     dependsOn delombok
     source = delombok.outputDir
     failOnError = false
