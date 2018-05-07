@@ -23,12 +23,12 @@ public class DirectMessageTimer extends Timer {
      * @param n The node to send the msg to
      */
     public DirectMessageTimer(Message m, Node n) {
-        msg = m;
-        target = n;
+        this.msg = m;
+        this.target = n;
     }
 
     @Override
     public void fire() {
-        this.getTargetNode().sendDirect(msg, target);
+        this.getTargetNode().sendDirect(this.msg, this.target);
     }
 }

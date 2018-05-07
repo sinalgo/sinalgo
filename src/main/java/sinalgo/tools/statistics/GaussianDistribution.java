@@ -77,13 +77,13 @@ public class GaussianDistribution extends Distribution {
      * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
      */
     public GaussianDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
-        mean = Configuration.getDoubleParameter(mainTagPath + "/mean");
-        var = Configuration.getDoubleParameter(mainTagPath + "/variance");
+        this.mean = Configuration.getDoubleParameter(mainTagPath + "/mean");
+        this.var = Configuration.getDoubleParameter(mainTagPath + "/variance");
     }
 
     @Override
     public double nextSample() {
-        return mean + randomGenerator.nextGaussian() * Math.sqrt(var);
+        return this.mean + randomGenerator.nextGaussian() * Math.sqrt(this.var);
     }
 
     /**

@@ -24,8 +24,8 @@ public class InviteMsgTimer extends Timer {
 
     public InviteMsgTimer() {
         try {
-            dist = Distribution.getDistributionFromConfigFile("Antenna/InviteIntervall");
-            refreshRate = Configuration.getIntegerParameter("Antenna/refreshRate");
+            this.dist = Distribution.getDistributionFromConfigFile("Antenna/InviteIntervall");
+            this.refreshRate = Configuration.getIntegerParameter("Antenna/refreshRate");
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException(e.getMessage());
         }
@@ -34,15 +34,15 @@ public class InviteMsgTimer extends Timer {
     @Override
     public void fire() {
         InviteMessage msg = new InviteMessage();
-        refreshCounter--;
-        if (refreshCounter <= 0) {
+        this.refreshCounter--;
+        if (this.refreshCounter <= 0) {
             ((Antenna) this.getTargetNode()).resetNeighborhood();
             msg.requireSubscription = true;
-            refreshCounter = refreshRate; // reset the counter
+            this.refreshCounter = this.refreshRate; // reset the counter
         }
 
         this.getTargetNode().broadcast(msg);
-        double time = dist.nextSample();
+        double time = this.dist.nextSample();
         if (time <= 0) {
             throw new SinalgoFatalException("Invalid offset time for inviteInterval: " + time + " is <= 0.");
         }

@@ -73,11 +73,11 @@ public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
      * @param p The parent gui, where the popupMenu appears in.
      */
     public NodePopupMenu(GUI p) {
-        parent = p;
-        info.addActionListener(this);
-        delete.addActionListener(this);
-        showCoordinateCube.addActionListener(this);
-        hideCoordinateCube.addActionListener(this);
+        this.parent = p;
+        this.info.addActionListener(this);
+        this.delete.addActionListener(this);
+        this.showCoordinateCube.addActionListener(this);
+        this.hideCoordinateCube.addActionListener(this);
     }
 
     /**
@@ -87,22 +87,22 @@ public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
      */
     public void compose(Node n) {
 
-        node = n;
+        this.node = n;
 
-        methodsAndDescriptions.clear();
+        this.methodsAndDescriptions.clear();
         this.removeAll();
 
-        this.add(info);
+        this.add(this.info);
 
         if (Configuration.dimensions == 3) {
-            if (parent.getGraphPanel().containsNodeToDrawCoordinateCube(n)) {
-                this.add(hideCoordinateCube);
+            if (this.parent.getGraphPanel().containsNodeToDrawCoordinateCube(n)) {
+                this.add(this.hideCoordinateCube);
             } else {
-                this.add(showCoordinateCube);
+                this.add(this.showCoordinateCube);
             }
         }
 
-        this.add(delete);
+        this.add(this.delete);
 
         this.addSeparator();
 
@@ -111,7 +111,7 @@ public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
 
         boolean customMethods = false;
 
-        Method[] methods = node.getClass().getMethods();
+        Method[] methods = this.node.getClass().getMethods();
         for (Method method : methods) {
             Node.NodePopupMethod info = method.getAnnotation(Node.NodePopupMethod.class);
             if (info != null) {
@@ -123,7 +123,7 @@ public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
                 item.addActionListener(this); // BUGFIX for 0.75.0 -> 0.75.1 : this line was missing
                 this.add(item);
                 customMethods = true;
-                methodsAndDescriptions.put(text, method); // BUGFIX: 1st parameter was info.menuText()
+                this.methodsAndDescriptions.put(text, method); // BUGFIX: 1st parameter was info.menuText()
             }
         }
 
@@ -133,34 +133,34 @@ public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
 
         this.addSeparator();
 
-        this.add(zoomIn);
-        this.add(zoomOut);
+        this.add(this.zoomIn);
+        this.add(this.zoomOut);
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getActionCommand().equals(info.getActionCommand())) {
-            new NodeInfoDialog(parent, node);
-        } else if (event.getActionCommand().equals(delete.getActionCommand())) {
-            SinalgoRuntime.removeNode(node);
-            parent.redrawGUI();
-        } else if (event.getActionCommand().equals(showCoordinateCube.getActionCommand())) {
-            parent.getGraphPanel().setNodeToDrawCoordinateCube(node);
-            parent.repaint(); // need not repaint the graph, only the toppings
-        } else if (event.getActionCommand().equals(hideCoordinateCube.getActionCommand())) {
-            parent.getGraphPanel().removeNodeToDrawCoordinateCube(node);
-            parent.repaint(); // need not repaint the graph, only the toppings
+        if (event.getActionCommand().equals(this.info.getActionCommand())) {
+            new NodeInfoDialog(this.parent, this.node);
+        } else if (event.getActionCommand().equals(this.delete.getActionCommand())) {
+            SinalgoRuntime.removeNode(this.node);
+            this.parent.redrawGUI();
+        } else if (event.getActionCommand().equals(this.showCoordinateCube.getActionCommand())) {
+            this.parent.getGraphPanel().setNodeToDrawCoordinateCube(this.node);
+            this.parent.repaint(); // need not repaint the graph, only the toppings
+        } else if (event.getActionCommand().equals(this.hideCoordinateCube.getActionCommand())) {
+            this.parent.getGraphPanel().removeNodeToDrawCoordinateCube(this.node);
+            this.parent.repaint(); // need not repaint the graph, only the toppings
         } else {
             // try to execute a custom-command
-            Method clickedMethod = methodsAndDescriptions.get(event.getActionCommand());
+            Method clickedMethod = this.methodsAndDescriptions.get(event.getActionCommand());
             if (clickedMethod == null) {
                 throw new SinalgoFatalException("Cannot find method associated with menu item " + event.getActionCommand());
             }
             try {
-                synchronized (parent.getTransformator()) {
+                synchronized (this.parent.getTransformator()) {
                     // synchronize it on the transformator to grant not to be concurrent with
                     // any drawing or modifying action
-                    clickedMethod.invoke(node);
+                    clickedMethod.invoke(this.node);
                 }
             } catch (InvocationTargetException e) {
                 String text = "";
@@ -177,7 +177,7 @@ public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
                         + e.getMessage());
             }
 
-            parent.redrawGUI();
+            this.parent.redrawGUI();
         }
     }
 }

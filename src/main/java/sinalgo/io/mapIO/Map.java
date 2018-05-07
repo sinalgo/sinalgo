@@ -76,13 +76,13 @@ public class Map {
             if ((img = ImageIO.read(in)) == null) {
                 throw new FileNotFoundException("\n'" + aMapImageFile + "' - This image format is not supported.");
             }
-            imgWidth = img.getWidth();
-            imgHeight = img.getHeight();
-            grid = new int[imgWidth][imgHeight];
+            this.imgWidth = img.getWidth();
+            this.imgHeight = img.getHeight();
+            this.grid = new int[this.imgWidth][this.imgHeight];
             // copy the image data
-            for (int i = 0; i < imgWidth; i++) {
-                for (int j = 0; j < imgHeight; j++) {
-                    grid[i][j] = img.getRGB(i, j);
+            for (int i = 0; i < this.imgWidth; i++) {
+                for (int j = 0; j < this.imgHeight; j++) {
+                    this.grid[i][j] = img.getRGB(i, j);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -90,8 +90,8 @@ public class Map {
         } catch (IOException e) {
             throw new FileNotFoundException("Background map: Cannot open the image file\n" + e.getMessage());
         }
-        xRatio = ((double) imgWidth) / Configuration.dimX;
-        yRatio = ((double) imgHeight) / Configuration.dimY;
+        this.xRatio = ((double) this.imgWidth) / Configuration.dimX;
+        this.yRatio = ((double) this.imgHeight) / Configuration.dimY;
     }
 
     /**
@@ -103,21 +103,21 @@ public class Map {
      * @return The color of the specified position on the deployment area.
      */
     private int getColorRGB(double x, double y) {
-        int imgx = (int) Math.floor(xRatio * x);
-        int imgy = (int) Math.floor(yRatio * y);
+        int imgx = (int) Math.floor(this.xRatio * x);
+        int imgy = (int) Math.floor(this.yRatio * y);
         if (imgx < 0) {
             imgx = 0;
         }
-        if (imgx >= imgWidth) {
-            imgx = imgWidth - 1;
+        if (imgx >= this.imgWidth) {
+            imgx = this.imgWidth - 1;
         }
         if (imgy < 0) {
             imgy = 0;
         }
-        if (imgy >= imgHeight) {
-            imgy = imgHeight - 1;
+        if (imgy >= this.imgHeight) {
+            imgy = this.imgHeight - 1;
         }
-        return grid[imgx][imgy];
+        return this.grid[imgx][imgy];
     }
 
     /**
@@ -126,11 +126,11 @@ public class Map {
      * @return The color of the specified position on the deployment area.
      */
     public Color getColor(double x, double y) {
-        return new Color(getColorRGB(x, y));
+        return new Color(this.getColorRGB(x, y));
     }
 
     public Color getColor(Position p) {
-        return getColor(p.getXCoord(), p.getYCoord());
+        return this.getColor(p.getXCoord(), p.getYCoord());
     }
 
     /**
@@ -139,15 +139,15 @@ public class Map {
      * @return Whether the specified position on the deployment area is white.
      */
     public boolean isWhite(double x, double y) {
-        int color = getColorRGB(x, y);
-        int r = colorModel.getRed(color); // translate to default RGB values
-        int g = colorModel.getGreen(color); // translate to default RGB values
-        int b = colorModel.getBlue(color); // translate to default RGB values
+        int color = this.getColorRGB(x, y);
+        int r = this.colorModel.getRed(color); // translate to default RGB values
+        int g = this.colorModel.getGreen(color); // translate to default RGB values
+        int b = this.colorModel.getBlue(color); // translate to default RGB values
         return r + g + b == 765; // r,g,b == 255
     }
 
     public boolean isWhite(Position p) {
-        return isWhite(p.getXCoord(), p.getYCoord());
+        return this.isWhite(p.getXCoord(), p.getYCoord());
     }
 
     /**
@@ -156,10 +156,10 @@ public class Map {
      * @return Whether the specified position on the deployment area is black.
      */
     public boolean isBlack(double x, double y) {
-        int color = getColorRGB(x, y);
-        int r = colorModel.getRed(color); // translate to default RGB values
-        int g = colorModel.getGreen(color); // translate to default RGB values
-        int b = colorModel.getBlue(color); // translate to default RGB values
+        int color = this.getColorRGB(x, y);
+        int r = this.colorModel.getRed(color); // translate to default RGB values
+        int g = this.colorModel.getGreen(color); // translate to default RGB values
+        int b = this.colorModel.getBlue(color); // translate to default RGB values
         return r + g + b == 0; // r,g,b == 0
     }
 
@@ -171,9 +171,9 @@ public class Map {
      * color.
      */
     public boolean isColor(double x, double y, Color c) {
-        int color = getColorRGB(x, y);
-        return c.getRed() == colorModel.getRed(color) && c.getBlue() == colorModel.getBlue(color)
-                && c.getGreen() == colorModel.getGreen(color);
+        int color = this.getColorRGB(x, y);
+        return c.getRed() == this.colorModel.getRed(color) && c.getBlue() == this.colorModel.getBlue(color)
+                && c.getGreen() == this.colorModel.getGreen(color);
     }
 
     /**
@@ -183,8 +183,8 @@ public class Map {
      * area.
      */
     public int getRed(double x, double y) {
-        int color = getColorRGB(x, y);
-        return colorModel.getRed(color); // translate to default RGB values
+        int color = this.getColorRGB(x, y);
+        return this.colorModel.getRed(color); // translate to default RGB values
     }
 
     /**
@@ -194,8 +194,8 @@ public class Map {
      * area.
      */
     public int getBlue(double x, double y) {
-        int color = getColorRGB(x, y);
-        return colorModel.getBlue(color); // translate to default RGB values
+        int color = this.getColorRGB(x, y);
+        return this.colorModel.getBlue(color); // translate to default RGB values
     }
 
     /**
@@ -205,8 +205,8 @@ public class Map {
      * depolyment area.
      */
     public int getGreen(double x, double y) {
-        int color = getColorRGB(x, y);
-        return colorModel.getGreen(color); // translate to default RGB values
+        int color = this.getColorRGB(x, y);
+        return this.colorModel.getGreen(color); // translate to default RGB values
     }
 
     /**
@@ -221,15 +221,15 @@ public class Map {
             throw new SinalgoFatalException("Background maps are not supported in 3D.\n" + "Do not specify a "
                     + "map while running a simulation in 3D.");
         }
-        double lengthX = 1 / xRatio;
-        double lengthY = 1 / yRatio;
+        double lengthX = 1 / this.xRatio;
+        double lengthY = 1 / this.yRatio;
 
-        for (int i = 0; i < imgWidth; i++) {
-            for (int j = 0; j < imgHeight; j++) {
+        for (int i = 0; i < this.imgWidth; i++) {
+            for (int j = 0; j < this.imgHeight; j++) {
                 pt.translateToGUIPosition(i * lengthX, j * lengthY, 0); // top left corner of cell
                 int topLeftX = pt.getGuiX(), topLeftY = pt.getGuiY();
                 pt.translateToGUIPosition((i + 1) * lengthX, (j + 1) * lengthY, 0); // bottom right corner of cell
-                Color col = new Color(grid[i][j]);
+                Color col = new Color(this.grid[i][j]);
                 g.setColor(col);
                 g.fillRect(topLeftX, topLeftY, pt.getGuiX() - topLeftX, pt.getGuiY() - topLeftY);
             }
@@ -237,12 +237,12 @@ public class Map {
     }
 
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-        double lengthX = 1 / xRatio;
-        double lengthY = 1 / yRatio;
+        double lengthX = 1 / this.xRatio;
+        double lengthY = 1 / this.yRatio;
 
-        for (int i = 0; i < imgWidth; i++) {
-            for (int j = 0; j < imgHeight; j++) {
-                Color col = new Color(grid[i][j]);
+        for (int i = 0; i < this.imgWidth; i++) {
+            for (int j = 0; j < this.imgHeight; j++) {
+                Color col = new Color(this.grid[i][j]);
                 if (col == Color.WHITE) {
                     continue; // don't paint white
                 }

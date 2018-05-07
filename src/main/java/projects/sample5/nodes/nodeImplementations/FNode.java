@@ -56,7 +56,7 @@ public class FNode extends Node {
      * Method to clear this node's routing table
      */
     public void clearRoutingTable() {
-        routingTable.clear();
+        this.routingTable.clear();
     }
 
     @Override
@@ -86,11 +86,11 @@ public class FNode extends Node {
                     if (m.sender.equals(this)) { // the message bounced back - discard the msg
                         forward = false;
                     } else { // update routing table to the sender of this node
-                        RoutingEntry re = routingTable.get(m.sender);
+                        RoutingEntry re = this.routingTable.get(m.sender);
                         if (re == null) { // add a new routing entry
-                            routingTable.put(m.sender,
+                            this.routingTable.put(m.sender,
                                     new RoutingEntry(m.sequenceID, m.hopsToSender, inbox.getSender()));
-                            useNewRoutingInfo(m.destination, inbox.getSender());
+                            this.useNewRoutingInfo(m.destination, inbox.getSender());
                         } else if (re.sequenceNumber < m.sequenceID) { // update the existing entry
                             re.numHops = m.hopsToSender;
                             re.sequenceNumber = m.sequenceID;
@@ -119,11 +119,11 @@ public class FNode extends Node {
                     // update the routing table
                     boolean forward = true;
                     this.setColor(Color.GREEN);
-                    RoutingEntry re = routingTable.get(m.destination);
+                    RoutingEntry re = this.routingTable.get(m.destination);
                     if (re == null) { // add a new routing entry
-                        routingTable.put(m.destination,
+                        this.routingTable.put(m.destination,
                                 new RoutingEntry(m.sequenceID, m.hopsToSender, inbox.getSender()));
-                        useNewRoutingInfo(m.destination, inbox.getSender());
+                        this.useNewRoutingInfo(m.destination, inbox.getSender());
                     } else if (re.sequenceNumber < m.sequenceID) { // update the existing entry
                         re.numHops = m.hopsToSender;
                         re.sequenceNumber = m.sequenceID;
@@ -135,10 +135,10 @@ public class FNode extends Node {
                         // this node sent the request - remove timers
                         m.retryTimer.deactivate();
                     } else if (forward) {
-                        re = routingTable.get(m.sender);
+                        re = this.routingTable.get(m.sender);
                         if (re != null) {
                             m.hopsToSender++; // we can modify the message, its a unicast
-                            send(m, re.nextHop);
+                            this.send(m, re.nextHop);
                         }
                     }
                 }
@@ -157,10 +157,10 @@ public class FNode extends Node {
                         AckPayload ack = new AckPayload(m.sender, this);
                         ack.sequenceNumber = m.sequenceNumber;
                         ack.ackTimer = m.ackTimer;
-                        sendPayloadMessage(ack);
+                        this.sendPayloadMessage(ack);
                     }
                 } else { // the message was not for this node -> forward
-                    sendPayloadMessage(m);
+                    this.sendPayloadMessage(m);
                 }
             }
         }
@@ -197,7 +197,7 @@ public class FNode extends Node {
      * @param msg
      */
     public void sendPayloadMessage(PayloadMsg msg) {
-        RoutingEntry re = routingTable.get(msg.destination);
+        RoutingEntry re = this.routingTable.get(msg.destination);
         if (re != null) {
             if (msg.sender.equals(this) && msg.requireACK) { // this node wants to have the message sent - it waits for
                 // an ack
@@ -208,11 +208,11 @@ public class FNode extends Node {
                 }
                 msg.ackTimer = rpmt;
             }
-            send(msg, re.nextHop);
+            this.send(msg, re.nextHop);
             return;
         } else {
-            lookForNode(msg.destination, 4);
-            messagesOnHold.add(msg);
+            this.lookForNode(msg.destination, 4);
+            this.messagesOnHold.add(msg);
         }
     }
 
@@ -238,7 +238,7 @@ public class FNode extends Node {
     }
 
     private void useNewRoutingInfo(Node destination, Node nextHop) {
-        Iterator<PayloadMsg> it = messagesOnHold.iterator();
+        Iterator<PayloadMsg> it = this.messagesOnHold.iterator();
         while (it.hasNext()) {
             PayloadMsg m = it.next();
             if (m.destination.equals(destination)) {
@@ -269,7 +269,7 @@ public class FNode extends Node {
     public String toString() {
         // show the routing table entries
         StringBuilder r = new StringBuilder();
-        for (Entry<Node, RoutingEntry> e : routingTable.entrySet()) {
+        for (Entry<Node, RoutingEntry> e : this.routingTable.entrySet()) {
             r.append(e.getKey().getID()).append(" => ").append(e.getValue().nextHop.getID()).append(" (").append(e.getValue().numHops).append(")").append("\n");
         }
         return "\n" + r;

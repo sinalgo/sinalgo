@@ -22,13 +22,13 @@ public class PositionFile extends DistributionModel {
 
     @Override
     public Position getNextPosition() {
-        if (reader == null) {
+        if (this.reader == null) {
             if (super.getParamString().equals("")) {
-                reader = PositionFileIO.getPositionFileReader(null);
+                this.reader = PositionFileIO.getPositionFileReader(null);
             } else {
-                reader = PositionFileIO.getPositionFileReader(super.getParamString());
+                this.reader = PositionFileIO.getPositionFileReader(super.getParamString());
             }
         }
-        return PositionFileIO.getNextPosition(reader);
+        return PositionFileIO.getNextPosition(this.reader);
     }
 }

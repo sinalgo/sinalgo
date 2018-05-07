@@ -52,6 +52,6 @@ public class Random extends DistributionModel {
 
     @Override
     public Position getNextPosition() {
-        return Tools.getRandomPosition(rand);
+        return Tools.getRandomPosition(this.rand);
     }
 }

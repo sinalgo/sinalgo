@@ -151,15 +151,15 @@ public class RandomDirection extends MobilityModel {
         double dz = distance * Math.sin(angleZ);
 
         // determine the number of rounds needed to reach the target
-        setRemaining_hops((int) Math.ceil(moveTime));
+        this.setRemaining_hops((int) Math.ceil(moveTime));
         // determine the moveVector which is added in each round to the position of this
         // node
-        setMoveVector(new Position(dx / moveTime, dy / moveTime, dz / moveTime));
+        this.setMoveVector(new Position(dx / moveTime, dy / moveTime, dz / moveTime));
     }
 
     @Override
     public Position getNextPos(Node n) {
-        if (initialize) { // called the very first time such that not all nodes start moving in the first
+        if (this.initialize) { // called the very first time such that not all nodes start moving in the first
             // round of the simulation.
             // use a sample to determine in which phase we are.
             double wt = Math.abs(waitingTimeDistribution.nextSample());
@@ -168,43 +168,43 @@ public class RandomDirection extends MobilityModel {
             if (fraction < wt) {
                 // the node starts waiting, but depending on fraction, may already have waited
                 // some time
-                setRemaining_waitingTime((int) Math.ceil(wt - fraction)); // the remaining rounds to wait
-                setRemaining_hops(0);
+                this.setRemaining_waitingTime((int) Math.ceil(wt - fraction)); // the remaining rounds to wait
+                this.setRemaining_hops(0);
             } else {
                 // the node starts moving
                 double speed = Math.abs(speedDistribution.nextSample()); // units per round
-                initializeNextMove(speed, mt + wt - fraction);
+                this.initializeNextMove(speed, mt + wt - fraction);
             }
-            setCurrentPosition(n.getPosition()); // initially, currentPos is null
-            setInitialize(false);
+            this.setCurrentPosition(n.getPosition()); // initially, currentPos is null
+            this.setInitialize(false);
         }
 
         // restart a new move to a new destination if the node was moved by another
         // means than this mobility model
-        if (getCurrentPosition() != null) {
-            if (!getCurrentPosition().equals(n.getPosition())) {
-                setRemaining_waitingTime(0);
-                setRemaining_hops(0);
+        if (this.getCurrentPosition() != null) {
+            if (!this.getCurrentPosition().equals(n.getPosition())) {
+                this.setRemaining_waitingTime(0);
+                this.setRemaining_hops(0);
             }
         } else {
-            setCurrentPosition(new Position(0, 0, 0));
+            this.setCurrentPosition(new Position(0, 0, 0));
         }
 
         // execute the waiting loop
-        if (getRemaining_waitingTime() > 0) {
-            setRemaining_waitingTime(getRemaining_hops() - 1);
+        if (this.getRemaining_waitingTime() > 0) {
+            this.setRemaining_waitingTime(this.getRemaining_hops() - 1);
             return n.getPosition();
         }
         // move
-        if (remaining_hops == 0) { // we start to move, determine next random target
+        if (this.remaining_hops == 0) { // we start to move, determine next random target
             // determine the next point to which this node moves to
             double speed = Math.abs(speedDistribution.nextSample()); // units per round
             double time = Math.abs(moveTimeDistribution.nextSample()); // rounds
-            initializeNextMove(speed, time);
+            this.initializeNextMove(speed, time);
         }
-        double newx = n.getPosition().getXCoord() + moveVector.getXCoord();
-        double newy = n.getPosition().getYCoord() + moveVector.getYCoord();
-        double newz = n.getPosition().getZCoord() + moveVector.getZCoord();
+        double newx = n.getPosition().getXCoord() + this.moveVector.getXCoord();
+        double newy = n.getPosition().getYCoord() + this.moveVector.getYCoord();
+        double newz = n.getPosition().getZCoord() + this.moveVector.getZCoord();
 
         // test that it is not outside the deployment area, otherwise reflect
         // We need to repeat the test for special cases where the node moves in really
@@ -216,47 +216,47 @@ public class RandomDirection extends MobilityModel {
 
             if (newx < 0) {
                 newx *= -1;
-                moveVector.setXCoord(moveVector.getXCoord() * -1);
+                this.moveVector.setXCoord(this.moveVector.getXCoord() * -1);
                 reflected = true;
             }
             if (newy < 0) {
                 newy *= -1;
-                moveVector.setYCoord(moveVector.getYCoord() * -1);
+                this.moveVector.setYCoord(this.moveVector.getYCoord() * -1);
                 reflected = true;
             }
             if (newz < 0) {
                 newz *= -1;
-                moveVector.setZCoord(moveVector.getZCoord() * -1);
+                this.moveVector.setZCoord(this.moveVector.getZCoord() * -1);
                 reflected = true;
             }
             if (newx > Configuration.dimX) {
                 newx = 2 * Configuration.dimX - newx;
-                moveVector.setXCoord(moveVector.getXCoord() * -1);
+                this.moveVector.setXCoord(this.moveVector.getXCoord() * -1);
                 reflected = true;
             }
             if (newy > Configuration.dimY) {
                 newy = 2 * Configuration.dimY - newy;
-                moveVector.setYCoord(moveVector.getYCoord() * -1);
+                this.moveVector.setYCoord(this.moveVector.getYCoord() * -1);
                 reflected = true;
             }
             if (newz > Configuration.dimZ) {
                 newz = 2 * Configuration.dimZ - newz;
-                moveVector.setZCoord(moveVector.getZCoord() * -1);
+                this.moveVector.setZCoord(this.moveVector.getZCoord() * -1);
                 reflected = true;
             }
         } while (reflected);
 
         Position result = new Position(newx, newy, newz);
 
-        if (remaining_hops <= 1) { // was last round of mobility
+        if (this.remaining_hops <= 1) { // was last round of mobility
             // set the next waiting time that executes after this mobility phase
-            remaining_waitingTime = (int) Math.ceil(Math.abs(waitingTimeDistribution.nextSample()));
-            remaining_hops = 0;
+            this.remaining_waitingTime = (int) Math.ceil(Math.abs(waitingTimeDistribution.nextSample()));
+            this.remaining_hops = 0;
         } else {
-            remaining_hops--;
+            this.remaining_hops--;
         }
 
-        currentPosition.assign(result);
+        this.currentPosition.assign(result);
         return result;
     }
 

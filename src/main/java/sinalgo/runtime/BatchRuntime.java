@@ -76,6 +76,6 @@ public class BatchRuntime extends SinalgoRuntime {
 
     @Override
     public void initProgress() {
-        createNodes();
+        this.createNodes();
     }
 }

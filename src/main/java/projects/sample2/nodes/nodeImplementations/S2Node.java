@@ -66,7 +66,7 @@ public class S2Node extends Node {
      * Reset the list of neighbors of this node.
      */
     public void reset() {
-        neighbors.clear();
+        this.neighbors.clear();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class S2Node extends Node {
     @Override
     public void neighborhoodChange() {
         for (Edge e : this.getOutgoingConnections()) {
-            neighbors.add((S2Node) e.getEndNode()); // only adds really new neighbors
+            this.neighbors.add((S2Node) e.getEndNode()); // only adds really new neighbors
         }
     }
 
@@ -110,7 +110,7 @@ public class S2Node extends Node {
      */
     @NodePopupMethod(menuText = "Color Neighbors")
     public void ColorNeighbors() {
-        for (S2Node n : neighbors) {
+        for (S2Node n : this.neighbors) {
             n.drawAsNeighbor = true;
         }
         isColored = true;
@@ -146,27 +146,27 @@ public class S2Node extends Node {
 
     @Override
     public String toString() {
-        return "This node has seen " + neighbors.size() + " neighbors during its life.";
+        return "This node has seen " + this.neighbors.size() + " neighbors during its life.";
     }
 
     @Override
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         // Set the color of this node depending on its state
-        if (isMaxNode) {
+        if (this.isMaxNode) {
             this.setColor(Color.RED);
-        } else if (drawAsNeighbor) {
+        } else if (this.drawAsNeighbor) {
             this.setColor(Color.BLUE);
         } else {
             this.setColor(Color.BLACK);
         }
-        double fraction = Math.max(0.1, ((double) neighbors.size()) / Tools.getNodeList().size());
+        double fraction = Math.max(0.1, ((double) this.neighbors.size()) / Tools.getNodeList().size());
         this.drawingSizeInPixels = (int) (fraction * pt.getZoomFactor() * this.defaultDrawingSizeInPixels);
-        drawAsDisk(g, pt, highlight, this.drawingSizeInPixels);
+        this.drawAsDisk(g, pt, highlight, this.drawingSizeInPixels);
     }
 
     @Override
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
         // the size and color should still be set from the GUI draw method
-        drawToPostScriptAsDisk(pw, pt, drawingSizeInPixels / 2, getColor());
+        this.drawToPostScriptAsDisk(pw, pt, this.drawingSizeInPixels / 2, this.getColor());
     }
 }

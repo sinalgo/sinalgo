@@ -53,26 +53,26 @@ public class Grid2D extends DistributionModel {
 
     @Override
     public void initialize() {
-        double a = 1 - numberOfNodes;
+        double a = 1 - this.numberOfNodes;
         double b = -(Configuration.dimX + Configuration.dimY); // kind of a hack
         double c = Configuration.dimX * Configuration.dimY;
         double tmp = b * b - 4 * a * c;
         if (tmp < 0) {
             throw new SinalgoFatalException("negative sqrt");
         }
-        size = (-b - Math.sqrt(tmp)) / (2 * a);
-        numNodesPerLine = (int) Math.round(Configuration.dimX / size) - 1;
-        i = 0;
-        j = 1;
+        this.size = (-b - Math.sqrt(tmp)) / (2 * a);
+        this.numNodesPerLine = (int) Math.round(Configuration.dimX / this.size) - 1;
+        this.i = 0;
+        this.j = 1;
     }
 
     @Override
     public Position getNextPosition() {
-        i++;
-        if (i > numNodesPerLine) {
-            i = 1;
-            j++;
+        this.i++;
+        if (this.i > this.numNodesPerLine) {
+            this.i = 1;
+            this.j++;
         }
-        return new Position(i * size, j * size, 0);
+        return new Position(this.i * this.size, this.j * this.size, 0);
     }
 }

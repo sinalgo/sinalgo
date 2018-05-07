@@ -63,19 +63,19 @@ public class BooleanEdge extends Edge {
      * @return Whether this edge is drawn on the GUI or to PostScript.
      */
     public boolean isDrawn() {
-        return !onlyUseFlagedEdges || flag;
+        return !onlyUseFlagedEdges || this.flag;
     }
 
     @Override
     public void draw(Graphics g, PositionTransformation pt) {
-        if (isDrawn()) {
+        if (this.isDrawn()) {
             super.draw(g, pt);
         }
     }
 
     @Override
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-        if (isDrawn()) {
+        if (this.isDrawn()) {
             super.drawToPostScript(pw, pt);
         }
     }

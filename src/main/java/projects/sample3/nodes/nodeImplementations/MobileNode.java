@@ -1,6 +1,10 @@
 package projects.sample3.nodes.nodeImplementations;
 
-import projects.sample3.nodes.messages.*;
+import projects.sample3.nodes.messages.ByeBye;
+import projects.sample3.nodes.messages.InviteMessage;
+import projects.sample3.nodes.messages.SmsAckMessage;
+import projects.sample3.nodes.messages.SmsMessage;
+import projects.sample3.nodes.messages.SubscirbeMessage;
 import projects.sample3.nodes.timers.SmsTimer;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
@@ -27,11 +31,11 @@ public class MobileNode extends Node {
     private int seqIDCounter = 0;
 
     public Antenna getCurrentAntenna() {
-        return currentAntenna;
+        return this.currentAntenna;
     }
 
     public int getNextSeqID() {
-        return ++seqIDCounter;
+        return ++this.seqIDCounter;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class MobileNode extends Node {
     @Override
     public void handleMessages(Inbox inbox) {
         boolean needSubscription = false;
-        Antenna oldAntenna = currentAntenna;
+        Antenna oldAntenna = this.currentAntenna;
 
         while (inbox.hasNext()) {
             Message msg = inbox.next();
@@ -50,8 +54,8 @@ public class MobileNode extends Node {
             if (msg instanceof InviteMessage) {
                 InviteMessage im = (InviteMessage) msg;
                 // drop the current antenna if the newer one is closer
-                if (currentAntenna != null) {
-                    double oldDist = currentAntenna.getPosition().squareDistanceTo(this.getPosition());
+                if (this.currentAntenna != null) {
+                    double oldDist = this.currentAntenna.getPosition().squareDistanceTo(this.getPosition());
                     double newDist = inbox.getSender().getPosition().squareDistanceTo(this.getPosition());
                     if (oldDist > newDist) {
                         // and store the new one (subscription is sent only after seeing all messages)
@@ -73,10 +77,10 @@ public class MobileNode extends Node {
                 SmsAckMessage ack = (SmsAckMessage) msg;
                 if (ack.getReceiver().equals(this)) {
                     ack.getSmsTimer().disable(); // stop the timer - the message arrived
-                    log.logln("Message <" + this.getID() + "," + ack.getSender().getID() + "> acknowledged. Message: " + ack.getText());
+                    this.log.logln("Message <" + this.getID() + "," + ack.getSender().getID() + "> acknowledged. Message: " + ack.getText());
                     this.setColor(Color.YELLOW);
                 } else {
-                    log.logln("Message <" + ack.getReceiver().getID() + "," + ack.getSender().getID() + "> ACK arrived at wrong node ("
+                    this.log.logln("Message <" + ack.getReceiver().getID() + "," + ack.getSender().getID() + "> ACK arrived at wrong node ("
                             + this.getID() + ") Message: " + ack.getText());
                 }
             }
@@ -84,22 +88,22 @@ public class MobileNode extends Node {
             else if (msg instanceof SmsMessage) {
                 SmsMessage sms = (SmsMessage) msg;
                 if (sms.getReceiver().equals(this)) {
-                    log.logln("Message <" + sms.getSender().getID() + "," + sms.getReceiver().getID() + "> arrived. Message: " + sms.getText());
+                    this.log.logln("Message <" + sms.getSender().getID() + "," + sms.getReceiver().getID() + "> arrived. Message: " + sms.getText());
                     this.setColor(Color.GREEN);
                     // send ACK
-                    if (currentAntenna != null) {
+                    if (this.currentAntenna != null) {
                         SmsAckMessage ack = new SmsAckMessage(this.getNextSeqID(), sms.getSender(), this, sms.getText(),
                                 sms.getSmsTimer());
-                        this.send(ack, currentAntenna);
+                        this.send(ack, this.currentAntenna);
                     }
                 } else {
-                    log.logln("Message <" + sms.getSender().getID() + "," + sms.getReceiver().getID() + "> arrived at wrong node ("
+                    this.log.logln("Message <" + sms.getSender().getID() + "," + sms.getReceiver().getID() + "> arrived at wrong node ("
                             + this.getID() + ") Message: " + sms.getText());
                 }
             }
         }
 
-        if (oldAntenna != null && !oldAntenna.equals(currentAntenna)) { // we switch to a different antenna
+        if (oldAntenna != null && !oldAntenna.equals(this.currentAntenna)) { // we switch to a different antenna
             // detach from current antenna
             ByeBye bye = new ByeBye();
             this.send(bye, oldAntenna);
@@ -108,7 +112,7 @@ public class MobileNode extends Node {
         // subscribe to the closest Antenna
         if (needSubscription) {
             SubscirbeMessage sm = new SubscirbeMessage();
-            this.send(sm, currentAntenna);
+            this.send(sm, this.currentAntenna);
         }
     }
 
@@ -139,8 +143,8 @@ public class MobileNode extends Node {
 
     @Override
     public String toString() {
-        if (currentAntenna != null) {
-            return "Connected to Antenna " + currentAntenna.getID();
+        if (this.currentAntenna != null) {
+            return "Connected to Antenna " + this.currentAntenna.getID();
         } else {
             return "Currently not connected.";
         }

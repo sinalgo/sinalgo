@@ -125,9 +125,9 @@ public class QUDG extends ConnectivityModelHelper {
         // randomly
         // determine whether the edge exists or not.
 
-        if (probabilityType == 1) { // linear probability
+        if (this.probabilityType == 1) { // linear probability
             probability = Math.sqrt(d) * m + q;
-        } else if (probabilityType == 2) { // quadratic probability
+        } else if (this.probabilityType == 2) { // quadratic probability
             // ... not yet implemented
         }
         return rand.nextDouble() <= probability;
@@ -177,16 +177,16 @@ public class QUDG extends ConnectivityModelHelper {
             String type = Configuration.getStringParameter("QUDG/ProbabilityType");
             switch (type.toLowerCase()) {
                 case "constant":
-                    probabilityType = 0;
+                    this.probabilityType = 0;
                     probability = Configuration.getDoubleParameter("QUDG/connectionProbability");
                     break;
                 case "linear":
-                    probabilityType = 1;
+                    this.probabilityType = 1;
                     m = 1 / (r_min - r_max);
                     q = r_max / (r_max - r_min);
                     break;
                 case "quadratic":
-                    probabilityType = 2;
+                    this.probabilityType = 2;
                     throw new NotYetImplementedException("QUDG does not yet support quadratic probability distributions.");
                 default:
                     // TODO: rewrite the following exception, rewrite docu as well

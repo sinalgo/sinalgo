@@ -82,27 +82,27 @@ public class CustomGlobal extends AbstractCustomGlobal {
     {
         if (Configuration.hasParameter("exitAfter")) {
             try {
-                exitAfterFixedRounds = Configuration.getBooleanParameter("exitAfter");
+                this.exitAfterFixedRounds = Configuration.getBooleanParameter("exitAfter");
             } catch (CorruptConfigurationEntryException e1) {
                 throw new SinalgoFatalException("The 'exitAfter' needs to be a valid boolean.");
             }
-            if (exitAfterFixedRounds) {
+            if (this.exitAfterFixedRounds) {
                 try {
-                    exitAfterNumRounds = Configuration.getIntegerParameter("exitAfter/rounds");
+                    this.exitAfterNumRounds = Configuration.getIntegerParameter("exitAfter/rounds");
                 } catch (CorruptConfigurationEntryException e) {
                     throw new SinalgoFatalException(
                             "The 'exitAfter/rounds' parameter specifies the maximum time the simulation runs. It needs to be a valid integer.");
                 }
             }
         } else {
-            exitAfterFixedRounds = false;
+            this.exitAfterFixedRounds = false;
         }
     }
 
     @Override
     public boolean hasTerminated() {
-        if (exitAfterFixedRounds) {
-            return exitAfterNumRounds <= Global.currentTime;
+        if (this.exitAfterFixedRounds) {
+            return this.exitAfterNumRounds <= Global.currentTime;
         }
 
         if (Tools.isSimulationInGuiMode()) {
@@ -142,7 +142,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     @Override
     public void postRound() {
         double dt = System.currentTimeMillis() - Global.startTimeOfRound.getTime();
-        log.logln("Round " + (int) (Global.currentTime) + " time: " + dt + " Msg/Round: "
+        this.log.logln("Round " + (int) (Global.currentTime) + " time: " + dt + " Msg/Round: "
                 + Global.numberOfMessagesInThisRound);
     }
 

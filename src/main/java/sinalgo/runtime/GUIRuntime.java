@@ -56,7 +56,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
      * @return The one and only instance of the gui.
      */
     public GUI getGUI() {
-        return gui;
+        return this.gui;
     }
 
     private PercentualProgressDialog pf = new PercentualProgressDialog(this, "Initialising the Nodes");
@@ -68,7 +68,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
         // be finished.
         synchronized (this) {
             try {
-                if (!isNodeCreationFinished()) {
+                if (!this.isNodeCreationFinished()) {
                     this.wait();
                 }
             } catch (InterruptedException e) {
@@ -76,7 +76,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
             }
         }
 
-        pf.finish();
+        this.pf.finish();
 
         // In async mode, the user may specify to evaluate the connections immediately
         // at startup
@@ -89,10 +89,10 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
         }
 
         // init the gui
-        gui.init();
+        this.gui.init();
 
         if (this.getNumberOfRounds() != 0) {
-            gui.setStartButtonEnabled(false);
+            this.gui.setStartButtonEnabled(false);
         }
 
         // wait until the the GUI has been painted at least once
@@ -101,7 +101,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
         while (!GraphPanel.firstTimePainted) {
             try {
                 synchronized (this) {
-                    wait(100);
+                    this.wait(100);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -141,12 +141,12 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
 
     @Override
     public void initProgress() {
-        pf.init();
+        this.pf.init();
     }
 
     @Override
     public void setProgress(double percent) {
-        pf.setPercentage(percent);
+        this.pf.setPercentage(percent);
     }
 
     @Override

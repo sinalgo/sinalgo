@@ -92,10 +92,10 @@ public abstract class Timer implements Comparable<Timer> {
         if (relativeTime <= 0) {
             throw new SinalgoFatalException("A relative time indicating when a timer should start must be strictly positive.");
         }
-        setTargetNode(null);
-        setFireTime(Global.currentTime + relativeTime);
+        this.setTargetNode(null);
+        this.setFireTime(Global.currentTime + relativeTime);
         if (Global.isAsynchronousMode) {
-            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
+            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
         } else {
             Global.customGlobal.globalTimers.add(this);
         }
@@ -117,12 +117,12 @@ public abstract class Timer implements Comparable<Timer> {
         if (relativeTime <= 0) {
             throw new SinalgoFatalException("A relative time indicating when a timer should start must be strictly positive.");
         }
-        setTargetNode(n);
-        setFireTime(Global.currentTime + relativeTime);
+        this.setTargetNode(n);
+        this.setFireTime(Global.currentTime + relativeTime);
         if (Global.isAsynchronousMode) {
-            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
+            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
         } else {
-            getTargetNode().getTimers().add(this);
+            this.getTargetNode().getTimers().add(this);
         }
     }
 
@@ -139,18 +139,18 @@ public abstract class Timer implements Comparable<Timer> {
         if (absoluteTime <= Global.currentTime) {
             throw new SinalgoFatalException("The absolute time when a timer goes off must be strictly larger than the current time.");
         }
-        setTargetNode(n);
-        setFireTime(absoluteTime);
+        this.setTargetNode(n);
+        this.setFireTime(absoluteTime);
         if (Global.isAsynchronousMode) {
-            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
+            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
         } else {
-            getTargetNode().getTimers().add(this);
+            this.getTargetNode().getTimers().add(this);
         }
     }
 
     @Override
     public int compareTo(Timer t) {
-        return Double.compare(fireTime, t.fireTime);
+        return Double.compare(this.fireTime, t.fireTime);
     }
 
     /**
@@ -158,7 +158,7 @@ public abstract class Timer implements Comparable<Timer> {
      * framework.
      */
     public final boolean isNodeTimer() {
-        return getTargetNode() != null;
+        return this.getTargetNode() != null;
     }
 
     /**

@@ -66,12 +66,12 @@ public class RandomTime extends sinalgo.models.MessageTransmissionModel {
      * @throws CorruptConfigurationEntryException
      */
     public RandomTime() throws CorruptConfigurationEntryException {
-        dist = Distribution.getDistributionFromConfigFile("RandomMessageTransmission");
+        this.dist = Distribution.getDistributionFromConfigFile("RandomMessageTransmission");
     }
 
     @Override
     public double timeToReach(Node startNode, Node endNode, Message msg) {
-        double time = dist.nextSample();
+        double time = this.dist.nextSample();
         if (time <= 0) {
             time = 1e-9;
         }

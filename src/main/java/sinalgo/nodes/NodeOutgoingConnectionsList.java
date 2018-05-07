@@ -79,11 +79,11 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
     @Override
     public Edge remove(Node from, Node to) {
         // remove the edge from the EdgeCollection
-        edgeIterator.reset();
-        while (edgeIterator.hasNext()) {
-            Edge edge = edgeIterator.next();
+        this.edgeIterator.reset();
+        while (this.edgeIterator.hasNext()) {
+            Edge edge = this.edgeIterator.next();
             if ((from.getID() == edge.getStartNode().getID()) && (to.getID() == edge.getEndNode().getID())) {
-                edgeIterator.remove();
+                this.edgeIterator.remove();
                 edge.removeEdgeFromGraph(); // does not free the edge
                 return edge;
             }
@@ -93,10 +93,10 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
 
     @Override
     public void removeAndFreeAllEdges() {
-        edgeIterator.reset();
-        while (edgeIterator.hasNext()) {
-            Edge edge = edgeIterator.next();
-            edgeIterator.remove();
+        this.edgeIterator.reset();
+        while (this.edgeIterator.hasNext()) {
+            Edge edge = this.edgeIterator.next();
+            this.edgeIterator.remove();
             edge.removeEdgeFromGraph(); // called after the edge is removed from the outgoingConnectionList
             edge.free();
         }
@@ -104,9 +104,9 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
 
     @Override
     public boolean contains(Node startNode, Node endNode) {
-        edgeIterator.reset();
-        while (edgeIterator.hasNext()) {
-            Edge e = edgeIterator.next();
+        this.edgeIterator.reset();
+        while (this.edgeIterator.hasNext()) {
+            Edge e = this.edgeIterator.next();
             if ((e.getStartNode().getID() == startNode.getID()) && (e.getEndNode().getID() == endNode.getID())) {
                 return true;
             }
@@ -122,11 +122,11 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
         // a boolean to indicate, if something has changed
         boolean rval = false;
 
-        edgeIterator.reset();
-        while (edgeIterator.hasNext()) {
-            Edge edge = edgeIterator.next();
+        this.edgeIterator.reset();
+        while (this.edgeIterator.hasNext()) {
+            Edge edge = this.edgeIterator.next();
             if (!edge.isValid()) {
-                edgeIterator.remove(); // remove the edge from the list of outgoing connections from this node
+                this.edgeIterator.remove(); // remove the edge from the list of outgoing connections from this node
                 edge.removeEdgeFromGraph();
                 edge.free(); // return this edge to the edge factory s.t. it can be reused
                 rval = true;
@@ -164,9 +164,9 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
      * @return If the specified edge is in the vector.
      */
     protected boolean containsAndSetVisited(Edge edge, boolean valid) {
-        edgeIterator.reset();
-        while (edgeIterator.hasNext()) {
-            Edge e = edgeIterator.next();
+        this.edgeIterator.reset();
+        while (this.edgeIterator.hasNext()) {
+            Edge e = this.edgeIterator.next();
             if ((e.getStartNode().getID() == edge.getStartNode().getID()) && (e.getEndNode().getID() == edge.getEndNode().getID())) {
                 e.setValid(valid);
                 return true;
@@ -190,9 +190,9 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
      * @return If the specified edge is in the vector.
      */
     protected boolean containsAndSetVisited(Node startNode, Node endNode, boolean valid) {
-        edgeIterator.reset();
-        while (edgeIterator.hasNext()) {
-            Edge e = edgeIterator.next();
+        this.edgeIterator.reset();
+        while (this.edgeIterator.hasNext()) {
+            Edge e = this.edgeIterator.next();
             if ((e.getStartNode().getID() == startNode.getID()) && (e.getEndNode().getID() == endNode.getID())) {
                 e.setValid(valid);
                 return true;

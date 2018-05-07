@@ -88,16 +88,16 @@ public class Position {
      * @param p The position object from which to copy the x,y and z coordinates.
      */
     public void assign(Position p) {
-        assign(p.getXCoord(), p.getYCoord(), p.getZCoord());
+        this.assign(p.getXCoord(), p.getYCoord(), p.getZCoord());
     }
 
     /**
      * Assigns this position the values of anohter position.
      */
     public void assign(double x, double y, double z) {
-        setXCoord(x);
-        setYCoord(y);
-        setZCoord(z);
+        this.setXCoord(x);
+        this.setYCoord(y);
+        this.setZCoord(z);
     }
 
     /**
@@ -107,7 +107,7 @@ public class Position {
      * @return The distance between the two positions.
      */
     public double distanceTo(Position pos) {
-        return Math.sqrt(squareDistanceTo(pos));
+        return Math.sqrt(this.squareDistanceTo(pos));
     }
 
     /**
@@ -120,14 +120,14 @@ public class Position {
      * @return The squared distance between this point and another point.
      */
     public double squareDistanceTo(Position pos) {
-        return ((getXCoord() - pos.getXCoord()) * (getXCoord() - pos.getXCoord()))
-                + ((getYCoord() - pos.getYCoord()) * (getYCoord() - pos.getYCoord()))
-                + ((getZCoord() - pos.getZCoord()) * (getZCoord() - pos.getZCoord()));
+        return ((this.getXCoord() - pos.getXCoord()) * (this.getXCoord() - pos.getXCoord()))
+                + ((this.getYCoord() - pos.getYCoord()) * (this.getYCoord() - pos.getYCoord()))
+                + ((this.getZCoord() - pos.getZCoord()) * (this.getZCoord() - pos.getZCoord()));
     }
 
     @Override
     public String toString() {
-        return "[" + getXCoord() + ", " + getYCoord() + ", " + getZCoord() + "]";
+        return "[" + this.getXCoord() + ", " + this.getYCoord() + ", " + this.getZCoord() + "]";
     }
 
 }

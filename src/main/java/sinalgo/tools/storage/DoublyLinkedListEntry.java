@@ -86,8 +86,8 @@ public interface DoublyLinkedListEntry {
          * finger is associated with the list.
          */
         public Finger getFinger(DoublyLinkedList<?> dll) {
-            for (int i = 0; i < numberOfUsedFingers; i++) {
-                Finger f = list.elementAt(i);
+            for (int i = 0; i < this.numberOfUsedFingers; i++) {
+                Finger f = this.list.elementAt(i);
                 if (f != null && f.list == dll) {
                     return f;
                 }
@@ -108,15 +108,15 @@ public interface DoublyLinkedListEntry {
          */
         public Finger getNewFinger(DoublyLinkedList<?> dll, DoublyLinkedListEntry entry) {
             Finger f;
-            if (numberOfUsedFingers < list.size()) {
-                f = list.elementAt(numberOfUsedFingers);
+            if (this.numberOfUsedFingers < this.list.size()) {
+                f = this.list.elementAt(this.numberOfUsedFingers);
             } else {
                 f = new Finger();
-                list.add(f);
+                this.list.add(f);
             }
             f.list = dll;
             f.object = entry;
-            numberOfUsedFingers++;
+            this.numberOfUsedFingers++;
             return f;
         }
 
@@ -129,18 +129,18 @@ public interface DoublyLinkedListEntry {
          *             otherwise false.
          */
         public void releaseFinger(Finger f, boolean keep) {
-            for (int i = 0; i < numberOfUsedFingers; i++) {
-                if (f == list.elementAt(i)) {
+            for (int i = 0; i < this.numberOfUsedFingers; i++) {
+                if (f == this.list.elementAt(i)) {
                     if (keep) {
-                        releaseFingerAt(i);
+                        this.releaseFingerAt(i);
                     } else {
-                        list.remove(i);
-                        numberOfUsedFingers--;
+                        this.list.remove(i);
+                        this.numberOfUsedFingers--;
                     }
                     break;
                 }
             }
-            resizeVector();
+            this.resizeVector();
         }
 
         /**
@@ -152,19 +152,19 @@ public interface DoublyLinkedListEntry {
          *             otherwise false.
          */
         public void releaseFinger(DoublyLinkedList<?> dll, boolean keep) {
-            for (int i = 0; i < numberOfUsedFingers; i++) {
-                Finger f = list.elementAt(i);
+            for (int i = 0; i < this.numberOfUsedFingers; i++) {
+                Finger f = this.list.elementAt(i);
                 if (f != null && f.list == dll) {
                     if (keep) {
-                        releaseFingerAt(i);
+                        this.releaseFingerAt(i);
                     } else {
-                        list.remove(i);
-                        numberOfUsedFingers--;
+                        this.list.remove(i);
+                        this.numberOfUsedFingers--;
                     }
                     break; // at most one finger per dll
                 }
             }
-            resizeVector();
+            this.resizeVector();
         }
 
         /**
@@ -190,12 +190,12 @@ public interface DoublyLinkedListEntry {
          * @param offset The offset for the move operation
          */
         private void releaseFingerAt(int offset) {
-            Finger f = list.elementAt(offset);
+            Finger f = this.list.elementAt(offset);
             f.reset();
-            numberOfUsedFingers--; // is now offset that currently points to last used finger
-            if (offset < numberOfUsedFingers) {
-                list.set(offset, list.elementAt(numberOfUsedFingers));
-                list.set(numberOfUsedFingers, f);
+            this.numberOfUsedFingers--; // is now offset that currently points to last used finger
+            if (offset < this.numberOfUsedFingers) {
+                this.list.set(offset, this.list.elementAt(this.numberOfUsedFingers));
+                this.list.set(this.numberOfUsedFingers, f);
             } // else: is already last used finger
         }
     } // end of class DLLFingerList
@@ -234,9 +234,9 @@ public interface DoublyLinkedListEntry {
          * Sets all pointers of this finger to null.
          */
         public void reset() {
-            next = previous = null;
-            object = null;
-            list = null;
+            this.next = this.previous = null;
+            this.object = null;
+            this.list = null;
         }
 
         /**

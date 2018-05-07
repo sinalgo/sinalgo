@@ -18,7 +18,7 @@ public class LeafNode extends TreeNode {
     public int smallID;
 
     public LeafNode() {
-        smallID = ++smallIdCounter;
+        this.smallID = ++smallIdCounter;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class LeafNode extends TreeNode {
 
     @Override
     public String toString() {
-        return smallID + " (" + getID() + ")";
+        return this.smallID + " (" + this.getID() + ")";
     }
 
 }

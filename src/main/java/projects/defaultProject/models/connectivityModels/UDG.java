@@ -71,7 +71,7 @@ public class UDG extends ConnectivityModelHelper {
         Position p2 = to.getPosition();
 
         double distance = p1.squareDistanceTo(p2);
-        return (distance < squareRadius);
+        return (distance < this.squareRadius);
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,7 +88,7 @@ public class UDG extends ConnectivityModelHelper {
      * @return The maximum transmission range of this UDG model.
      */
     public double getMaxTransmissionRange() {
-        return Math.sqrt(squareRadius);
+        return Math.sqrt(this.squareRadius);
     }
 
     /**
@@ -97,11 +97,11 @@ public class UDG extends ConnectivityModelHelper {
      * @param rMax The new max. transmission range.
      */
     public void setMaxTransmissionRange(double rMax) {
-        squareRadius = rMax * rMax;
+        this.squareRadius = rMax * rMax;
     }
 
     public UDG(double rMax) {
-        squareRadius = rMax * rMax;
+        this.squareRadius = rMax * rMax;
     }
 
     /**
@@ -131,6 +131,6 @@ public class UDG extends ConnectivityModelHelper {
 
             initialized = true;
         }
-        squareRadius = rMaxSquare;
+        this.squareRadius = rMaxSquare;
     }
 }

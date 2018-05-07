@@ -76,10 +76,10 @@ public class MessageTimer extends Timer {
 
     @Override
     public void fire() {
-        if (receiver != null) { // there's a receiver => unicast the message
-            this.getTargetNode().send(msg, receiver);
+        if (this.receiver != null) { // there's a receiver => unicast the message
+            this.getTargetNode().send(this.msg, this.receiver);
         } else { // there's no reciever => broadcast the message
-            this.getTargetNode().broadcast(msg);
+            this.getTargetNode().broadcast(this.msg);
         }
     }
 }

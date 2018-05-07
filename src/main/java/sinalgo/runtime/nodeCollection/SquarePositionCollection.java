@@ -62,7 +62,7 @@ public class SquarePositionCollection {
      */
     public SquarePositionCollection() {
         for (int i = 0; i < 9; i++) {
-            squares[i] = new SquarePos(0, 0);
+            this.squares[i] = new SquarePos(0, 0);
         }
     }
 
@@ -74,14 +74,14 @@ public class SquarePositionCollection {
      * @param y The y parameter of the SquarePos to add.
      */
     public void add(int x, int y) {
-        if (nextUnused == squares.length) {
+        if (this.nextUnused == this.squares.length) {
             throw new ArrayIndexOutOfBoundsException(
                     "You tried to add more than the possible elements to the SquarePositionCollection");
         }
-        used[nextUnused] = true;
-        squares[nextUnused].setX(x);
-        squares[nextUnused].setY(y);
-        nextUnused++;
+        this.used[this.nextUnused] = true;
+        this.squares[this.nextUnused].setX(x);
+        this.squares[this.nextUnused].setY(y);
+        this.nextUnused++;
     }
 
     /**
@@ -90,9 +90,9 @@ public class SquarePositionCollection {
      */
     public void clear() {
         for (int i = 0; i < 9; i++) {
-            used[i] = false;
+            this.used[i] = false;
         }
-        nextUnused = 0;
+        this.nextUnused = 0;
     }
 
     /**
@@ -102,12 +102,12 @@ public class SquarePositionCollection {
      * @return A reusable Enumeration over the collection.
      */
     public Enumeration<SquarePos> elements() {
-        if (enumeration == null) {
-            enumeration = new SquarePositionCollectionEnumeration();
+        if (this.enumeration == null) {
+            this.enumeration = new SquarePositionCollectionEnumeration();
         } else {
-            enumeration.reset();
+            this.enumeration.reset();
         }
-        return enumeration;
+        return this.enumeration;
     }
 
     private class SquarePositionCollectionEnumeration implements ReusableEnumeration<SquarePos> {
@@ -116,13 +116,13 @@ public class SquarePositionCollection {
 
         @Override
         public void reset() {
-            position = 0;
+            this.position = 0;
         }
 
         @Override
         public boolean hasMoreElements() {
-            if (position < squares.length) {
-                return (used[position]);
+            if (this.position < SquarePositionCollection.this.squares.length) {
+                return (SquarePositionCollection.this.used[this.position]);
             } else {
                 return false;
             }
@@ -130,7 +130,7 @@ public class SquarePositionCollection {
 
         @Override
         public SquarePos nextElement() {
-            return squares[position++];// increment the position inline
+            return SquarePositionCollection.this.squares[this.position++];// increment the position inline
         }
 
     }

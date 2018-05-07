@@ -93,22 +93,22 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
         visualDetails.setBorder(BorderFactory.createTitledBorder("Visual Details:"));
         visualDetails.setLayout(new BoxLayout(visualDetails, BoxLayout.Y_AXIS));
 
-        drawArrowsCB.setSelected(Configuration.drawArrows);
-        visualDetails.add(drawArrowsCB);
+        this.drawArrowsCB.setSelected(Configuration.drawArrows);
+        visualDetails.add(this.drawArrowsCB);
 
         // Feature not yet implemented
         // drawRulerCB.setSelected(Configuration.drawRulers);
         // visualDetails.add(drawRulerCB);
 
-        drawNodesCB.setSelected(Configuration.drawNodes);
-        visualDetails.add(drawNodesCB);
+        this.drawNodesCB.setSelected(Configuration.drawNodes);
+        visualDetails.add(this.drawNodesCB);
 
-        drawEdgesCB.setSelected(Configuration.drawEdges);
-        visualDetails.add(drawEdgesCB);
+        this.drawEdgesCB.setSelected(Configuration.drawEdges);
+        visualDetails.add(this.drawEdgesCB);
 
-        usePerspectiveCB.setSelected(Configuration.usePerspectiveView);
+        this.usePerspectiveCB.setSelected(Configuration.usePerspectiveView);
         if (Configuration.dimensions == 3) { // only show in 3D
-            visualDetails.add(usePerspectiveCB);
+            visualDetails.add(this.usePerspectiveCB);
         }
 
         cp.add(visualDetails, BorderLayout.NORTH);
@@ -119,29 +119,29 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
 
         // Edges implemenations
 
-        Font f = typeOfEdges.getFont().deriveFont(Font.PLAIN);
-        typeOfEdges.setFont(f);
-        fillTypesOfEdges();
+        Font f = this.typeOfEdges.getFont().deriveFont(Font.PLAIN);
+        this.typeOfEdges.setFont(f);
+        this.fillTypesOfEdges();
         simulationDetails.add(new JLabel("Type of Edges: "));
-        simulationDetails.add(typeOfEdges);
+        simulationDetails.add(this.typeOfEdges);
 
         // Transmission model
-        selectedTransmissionModel.setFont(f);
-        fillTransmissionModel();
+        this.selectedTransmissionModel.setFont(f);
+        this.fillTransmissionModel();
         simulationDetails.add(new JLabel("Transmission Model: "));
-        simulationDetails.add(selectedTransmissionModel);
+        simulationDetails.add(this.selectedTransmissionModel);
 
         simulationDetails.add(new JLabel(""));
-        allModelsCheckBox = new JCheckBox("Show all implementations");
-        allModelsCheckBox.setSelected(Configuration.showModelsOfAllProjects);
-        allModelsCheckBox.addChangeListener(e -> {
-            if (Configuration.showModelsOfAllProjects != allModelsCheckBox.isSelected()) {
-                Configuration.showModelsOfAllProjects = allModelsCheckBox.isSelected();
-                fillTypesOfEdges();
-                fillTransmissionModel();
+        this.allModelsCheckBox = new JCheckBox("Show all implementations");
+        this.allModelsCheckBox.setSelected(Configuration.showModelsOfAllProjects);
+        this.allModelsCheckBox.addChangeListener(e -> {
+            if (Configuration.showModelsOfAllProjects != this.allModelsCheckBox.isSelected()) {
+                Configuration.showModelsOfAllProjects = this.allModelsCheckBox.isSelected();
+                this.fillTypesOfEdges();
+                this.fillTransmissionModel();
             }
         });
-        simulationDetails.add(allModelsCheckBox);
+        simulationDetails.add(this.allModelsCheckBox);
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BorderLayout());
         centerPanel.setBorder(BorderFactory.createEmptyBorder());
@@ -156,8 +156,8 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
 
         JPanel buttons = new JPanel();
 
-        ok.addActionListener(this);
-        buttons.add(ok);
+        this.ok.addActionListener(this);
+        buttons.add(this.ok);
 
         JButton cancel = new JButton("Cancel");
         cancel.addActionListener(this);
@@ -176,7 +176,7 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
             return false;
         });
 
-        this.getRootPane().setDefaultButton(ok);
+        this.getRootPane().setDefaultButton(this.ok);
         this.pack();
         this.setLocationRelativeTo(parent);
         this.setVisible(true);
@@ -188,12 +188,12 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
         if (!names.contains(Configuration.getEdgeTypeShortName())) {
             names.add(Configuration.getEdgeTypeShortName());
         }
-        typeOfEdges.removeAllItems();
+        this.typeOfEdges.removeAllItems();
         for (String s : names) {
-            typeOfEdges.addItem(s);
+            this.typeOfEdges.addItem(s);
         }
 
-        typeOfEdges.setSelectedItem(Configuration.getEdgeTypeShortName());
+        this.typeOfEdges.setSelectedItem(Configuration.getEdgeTypeShortName());
     }
 
     private void fillTransmissionModel() {
@@ -203,46 +203,46 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
         if (!names.contains(Configuration.DefaultMessageTransmissionModel)) {
             names.add(Configuration.DefaultMessageTransmissionModel);
         }
-        selectedTransmissionModel.removeAllItems();
+        this.selectedTransmissionModel.removeAllItems();
         for (String s : names) {
-            selectedTransmissionModel.addItem(s);
+            this.selectedTransmissionModel.addItem(s);
         }
-        selectedTransmissionModel.setSelectedItem(Configuration.DefaultMessageTransmissionModel);
+        this.selectedTransmissionModel.setSelectedItem(Configuration.DefaultMessageTransmissionModel);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(ok.getActionCommand())) {
+        if (e.getActionCommand().equals(this.ok.getActionCommand())) {
             try {
-                String selectedType = (String) typeOfEdges.getSelectedItem();
+                String selectedType = (String) this.typeOfEdges.getSelectedItem();
                 Configuration.setEdgeType(selectedType);
 
-                String selectedTransModel = (String) selectedTransmissionModel.getSelectedItem();
+                String selectedTransModel = (String) this.selectedTransmissionModel.getSelectedItem();
                 if (!Configuration.DefaultMessageTransmissionModel.equals(selectedTransModel)) {
                     Configuration.DefaultMessageTransmissionModel = selectedTransModel;
                     Global.messageTransmissionModel = Model.getMessageTransmissionModelInstance(
                             Configuration.DefaultMessageTransmissionModel);
                 }
 
-                if (drawRulerCB.isSelected() != Configuration.drawRulers) {
-                    Configuration.drawRulers = drawRulerCB.isSelected();
-                    parent.getGraphPanel().forceDrawInNextPaint();
+                if (this.drawRulerCB.isSelected() != Configuration.drawRulers) {
+                    Configuration.drawRulers = this.drawRulerCB.isSelected();
+                    this.parent.getGraphPanel().forceDrawInNextPaint();
                 }
-                if (drawArrowsCB.isSelected() != Configuration.drawArrows) {
-                    Configuration.drawArrows = drawArrowsCB.isSelected();
-                    parent.getGraphPanel().forceDrawInNextPaint();
+                if (this.drawArrowsCB.isSelected() != Configuration.drawArrows) {
+                    Configuration.drawArrows = this.drawArrowsCB.isSelected();
+                    this.parent.getGraphPanel().forceDrawInNextPaint();
                 }
-                if (drawEdgesCB.isSelected() != Configuration.drawEdges) {
-                    Configuration.drawEdges = drawEdgesCB.isSelected();
-                    parent.getGraphPanel().forceDrawInNextPaint();
+                if (this.drawEdgesCB.isSelected() != Configuration.drawEdges) {
+                    Configuration.drawEdges = this.drawEdgesCB.isSelected();
+                    this.parent.getGraphPanel().forceDrawInNextPaint();
                 }
-                if (drawNodesCB.isSelected() != Configuration.drawNodes) {
-                    Configuration.drawNodes = drawNodesCB.isSelected();
-                    parent.getGraphPanel().forceDrawInNextPaint();
+                if (this.drawNodesCB.isSelected() != Configuration.drawNodes) {
+                    Configuration.drawNodes = this.drawNodesCB.isSelected();
+                    this.parent.getGraphPanel().forceDrawInNextPaint();
                 }
-                if (usePerspectiveCB.isSelected() != Configuration.usePerspectiveView) {
+                if (this.usePerspectiveCB.isSelected() != Configuration.usePerspectiveView) {
                     Configuration.usePerspectiveView = !Configuration.usePerspectiveView;
-                    parent.getGraphPanel().forceDrawInNextPaint();
+                    this.parent.getGraphPanel().forceDrawInNextPaint();
                 }
 
             } catch (WrongConfigurationException ex) {

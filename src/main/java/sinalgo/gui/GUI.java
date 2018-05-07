@@ -44,7 +44,12 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.controlPanel.ControlPanel;
 import sinalgo.gui.controlPanel.MaximizedControlPanel;
 import sinalgo.gui.controlPanel.MinimizedControlPanel;
-import sinalgo.gui.dialogs.*;
+import sinalgo.gui.dialogs.AboutDialog;
+import sinalgo.gui.dialogs.GenerateNodesDialog;
+import sinalgo.gui.dialogs.GlobalSettingsDialog;
+import sinalgo.gui.dialogs.GraphInfoDialog;
+import sinalgo.gui.dialogs.GraphPreferencesDialog;
+import sinalgo.gui.dialogs.HelpDialog;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.Exporter;
 import sinalgo.nodes.Position;
@@ -60,7 +65,13 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -116,42 +127,42 @@ public class GUI extends JFrame implements ActionListener {
         GuiHelper.setWindowIcon(this);
 
         // load the buttons for the menu - these settings should be done only once
-        settingsMenuItem.addActionListener(this);
-        settingsMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_S);
-        aboutMenuItem.addActionListener(this);
-        aboutMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_A);
-        aboutMenuItem.setIcon(GuiHelper.getIcon("sinalgo_21.png"));
-        helpMenuItem.addActionListener(this);
-        helpMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_H);
-        helpMenuItem.setIcon(GuiHelper.getIcon("helpSmall.gif"));
-        helpMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+        this.settingsMenuItem.addActionListener(this);
+        this.settingsMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_S);
+        this.aboutMenuItem.addActionListener(this);
+        this.aboutMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_A);
+        this.aboutMenuItem.setIcon(GuiHelper.getIcon("sinalgo_21.png"));
+        this.helpMenuItem.addActionListener(this);
+        this.helpMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_H);
+        this.helpMenuItem.setIcon(GuiHelper.getIcon("helpSmall.gif"));
+        this.helpMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 
-        viewFullScreenMenuItem.addActionListener(this);
-        viewFullScreenMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_F);
-        viewFullScreenMenuItem.setIcon(GuiHelper.getIcon("zoomFullView.gif"));
-        viewFullScreenMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
+        this.viewFullScreenMenuItem.addActionListener(this);
+        this.viewFullScreenMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_F);
+        this.viewFullScreenMenuItem.setIcon(GuiHelper.getIcon("zoomFullView.gif"));
+        this.viewFullScreenMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
 
-        viewZoomInMenuItem.addActionListener(this);
-        viewZoomInMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_I);
-        viewZoomInMenuItem.setIcon(GuiHelper.getIcon("zoominimage.png"));
+        this.viewZoomInMenuItem.addActionListener(this);
+        this.viewZoomInMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_I);
+        this.viewZoomInMenuItem.setIcon(GuiHelper.getIcon("zoominimage.png"));
 
-        viewZoomOutMenuItem.addActionListener(this);
-        viewZoomOutMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_O);
-        viewZoomOutMenuItem.setIcon(GuiHelper.getIcon("zoomoutimage.png"));
+        this.viewZoomOutMenuItem.addActionListener(this);
+        this.viewZoomOutMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_O);
+        this.viewZoomOutMenuItem.setIcon(GuiHelper.getIcon("zoomoutimage.png"));
 
-        viewZoomFitMenuItem.addActionListener(this);
-        viewZoomFitMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_T);
-        viewZoomFitMenuItem.setIcon(GuiHelper.getIcon("zoomtofit.gif"));
-        viewZoomFitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
+        this.viewZoomFitMenuItem.addActionListener(this);
+        this.viewZoomFitMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_T);
+        this.viewZoomFitMenuItem.setIcon(GuiHelper.getIcon("zoomtofit.gif"));
+        this.viewZoomFitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
 
-        runtime = r;
+        this.runtime = r;
     }
 
     /**
      * @return The graph panel where the graph is drawn onto
      */
     public GraphPanel getGraphPanel() {
-        return graphPanel;
+        return this.graphPanel;
     }
 
     /**
@@ -160,7 +171,7 @@ public class GUI extends JFrame implements ActionListener {
      * @return The controlpanel of this GUI.
      */
     public ControlPanel getControlPanel() {
-        return controlPanel;
+        return this.controlPanel;
     }
 
     private GenerateNodesDialog genNodesDialog = new GenerateNodesDialog(this);
@@ -178,7 +189,7 @@ public class GUI extends JFrame implements ActionListener {
      * @return The zoom factor currently used to draw the graph.
      */
     public double getZoomFactor() {
-        return zoomFactor;
+        return this.zoomFactor;
     }
 
     /**
@@ -187,8 +198,8 @@ public class GUI extends JFrame implements ActionListener {
      * @param zoom The new zoom factor.
      */
     public void setZoomFactor(double zoom) {
-        setZoomFactorNoRepaint(zoom);
-        redrawGUI(); // should be sufficient...
+        this.setZoomFactorNoRepaint(zoom);
+        this.redrawGUI(); // should be sufficient...
         // redrawGUINow();
     }
 
@@ -199,9 +210,9 @@ public class GUI extends JFrame implements ActionListener {
      * @param zoom The new zoom factor.
      */
     public void setZoomFactorNoRepaint(double zoom) {
-        zoomFactor = Math.max(zoom, Configuration.minZoomFactor); // we have open-end zooming ;-)
+        this.zoomFactor = Math.max(zoom, Configuration.minZoomFactor); // we have open-end zooming ;-)
 
-        runtime.getTransformator().changeZoomFactor(zoomFactor);
+        this.runtime.getTransformator().changeZoomFactor(this.zoomFactor);
     }
 
     /**
@@ -209,8 +220,8 @@ public class GUI extends JFrame implements ActionListener {
      * redraw the graph.
      */
     public void zoomIn() {
-        double newFactor = zoomFactor * Configuration.zoomStep;
-        setZoomFactor(newFactor);
+        double newFactor = this.zoomFactor * Configuration.zoomStep;
+        this.setZoomFactor(newFactor);
     }
 
     /**
@@ -219,7 +230,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param multiplicativeFactor The factor to multiply the zoom factor with.
      */
     public void zoom(double multiplicativeFactor) {
-        setZoomFactor(zoomFactor * multiplicativeFactor);
+        this.setZoomFactor(this.zoomFactor * multiplicativeFactor);
     }
 
     /**
@@ -227,8 +238,8 @@ public class GUI extends JFrame implements ActionListener {
      * redraw the graph.
      */
     public void zoomOut() {
-        double newFactor = Math.max(zoomFactor / Configuration.zoomStep, 0.01);
-        setZoomFactor(newFactor);
+        double newFactor = Math.max(this.zoomFactor / Configuration.zoomStep, 0.01);
+        this.setZoomFactor(newFactor);
     }
 
     /**
@@ -238,11 +249,11 @@ public class GUI extends JFrame implements ActionListener {
         if (Global.isRunning) {
             return;
         }
-        boolean full = !isUndecorated();
-        dispose();
-        setUndecorated(full); // window must be disposed prior to calling this method
+        boolean full = !this.isUndecorated();
+        this.dispose();
+        this.setUndecorated(full); // window must be disposed prior to calling this method
         // setResizable(!full);
-        setVisible(true);
+        this.setVisible(true);
         if (full) {
             // the following line seems to cause problems with transparent images under
             // windows
@@ -259,7 +270,7 @@ public class GUI extends JFrame implements ActionListener {
             GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
         }
         // update the menu title
-        viewFullScreenMenuItem.setText(full ? "Exit Full Screen" : "Full Screen");
+        this.viewFullScreenMenuItem.setText(full ? "Exit Full Screen" : "Full Screen");
 
     }
 
@@ -276,24 +287,24 @@ public class GUI extends JFrame implements ActionListener {
                 Main.exitApplication();
             }
         };
-        addWindowListener(listener);
-        addWindowStateListener(listener);
+        this.addWindowListener(listener);
+        this.addWindowStateListener(listener);
 
         // react upon resize-events
         this.addComponentListener(new ComponentListener() {
 
-            int oldX = appConfig.guiWindowPosX, oldY = appConfig.guiWindowPosY;
+            int oldX = GUI.this.appConfig.guiWindowPosX, oldY = GUI.this.appConfig.guiWindowPosY;
 
             @Override
             public void componentResized(ComponentEvent e) {
                 if (GUI.this.getExtendedState() == Frame.MAXIMIZED_BOTH) {
-                    appConfig.guiIsMaximized = true;
-                    appConfig.guiWindowPosX = oldX;
-                    appConfig.guiWindowPosY = oldY;
+                    GUI.this.appConfig.guiIsMaximized = true;
+                    GUI.this.appConfig.guiWindowPosX = this.oldX;
+                    GUI.this.appConfig.guiWindowPosY = this.oldY;
                 } else {
-                    appConfig.guiIsMaximized = false;
-                    appConfig.guiWindowWidth = GUI.this.getWidth();
-                    appConfig.guiWindowHeight = GUI.this.getHeight();
+                    GUI.this.appConfig.guiIsMaximized = false;
+                    GUI.this.appConfig.guiWindowWidth = GUI.this.getWidth();
+                    GUI.this.appConfig.guiWindowHeight = GUI.this.getHeight();
                 }
             }
 
@@ -301,10 +312,10 @@ public class GUI extends JFrame implements ActionListener {
             public void componentMoved(ComponentEvent e) {
                 // upon maximizing, first the component is moved, then resized. We only catch
                 // the resize event
-                oldX = appConfig.guiWindowPosX;
-                oldY = appConfig.guiWindowPosY;
-                appConfig.guiWindowPosX = GUI.this.getX();
-                appConfig.guiWindowPosY = GUI.this.getY();
+                this.oldX = GUI.this.appConfig.guiWindowPosX;
+                this.oldY = GUI.this.appConfig.guiWindowPosY;
+                GUI.this.appConfig.guiWindowPosX = GUI.this.getX();
+                GUI.this.appConfig.guiWindowPosY = GUI.this.getY();
             }
 
             @Override
@@ -328,81 +339,81 @@ public class GUI extends JFrame implements ActionListener {
                 // Note: the event should not be marked consumed. A consumed Enter may
                 // have been used elsewhere, e.g. to select a menu.
                 if (Global.isRunning) {
-                    controlPanel.stopSimulation();
+                    this.controlPanel.stopSimulation();
                 } else {
-                    controlPanel.startSimulation();
+                    this.controlPanel.startSimulation();
                 }
                 return true; // no further event handling for this key event
             }
             return false;
         });
 
-        setResizable(true);
-        if (appConfig.guiIsMaximized) {
-            setExtendedState(Frame.MAXIMIZED_BOTH);
+        this.setResizable(true);
+        if (this.appConfig.guiIsMaximized) {
+            this.setExtendedState(Frame.MAXIMIZED_BOTH);
         }
-        this.setSize(new Dimension(appConfig.guiWindowWidth, appConfig.guiWindowHeight));
-        this.setLocation(appConfig.guiWindowPosX, appConfig.guiWindowPosY);
+        this.setSize(new Dimension(this.appConfig.guiWindowWidth, this.appConfig.guiWindowHeight));
+        this.setLocation(this.appConfig.guiWindowPosX, this.appConfig.guiWindowPosY);
 
         JMenuBar menuBar = new JMenuBar();
-        menuFont = menuBar.getFont().deriveFont(Font.PLAIN);
-        graphMenu = new JMenu("Simulation");
-        graphMenu.setMnemonic(java.awt.event.KeyEvent.VK_S);
+        this.menuFont = menuBar.getFont().deriveFont(Font.PLAIN);
+        this.graphMenu = new JMenu("Simulation");
+        this.graphMenu.setMnemonic(java.awt.event.KeyEvent.VK_S);
 
-        exportMenuItem = new JMenuItem("Export...");
-        exportMenuItem.addActionListener(this);
-        exportMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_E);
-        exportMenuItem.setIcon(GuiHelper.getIcon("export.gif"));
+        this.exportMenuItem = new JMenuItem("Export...");
+        this.exportMenuItem.addActionListener(this);
+        this.exportMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_E);
+        this.exportMenuItem.setIcon(GuiHelper.getIcon("export.gif"));
 
-        clearMenuItem = new JMenuItem("Clear Graph");
-        clearMenuItem.addActionListener(this);
-        clearMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_C);
-        clearMenuItem.setIcon(GuiHelper.getIcon("cleargraph.gif"));
-        clearMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
+        this.clearMenuItem = new JMenuItem("Clear Graph");
+        this.clearMenuItem.addActionListener(this);
+        this.clearMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_C);
+        this.clearMenuItem.setIcon(GuiHelper.getIcon("cleargraph.gif"));
+        this.clearMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
 
-        reevaluateMenuItem = new JMenuItem("Reevaluate Connections");
-        reevaluateMenuItem.addActionListener(this);
-        reevaluateMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_R);
-        reevaluateMenuItem.setIcon(GuiHelper.getIcon("connectnodes.gif"));
-        reevaluateMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0));
+        this.reevaluateMenuItem = new JMenuItem("Reevaluate Connections");
+        this.reevaluateMenuItem.addActionListener(this);
+        this.reevaluateMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_R);
+        this.reevaluateMenuItem.setIcon(GuiHelper.getIcon("connectnodes.gif"));
+        this.reevaluateMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0));
 
-        generateMenuItem = new JMenuItem("Generate Nodes");
-        generateMenuItem.addActionListener(this);
-        generateMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_G);
-        generateMenuItem.setIcon(GuiHelper.getIcon("addnodes.gif"));
-        generateMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
+        this.generateMenuItem = new JMenuItem("Generate Nodes");
+        this.generateMenuItem.addActionListener(this);
+        this.generateMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_G);
+        this.generateMenuItem.setIcon(GuiHelper.getIcon("addnodes.gif"));
+        this.generateMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
 
-        infoMenuItem = new JMenuItem("Network Info");
-        infoMenuItem.addActionListener(this);
-        infoMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_I);
+        this.infoMenuItem = new JMenuItem("Network Info");
+        this.infoMenuItem.addActionListener(this);
+        this.infoMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_I);
 
-        exitMenuItem = new JMenuItem("Exit");
-        exitMenuItem.addActionListener(this);
-        exitMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_X);
+        this.exitMenuItem = new JMenuItem("Exit");
+        this.exitMenuItem.addActionListener(this);
+        this.exitMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_X);
 
-        preferencesMenuItem = new JMenuItem("Preferences");
-        preferencesMenuItem.addActionListener(this);
-        preferencesMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_P);
+        this.preferencesMenuItem = new JMenuItem("Preferences");
+        this.preferencesMenuItem.addActionListener(this);
+        this.preferencesMenuItem.setMnemonic(java.awt.event.KeyEvent.VK_P);
 
-        graphMenu.add(generateMenuItem);
-        graphMenu.add(reevaluateMenuItem);
-        graphMenu.add(clearMenuItem);
+        this.graphMenu.add(this.generateMenuItem);
+        this.graphMenu.add(this.reevaluateMenuItem);
+        this.graphMenu.add(this.clearMenuItem);
 
-        graphMenu.addSeparator();
-        graphMenu.add(infoMenuItem);
-        graphMenu.add(exportMenuItem);
-        graphMenu.add(preferencesMenuItem);
-        graphMenu.addSeparator();
-        graphMenu.add(exitMenuItem);
+        this.graphMenu.addSeparator();
+        this.graphMenu.add(this.infoMenuItem);
+        this.graphMenu.add(this.exportMenuItem);
+        this.graphMenu.add(this.preferencesMenuItem);
+        this.graphMenu.addSeparator();
+        this.graphMenu.add(this.exitMenuItem);
 
-        menuBar.add(graphMenu);
+        menuBar.add(this.graphMenu);
 
-        globalMenu = new JMenu("Global");
-        globalMenu.setMnemonic(java.awt.event.KeyEvent.VK_G);
+        this.globalMenu = new JMenu("Global");
+        this.globalMenu.setMnemonic(java.awt.event.KeyEvent.VK_G);
 
         // Compose this menu every time when it is shown. This allows us to
         // give some more control to the user about the CustomMethods.
-        globalMenu.addMenuListener(new MenuListener() {
+        this.globalMenu.addMenuListener(new MenuListener() {
 
             @Override
             public void menuCanceled(MenuEvent e) {
@@ -475,12 +486,12 @@ public class GUI extends JFrame implements ActionListener {
                             continue; // the method was dropped by the project
                         }
                         JMenuItem item = new JMenuItem(text);
-                        item.addActionListener(globalInvoker);
-                        methodsAndNames.put(item, method);
+                        item.addActionListener(GUI.this.globalInvoker);
+                        GUI.this.methodsAndNames.put(item, method);
 
                         String subMenuText = info.subMenu();
                         if (subMenuText.equals("")) {
-                            globalMenu.add(item);
+                            GUI.this.globalMenu.add(item);
                         } else {
                             JMenu menu = null;
                             for (JMenu m : subMenus) {
@@ -492,7 +503,7 @@ public class GUI extends JFrame implements ActionListener {
                             if (menu == null) {
                                 menu = new JMenu(subMenuText);
                                 subMenus.add(menu);
-                                globalMenu.add(menu);
+                                GUI.this.globalMenu.add(menu);
                             }
                             menu.add(item);
                         }
@@ -504,96 +515,96 @@ public class GUI extends JFrame implements ActionListener {
 
             @Override
             public void menuSelected(MenuEvent event) {
-                globalMenu.removeAll();
+                GUI.this.globalMenu.removeAll();
 
                 // add the project specific methods
                 Method[] methods = Global.customGlobal.getClass().getMethods();
-                if (testMethods(methods, true)) {
-                    globalMenu.addSeparator();
+                if (this.testMethods(methods, true)) {
+                    GUI.this.globalMenu.addSeparator();
                 }
 
                 // add the framework-side defined methods in sinalgo.runtime.Global
                 try {
                     methods = Thread.currentThread().getContextClassLoader().loadClass("sinalgo.runtime.Global").getMethods();
-                    if (testMethods(methods, false)) {
-                        globalMenu.addSeparator();
+                    if (this.testMethods(methods, false)) {
+                        GUI.this.globalMenu.addSeparator();
                     }
                 } catch (ClassNotFoundException e) {
                     throw new SinalgoFatalException("Could not find class sinalgo.runtime.Global to get the global gui methods from.");
                 }
 
                 // And finally the Settings and About dialog
-                globalMenu.add(settingsMenuItem);
+                GUI.this.globalMenu.add(GUI.this.settingsMenuItem);
 
                 // and set the font of the menu entries
-                setMenuFont(globalMenu);
+                GUI.this.setMenuFont(GUI.this.globalMenu);
             }
         });
 
-        menuBar.add(globalMenu);
+        menuBar.add(this.globalMenu);
 
         // ---------------------------------------------
         // View Menu
         // ---------------------------------------------
-        viewMenu = new JMenu("View");
-        viewMenu.setMnemonic(java.awt.event.KeyEvent.VK_V);
-        viewMenu.add(viewZoomOutMenuItem);
-        viewMenu.add(viewZoomInMenuItem);
-        viewMenu.add(viewZoomFitMenuItem);
-        viewMenu.add(viewFullScreenMenuItem);
+        this.viewMenu = new JMenu("View");
+        this.viewMenu.setMnemonic(java.awt.event.KeyEvent.VK_V);
+        this.viewMenu.add(this.viewZoomOutMenuItem);
+        this.viewMenu.add(this.viewZoomInMenuItem);
+        this.viewMenu.add(this.viewZoomFitMenuItem);
+        this.viewMenu.add(this.viewFullScreenMenuItem);
 
-        menuBar.add(viewMenu);
+        menuBar.add(this.viewMenu);
 
         // ---------------------------------------------
         // Help Menu
         // ---------------------------------------------
-        helpMenu = new JMenu("Help");
-        helpMenu.setMnemonic(java.awt.event.KeyEvent.VK_H);
-        helpMenu.add(helpMenuItem);
-        helpMenu.addSeparator();
-        helpMenu.add(aboutMenuItem);
-        menuBar.add(helpMenu);
+        this.helpMenu = new JMenu("Help");
+        this.helpMenu.setMnemonic(java.awt.event.KeyEvent.VK_H);
+        this.helpMenu.add(this.helpMenuItem);
+        this.helpMenu.addSeparator();
+        this.helpMenu.add(this.aboutMenuItem);
+        menuBar.add(this.helpMenu);
 
-        setMenuFont(menuBar);
+        this.setMenuFont(menuBar);
 
         this.setJMenuBar(menuBar);
 
         // The content pane
-        contentPane = new JPanel();
+        this.contentPane = new JPanel();
 
-        graphPanel = new GraphPanel(this);
+        this.graphPanel = new GraphPanel(this);
         // activate the Tooltip for the graphPanel. The "Default Tooltip" is actually
         // never shown
         // because the text to show is overwritten in the GraphPanel-Classes
         // getToolTipText(MouseEvent e)
-        graphPanel.createToolTip();
-        graphPanel.setToolTipText("Default Tooltip"); // to initialize, must set an arbitrary text
-        graphPanel.requestDefaultViewOnNextDraw();
+        this.graphPanel.createToolTip();
+        this.graphPanel.setToolTipText("Default Tooltip"); // to initialize, must set an arbitrary text
+        this.graphPanel.requestDefaultViewOnNextDraw();
 
         if (Configuration.extendedControl) {
-            contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
-            controlPanel = new MaximizedControlPanel(this);
-            contentPane.add(graphPanel);
-            contentPane.add(controlPanel);
+            this.contentPane.setLayout(new BoxLayout(this.contentPane, BoxLayout.X_AXIS));
+            this.controlPanel = new MaximizedControlPanel(this);
+            this.contentPane.add(this.graphPanel);
+            this.contentPane.add(this.controlPanel);
         } else {
-            contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-            controlPanel = new MinimizedControlPanel(this);
-            contentPane.add(controlPanel);
-            contentPane.add(graphPanel);
+            this.contentPane.setLayout(new BoxLayout(this.contentPane, BoxLayout.Y_AXIS));
+            this.controlPanel = new MinimizedControlPanel(this);
+            this.contentPane.add(this.controlPanel);
+            this.contentPane.add(this.graphPanel);
         }
 
-        this.add(contentPane);
+        this.add(this.contentPane);
 
-        setVisible(true);
+        this.setVisible(true);
         // trigger a first paint (needed!)
         this.repaint();
     }
 
     private void setMenuFont(MenuElement m) {
-        m.getComponent().setFont(menuFont);
+        m.getComponent().setFont(this.menuFont);
         if (m.getSubElements().length > 0) {
             for (MenuElement e : m.getSubElements()) {
-                setMenuFont(e);
+                this.setMenuFont(e);
             }
         }
     }
@@ -610,20 +621,20 @@ public class GUI extends JFrame implements ActionListener {
         // STRANGE! we need to add the new contol panel before removing the old one
         // otherwise, the mouse scrolling wont be detected anymore.
         if (toExtended) { // from minimized to maximized
-            contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
-            ControlPanel oldCP = controlPanel;
-            controlPanel = new MaximizedControlPanel(this);
-            contentPane.add(controlPanel, 2); // content pane must be after graph panel
-            contentPane.remove(oldCP);
+            this.contentPane.setLayout(new BoxLayout(this.contentPane, BoxLayout.X_AXIS));
+            ControlPanel oldCP = this.controlPanel;
+            this.controlPanel = new MaximizedControlPanel(this);
+            this.contentPane.add(this.controlPanel, 2); // content pane must be after graph panel
+            this.contentPane.remove(oldCP);
         } else { // from maximized to minimized
-            contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-            ControlPanel oldCP = controlPanel;
-            controlPanel = new MinimizedControlPanel(this);
-            contentPane.add(controlPanel, 0); // content pane is first in list
-            contentPane.remove(oldCP);
+            this.contentPane.setLayout(new BoxLayout(this.contentPane, BoxLayout.Y_AXIS));
+            ControlPanel oldCP = this.controlPanel;
+            this.controlPanel = new MinimizedControlPanel(this);
+            this.contentPane.add(this.controlPanel, 0); // content pane is first in list
+            this.contentPane.remove(oldCP);
         }
-        contentPane.revalidate();
-        graphPanel.requireFullDrawOnNextPaint();
+        this.contentPane.revalidate();
+        this.graphPanel.requireFullDrawOnNextPaint();
         this.repaint();
     }
 
@@ -632,7 +643,7 @@ public class GUI extends JFrame implements ActionListener {
      * method is called when the user removes all nodes.
      */
     public void allNodesAreRemoved() {
-        graphPanel.allNodesAreRemoved();
+        this.graphPanel.allNodesAreRemoved();
     }
 
     /**
@@ -645,9 +656,9 @@ public class GUI extends JFrame implements ActionListener {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        firstTimePainted = true;
-        controlPanel.repaint();
-        graphPanel.repaint();
+        this.firstTimePainted = true;
+        this.controlPanel.repaint();
+        this.graphPanel.repaint();
     }
 
     /**
@@ -658,7 +669,7 @@ public class GUI extends JFrame implements ActionListener {
      * @return The transformation instance.
      */
     public PositionTransformation getTransformator() {
-        return runtime.getTransformator();
+        return this.runtime.getTransformator();
     }
 
     /**
@@ -684,8 +695,8 @@ public class GUI extends JFrame implements ActionListener {
      * In almost all cases, calling redrawGUI() is preferred.
      */
     public void redrawGUINow() {
-        controlPanel.repaint();
-        graphPanel.paintNow();
+        this.controlPanel.repaint();
+        this.graphPanel.paintNow();
     }
 
     /**
@@ -709,9 +720,9 @@ public class GUI extends JFrame implements ActionListener {
      * @see GUI#redrawGUINow() for how the graph panel is drawn.
      */
     public void redrawGUI() {
-        graphPanel.requireFullDrawOnNextPaint();
-        controlPanel.repaint();
-        graphPanel.repaint();
+        this.graphPanel.requireFullDrawOnNextPaint();
+        this.controlPanel.repaint();
+        this.graphPanel.repaint();
     }
 
     /**
@@ -719,7 +730,7 @@ public class GUI extends JFrame implements ActionListener {
      * (inclusive the small preview picture) without painting the whole graph.
      */
     public void redrawControl() {
-        controlPanel.repaint();
+        this.controlPanel.repaint();
     }
 
     /**
@@ -741,11 +752,11 @@ public class GUI extends JFrame implements ActionListener {
      *          is set false (and vice versa)
      */
     public void setStartButtonEnabled(boolean b) {
-        controlPanel.setStartButtonEnabled(b);
-        graphMenu.setEnabled(b);
-        globalMenu.setEnabled(b);
-        helpMenu.setEnabled(b);
-        viewMenu.setEnabled(b);
+        this.controlPanel.setStartButtonEnabled(b);
+        this.graphMenu.setEnabled(b);
+        this.globalMenu.setEnabled(b);
+        this.helpMenu.setEnabled(b);
+        this.viewMenu.setEnabled(b);
         // We could disallow resizing the window here, but this flickers
         // setResizable(b);
     }
@@ -757,7 +768,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param eventNumber The number of events that have been executed until now.
      */
     public void setRoundsPerformed(double time, int eventNumber) {
-        controlPanel.setRoundsPerformed(time, eventNumber);
+        this.controlPanel.setRoundsPerformed(time, eventNumber);
     }
 
     /**
@@ -767,7 +778,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param i The number to be displayed in the control panel.
      */
     public void setRoundsPerformed(int i) {
-        controlPanel.setRoundsPerformed(i);
+        this.controlPanel.setRoundsPerformed(i);
     }
 
     /**
@@ -776,7 +787,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param e The event that was last processed, null if there was no event.
      */
     public void setCurrentlyProcessedEvent(Event e) {
-        controlPanel.setCurrentEvent(e);
+        this.controlPanel.setCurrentEvent(e);
     }
 
     /**
@@ -785,7 +796,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param s A string representation of the position
      */
     public void setMousePosition(String s) {
-        controlPanel.setMousePosition(s);
+        this.controlPanel.setMousePosition(s);
     }
 
     /**
@@ -800,7 +811,7 @@ public class GUI extends JFrame implements ActionListener {
      * Opens a dialog that allows to add new nodes
      */
     public void addNodes() {
-        genNodesDialog.compose(null);
+        this.genNodesDialog.compose(null);
     }
 
     /**
@@ -810,7 +821,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param pos The positino where the node will be placed.
      */
     public void addSingleNode(Position pos) {
-        genNodesDialog.compose(pos);
+        this.genNodesDialog.compose(pos);
     }
 
     /**
@@ -819,53 +830,53 @@ public class GUI extends JFrame implements ActionListener {
      * @param pos The position
      */
     public void addSingleDefaultNode(Position pos) {
-        genNodesDialog.generateDefaultNode(pos);
+        this.genNodesDialog.generateDefaultNode(pos);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(generateMenuItem.getActionCommand())) {
-            addNodes();
-        } else if (e.getActionCommand().equals(clearMenuItem.getActionCommand())) {
+        if (e.getActionCommand().equals(this.generateMenuItem.getActionCommand())) {
+            this.addNodes();
+        } else if (e.getActionCommand().equals(this.clearMenuItem.getActionCommand())) {
             if (0 == JOptionPane.showConfirmDialog(this, "Do you really want to remove all nodes?", "Remove all nodes?",
                     JOptionPane.YES_NO_OPTION)) {
-                clearAllNodes();
+                this.clearAllNodes();
             }
-        } else if (e.getActionCommand().equals(preferencesMenuItem.getActionCommand())) {
+        } else if (e.getActionCommand().equals(this.preferencesMenuItem.getActionCommand())) {
             new GraphPreferencesDialog(this);
-        } else if (e.getActionCommand().equals(reevaluateMenuItem.getActionCommand())) {
+        } else if (e.getActionCommand().equals(this.reevaluateMenuItem.getActionCommand())) {
             if (0 == JOptionPane.showConfirmDialog(this,
                     "Do you really want to reevaluate the connections of all nodes?", "Reevaluate Connections?",
                     JOptionPane.YES_NO_OPTION)) {
                 SinalgoRuntime.reevaluateConnections();
                 this.redrawGUI();
             }
-        } else if (e.getActionCommand().equals(exportMenuItem.getActionCommand())) {
+        } else if (e.getActionCommand().equals(this.exportMenuItem.getActionCommand())) {
             try {
-                new Exporter(this).export(new Rectangle(0, 0, graphPanel.getWidth(), graphPanel.getHeight()),
-                        getTransformator());
+                new Exporter(this).export(new Rectangle(0, 0, this.graphPanel.getWidth(), this.graphPanel.getHeight()),
+                        this.getTransformator());
             } catch (ExportException e1) {
                 Main.minorError(e1.getMessage());
             }
-        } else if (e.getActionCommand().equals(infoMenuItem.getActionCommand())) {
+        } else if (e.getActionCommand().equals(this.infoMenuItem.getActionCommand())) {
             new GraphInfoDialog(this);
-        } else if (e.getActionCommand().equals(settingsMenuItem.getActionCommand())) {
+        } else if (e.getActionCommand().equals(this.settingsMenuItem.getActionCommand())) {
             new GlobalSettingsDialog(this);
-        } else if (e.getActionCommand().equals(aboutMenuItem.getActionCommand())) {
+        } else if (e.getActionCommand().equals(this.aboutMenuItem.getActionCommand())) {
             new AboutDialog(this);
-        } else if (e.getActionCommand().equals(helpMenuItem.getActionCommand())) {
+        } else if (e.getActionCommand().equals(this.helpMenuItem.getActionCommand())) {
             HelpDialog.showHelp(this); // start in a new thread
-        } else if (e.getActionCommand().equals(exitMenuItem.getActionCommand())) {
+        } else if (e.getActionCommand().equals(this.exitMenuItem.getActionCommand())) {
             Main.exitApplication();
-        } else if (e.getActionCommand().equals(viewFullScreenMenuItem.getActionCommand())) {
-            toggleFullScreen();
-        } else if (e.getActionCommand().equals(viewZoomInMenuItem.getActionCommand())) {
-            zoomIn();
-        } else if (e.getActionCommand().equals(viewZoomOutMenuItem.getActionCommand())) {
-            zoomOut();
-        } else if (e.getActionCommand().equals(viewZoomFitMenuItem.getActionCommand())) {
-            getTransformator().zoomToFit(getGraphPanel().getWidth(), getGraphPanel().getHeight());
-            setZoomFactor(getTransformator().getZoomFactor());
+        } else if (e.getActionCommand().equals(this.viewFullScreenMenuItem.getActionCommand())) {
+            this.toggleFullScreen();
+        } else if (e.getActionCommand().equals(this.viewZoomInMenuItem.getActionCommand())) {
+            this.zoomIn();
+        } else if (e.getActionCommand().equals(this.viewZoomOutMenuItem.getActionCommand())) {
+            this.zoomOut();
+        } else if (e.getActionCommand().equals(this.viewZoomFitMenuItem.getActionCommand())) {
+            this.getTransformator().zoomToFit(this.getGraphPanel().getWidth(), this.getGraphPanel().getHeight());
+            this.setZoomFactor(this.getTransformator().getZoomFactor());
         }
     }
 
@@ -874,12 +885,12 @@ public class GUI extends JFrame implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent event) {
-            Method method = methodsAndNames.get(event.getSource());
+            Method method = GUI.this.methodsAndNames.get(event.getSource());
             if (method == null) {
                 throw new SinalgoFatalException("Cannot find method associated with menu item " + event.getActionCommand());
             }
             try {
-                synchronized (getTransformator()) {
+                synchronized (GUI.this.getTransformator()) {
                     // synchronize it on the transformator to grant not to be concurrent with
                     // any drawing or modifying action
                     try {

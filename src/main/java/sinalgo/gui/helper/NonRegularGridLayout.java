@@ -86,7 +86,7 @@ public class NonRegularGridLayout extends GridLayout {
      * @param alignLeft Whether to align left or not
      */
     public void setAlignToLeft(boolean alignLeft) {
-        alignToLeft = alignLeft;
+        this.alignToLeft = alignLeft;
     }
 
     @Override
@@ -95,8 +95,8 @@ public class NonRegularGridLayout extends GridLayout {
         synchronized (parent.getTreeLock()) {
             Insets insets = parent.getInsets();
             int ncomponents = parent.getComponentCount();
-            int nrows = getRows();
-            int ncols = getColumns();
+            int nrows = this.getRows();
+            int ncols = this.getColumns();
             if (nrows > 0) {
                 ncols = (ncomponents + nrows - 1) / nrows;
             } else {
@@ -104,7 +104,7 @@ public class NonRegularGridLayout extends GridLayout {
             }
             int[] w = new int[ncols];
             int[] h = new int[nrows];
-            calculateSize(parent, ncomponents, ncols, w, h);
+            this.calculateSize(parent, ncomponents, ncols, w, h);
             int nw = 0;
             for (int j = 0; j < ncols; j++) {
                 nw += w[j];
@@ -113,8 +113,8 @@ public class NonRegularGridLayout extends GridLayout {
             for (int i = 0; i < nrows; i++) {
                 nh += h[i];
             }
-            return new Dimension(insets.left + insets.right + nw + (ncols - 1) * getHgap(),
-                    insets.top + insets.bottom + nh + (nrows - 1) * getVgap());
+            return new Dimension(insets.left + insets.right + nw + (ncols - 1) * this.getHgap(),
+                    insets.top + insets.bottom + nh + (nrows - 1) * this.getVgap());
         }
     }
 
@@ -124,8 +124,8 @@ public class NonRegularGridLayout extends GridLayout {
         synchronized (parent.getTreeLock()) {
             Insets insets = parent.getInsets();
             int ncomponents = parent.getComponentCount();
-            int nrows = getRows();
-            int ncols = getColumns();
+            int nrows = this.getRows();
+            int ncols = this.getColumns();
             if (nrows > 0) {
                 ncols = (ncomponents + nrows - 1) / nrows;
             } else {
@@ -153,8 +153,8 @@ public class NonRegularGridLayout extends GridLayout {
             for (int i = 0; i < nrows; i++) {
                 nh += h[i];
             }
-            return new Dimension(insets.left + insets.right + nw + (ncols - 1) * getHgap(),
-                    insets.top + insets.bottom + nh + (nrows - 1) * getVgap());
+            return new Dimension(insets.left + insets.right + nw + (ncols - 1) * this.getHgap(),
+                    insets.top + insets.bottom + nh + (nrows - 1) * this.getVgap());
         }
     }
 
@@ -164,8 +164,8 @@ public class NonRegularGridLayout extends GridLayout {
         synchronized (parent.getTreeLock()) {
             Insets insets = parent.getInsets();
             int ncomponents = parent.getComponentCount();
-            int nrows = getRows();
-            int ncols = getColumns();
+            int nrows = this.getRows();
+            int ncols = this.getColumns();
             if (ncomponents == 0) {
                 return;
             }
@@ -174,15 +174,15 @@ public class NonRegularGridLayout extends GridLayout {
             } else {
                 nrows = (ncomponents + ncols - 1) / ncols;
             }
-            int hgap = getHgap();
-            int vgap = getVgap();
+            int hgap = this.getHgap();
+            int vgap = this.getVgap();
             // scaling factors
-            Dimension pd = preferredLayoutSize(parent);
+            Dimension pd = this.preferredLayoutSize(parent);
 
-            if (alignToLeft) {
+            if (this.alignToLeft) {
                 int[] w = new int[ncols]; // maximal width
                 int[] h = new int[nrows]; // maximal height
-                calculateSize(parent, ncomponents, ncols, w, h);
+                this.calculateSize(parent, ncomponents, ncols, w, h);
                 int totW = 0;
                 for (int i : w) {
                     totW += i + hgap;
@@ -192,7 +192,7 @@ public class NonRegularGridLayout extends GridLayout {
                     w[ncols - 1] += parent.getWidth() - totW;
                 }
 
-                calculateBounds(parent, insets, ncomponents, nrows, ncols, hgap, vgap, w, h);
+                this.calculateBounds(parent, insets, ncomponents, nrows, ncols, hgap, vgap, w, h);
             } else {
                 double sw = (1.0 * parent.getWidth()) / pd.width;
                 double sh = (1.0 * parent.getHeight()) / pd.height;
@@ -213,7 +213,7 @@ public class NonRegularGridLayout extends GridLayout {
                         h[r] = d.height;
                     }
                 }
-                calculateBounds(parent, insets, ncomponents, nrows, ncols, hgap, vgap, w, h);
+                this.calculateBounds(parent, insets, ncomponents, nrows, ncols, hgap, vgap, w, h);
             }
         }
     }

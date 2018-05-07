@@ -51,16 +51,16 @@ public class VectorNodeList implements NodeListInterface {
 
     @Override
     public void addNode(Node n) {
-        nodes.add(n);
+        this.nodes.add(n);
     }
 
     @Override
     public boolean removeNode(Node n) {
-        return nodes.remove(n);
+        return this.nodes.remove(n);
     }
 
     @Override
     public Iterator<Node> iterator() {
-        return nodes.iterator();
+        return this.nodes.iterator();
     }
 }

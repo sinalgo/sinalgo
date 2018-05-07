@@ -53,8 +53,8 @@ public class StaticUDG extends UDG {
 
     @Override
     public boolean updateConnections(Node n) throws WrongConfigurationException {
-        if (firstTime) {
-            firstTime = false;
+        if (this.firstTime) {
+            this.firstTime = false;
             return super.updateConnections(n); // let UDG do its work
         } else {
             return false; // keep all existing connections

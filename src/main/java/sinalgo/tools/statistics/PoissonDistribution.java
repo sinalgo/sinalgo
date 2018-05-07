@@ -63,7 +63,7 @@ public class PoissonDistribution extends Distribution {
      * @param lambda The mean (and also variance) of the distribution.
      */
     public PoissonDistribution(double lambda) {
-        expLambda = Math.exp(-lambda);
+        this.expLambda = Math.exp(-lambda);
     }
 
     /**
@@ -76,7 +76,7 @@ public class PoissonDistribution extends Distribution {
      */
     public PoissonDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
         double lambda = Configuration.getDoubleParameter(mainTagPath + "/lambda");
-        expLambda = Math.exp(-lambda);
+        this.expLambda = Math.exp(-lambda);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class PoissonDistribution extends Distribution {
         double product = 1;
         int count = 0;
         int result = 0;
-        while (product >= expLambda) {
+        while (product >= this.expLambda) {
             product *= randomGenerator.nextDouble();
             result = count;
             count++; // keep result one behind

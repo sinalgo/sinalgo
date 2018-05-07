@@ -54,7 +54,7 @@ public class StringMessage extends Message {
      * @param txt The test of the Message to construct.
      */
     public StringMessage(String txt) {
-        text = txt;
+        this.text = txt;
     }
 
     @Override

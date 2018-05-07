@@ -14,7 +14,7 @@ public class SmsTimer extends Timer {
     public boolean enabled = true;
 
     public void disable() {
-        enabled = false;
+        this.enabled = false;
     }
 
     public SmsTimer(String aText, Node aDestination) {
@@ -24,10 +24,10 @@ public class SmsTimer extends Timer {
 
     @Override
     public void fire() {
-        if (enabled) {
+        if (this.enabled) {
             MobileNode mn = (MobileNode) this.getTargetNode();
             // Assemble an SMS and send it to the current anteanna
-            SmsMessage msg = new SmsMessage(mn.getNextSeqID(), destination, this.getTargetNode(), text, this);
+            SmsMessage msg = new SmsMessage(mn.getNextSeqID(), this.destination, this.getTargetNode(), this.text, this);
             Antenna a = mn.getCurrentAntenna();
             if (a != null) {
                 this.getTargetNode().send(msg, a);

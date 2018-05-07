@@ -187,10 +187,10 @@ public class DataSeries implements Externalizable {
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeDouble(sum);
-        out.writeDouble(squaredSum);
-        out.writeInt(numberOfSamples);
-        out.writeDouble(min);
-        out.writeDouble(max);
+        out.writeDouble(this.sum);
+        out.writeDouble(this.squaredSum);
+        out.writeInt(this.numberOfSamples);
+        out.writeDouble(this.min);
+        out.writeDouble(this.max);
     }
 }

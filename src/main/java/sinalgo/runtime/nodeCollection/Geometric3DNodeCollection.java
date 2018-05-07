@@ -45,7 +45,11 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * This 3D node collection implementation stores nodes placed in a 3 dimensional
@@ -87,28 +91,28 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
     public Geometric3DNodeCollection() {
         // Immediately stop execution if rMax is not defined in the xml config file.
         try {
-            rMax = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
+            this.rMax = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException(e.getMessage());
         }
-        if (rMax <= 0) {
+        if (this.rMax <= 0) {
             throw new SinalgoFatalException("Geometric3DNodeCollection: The value of rMax from the config file entry "
-                    + "<GeometricNodeCollection rMax=\"" + rMax + "\"/>"
+                    + "<GeometricNodeCollection rMax=\"" + this.rMax + "\"/>"
                     + "is not valid. The value of rMax must be positive.");
         }
         // determine cardinality of matrix in each dimension
         int dimX = Configuration.dimX;
-        numX = (int) Math.ceil(dimX / rMax);
+        this.numX = (int) Math.ceil(dimX / this.rMax);
         int dimY = Configuration.dimY;
-        numY = (int) Math.ceil(dimY / rMax);
+        this.numY = (int) Math.ceil(dimY / this.rMax);
         int dimZ = Configuration.dimZ;
-        numZ = (int) Math.ceil(dimZ / rMax);
+        this.numZ = (int) Math.ceil(dimZ / this.rMax);
         // create and initialize the matrix
-        list = new DLLNodeList[numX][numY][numZ];
-        for (int i = 0; i < numX; i++) {
-            for (int j = 0; j < numY; j++) {
-                for (int k = 0; k < numZ; k++) {
-                    list[i][j][k] = new DLLNodeList(true);
+        this.list = new DLLNodeList[this.numX][this.numY][this.numZ];
+        for (int i = 0; i < this.numX; i++) {
+            for (int j = 0; j < this.numY; j++) {
+                for (int k = 0; k < this.numZ; k++) {
+                    this.list[i][j][k] = new DLLNodeList(true);
                 }
             }
         }
@@ -119,7 +123,7 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
      * the matrix.
      */
     private int mapCoord(double c) {
-        return (int) Math.floor(c / rMax);
+        return (int) Math.floor(c / this.rMax);
     }
 
     private long lastVersionNumber = 0;
@@ -127,22 +131,22 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
     @Override
     public Enumeration<Node> getSortedNodeEnumeration(boolean backToFront) {
         if (!Configuration.draw3DGraphNodesInProperOrder) {
-            return flatList.elements();
+            return this.flatList.elements();
         }
         PositionTransformation t3d = Main.getRuntime().getTransformator();
         long actualVersionNumber = t3d.getVersionNumber();
-        if ((lastVersionNumber != actualVersionNumber) || (flatListChanged)) {
+        if ((this.lastVersionNumber != actualVersionNumber) || (this.flatListChanged)) {
             // the transformation has changed. Need to resort the array.
-            lastVersionNumber = actualVersionNumber;
-            flatListChanged = false;
+            this.lastVersionNumber = actualVersionNumber;
+            this.flatListChanged = false;
 
-            sortedNodeArray = flatList.toArray(sortedNodeArray);
-            sortedNodeArraySize = flatList.size();
-            if (sortedNodeArraySize > 1) {
-                if (myDepthComparator == null) {
-                    myDepthComparator = new DepthComparator();
+            this.sortedNodeArray = this.flatList.toArray(this.sortedNodeArray);
+            this.sortedNodeArraySize = this.flatList.size();
+            if (this.sortedNodeArraySize > 1) {
+                if (this.myDepthComparator == null) {
+                    this.myDepthComparator = new DepthComparator();
                 }
-                Arrays.sort(sortedNodeArray, 0, sortedNodeArraySize, myDepthComparator);
+                Arrays.sort(this.sortedNodeArray, 0, this.sortedNodeArraySize, this.myDepthComparator);
             }
         }
 
@@ -151,7 +155,7 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
 
     @Override
     public Enumeration<Node> getNodeEnumeration() {
-        return flatList.elements();
+        return this.flatList.elements();
     }
 
     @Override
@@ -172,31 +176,31 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
          * The constructor to create a new StateSensitiveIterator.
          */
         private StateSensitiveIterator() {
-            iter = flatList.iterator();
+            this.iter = Geometric3DNodeCollection.this.flatList.iterator();
         }
 
         @Override
         public boolean hasNext() {
-            return iter.hasNext();
+            return this.iter.hasNext();
         }
 
         @Override
         public Node next() {
-            return iter.next();
+            return this.iter.next();
         }
 
         @Override
         public void remove() {
-            iter.remove();
-            flatListChanged = true;
+            this.iter.remove();
+            Geometric3DNodeCollection.this.flatListChanged = true;
         }
 
     }
 
     @Override
     public Enumeration<Node> getPossibleNeighborsEnumeration(Node n) {
-        enumeration.resetForNode(n);
-        return enumeration;
+        this.enumeration.resetForNode(n);
+        return this.enumeration;
     }
 
     @Override
@@ -204,14 +208,14 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
         n.holdInNodeCollection = true;
 
         Position pos = n.getPosition();
-        int x = mapCoord(pos.getXCoord());
-        int y = mapCoord(pos.getYCoord());
-        int z = mapCoord(pos.getZCoord());
+        int x = this.mapCoord(pos.getXCoord());
+        int y = this.mapCoord(pos.getYCoord());
+        int z = this.mapCoord(pos.getZCoord());
         n.nodeCollectionInfo = new CubePos(x, y, z);
 
-        list[x][y][z].addNode(n);
-        flatList.add(n);
-        flatListChanged = true;
+        this.list[x][y][z].addNode(n);
+        this.flatList.add(n);
+        this.flatListChanged = true;
         // sensitiveInformationChanged = true;
     }
 
@@ -219,13 +223,13 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
     public void _removeNode(Node n) {
         n.holdInNodeCollection = false;
         CubePos pos = (CubePos) n.nodeCollectionInfo;
-        if (!list[pos.getX()][pos.getY()][pos.getZ()].removeNode(n)) {
+        if (!this.list[pos.getX()][pos.getY()][pos.getZ()].removeNode(n)) {
             // the node was not located where it said! ERROR!
             throw new SinalgoFatalException("Geometric3DNodeCollection.removeNode(Node):\n" + "A node is being removed, but it is not "
                     + "located in the matrix cell " + "in which it claims to be.");
         }
-        flatList.remove(n);
-        flatListChanged = true;
+        this.flatList.remove(n);
+        this.flatListChanged = true;
         n.nodeCollectionInfo = null;
     }
 
@@ -241,18 +245,18 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
         CubePos oldPos = (CubePos) n.nodeCollectionInfo;
         // the new position in the matrix
         Position pos = n.getPosition();
-        int x = mapCoord(pos.getXCoord());
-        int y = mapCoord(pos.getYCoord());
-        int z = mapCoord(pos.getZCoord());
+        int x = this.mapCoord(pos.getXCoord());
+        int y = this.mapCoord(pos.getYCoord());
+        int z = this.mapCoord(pos.getZCoord());
         if (oldPos.getX() != x || oldPos.getY() != y || oldPos.getZ() != z) {
             // the node needs to be stored in a different cell of the matrix
             // remove it from the old matrix cell...
-            if (!list[oldPos.getX()][oldPos.getY()][oldPos.getZ()].removeNode(n)) {
+            if (!this.list[oldPos.getX()][oldPos.getY()][oldPos.getZ()].removeNode(n)) {
                 throw new SinalgoFatalException(
                         "Geometric3DNodeCollection.updateNodeCollection(Node):\nA node is being removed from the matrix, but it is not located in the matrix cell in which it claims to be.");
             }
             // ... and add it to the new matrix cell
-            list[x][y][z].addNode(n);
+            this.list[x][y][z].addNode(n);
             // update the matrix-cell info stored at the node
             oldPos.setX(x);
             oldPos.setY(y);
@@ -268,12 +272,12 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
 
     @Override
     public Node getRandomNode() {
-        return super.defaultGetRandomNode(flatList);
+        return super.defaultGetRandomNode(this.flatList);
     }
 
     @Override
     public int size() {
-        return flatList.size();
+        return this.flatList.size();
     }
 
     /**
@@ -300,12 +304,12 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
             // The base position is located below the matrix cell where this node is
             // contained, s.t. we can add {0|1|2} to each coordinate in all different
             // permuations to obtain the 27 different fields.
-            ox = Math.min(numX - 1, mapCoord(pos.getXCoord())) - 1;
-            oy = Math.min(numY - 1, mapCoord(pos.getYCoord())) - 1;
-            oz = Math.min(numZ - 1, mapCoord(pos.getZCoord())) - 1;
-            dx = dy = 0;
-            dz = -1; // is incremented in call 'getNextValidMatrixCell'
-            gotoNextValidMatrixCell(); // get the first iterator - there's at least one
+            this.ox = Math.min(Geometric3DNodeCollection.this.numX - 1, Geometric3DNodeCollection.this.mapCoord(pos.getXCoord())) - 1;
+            this.oy = Math.min(Geometric3DNodeCollection.this.numY - 1, Geometric3DNodeCollection.this.mapCoord(pos.getYCoord())) - 1;
+            this.oz = Math.min(Geometric3DNodeCollection.this.numZ - 1, Geometric3DNodeCollection.this.mapCoord(pos.getZCoord())) - 1;
+            this.dx = this.dy = 0;
+            this.dz = -1; // is incremented in call 'getNextValidMatrixCell'
+            this.gotoNextValidMatrixCell(); // get the first iterator - there's at least one
         }
 
         /**
@@ -315,39 +319,40 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
          */
         private boolean gotoNextValidMatrixCell() {
             do {
-                dz++;
-                if (dz > 2) {
-                    dz = 0;
-                    dy++;
+                this.dz++;
+                if (this.dz > 2) {
+                    this.dz = 0;
+                    this.dy++;
                 }
-                if (dy > 2) {
-                    dy = 0;
-                    dx++;
+                if (this.dy > 2) {
+                    this.dy = 0;
+                    this.dx++;
                 }
-                if (dx > 2) {
+                if (this.dx > 2) {
                     return false; // we have visited all neighboring matrix cells
                 }
-            } while (ox + dx < 0 || oy + dy < 0 || oz + dz < 0 || ox + dx >= numX || oy + dy >= numY
-                    || oz + dz >= numZ);
-            iterator = list[ox + dx][oy + dy][oz + dz].iterator(); // get new iterator
+            }
+            while (this.ox + this.dx < 0 || this.oy + this.dy < 0 || this.oz + this.dz < 0 || this.ox + this.dx >= Geometric3DNodeCollection.this.numX || this.oy + this.dy >= Geometric3DNodeCollection.this.numY
+                    || this.oz + this.dz >= Geometric3DNodeCollection.this.numZ);
+            this.iterator = Geometric3DNodeCollection.this.list[this.ox + this.dx][this.oy + this.dy][this.oz + this.dz].iterator(); // get new iterator
             return true;
         }
 
         @Override
         public boolean hasMoreElements() {
-            if (iterator.hasNext()) {
+            if (this.iterator.hasNext()) {
                 return true;
             } else {
-                if (!gotoNextValidMatrixCell()) { // we have visited all neighboring matrix cells
+                if (!this.gotoNextValidMatrixCell()) { // we have visited all neighboring matrix cells
                     return false;
                 }
-                return hasMoreElements(); // tail recursive call
+                return this.hasMoreElements(); // tail recursive call
             }
         }
 
         @Override
         public Node nextElement() {
-            return iterator.next();
+            return this.iterator.next();
         }
     }
 
@@ -371,15 +376,15 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
 
         @Override
         public boolean hasMoreElements() {
-            return currentIndex < sortedNodeArraySize;
+            return this.currentIndex < Geometric3DNodeCollection.this.sortedNodeArraySize;
         }
 
         @Override
         public Node nextElement() {
-            if (backToFront) {
-                return sortedNodeArray[currentIndex++]; // implicit incrementation
+            if (this.backToFront) {
+                return Geometric3DNodeCollection.this.sortedNodeArray[this.currentIndex++]; // implicit incrementation
             } else {
-                return sortedNodeArray[sortedNodeArraySize - ++currentIndex]; // implicit incrementation BEFORE
+                return Geometric3DNodeCollection.this.sortedNodeArray[Geometric3DNodeCollection.this.sortedNodeArraySize - ++this.currentIndex]; // implicit incrementation BEFORE
                 // evaulation to have the offset one
                 // smaller
             }
@@ -399,17 +404,17 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
          * does something in 3 Dimensions.
          */
         private DepthComparator() {
-            pt = Main.getRuntime().getTransformator();
-            if (pt instanceof Transformation3D) {
-                t3d = (Transformation3D) pt;
+            this.pt = Main.getRuntime().getTransformator();
+            if (this.pt instanceof Transformation3D) {
+                this.t3d = (Transformation3D) this.pt;
             }
         }
 
         @Override
         public int compare(Node n1, Node n2) {
-            if (t3d != null) {
-                double zN1 = t3d.translateToGUIPositionAndGetZOffset(n1.getPosition());
-                double zN2 = t3d.translateToGUIPositionAndGetZOffset(n2.getPosition());
+            if (this.t3d != null) {
+                double zN1 = this.t3d.translateToGUIPositionAndGetZOffset(n1.getPosition());
+                double zN2 = this.t3d.translateToGUIPositionAndGetZOffset(n2.getPosition());
                 return (int) (zN1 - zN2);
             } else {
                 // The deptcompator is not used in 2 dimensions.

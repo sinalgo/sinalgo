@@ -61,7 +61,7 @@ public class ConstantTime extends MessageTransmissionModel {
      */
     public ConstantTime() {
         try {
-            time = Configuration.getDoubleParameter("MessageTransmission/ConstantTime");
+            this.time = Configuration.getDoubleParameter("MessageTransmission/ConstantTime");
         } catch (CorruptConfigurationEntryException e) {
             Main.warning(
                     "Missing or wrong entry in the configuration file for the ConstantTime DefaultMessageTransmissionModel:\n"
@@ -71,6 +71,6 @@ public class ConstantTime extends MessageTransmissionModel {
 
     @Override
     public double timeToReach(Node startNode, Node endNode, Message msg) {
-        return time;
+        return this.time;
     }
 }

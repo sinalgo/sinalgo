@@ -80,7 +80,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public void sampleButton() {
         int numLeaves = Integer.parseInt(Tools.showQueryDialog("Number of leaves:"));
         int fanOut = Integer.parseInt(Tools.showQueryDialog("Max fanout:"));
-        buildTree(fanOut, numLeaves);
+        this.buildTree(fanOut, numLeaves);
     }
 
     /**
@@ -122,8 +122,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
         // remove all nodes (if any)
         SinalgoRuntime.clearAllNodes();
-        treeNodes.clear();
-        leaves.clear();
+        this.treeNodes.clear();
+        this.leaves.clear();
         // Reset ID counter of leaf-nodes
         LeafNode.smallIdCounter = 0;
 
@@ -140,7 +140,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             LeafNode ln = new LeafNode();
             ln.setPosition((i + 1) * dx, posY, 0);
             ln.finishInitializationWithDefaultModels(true);
-            leaves.add(ln);
+            this.leaves.add(ln);
             toProcess.add(ln);
         }
 
@@ -164,7 +164,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
                 if (tn == null) { // start new parent
                     tn = new TreeNode();
                     tn.finishInitializationWithDefaultModels(true);
-                    treeNodes.add(tn);
+                    this.treeNodes.add(tn);
                     toProcess2.add(tn);
                     leftMostXOffset = currentNode.getPosition().getXCoord();
                     numAdded = 0;

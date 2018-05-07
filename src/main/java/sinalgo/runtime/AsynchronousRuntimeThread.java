@@ -95,7 +95,7 @@ public class AsynchronousRuntimeThread extends Thread {
      * AsynchronousRuntimeThread(null)
      */
     AsynchronousRuntimeThread() {
-        runtime = null;
+        this.runtime = null;
     }
 
     /**
@@ -118,7 +118,7 @@ public class AsynchronousRuntimeThread extends Thread {
             initializeConnectivity();
         }
 
-        for (long i = 0; i < getNumberOfEvents(); i++) {
+        for (long i = 0; i < this.getNumberOfEvents(); i++) {
             // In GUI-mode, check whether ABORT was pressed.
             if (this.getRuntime() != null && this.getRuntime().isAbort()) {
                 this.getRuntime().setAbort(false);
@@ -148,7 +148,7 @@ public class AsynchronousRuntimeThread extends Thread {
             }
 
             if (Global.isGuiMode) {
-                if (i % refreshRate == refreshRate - 1 && i + 1 < numberOfEvents) { // only perform if we continue with
+                if (i % this.refreshRate == this.refreshRate - 1 && i + 1 < this.numberOfEvents) { // only perform if we continue with
                     // more events
                     if (lastEventNode != null) {
                         lastEventNode.highlight(false);

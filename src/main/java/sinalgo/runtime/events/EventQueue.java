@@ -40,7 +40,11 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.runtime.SinalgoRuntime;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.TreeSet;
+import java.util.Vector;
 
 /**
  * The queue that stores the events of the asynchronous mode. The entries
@@ -77,10 +81,10 @@ public class EventQueue extends TreeSet<Event> {
             Event e = this.first();
             this.remove(e);
             eventNumber++;
-            notifyListeners();
+            this.notifyListeners();
             return e;
         } catch (NoSuchElementException nSEE) {
-            notifyListeners();
+            this.notifyListeners();
             return null;
         }
     }
@@ -92,7 +96,7 @@ public class EventQueue extends TreeSet<Event> {
      */
     public void insert(Event e) {
         this.add(e);
-        notifyListeners();
+        this.notifyListeners();
     }
 
     /**
@@ -107,7 +111,7 @@ public class EventQueue extends TreeSet<Event> {
     public void removeAllEventsForThisNode(Node n) {
         boolean changed = false;
 
-        Iterator<Event> eventIter = iterator();
+        Iterator<Event> eventIter = this.iterator();
         while (eventIter.hasNext()) {
             Event e = eventIter.next();
             if (e.isNodeEvent() && n.equals(e.getEventNode())) {
@@ -127,7 +131,7 @@ public class EventQueue extends TreeSet<Event> {
         }
 
         if (changed) {
-            notifyListeners();
+            this.notifyListeners();
         }
     }
 
@@ -153,7 +157,7 @@ public class EventQueue extends TreeSet<Event> {
         }
 
         if (changed) {
-            notifyListeners();
+            this.notifyListeners();
         }
     }
 
@@ -173,7 +177,7 @@ public class EventQueue extends TreeSet<Event> {
         }
         super.clear(); // kill this set
         SinalgoRuntime.eventQueue = eq; // replace the event queue
-        notifyListeners();
+        this.notifyListeners();
     }
 
     /**
@@ -185,7 +189,7 @@ public class EventQueue extends TreeSet<Event> {
             e.free(); // free the event resources
         }
         super.clear(); // remove all events
-        notifyListeners();
+        this.notifyListeners();
     }
 
     /**
@@ -198,7 +202,7 @@ public class EventQueue extends TreeSet<Event> {
             e.drop();
             e.free();
         }
-        notifyListeners();
+        this.notifyListeners();
     }
 
     /**
@@ -207,8 +211,8 @@ public class EventQueue extends TreeSet<Event> {
      * and the queue does not notify it (interference)
      */
     public void notifyListeners() {
-        for (int i = 0; i < listeners.size(); i++) {
-            listeners.elementAt(i).eventQueueChanged();
+        for (int i = 0; i < this.listeners.size(); i++) {
+            this.listeners.elementAt(i).eventQueueChanged();
         }
     }
 
@@ -218,7 +222,7 @@ public class EventQueue extends TreeSet<Event> {
      * @param eqList The eventqueuelistener to add
      */
     public void addEventQueueListener(EventQueueListener eqList) {
-        listeners.add(eqList);
+        this.listeners.add(eqList);
     }
 
     /**
@@ -227,7 +231,7 @@ public class EventQueue extends TreeSet<Event> {
      * @param eqList The eventqueuelistener to remove
      */
     public void removeEventQueueListener(EventQueueListener eqList) {
-        listeners.remove(eqList);
+        this.listeners.remove(eqList);
     }
 
     @Override
@@ -250,18 +254,18 @@ public class EventQueue extends TreeSet<Event> {
 
         @Override
         public boolean hasNext() {
-            return iter.hasNext();
+            return this.iter.hasNext();
         }
 
         @Override
         public Event next() {
-            current = iter.next();
-            return current;
+            this.current = this.iter.next();
+            return this.current;
         }
 
         @Override
         public void remove() {
-            iter.remove();
+            this.iter.remove();
         }
     }
 

@@ -58,7 +58,7 @@ public abstract class Model {
      * @param params The String to set the parameter string to.
      */
     public void setParamString(String params) {
-        paramString = params;
+        this.paramString = params;
     }
 
     /**
@@ -69,7 +69,7 @@ public abstract class Model {
      * console or through the GUI.
      */
     public String getParamString() {
-        return paramString;
+        return this.paramString;
     }
 
     /**

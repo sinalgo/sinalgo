@@ -181,9 +181,9 @@ public class Edge implements DoublyLinkedListEntry {
      */
     public Color getColor() {
         if (this.numberOfMessagesOnThisEdge > 0) {
-            return sendingColor;
+            return this.sendingColor;
         } else {
-            return defaultColor;
+            return this.defaultColor;
         }
     }
 
@@ -195,18 +195,18 @@ public class Edge implements DoublyLinkedListEntry {
      * @param pt The current transformation object.
      */
     public void draw(Graphics g, PositionTransformation pt) {
-        Position p1 = startNode.getPosition();
+        Position p1 = this.startNode.getPosition();
         pt.translateToGUIPosition(p1);
         int fromX = pt.getGuiX(), fromY = pt.getGuiY(); // temporarily store
-        Position p2 = endNode.getPosition();
+        Position p2 = this.endNode.getPosition();
         pt.translateToGUIPosition(p2);
 
         if ((this.numberOfMessagesOnThisEdge == 0) && (this.oppositeEdge != null)
                 && (this.oppositeEdge.numberOfMessagesOnThisEdge > 0)) {
             // only draws the arrowHead (if drawArrows is true)
-            Arrow.drawArrowHead(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, getColor());
+            Arrow.drawArrowHead(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, this.getColor());
         } else {
-            Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, getColor());
+            Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, this.getColor());
         }
     }
 
@@ -218,11 +218,11 @@ public class Edge implements DoublyLinkedListEntry {
      *           of this edge.
      */
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-        pt.translateToGUIPosition(startNode.getPosition());
+        pt.translateToGUIPosition(this.startNode.getPosition());
         double eSX = pt.getGuiXDouble();
         double eSY = pt.getGuiYDouble();
-        pt.translateToGUIPosition(endNode.getPosition());
-        Color c = getColor();
+        pt.translateToGUIPosition(this.endNode.getPosition());
+        Color c = this.getColor();
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
         pw.setLineWidth(0.5);
 
@@ -285,7 +285,7 @@ public class Edge implements DoublyLinkedListEntry {
      * @param msg The message that is being sent over this edge.
      */
     public void addMessageForThisEdge(Message msg) {
-        numberOfMessagesOnThisEdge++;
+        this.numberOfMessagesOnThisEdge++;
     }
 
     /**
@@ -298,7 +298,7 @@ public class Edge implements DoublyLinkedListEntry {
      * @param msg The message that was being sent over this message.
      */
     public void removeMessageForThisEdge(Message msg) {
-        numberOfMessagesOnThisEdge--;
+        this.numberOfMessagesOnThisEdge--;
     }
 
     /**
@@ -319,8 +319,8 @@ public class Edge implements DoublyLinkedListEntry {
      * If there is no such edge, the field otherEdge is set to null.
      */
     protected final void findOppositeEdge() {
-        for (Edge e : endNode.getOutgoingConnections()) {
-            if ((e.getStartNode().getID() == endNode.getID()) && (e.getEndNode().getID() == startNode.getID())) {
+        for (Edge e : this.endNode.getOutgoingConnections()) {
+            if ((e.getStartNode().getID() == this.endNode.getID()) && (e.getEndNode().getID() == this.startNode.getID())) {
                 this.setOppositeEdge(e);
                 e.setOppositeEdge(this);
                 return;
@@ -347,10 +347,10 @@ public class Edge implements DoublyLinkedListEntry {
      * @return True if this edge covers the given position, otherwise false.
      */
     public boolean isInside(int xCoord, int yCoord, PositionTransformation pt) {
-        Position p1 = startNode.getPosition();
+        Position p1 = this.startNode.getPosition();
         pt.translateToGUIPosition(p1);
         int fromX = pt.getGuiX(), fromY = pt.getGuiY(); // temporarily store
-        Position p2 = endNode.getPosition();
+        Position p2 = this.endNode.getPosition();
         pt.translateToGUIPosition(p2);
         double dist = Line2D.ptSegDist(fromX, fromY, pt.getGuiX(), pt.getGuiY(), xCoord, yCoord);
         return dist < 3;

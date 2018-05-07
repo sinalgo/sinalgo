@@ -70,7 +70,7 @@ public class TimerCollection implements Iterable<Timer> {
      * @return The number of Timers in this collection.
      */
     public int size() {
-        return timers.size();
+        return this.timers.size();
     }
 
     /**
@@ -79,8 +79,8 @@ public class TimerCollection implements Iterable<Timer> {
      * @param t The timer to add.
      */
     public void add(Timer t) {
-        timers.add(t);
-        modCount++;
+        this.timers.add(t);
+        this.modCount++;
     }
 
     /**
@@ -98,7 +98,7 @@ public class TimerCollection implements Iterable<Timer> {
      * @param t The timer to remove
      */
     public void remove(Timer t) {
-        timers.remove(t);
+        this.timers.remove(t);
     }
 
     /**
@@ -110,12 +110,12 @@ public class TimerCollection implements Iterable<Timer> {
      */
     @Override
     public Iterator<Timer> iterator() {
-        if (iter == null) {
-            iter = new ReusableIter();
+        if (this.iter == null) {
+            this.iter = new ReusableIter();
         } else {
-            iter.reset();
+            this.iter.reset();
         }
-        return iter;
+        return this.iter;
     }
 
     /**
@@ -136,8 +136,8 @@ public class TimerCollection implements Iterable<Timer> {
          * Create a new instance of the ReusableIterator
          */
         private ReusableIter() {
-            position = 0;
-            expectedModCount = modCount;
+            this.position = 0;
+            this.expectedModCount = TimerCollection.this.modCount;
         }
 
         /**
@@ -145,24 +145,24 @@ public class TimerCollection implements Iterable<Timer> {
          */
         @Override
         public void reset() {
-            position = 0;
-            expectedModCount = modCount;
+            this.position = 0;
+            this.expectedModCount = TimerCollection.this.modCount;
         }
 
         @Override
         public boolean hasNext() {
-            return (position + 1 <= timers.size());
+            return (this.position + 1 <= TimerCollection.this.timers.size());
         }
 
         @Override
         public Timer next() {
-            checkForComodification();
-            return timers.elementAt(position++);
+            this.checkForComodification();
+            return TimerCollection.this.timers.elementAt(this.position++);
         }
 
         @Override
         public void remove() {
-            timers.remove(--position);
+            TimerCollection.this.timers.remove(--this.position);
         }
 
         /**
@@ -174,7 +174,7 @@ public class TimerCollection implements Iterable<Timer> {
          *                                         methods.
          */
         final void checkForComodification() {
-            if (expectedModCount != modCount) {
+            if (this.expectedModCount != TimerCollection.this.modCount) {
                 throw new ConcurrentModificationException();
             }
         }

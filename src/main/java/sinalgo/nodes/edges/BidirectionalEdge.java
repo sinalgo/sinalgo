@@ -49,10 +49,10 @@ public class BidirectionalEdge extends Edge {
             // this is a hack to ensure that this edge is already in the outgoing ot the
             // start node. Otherwise the two edges would
             // end in an infinite loop
-            getStartNode().getOutgoingConnections().hackyAppend(this);
+            this.getStartNode().getOutgoingConnections().hackyAppend(this);
 
-            getEndNode().getOutgoingConnections().add(getEndNode(), getStartNode(), true);
-            findOppositeEdge();
+            this.getEndNode().getOutgoingConnections().add(this.getEndNode(), this.getStartNode(), true);
+            this.findOppositeEdge();
         }
     }
 

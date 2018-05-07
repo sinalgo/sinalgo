@@ -74,17 +74,17 @@ public class SINR extends InterferenceModel {
      */
     public SINR() {
         try {
-            alpha = Configuration.getIntegerParameter("SINR/alpha");
+            this.alpha = Configuration.getIntegerParameter("SINR/alpha");
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException("The configuration entry SINR/alpha is not a valid double:\n\n" + e.getMessage());
         }
         try {
-            beta = Configuration.getDoubleParameter("SINR/beta");
+            this.beta = Configuration.getDoubleParameter("SINR/beta");
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException("The configuration entry SINR/beta is not a valid double:\n\n" + e.getMessage());
         }
         try {
-            ambientNoise = Configuration.getDoubleParameter("SINR/noise");
+            this.ambientNoise = Configuration.getDoubleParameter("SINR/noise");
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException("The configuration entry SINR/noise is not a valid double:\n\n" + e.getMessage());
         }
@@ -94,11 +94,11 @@ public class SINR extends InterferenceModel {
     public boolean isDisturbed(Packet p) {
         Position receiverPos = p.getDestination().getPosition();
         double distanceFromSource = p.getOrigin().getPosition().distanceTo(receiverPos);
-        double poweredDistanceFromSource = Math.pow(distanceFromSource, alpha);
+        double poweredDistanceFromSource = Math.pow(distanceFromSource, this.alpha);
 
         double signal = p.getIntensity() / poweredDistanceFromSource;
 
-        double noise = ambientNoise;
+        double noise = this.ambientNoise;
 
         for (Packet pack : SinalgoRuntime.packetsInTheAir) { // iterate over all active packets
             if (pack == p) {
@@ -119,11 +119,11 @@ public class SINR extends InterferenceModel {
 
             Position pos = pack.getOrigin().getPosition();
             double distance = pos.distanceTo(receiverPos);
-            double poweredDistance = Math.pow(distance, alpha);
+            double poweredDistance = Math.pow(distance, this.alpha);
             noise += pack.getIntensity() / poweredDistance;
         }
 
-        boolean disturbed = signal < beta * noise;
+        boolean disturbed = signal < this.beta * noise;
 
         if (LogL.INTERFERENCE_DETAIL) {
             Global.log.logln("Node " + p.getDestination().getID() + " is checking a packet from " + p.getOrigin().getID());

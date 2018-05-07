@@ -89,7 +89,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
     private DoublyLinkedListEntry.Finger head = new DoublyLinkedListEntry.Finger(null, null); // before the first entry
     // of the list, the
     // terminator
-    private DoublyLinkedListEntry.Finger tail = head; // the last entry, points to head if the list is empty
+    private DoublyLinkedListEntry.Finger tail = this.head; // the last entry, points to head if the list is empty
 
     /**
      * Creates a new instance of a Doubly Linked List.
@@ -115,7 +115,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      * <code>iterator()</code>.
      */
     public DoublyLinkedList() {
-        keepFinger = false;
+        this.keepFinger = false;
     }
 
     /**
@@ -129,7 +129,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      * list.
      */
     public boolean append(E entry) {
-        return addAfter(entry, tail);
+        return this.addAfter(entry, this.tail);
     }
 
     /**
@@ -147,7 +147,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
             throw new DoublyLinkedListErrorException(
                     "Cannot add an element into doubly linked list after an element which is not contained in the list.");
         }
-        return addAfter(entry, pos);
+        return this.addAfter(entry, pos);
     }
 
     /**
@@ -164,18 +164,18 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
             return false; // already in list
         }
         f = entry.getDoublyLinkedListFinger().getNewFinger(this, entry); // get new finger
-        if (pos == tail) { // insert at the end
-            f.previous = tail;
-            tail.next = f;
-            tail = f;
+        if (pos == this.tail) { // insert at the end
+            f.previous = this.tail;
+            this.tail.next = f;
+            this.tail = f;
         } else { // insert not after last entry
             f.next = pos.next;
             f.previous = pos;
             pos.next.previous = f; // must exist, as pos != tail
             pos.next = f;
         }
-        size++;
-        modCount++;
+        this.size++;
+        this.modCount++;
         return true;
     }
 
@@ -194,7 +194,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
             throw new DoublyLinkedListErrorException(
                     "Cannot add an element into doubly linked list before an element which is not contained in the list.");
         }
-        return addBefore(entry, pos);
+        return this.addBefore(entry, pos);
     }
 
     private boolean addBefore(E entry, DoublyLinkedListEntry.Finger pos) {
@@ -203,24 +203,24 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
             return false; // already in list
         }
         f = entry.getDoublyLinkedListFinger().getNewFinger(this, entry); // get new finger
-        if (pos == head) { // insert in front (actually, we don't insert BEFORE the head, but after the
+        if (pos == this.head) { // insert in front (actually, we don't insert BEFORE the head, but after the
             // head)
-            f.next = head.next;
-            f.previous = head;
-            if (head != tail) { // not empty list
-                head.next.previous = f;
+            f.next = this.head.next;
+            f.previous = this.head;
+            if (this.head != this.tail) { // not empty list
+                this.head.next.previous = f;
             } else {
-                tail = f;
+                this.tail = f;
             }
-            head.next = f;
+            this.head.next = f;
         } else { // insert not before first entry
             f.next = pos;
             f.previous = pos.previous;
             pos.previous.next = f;
             pos.previous = f;
         }
-        size++;
-        modCount++;
+        this.size++;
+        this.modCount++;
         return true;
     }
 
@@ -232,7 +232,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      */
     public boolean remove(E entry) {
         DoublyLinkedListEntry.Finger f = entry.getDoublyLinkedListFinger().getFinger(this);
-        return remove(f);
+        return this.remove(f);
     }
 
     /**
@@ -243,7 +243,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      */
     private boolean remove2(DoublyLinkedListEntry entry) {
         DoublyLinkedListEntry.Finger f = entry.getDoublyLinkedListFinger().getFinger(this);
-        return remove(f);
+        return this.remove(f);
     }
 
     /**
@@ -257,18 +257,18 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
             return false; // not in list and no finger
         }
         if (f.next == null && f.previous == null) {
-            f.object.getDoublyLinkedListFinger().releaseFinger(f, keepFinger);
+            f.object.getDoublyLinkedListFinger().releaseFinger(f, this.keepFinger);
             return false; // not in list, but had a dummy finger.
         }
         f.previous.next = f.next; // there's always a previous
         if (f.next != null) {
             f.next.previous = f.previous;
         } else { // was last entry
-            tail = f.previous;
+            this.tail = f.previous;
         }
-        f.object.getDoublyLinkedListFinger().releaseFinger(f, keepFinger);
-        size--;
-        modCount++;
+        f.object.getDoublyLinkedListFinger().releaseFinger(f, this.keepFinger);
+        this.size--;
+        this.modCount++;
         return true;
     }
 
@@ -280,9 +280,9 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      */
     @SuppressWarnings("unchecked")
     public E pop() {
-        if (head.next != null) {
-            DoublyLinkedListEntry e = head.next.object;
-            remove(head.next);
+        if (this.head.next != null) {
+            DoublyLinkedListEntry e = this.head.next.object;
+            this.remove(this.head.next);
             return (E) e;
         }
         return null;
@@ -295,8 +295,8 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      */
     @SuppressWarnings("unchecked")
     public E peek() {
-        if (head.next != null) {
-            return (E) head.next.object;
+        if (this.head.next != null) {
+            return (E) this.head.next.object;
         }
         return null;
     }
@@ -309,7 +309,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      * already contained in the list.
      */
     public boolean push(E entry) {
-        return addBefore(entry, head); // note that this does not insert the element BEFORE the special entry 'head',
+        return this.addBefore(entry, this.head); // note that this does not insert the element BEFORE the special entry 'head',
         // but after head as first elelemtn of the list.
     }
 
@@ -317,7 +317,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      * @return The number of entries in this list.
      */
     public int size() {
-        return size;
+        return this.size;
     }
 
     /**
@@ -326,7 +326,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      * @return True if the list is empty, otherwise false.
      */
     public boolean isEmpty() {
-        return size == 0;
+        return this.size == 0;
     }
 
     @Override
@@ -352,7 +352,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
             index--;
         }
         throw new ArrayIndexOutOfBoundsException(
-                Logging.getCodePosition() + " Invalid index: index=" + index + " size of list=" + size);
+                Logging.getCodePosition() + " Invalid index: index=" + index + " size of list=" + this.size);
     }
 
     /**
@@ -366,7 +366,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      *                                        this Vector object. given.
      */
     public E remove(int index) throws ArrayIndexOutOfBoundsException {
-        E e = elementAt(index);
+        E e = this.elementAt(index);
         this.remove(e);
         return e;
     }
@@ -419,7 +419,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
         int count = 0;
         for (E e : this) {
             count++;
-            s.append(e.toString()).append((count < size) ? ", " : "");
+            s.append(e.toString()).append((count < this.size) ? ", " : "");
         }
         return s + "]";
     }
@@ -431,10 +431,10 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
      */
     private class ListItr implements ReusableListIterator<E> {
 
-        private DoublyLinkedListEntry.Finger lastReturned = head;
+        private DoublyLinkedListEntry.Finger lastReturned = DoublyLinkedList.this.head;
         private DoublyLinkedListEntry.Finger next; // finger of next element to be returned
         private int nextIndex; // 0-based index of next element to be returned
-        private int expectedModCount = modCount;
+        private int expectedModCount = DoublyLinkedList.this.modCount;
 
         /**
          * Create a new ListItr Object and initialize it such that the next returned
@@ -445,127 +445,127 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
          *              initialized.
          */
         private ListItr(int index) {
-            if (index < 0 || index > size) {
-                throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+            if (index < 0 || index > DoublyLinkedList.this.size) {
+                throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + DoublyLinkedList.this.size);
             }
-            if (index < (size >> 1)) {
-                next = head.next;
-                for (nextIndex = 0; nextIndex < index; nextIndex++) {
-                    next = next.next;
+            if (index < (DoublyLinkedList.this.size >> 1)) {
+                this.next = DoublyLinkedList.this.head.next;
+                for (this.nextIndex = 0; this.nextIndex < index; this.nextIndex++) {
+                    this.next = this.next.next;
                 }
             } else {
-                next = tail;
-                for (nextIndex = size - 1; nextIndex > index; nextIndex--) {
-                    next = next.previous;
+                this.next = DoublyLinkedList.this.tail;
+                for (this.nextIndex = DoublyLinkedList.this.size - 1; this.nextIndex > index; this.nextIndex--) {
+                    this.next = this.next.previous;
                 }
             }
         }
 
         @Override
         public void reset() {
-            nextIndex = 0;
-            expectedModCount = modCount;
-            lastReturned = head;
-            next = head.next;
+            this.nextIndex = 0;
+            this.expectedModCount = DoublyLinkedList.this.modCount;
+            this.lastReturned = DoublyLinkedList.this.head;
+            this.next = DoublyLinkedList.this.head.next;
         }
 
         @Override
         public boolean hasNext() {
-            if (size == 0) {
+            if (DoublyLinkedList.this.size == 0) {
                 return false;
             }
-            return nextIndex != size;
+            return this.nextIndex != DoublyLinkedList.this.size;
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public E next() {
-            checkForComodification();
-            if (nextIndex == size) { // reached end of list.
+            this.checkForComodification();
+            if (this.nextIndex == DoublyLinkedList.this.size) { // reached end of list.
                 throw new NoSuchElementException();
             }
 
-            lastReturned = next;
-            next = next.next;
-            nextIndex++;
-            return (E) lastReturned.object;
+            this.lastReturned = this.next;
+            this.next = this.next.next;
+            this.nextIndex++;
+            return (E) this.lastReturned.object;
         }
 
         @Override
         public boolean hasPrevious() {
-            return nextIndex != 0;
+            return this.nextIndex != 0;
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public E previous() {
-            if (nextIndex == 0) {
+            if (this.nextIndex == 0) {
                 throw new NoSuchElementException();
             }
-            if (next != null) {
-                lastReturned = next = next.previous;
+            if (this.next != null) {
+                this.lastReturned = this.next = this.next.previous;
             } else {
-                lastReturned = next = tail.previous; // index > 0 => not tail is not head.
+                this.lastReturned = this.next = DoublyLinkedList.this.tail.previous; // index > 0 => not tail is not head.
             }
-            nextIndex--;
-            checkForComodification();
-            return (E) lastReturned.object;
+            this.nextIndex--;
+            this.checkForComodification();
+            return (E) this.lastReturned.object;
         }
 
         @Override
         public int nextIndex() { // the (zero-based) index of the next element to be returned.
-            return nextIndex;
+            return this.nextIndex;
         }
 
         @Override
         public int previousIndex() { // corresponds to the (zero-based) index of the currently returned element
-            return nextIndex - 1;
+            return this.nextIndex - 1;
         }
 
         @Override
         public void remove() {
-            checkForComodification();
-            if (lastReturned == head) {
+            this.checkForComodification();
+            if (this.lastReturned == DoublyLinkedList.this.head) {
                 throw new IllegalStateException();
             }
-            DoublyLinkedListEntry.Finger lastNext = lastReturned.next;
-            if (!DoublyLinkedList.this.remove2(lastReturned.object)) {
+            DoublyLinkedListEntry.Finger lastNext = this.lastReturned.next;
+            if (!DoublyLinkedList.this.remove2(this.lastReturned.object)) {
                 // could not remove the object
                 throw new IllegalStateException();
             }
-            if (next == lastReturned) { // when previous() was called before, lastReturned == next
-                next = lastNext;
+            if (this.next == this.lastReturned) { // when previous() was called before, lastReturned == next
+                this.next = lastNext;
             } else {
-                nextIndex--;
+                this.nextIndex--;
             }
-            lastReturned = head; // cannot remove twice
-            expectedModCount++;
+            this.lastReturned = DoublyLinkedList.this.head; // cannot remove twice
+            this.expectedModCount++;
         }
 
         @Override
         public void set(E o) {
-            if (lastReturned == head) {
+            if (this.lastReturned == DoublyLinkedList.this.head) {
                 throw new IllegalStateException();
             }
-            checkForComodification();
+            this.checkForComodification();
 
             if (o.getDoublyLinkedListFinger().getFinger(DoublyLinkedList.this) != null) {
                 throw new IllegalStateException(
                         "Cannot replace the current entry with an entry that is already in the list. This exception occured while iterating over the list.");
             }
             DoublyLinkedListEntry.Finger f = o.getDoublyLinkedListFinger().getNewFinger(DoublyLinkedList.this, o);
-            f.next = lastReturned.next;
-            f.previous = lastReturned.previous;
-            if (lastReturned.next != null) {
-                lastReturned.next.previous = f;
+            f.next = this.lastReturned.next;
+            f.previous = this.lastReturned.previous;
+            if (this.lastReturned.next != null) {
+                this.lastReturned.next.previous = f;
             }
-            lastReturned.previous.next = f; // there's always a previous
+            this.lastReturned.previous.next = f; // there's always a previous
             // release the finger of the old entry
-            lastReturned.object.getDoublyLinkedListFinger().releaseFinger(lastReturned, keepFinger);
-            if (lastReturned == next) { // restore the pointers
-                lastReturned = next = f;
+            this.lastReturned.object.getDoublyLinkedListFinger().releaseFinger(this.lastReturned, DoublyLinkedList.this.keepFinger);
+            if (this.lastReturned == this.next) { // restore the pointers
+                this.lastReturned = this.next = f;
             } else {
-                lastReturned = f;
+                this.lastReturned = f;
             }
         }
 
@@ -577,16 +577,16 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
          */
         @Override
         public void add(E o) {
-            checkForComodification();
-            lastReturned = head;
-            if (next == null) { // append to the end of the list
-                if (append(o)) {
-                    expectedModCount++;
+            this.checkForComodification();
+            this.lastReturned = DoublyLinkedList.this.head;
+            if (this.next == null) { // append to the end of the list
+                if (DoublyLinkedList.this.append(o)) {
+                    this.expectedModCount++;
                 }
             } else {
-                if (addBefore(o, next)) { // returns true if successfully inserted
-                    nextIndex++;
-                    expectedModCount++;
+                if (DoublyLinkedList.this.addBefore(o, this.next)) { // returns true if successfully inserted
+                    this.nextIndex++;
+                    this.expectedModCount++;
                 }
             }
         }
@@ -600,7 +600,7 @@ public class DoublyLinkedList<E extends DoublyLinkedListEntry> implements Iterab
          *                                         methods.
          */
         final void checkForComodification() {
-            if (modCount != expectedModCount) {
+            if (DoublyLinkedList.this.modCount != this.expectedModCount) {
                 throw new ConcurrentModificationException();
             }
         }

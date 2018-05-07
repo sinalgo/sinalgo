@@ -61,7 +61,13 @@ import sinalgo.tools.logging.Logging;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.Stack;
@@ -139,8 +145,8 @@ public class GraphPanel extends JPanel {
      * @param p The parent Frame (GUI) where the Graph Panel is added.
      */
     public GraphPanel(GUI p) {
-        parent = p;
-        pt = parent.getTransformator();
+        this.parent = p;
+        this.pt = this.parent.getTransformator();
 
         MyMouseListener ml = new MyMouseListener();
         this.addMouseListener(ml);
@@ -149,21 +155,21 @@ public class GraphPanel extends JPanel {
         this.addKeyListener(new MyKeyListener());
         this.setFocusable(true);
 
-        nodePopupMenu = new NodePopupMenu(parent);
-        this.add(nodePopupMenu);
+        this.nodePopupMenu = new NodePopupMenu(this.parent);
+        this.add(this.nodePopupMenu);
 
-        edgePopupMenu = new EdgePopupMenu(parent);
-        this.add(edgePopupMenu);
+        this.edgePopupMenu = new EdgePopupMenu(this.parent);
+        this.add(this.edgePopupMenu);
 
-        spacePopupMenu = new SpacePopupMenu(parent);
-        this.add(spacePopupMenu);
+        this.spacePopupMenu = new SpacePopupMenu(this.parent);
+        this.add(this.spacePopupMenu);
 
-        imageSizeX = getWidth();
-        imageSizeY = getHeight();
+        this.imageSizeX = this.getWidth();
+        this.imageSizeY = this.getHeight();
 
         // update the transformation object
-        pt.setWidth(imageSizeX);
-        pt.setHeight(imageSizeY);
+        this.pt.setWidth(this.imageSizeX);
+        this.pt.setHeight(this.imageSizeY);
 
         this.addComponentListener(new MyComponentListener());
     }
@@ -172,15 +178,15 @@ public class GraphPanel extends JPanel {
      * Called when the user removes all nodes
      */
     public void allNodesAreRemoved() {
-        nodesToDrawCoordCube.clear();
-        nodesToHighlight.clear();
+        this.nodesToDrawCoordCube.clear();
+        this.nodesToHighlight.clear();
     }
 
     /**
      * Triggers the default view the next time this graph panel is redrawn.
      */
     public void requestDefaultViewOnNextDraw() {
-        defaultViewOnNextDraw = true;
+        this.defaultViewOnNextDraw = true;
     }
 
     /**
@@ -188,8 +194,8 @@ public class GraphPanel extends JPanel {
      * paint().
      */
     public void requireFullDrawOnNextPaint() {
-        log.logln(LogL.GUI_SEQ, "GraphPanel.requireFullDrawOnNextPaint()s");
-        forcedDraw = true;
+        this.log.logln(LogL.GUI_SEQ, "GraphPanel.requireFullDrawOnNextPaint()s");
+        this.forcedDraw = true;
     }
 
     /**
@@ -197,16 +203,16 @@ public class GraphPanel extends JPanel {
      * scrollable pane and redraws the graph.
      */
     public void defaultView() {
-        pt.defaultView(imageSizeX, imageSizeY);
-        parent.setZoomFactor(pt.getZoomFactor()); // initiates redrawing the graph
+        this.pt.defaultView(this.imageSizeX, this.imageSizeY);
+        this.parent.setZoomFactor(this.pt.getZoomFactor()); // initiates redrawing the graph
     }
 
     /**
      * @see GraphPanel#defaultView()
      */
     private void defaultViewWithoutRedraw() {
-        pt.defaultView(imageSizeX, imageSizeY);
-        parent.setZoomFactorNoRepaint(pt.getZoomFactor());
+        this.pt.defaultView(this.imageSizeX, this.imageSizeY);
+        this.parent.setZoomFactorNoRepaint(this.pt.getZoomFactor());
     }
 
     /**
@@ -214,16 +220,16 @@ public class GraphPanel extends JPanel {
      * this panel.
      */
     private void getNewOffscreen() {
-        log.logln(LogL.GUI_SEQ, "GraphPanel.getNewOffscreen: Allocating a new offscreen image.");
-        imageSizeX = getWidth();
-        imageSizeY = getHeight();
-        offscreen = null;
-        if (imageSizeX > 0 && imageSizeY > 0) {
+        this.log.logln(LogL.GUI_SEQ, "GraphPanel.getNewOffscreen: Allocating a new offscreen image.");
+        this.imageSizeX = this.getWidth();
+        this.imageSizeY = this.getHeight();
+        this.offscreen = null;
+        if (this.imageSizeX > 0 && this.imageSizeY > 0) {
             // update the transformation object
-            pt.setWidth(imageSizeX);
-            pt.setHeight(imageSizeY);
-            offscreen = createImage(imageSizeX, imageSizeY);
-            newOffscreen = true;
+            this.pt.setWidth(this.imageSizeX);
+            this.pt.setHeight(this.imageSizeY);
+            this.offscreen = this.createImage(this.imageSizeX, this.imageSizeY);
+            this.newOffscreen = true;
         }
     }
 
@@ -231,43 +237,43 @@ public class GraphPanel extends JPanel {
     public void paint(Graphics g) {
         if (Global.isRunning) {
             // if possible, draw the previous image, but without updating it!
-            if (offscreen != null) {
-                g.drawImage(offscreen, 0, 0, this);
+            if (this.offscreen != null) {
+                g.drawImage(this.offscreen, 0, 0, this);
                 // drawOnTop(this.getGraphics());
-                log.logln(LogL.GUI_SEQ, "GraphPanel.paint(): Simulation is running -> draw offscreen.");
+                this.log.logln(LogL.GUI_SEQ, "GraphPanel.paint(): Simulation is running -> draw offscreen.");
             }
             return;
         }
 
-        if (imageSizeX != this.getWidth() || imageSizeY != this.getHeight()) {
-            log.logln(LogL.GUI_SEQ, "GraphPanel.paint(): We missed a resize event.");
-            getNewOffscreen();
+        if (this.imageSizeX != this.getWidth() || this.imageSizeY != this.getHeight()) {
+            this.log.logln(LogL.GUI_SEQ, "GraphPanel.paint(): We missed a resize event.");
+            this.getNewOffscreen();
         }
         GraphPanel.firstTimePainted = true;
-        if (offscreen == null) {
-            getNewOffscreen();
+        if (this.offscreen == null) {
+            this.getNewOffscreen();
         }
-        if (offscreen != null) {
+        if (this.offscreen != null) {
             // we may not need to redraw the graph, but can reuse the old offscreen image
-            if (myLastPtVersionNumber != pt.getVersionNumber() || newOffscreen || forcedDraw) {
-                log.logln(LogL.GUI_SEQ,
+            if (this.myLastPtVersionNumber != this.pt.getVersionNumber() || this.newOffscreen || this.forcedDraw) {
+                this.log.logln(LogL.GUI_SEQ,
                         "GraphPanel.paint(): drawing graph to offscreen"
-                                + (myLastPtVersionNumber != pt.getNumberOfDimensions() ? " ptVersionNumber changed"
+                                + (this.myLastPtVersionNumber != this.pt.getNumberOfDimensions() ? " ptVersionNumber changed"
                                 : " new Offscreen"));
-                draw(offscreen.getGraphics());
-                myLastPtVersionNumber = pt.getVersionNumber();
-                forcedDraw = false;
-                newOffscreen = false;
+                this.draw(this.offscreen.getGraphics());
+                this.myLastPtVersionNumber = this.pt.getVersionNumber();
+                this.forcedDraw = false;
+                this.newOffscreen = false;
             } else {
-                log.logln(LogL.GUI_SEQ, "GraphPanel.paint(): no changes -> draw old offscreen");
+                this.log.logln(LogL.GUI_SEQ, "GraphPanel.paint(): no changes -> draw old offscreen");
             }
-            g.drawImage(offscreen, 0, 0, this);
-            drawOnTop(g);
+            g.drawImage(this.offscreen, 0, 0, this);
+            this.drawOnTop(g);
         } else {
             // the offscreen object is not available - draw on the provided graphics
             // directly (note: this will draw the background white)
-            draw(g);
-            drawOnTop(g);
+            this.draw(g);
+            this.drawOnTop(g);
         }
     }
 
@@ -276,13 +282,13 @@ public class GraphPanel extends JPanel {
      * the graph, this method is used internaly.
      */
     public void paintNow() {
-        log.log(LogL.GUI_SEQ, "GraphPanel.paintNow()");
-        if (offscreen != null) {
-            draw(offscreen.getGraphics());
-            myLastPtVersionNumber = pt.getVersionNumber();
-            newOffscreen = false;
-            this.getGraphics().drawImage(offscreen, 0, 0, this);
-            drawOnTop(this.getGraphics());
+        this.log.log(LogL.GUI_SEQ, "GraphPanel.paintNow()");
+        if (this.offscreen != null) {
+            this.draw(this.offscreen.getGraphics());
+            this.myLastPtVersionNumber = this.pt.getVersionNumber();
+            this.newOffscreen = false;
+            this.getGraphics().drawImage(this.offscreen, 0, 0, this);
+            this.drawOnTop(this.getGraphics());
         } else {
             this.repaint(); // defer paint to default call
         }
@@ -294,18 +300,18 @@ public class GraphPanel extends JPanel {
      * @param g The graphics to paint to
      */
     private void draw(Graphics g) {
-        synchronized (pt) {
-            log.logln(LogL.GUI_SEQ, "GraphPanel.draw(): draw imgSize=(" + imageSizeX + "," + imageSizeY + ")");
-            if (defaultViewOnNextDraw) {
-                defaultViewWithoutRedraw();
-                defaultViewOnNextDraw = false;
+        synchronized (this.pt) {
+            this.log.logln(LogL.GUI_SEQ, "GraphPanel.draw(): draw imgSize=(" + this.imageSizeX + "," + this.imageSizeY + ")");
+            if (this.defaultViewOnNextDraw) {
+                this.defaultViewWithoutRedraw();
+                this.defaultViewOnNextDraw = false;
             }
 
-            g.clearRect(0, 0, imageSizeX, imageSizeY);
-            pt.drawBackground(g);
+            g.clearRect(0, 0, this.imageSizeX, this.imageSizeY);
+            this.pt.drawBackground(g);
 
             if (Configuration.useMap) {
-                SinalgoRuntime.map.paintMap(g, pt);
+                SinalgoRuntime.map.paintMap(g, this.pt);
             }
 
             g.setColor(Color.BLACK);
@@ -320,7 +326,7 @@ public class GraphPanel extends JPanel {
                         Node node = nodeEnumer.nextElement();
                         // first draw all outgoing edges of this node
                         for (Edge e : node.getOutgoingConnections()) {
-                            e.draw(g, pt);
+                            e.draw(g, this.pt);
                         }
                     }
                 }
@@ -330,7 +336,7 @@ public class GraphPanel extends JPanel {
                     nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
                     while (nodeEnumer.hasMoreElements()) {
                         Node node = nodeEnumer.nextElement();
-                        node.draw(g, pt, false);
+                        node.draw(g, this.pt, false);
                     }
                 }
             } catch (ConcurrentModificationException eME) {
@@ -347,7 +353,7 @@ public class GraphPanel extends JPanel {
             }
 
             if (Configuration.showMessageAnimations) {
-                Animations.drawEnvelopes(g, pt);
+                Animations.drawEnvelopes(g, this.pt);
             }
 
             // perform the custom drawing. Note that the custom paint is only called when
@@ -355,7 +361,7 @@ public class GraphPanel extends JPanel {
             // entire graph was painted. This ensures that there should be no conflict due
             // to any
             // concurrent data accesses
-            Global.customGlobal.customPaint(g, pt);
+            Global.customGlobal.customPaint(g, this.pt);
         }
     }
 
@@ -369,27 +375,27 @@ public class GraphPanel extends JPanel {
      */
     public void drawOnTop(Graphics g) {
         // draw the line to add a new edge
-        if (nodeToAddEdge != null) {
-            pt.translateToGUIPosition(nodeToAddEdge.getPosition());
-            if (pt.getGuiX() != currentCursorPosition.x || pt.getGuiY() != currentCursorPosition.y) {
-                Arrow.drawArrow(pt.getGuiX(), pt.getGuiY(), currentCursorPosition.x, currentCursorPosition.y, g, pt, Color.RED);
+        if (this.nodeToAddEdge != null) {
+            this.pt.translateToGUIPosition(this.nodeToAddEdge.getPosition());
+            if (this.pt.getGuiX() != this.currentCursorPosition.x || this.pt.getGuiY() != this.currentCursorPosition.y) {
+                Arrow.drawArrow(this.pt.getGuiX(), this.pt.getGuiY(), this.currentCursorPosition.x, this.currentCursorPosition.y, g, this.pt, Color.RED);
             }
         }
 
         // draw the rectangle for zooming
-        if (zoomRect != null) {
-            if ((Math.abs(zoomRect.height) > zoomRectMinSize) && (Math.abs(zoomRect.width) > zoomRectMinSize)) {
+        if (this.zoomRect != null) {
+            if ((Math.abs(this.zoomRect.height) > this.zoomRectMinSize) && (Math.abs(this.zoomRect.width) > this.zoomRectMinSize)) {
                 Color temp = g.getColor();
                 g.setColor(Color.RED);
-                int topx = zoomRect.x;
-                int topy = zoomRect.y;
-                if (zoomRect.width < 0) {
-                    topx += zoomRect.width;
+                int topx = this.zoomRect.x;
+                int topy = this.zoomRect.y;
+                if (this.zoomRect.width < 0) {
+                    topx += this.zoomRect.width;
                 }
-                if (zoomRect.height < 0) {
-                    topy += zoomRect.height;
+                if (this.zoomRect.height < 0) {
+                    topy += this.zoomRect.height;
                 }
-                g.drawRect(topx, topy, Math.abs(zoomRect.width), Math.abs(zoomRect.height));
+                g.drawRect(topx, topy, Math.abs(this.zoomRect.width), Math.abs(this.zoomRect.height));
                 // VERY strange: If we also draw some non-vertical/non-horizontal lines when
                 // drawing
                 // the rectangle (which consists of only vertical and horizontal lines), the
@@ -398,40 +404,40 @@ public class GraphPanel extends JPanel {
                 // the
                 // line outside the clipping area seems not to help.)
                 // OK - seems not to be a problem on all PCs...
-                g.drawLine(zoomRect.x, zoomRect.y, zoomRect.x + 1, zoomRect.y + 1);
+                g.drawLine(this.zoomRect.x, this.zoomRect.y, this.zoomRect.x + 1, this.zoomRect.y + 1);
                 g.setColor(temp);
             }
         }
 
         // Draw the highlighted node
-        for (Node highLighted : nodesToHighlight) {
-            highLighted.draw(g, pt, true);
+        for (Node highLighted : this.nodesToHighlight) {
+            highLighted.draw(g, this.pt, true);
         }
-        if (toolTipDrawCoordCube != null) {
-            this.drawNodeCubeCoords(g, toolTipDrawCoordCube);
+        if (this.toolTipDrawCoordCube != null) {
+            this.drawNodeCubeCoords(g, this.toolTipDrawCoordCube);
         }
-        if (nodeToDragDrawCoordCube != null) {
-            this.drawNodeCubeCoords(g, nodeToDragDrawCoordCube);
+        if (this.nodeToDragDrawCoordCube != null) {
+            this.drawNodeCubeCoords(g, this.nodeToDragDrawCoordCube);
         }
-        for (Node cubeNode : nodesToDrawCoordCube) {
+        for (Node cubeNode : this.nodesToDrawCoordCube) {
             this.drawNodeCubeCoords(g, cubeNode);
         }
-        if (nodeToAddEdge != null) {
-            nodeToAddEdge.draw(g, pt, true);
+        if (this.nodeToAddEdge != null) {
+            this.nodeToAddEdge.draw(g, this.pt, true);
         }
-        if (targetNodeToAddEdge != null) {
-            targetNodeToAddEdge.draw(g, pt, true);
+        if (this.targetNodeToAddEdge != null) {
+            this.targetNodeToAddEdge.draw(g, this.pt, true);
         }
-        if (nodeToDrag != null) {
-            nodeToDrag.draw(g, pt, true);
+        if (this.nodeToDrag != null) {
+            this.nodeToDrag.draw(g, this.pt, true);
         }
 
-        if (userSelectsNodeMode) {
-            if (userSelectsNodeCurrentFocus != null) {
-                userSelectsNodeCurrentFocus.draw(g, pt, true);
+        if (this.userSelectsNodeMode) {
+            if (this.userSelectsNodeCurrentFocus != null) {
+                this.userSelectsNodeCurrentFocus.draw(g, this.pt, true);
             }
-            if (!userSelectsNodeHandler.isEmpty()) {
-                Tuple<NodeSelectionHandler, String> h = userSelectsNodeHandler.peek();
+            if (!this.userSelectsNodeHandler.isEmpty()) {
+                Tuple<NodeSelectionHandler, String> h = this.userSelectsNodeHandler.peek();
                 String text = h.getSecond();
                 String textCancel = "Cancel";
                 Font font = new Font(null, Font.PLAIN, 12);
@@ -449,9 +455,9 @@ public class GraphPanel extends JPanel {
                 g.setColor(Color.BLACK);
                 g.drawString(textCancel, len1 + 25, height + 2);
                 // set the
-                cancelAreaWidth = len2 + 25;
-                cancelAreaHeight = height + 9;
-                cancelAreaOffsetX = len1 + 10;
+                this.cancelAreaWidth = len2 + 25;
+                this.cancelAreaHeight = height + 9;
+                this.cancelAreaOffsetX = len1 + 10;
             }
         }
     }
@@ -478,7 +484,7 @@ public class GraphPanel extends JPanel {
      * method is closed.
      */
     public void forceDrawInNextPaint() {
-        forcedDraw = true;
+        this.forcedDraw = true;
     }
 
     /**
@@ -518,17 +524,17 @@ public class GraphPanel extends JPanel {
         Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(false);
         while (nodeEnumer.hasMoreElements()) {
             Node node = nodeEnumer.nextElement();
-            if (node.isInside(event.getX(), event.getY(), pt)) {
+            if (node.isInside(event.getX(), event.getY(), this.pt)) {
                 if (Configuration.dimensions == 3) {
-                    toolTipDrawCoordCube = node;
-                    repaint();
+                    this.toolTipDrawCoordCube = node;
+                    this.repaint();
                 }
                 return "Node " + node.getID() + ":\n" + node.toString();
             }
             // give precendence to the nodes - only if there is no node at the cursor,
             // select the edge
             if (edgeUnderPos == null) {
-                edgeUnderPos = getFirstEdgeAtPosition(event.getX(), event.getY(), node);
+                edgeUnderPos = this.getFirstEdgeAtPosition(event.getX(), event.getY(), node);
             }
         }
         if (edgeUnderPos != null) {
@@ -554,10 +560,10 @@ public class GraphPanel extends JPanel {
             throw new SinalgoFatalException(
                     "Invalid call to 'GUI.getNodeSelectedByUser()'. This method is not supported in batch mode.");
         }
-        userSelectsNodeHandler.push(new Tuple<>(handler, text));
-        userSelectsNodeMode = true;
-        setDefaultCursor();
-        repaint(); // async call that does not repaint the network graph, but only the stuff on top
+        this.userSelectsNodeHandler.push(new Tuple<>(handler, text));
+        this.userSelectsNodeMode = true;
+        this.setDefaultCursor();
+        this.repaint(); // async call that does not repaint the network graph, but only the stuff on top
         // of the graph
     }
 
@@ -565,10 +571,10 @@ public class GraphPanel extends JPanel {
      * Set the default mouse cursor, depending on the current state of the GUI.
      */
     private void setDefaultCursor() {
-        if (userSelectsNodeMode) {
-            parent.getComponent(0).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        if (this.userSelectsNodeMode) {
+            this.parent.getComponent(0).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         } else {
-            parent.getComponent(0).setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            this.parent.getComponent(0).setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
     }
 
@@ -579,7 +585,7 @@ public class GraphPanel extends JPanel {
      * @param n The node to add
      */
     public void setNodeToDrawCoordinateCube(Node n) {
-        nodesToDrawCoordCube.add(n);
+        this.nodesToDrawCoordCube.add(n);
     }
 
     /**
@@ -589,7 +595,7 @@ public class GraphPanel extends JPanel {
      * @return True if the coordinate cube is drawn for the given node
      */
     public boolean containsNodeToDrawCoordinateCube(Node n) {
-        return nodesToDrawCoordCube.contains(n);
+        return this.nodesToDrawCoordCube.contains(n);
     }
 
     /**
@@ -598,7 +604,7 @@ public class GraphPanel extends JPanel {
      * @param n The node to remove.
      */
     public void removeNodeToDrawCoordinateCube(Node n) {
-        nodesToDrawCoordCube.remove(n);
+        this.nodesToDrawCoordCube.remove(n);
     }
 
     /**
@@ -611,9 +617,9 @@ public class GraphPanel extends JPanel {
      */
     public void setNodeHighlighted(Node n, boolean highlighted) {
         if (highlighted) {
-            nodesToHighlight.add(n);
+            this.nodesToHighlight.add(n);
         } else // if this is highlighted node, dis-highlight it.
-            nodesToHighlight.remove(n);
+            this.nodesToHighlight.remove(n);
     }
 
     /**
@@ -629,7 +635,7 @@ public class GraphPanel extends JPanel {
         Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(false);
         while (nodeEnumer.hasMoreElements()) {
             Node node = nodeEnumer.nextElement();
-            if (node.isInside(x, y, pt)) {
+            if (node.isInside(x, y, this.pt)) {
                 return node;
             }
         }
@@ -651,14 +657,14 @@ public class GraphPanel extends JPanel {
      */
     public Edge getFirstEdgeAtPosition(int x, int y, Node n) {
         for (Edge e : n.getOutgoingConnections()) {
-            if (e.isInside(x, y, pt)) {
+            if (e.isInside(x, y, this.pt)) {
                 Edge opposEdge = e.getOppositeEdge();
                 if (opposEdge != null) {
                     // find out which one we want to delete.
-                    pt.translateToGUIPosition(e.getEndNode().getPosition());
-                    Position oneEnd = new Position(pt.getGuiXDouble(), pt.getGuiYDouble(), 0.0);
-                    pt.translateToGUIPosition(opposEdge.getEndNode().getPosition());
-                    Position otherEnd = new Position(pt.getGuiXDouble(), pt.getGuiYDouble(), 0.0);
+                    this.pt.translateToGUIPosition(e.getEndNode().getPosition());
+                    Position oneEnd = new Position(this.pt.getGuiXDouble(), this.pt.getGuiYDouble(), 0.0);
+                    this.pt.translateToGUIPosition(opposEdge.getEndNode().getPosition());
+                    Position otherEnd = new Position(this.pt.getGuiXDouble(), this.pt.getGuiYDouble(), 0.0);
                     Position eventPos = new Position(x, y, 0.0);
 
                     if (eventPos.distanceTo(oneEnd) > eventPos.distanceTo(otherEnd)) {
@@ -687,12 +693,12 @@ public class GraphPanel extends JPanel {
      */
     public void drawCubeCoordLine(Graphics g, double fromX, double fromY, double fromZ, double toX, double toY,
                                   double toZ) {
-        pt.translateToGUIPosition(fromX, fromY, fromZ);
-        int guiX = pt.getGuiX();
-        int guiY = pt.getGuiY();
-        pt.translateToGUIPosition(toX, toY, toZ);
+        this.pt.translateToGUIPosition(fromX, fromY, fromZ);
+        int guiX = this.pt.getGuiX();
+        int guiY = this.pt.getGuiY();
+        this.pt.translateToGUIPosition(toX, toY, toZ);
         g.setColor(Color.LIGHT_GRAY);
-        g.drawLine(guiX, guiY, pt.getGuiX(), pt.getGuiY());
+        g.drawLine(guiX, guiY, this.pt.getGuiX(), this.pt.getGuiY());
     }
 
     /**
@@ -780,35 +786,35 @@ public class GraphPanel extends JPanel {
 
             Global.log.logln(LogL.GUI_DETAIL, "Mouse Clicked");
 
-            if (userSelectsNodeMode && event.getClickCount() == 1 && event.getButton() == MouseEvent.BUTTON1) {
-                if (event.getX() >= cancelAreaOffsetX && event.getX() <= cancelAreaOffsetX + cancelAreaWidth
-                        && event.getY() <= cancelAreaHeight) {
-                    if (!userSelectsNodeHandler.isEmpty()) {
-                        Tuple<NodeSelectionHandler, String> h = userSelectsNodeHandler.pop();
-                        userSelectsNodeMode = !userSelectsNodeHandler.isEmpty();
-                        repaint(); // async call that does not repaint the network graph, but only the stuff on top
+            if (GraphPanel.this.userSelectsNodeMode && event.getClickCount() == 1 && event.getButton() == MouseEvent.BUTTON1) {
+                if (event.getX() >= GraphPanel.this.cancelAreaOffsetX && event.getX() <= GraphPanel.this.cancelAreaOffsetX + GraphPanel.this.cancelAreaWidth
+                        && event.getY() <= GraphPanel.this.cancelAreaHeight) {
+                    if (!GraphPanel.this.userSelectsNodeHandler.isEmpty()) {
+                        Tuple<NodeSelectionHandler, String> h = GraphPanel.this.userSelectsNodeHandler.pop();
+                        GraphPanel.this.userSelectsNodeMode = !GraphPanel.this.userSelectsNodeHandler.isEmpty();
+                        GraphPanel.this.repaint(); // async call that does not repaint the network graph, but only the stuff on top
                         // of the graph
                         h.getFirst().handleNodeSelectedEvent(null); // abort
                     } else {
-                        userSelectsNodeMode = false;
-                        repaint(); // async call that does not repaint the network graph, but only the stuff on top
+                        GraphPanel.this.userSelectsNodeMode = false;
+                        GraphPanel.this.repaint(); // async call that does not repaint the network graph, but only the stuff on top
                         // of the graph
                     }
-                    setDefaultCursor();
+                    GraphPanel.this.setDefaultCursor();
                 }
             }
 
             if ((event.getClickCount() == 2) && (event.getButton() == MouseEvent.BUTTON1)) {
                 // Left mouse has been clicked - create a default node at this position
-                if (pt.supportReverseTranslation()) {
-                    pt.translateToLogicPosition(event.getX(), event.getY());
+                if (GraphPanel.this.pt.supportReverseTranslation()) {
+                    GraphPanel.this.pt.translateToLogicPosition(event.getX(), event.getY());
                     try {
-                        parent.addSingleDefaultNode(new Position(pt.getLogicX(), pt.getLogicY(), pt.getLogicZ()));
-                        parent.redrawGUI();
+                        GraphPanel.this.parent.addSingleDefaultNode(new Position(GraphPanel.this.pt.getLogicX(), GraphPanel.this.pt.getLogicY(), GraphPanel.this.pt.getLogicZ()));
+                        GraphPanel.this.parent.redrawGUI();
                     } catch (WrongConfigurationException e1) {
                         Main.minorError(e1);
                     }
-                    repaint();
+                    GraphPanel.this.repaint();
                 } else {
                     // Cannot create a new node clicki-bunti if the gui coord cannot be translated
                     // to logic coordinates.
@@ -822,40 +828,40 @@ public class GraphPanel extends JPanel {
                 Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(false);
                 while (nodeEnumer.hasMoreElements()) {
                     Node node = nodeEnumer.nextElement();
-                    if (node.isInside(event.getX(), event.getY(), pt)) {
+                    if (node.isInside(event.getX(), event.getY(), GraphPanel.this.pt)) {
                         // rightClick on a Node
                         clickedNode = node;
                         break; // take the first node that matches
                     }
                     if (clickedEdge == null) {
-                        clickedEdge = getFirstEdgeAtPosition(event.getX(), event.getY(), node);
+                        clickedEdge = GraphPanel.this.getFirstEdgeAtPosition(event.getX(), event.getY(), node);
                     }
                 }
                 if (clickedNode != null) {
                     Global.log.logln(LogL.GUI_DETAIL, "User clicked on node " + clickedNode.getID());
-                    nodePopupMenu.compose(clickedNode);
-                    nodePopupMenu.show(event.getComponent(), event.getX(), event.getY());
+                    GraphPanel.this.nodePopupMenu.compose(clickedNode);
+                    GraphPanel.this.nodePopupMenu.show(event.getComponent(), event.getX(), event.getY());
                 } else if (clickedEdge != null) {
                     Global.log.logln(LogL.GUI_DETAIL, "right click on a edge");
-                    edgePopupMenu.compose(clickedEdge);
-                    edgePopupMenu.show(event.getComponent(), event.getX(), event.getY());
+                    GraphPanel.this.edgePopupMenu.compose(clickedEdge);
+                    GraphPanel.this.edgePopupMenu.show(event.getComponent(), event.getX(), event.getY());
                 } else {
                     Global.log.logln(LogL.GUI_DETAIL, "User clicked in the free space");
-                    spacePopupMenu.compose(event.getPoint());
-                    spacePopupMenu.show(event.getComponent(), event.getX(), event.getY());
+                    GraphPanel.this.spacePopupMenu.compose(event.getPoint());
+                    GraphPanel.this.spacePopupMenu.show(event.getComponent(), event.getX(), event.getY());
                 }
-            } else if (event.getButton() == MouseEvent.BUTTON1 && userSelectsNodeMode) {
-                Node selected = getFirstNodeAtPosition(event.getX(), event.getY());
+            } else if (event.getButton() == MouseEvent.BUTTON1 && GraphPanel.this.userSelectsNodeMode) {
+                Node selected = GraphPanel.this.getFirstNodeAtPosition(event.getX(), event.getY());
                 if (selected != null) {
-                    if (!userSelectsNodeHandler.isEmpty()) {
-                        Tuple<NodeSelectionHandler, String> h = userSelectsNodeHandler.pop();
-                        userSelectsNodeMode = !userSelectsNodeHandler.isEmpty();
-                        setDefaultCursor();
-                        repaint(); // async call that does not repaint the network graph, but only the stuff on top
+                    if (!GraphPanel.this.userSelectsNodeHandler.isEmpty()) {
+                        Tuple<NodeSelectionHandler, String> h = GraphPanel.this.userSelectsNodeHandler.pop();
+                        GraphPanel.this.userSelectsNodeMode = !GraphPanel.this.userSelectsNodeHandler.isEmpty();
+                        GraphPanel.this.setDefaultCursor();
+                        GraphPanel.this.repaint(); // async call that does not repaint the network graph, but only the stuff on top
                         // of the graph
                         h.getFirst().handleNodeSelectedEvent(selected);
                     } else {
-                        userSelectsNodeMode = false;
+                        GraphPanel.this.userSelectsNodeMode = false;
                     }
                 }
             }
@@ -873,44 +879,44 @@ public class GraphPanel extends JPanel {
 
             if (e.getButton() == MouseEvent.BUTTON3) {
                 // The right mouse button is pressed : move a node
-                if (nodeToDrag == null) {
-                    Node node = getFirstNodeAtPosition(e.getX(), e.getY());
+                if (GraphPanel.this.nodeToDrag == null) {
+                    Node node = GraphPanel.this.getFirstNodeAtPosition(e.getX(), e.getY());
                     if (null != node) {
-                        nodeToDragInitialPosition.assign(node.getPosition());
+                        GraphPanel.this.nodeToDragInitialPosition.assign(node.getPosition());
                         GraphPanel.this.requestFocusInWindow(); // request focus s.t. key events are obtained (escape)
-                        if (pt.supportReverseTranslation()) { // only start dragging if it's supported
-                            nodeToDrag = node;
-                            parent.getComponent(0).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                        if (GraphPanel.this.pt.supportReverseTranslation()) { // only start dragging if it's supported
+                            GraphPanel.this.nodeToDrag = node;
+                            GraphPanel.this.parent.getComponent(0).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                         } else {
-                            nodeToDrag = node;
-                            nodeToDragDrawCoordCube = node;
-                            minMouseMovementUntilNodeMovement = 10;
-                            repaint(); // did not change the graph!
+                            GraphPanel.this.nodeToDrag = node;
+                            GraphPanel.this.nodeToDragDrawCoordCube = node;
+                            GraphPanel.this.minMouseMovementUntilNodeMovement = 10;
+                            GraphPanel.this.repaint(); // did not change the graph!
                         }
                     } else {
                         // rotate if 3D
-                        if (pt instanceof Transformation3D) {
-                            rotateStartPoint = e.getPoint();
+                        if (GraphPanel.this.pt instanceof Transformation3D) {
+                            GraphPanel.this.rotateStartPoint = e.getPoint();
                         }
                     }
                 }
             } else if (e.getButton() == MouseEvent.BUTTON1) { // the left-button
                 if (e.isControlDown()) {
                     // left button + control = zoom into a region
-                    zoomRect = new Rectangle(e.getX(), e.getY(), 0, 0);
+                    GraphPanel.this.zoomRect = new Rectangle(e.getX(), e.getY(), 0, 0);
                 } else {
 
                     // The left mouse button is pressed - connect two nodes if the mouse
                     // event started over a node
-                    if (nodeToAddEdge == null) {
-                        Node node = getFirstNodeAtPosition(e.getX(), e.getY());
+                    if (GraphPanel.this.nodeToAddEdge == null) {
+                        Node node = GraphPanel.this.getFirstNodeAtPosition(e.getX(), e.getY());
                         if (null != node) {
-                            nodeToAddEdge = node;
+                            GraphPanel.this.nodeToAddEdge = node;
                             GraphPanel.this.requestFocusInWindow(); // request focus to obtain key events (escape)
                         } else {
                             // scroll the pane
-                            shiftStartPoint = e.getPoint();
-                            parent.getComponent(0).setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                            GraphPanel.this.shiftStartPoint = e.getPoint();
+                            GraphPanel.this.parent.getComponent(0).setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
                         }
                     }
                 }
@@ -928,60 +934,60 @@ public class GraphPanel extends JPanel {
 
             Global.log.logln(LogL.GUI_DETAIL, "Mouse Released");
 
-            shiftStartPoint = null;
-            rotateStartPoint = null;
+            GraphPanel.this.shiftStartPoint = null;
+            GraphPanel.this.rotateStartPoint = null;
 
             if (e.getButton() == MouseEvent.BUTTON1) { // the left button
-                if (nodeToAddEdge != null) {
-                    Node targetNode = getFirstNodeAtPosition(e.getX(), e.getY());
+                if (GraphPanel.this.nodeToAddEdge != null) {
+                    Node targetNode = GraphPanel.this.getFirstNodeAtPosition(e.getX(), e.getY());
                     // check if there is a targetNode otherwise the endpoint isn't a node (do
                     // nothing then)
                     if (targetNode != null) {
                         // check if the target node is different to the startnode (do not add an edge
                         // from a node to itself
-                        if (targetNode.getID() != nodeToAddEdge.getID()) {
+                        if (targetNode.getID() != GraphPanel.this.nodeToAddEdge.getID()) {
                             try {
                                 // the user added a edge from nodeToAddEdge to targetNode
-                                nodeToAddEdge.getOutgoingConnections().add(nodeToAddEdge, targetNode, false);
+                                GraphPanel.this.nodeToAddEdge.getOutgoingConnections().add(GraphPanel.this.nodeToAddEdge, targetNode, false);
                             } catch (WrongConfigurationException wCE) {
-                                JOptionPane.showMessageDialog(parent, wCE.getMessage(), "Configuration Error",
+                                JOptionPane.showMessageDialog(GraphPanel.this.parent, wCE.getMessage(), "Configuration Error",
                                         JOptionPane.ERROR_MESSAGE);
                             }
                         }
                     }
-                    targetNodeToAddEdge = null;
-                    nodeToAddEdge = null;
+                    GraphPanel.this.targetNodeToAddEdge = null;
+                    GraphPanel.this.nodeToAddEdge = null;
                     if (targetNode != null) {
-                        parent.redrawGUI(); // we added an edge, need to repaint the graph
+                        GraphPanel.this.parent.redrawGUI(); // we added an edge, need to repaint the graph
                     } else {
-                        repaint();
+                        GraphPanel.this.repaint();
                     }
                 } else {
                     // Translate the graph
-                    setDefaultCursor();
+                    GraphPanel.this.setDefaultCursor();
                 }
                 // Handle the button-release for the case that we were zooming into a rectangle
-                if (zoomRect != null) {
-                    if ((Math.abs(zoomRect.height) > zoomRectMinSize) && (Math.abs(zoomRect.width) > zoomRectMinSize)) {
-                        if (zoomRect.width < 0) {
-                            zoomRect.x += zoomRect.width;
-                            zoomRect.width = -zoomRect.width;
+                if (GraphPanel.this.zoomRect != null) {
+                    if ((Math.abs(GraphPanel.this.zoomRect.height) > GraphPanel.this.zoomRectMinSize) && (Math.abs(GraphPanel.this.zoomRect.width) > GraphPanel.this.zoomRectMinSize)) {
+                        if (GraphPanel.this.zoomRect.width < 0) {
+                            GraphPanel.this.zoomRect.x += GraphPanel.this.zoomRect.width;
+                            GraphPanel.this.zoomRect.width = -GraphPanel.this.zoomRect.width;
                         }
-                        if (zoomRect.height < 0) {
-                            zoomRect.y += zoomRect.height;
-                            zoomRect.height = -zoomRect.height;
+                        if (GraphPanel.this.zoomRect.height < 0) {
+                            GraphPanel.this.zoomRect.y += GraphPanel.this.zoomRect.height;
+                            GraphPanel.this.zoomRect.height = -GraphPanel.this.zoomRect.height;
                         }
-                        pt.zoomToRect(zoomRect);
-                        parent.setZoomFactor(pt.getZoomFactor());
+                        GraphPanel.this.pt.zoomToRect(GraphPanel.this.zoomRect);
+                        GraphPanel.this.parent.setZoomFactor(GraphPanel.this.pt.getZoomFactor());
                     }
-                    zoomRect = null;
-                    parent.redrawGUI();
+                    GraphPanel.this.zoomRect = null;
+                    GraphPanel.this.parent.redrawGUI();
                 }
             } else if (e.getButton() == MouseEvent.BUTTON3) { // the right button
-                nodeToDragDrawCoordCube = null;
-                setDefaultCursor();
-                nodeToDrag = null;
-                parent.redrawGUI();
+                GraphPanel.this.nodeToDragDrawCoordCube = null;
+                GraphPanel.this.setDefaultCursor();
+                GraphPanel.this.nodeToDrag = null;
+                GraphPanel.this.parent.redrawGUI();
             }
             Global.log.logln(LogL.GUI_ULTRA_DETAIL, "Mouse Released finished");
         }
@@ -1001,7 +1007,7 @@ public class GraphPanel extends JPanel {
                 dx = move;
                 requireMove = true;
             }
-            if (p.x > imageSizeX - border) {
+            if (p.x > GraphPanel.this.imageSizeX - border) {
                 dx = -move;
                 requireMove = true;
             }
@@ -1009,12 +1015,12 @@ public class GraphPanel extends JPanel {
                 dy = 10;
                 requireMove = true;
             }
-            if (p.y > imageSizeY - border) {
+            if (p.y > GraphPanel.this.imageSizeY - border) {
                 dy = -move;
                 requireMove = true;
             }
             if (requireMove) {
-                pt.moveView(dx, dy);
+                GraphPanel.this.pt.moveView(dx, dy);
             }
         }
 
@@ -1025,60 +1031,60 @@ public class GraphPanel extends JPanel {
                 return;
             }
 
-            currentCursorPosition.setLocation(e.getX(), e.getY());
-            if (pt.supportReverseTranslation()) {
-                pt.translateToLogicPosition(e.getX(), e.getY());
-                if ((pt.getLogicX() < Configuration.dimX) && (pt.getLogicX() > 0) && (pt.getLogicY() < Configuration.dimY)
-                        && (pt.getLogicY() > 0)) {
-                    parent.setMousePosition(pt.getLogicPositionString());
+            GraphPanel.this.currentCursorPosition.setLocation(e.getX(), e.getY());
+            if (GraphPanel.this.pt.supportReverseTranslation()) {
+                GraphPanel.this.pt.translateToLogicPosition(e.getX(), e.getY());
+                if ((GraphPanel.this.pt.getLogicX() < Configuration.dimX) && (GraphPanel.this.pt.getLogicX() > 0) && (GraphPanel.this.pt.getLogicY() < Configuration.dimY)
+                        && (GraphPanel.this.pt.getLogicY() > 0)) {
+                    GraphPanel.this.parent.setMousePosition(GraphPanel.this.pt.getLogicPositionString());
                 }
             }
 
             Global.log.logln(LogL.GUI_DETAIL, "Mouse Dragged");
-            if (nodeToDrag != null) {
-                if (pt.supportReverseTranslation()) {
+            if (GraphPanel.this.nodeToDrag != null) {
+                if (GraphPanel.this.pt.supportReverseTranslation()) {
                     // cannot support node movement by the mouse if the gui coordinate cannot be
                     // translated to the logic counterpart
-                    pt.translateToLogicPosition(e.getX(), e.getY());
-                    nodeToDrag.setPosition(pt.getLogicX(), pt.getLogicY(), pt.getLogicZ());
-                    moveViewOnMousesDrag(e.getPoint());
-                    parent.redrawGUI(); // we need to repaint the graph panel
+                    GraphPanel.this.pt.translateToLogicPosition(e.getX(), e.getY());
+                    GraphPanel.this.nodeToDrag.setPosition(GraphPanel.this.pt.getLogicX(), GraphPanel.this.pt.getLogicY(), GraphPanel.this.pt.getLogicZ());
+                    this.moveViewOnMousesDrag(e.getPoint());
+                    GraphPanel.this.parent.redrawGUI(); // we need to repaint the graph panel
                 } else {
                     // 3D: move along the axis to which the angle of the mouse-motion is smallest
-                    pt.translateToGUIPosition(nodeToDrag.getPosition());
+                    GraphPanel.this.pt.translateToGUIPosition(GraphPanel.this.nodeToDrag.getPosition());
 
                     // mouse diff vector
-                    int mouseDx = e.getX() - pt.getGuiX();
-                    int mouseDy = e.getY() - pt.getGuiY();
+                    int mouseDx = e.getX() - GraphPanel.this.pt.getGuiX();
+                    int mouseDy = e.getY() - GraphPanel.this.pt.getGuiY();
                     double mouseLength = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
-                    if (mouseLength <= minMouseMovementUntilNodeMovement) {
+                    if (mouseLength <= GraphPanel.this.minMouseMovementUntilNodeMovement) {
                         return;
                     }
-                    minMouseMovementUntilNodeMovement = 1; // after starting to move, we use a better resolution
+                    GraphPanel.this.minMouseMovementUntilNodeMovement = 1; // after starting to move, we use a better resolution
 
-                    pt.translateToGUIPosition(0, 0, 0);
-                    double originX = pt.getGuiXDouble(), originY = pt.getGuiYDouble();
+                    GraphPanel.this.pt.translateToGUIPosition(0, 0, 0);
+                    double originX = GraphPanel.this.pt.getGuiXDouble(), originY = GraphPanel.this.pt.getGuiYDouble();
 
                     // mouse-movement in direction of x-axis
-                    pt.translateToGUIPosition(1, 0, 0);
-                    double cX = pt.getGuiXDouble() - originX;
-                    double cY = pt.getGuiYDouble() - originY;
+                    GraphPanel.this.pt.translateToGUIPosition(1, 0, 0);
+                    double cX = GraphPanel.this.pt.getGuiXDouble() - originX;
+                    double cY = GraphPanel.this.pt.getGuiYDouble() - originY;
                     double xLength = Math.sqrt(cX * cX + cY * cY);
                     double aX = (mouseDx * cX + mouseDy * cY) / (mouseLength * xLength); // cos(angle) of mouse-movement
                     // with x-axis
 
                     // mouse-movement in direction of y-axis
-                    pt.translateToGUIPosition(0, 1, 0);
-                    cX = pt.getGuiXDouble() - originX;
-                    cY = pt.getGuiYDouble() - originY;
+                    GraphPanel.this.pt.translateToGUIPosition(0, 1, 0);
+                    cX = GraphPanel.this.pt.getGuiXDouble() - originX;
+                    cY = GraphPanel.this.pt.getGuiYDouble() - originY;
                     double yLength = Math.sqrt(cX * cX + cY * cY);
                     double aY = (mouseDx * cX + mouseDy * cY) / (mouseLength * yLength); // cos(angle) of mouse-movement
                     // with y-axis
 
                     // mouse-movement in direction of z-axis
-                    pt.translateToGUIPosition(0, 0, 1);
-                    cX = pt.getGuiXDouble() - originX;
-                    cY = pt.getGuiYDouble() - originY;
+                    GraphPanel.this.pt.translateToGUIPosition(0, 0, 1);
+                    cX = GraphPanel.this.pt.getGuiXDouble() - originX;
+                    cY = GraphPanel.this.pt.getGuiYDouble() - originY;
                     double zLength = Math.sqrt(cX * cX + cY * cY);
                     double aZ = (mouseDx * cX + mouseDy * cY) / (mouseLength * zLength); // cos(angle) of mouse-movement
                     // with z-axis
@@ -1094,38 +1100,38 @@ public class GraphPanel extends JPanel {
                         aZ = 0;
                     }
 
-                    Position p = nodeToDrag.getPosition();
+                    Position p = GraphPanel.this.nodeToDrag.getPosition();
                     if (Math.abs(aX) > Math.abs(aY) && Math.abs(aX) > Math.abs(aZ)) {
-                        nodeToDrag.setPosition(p.getXCoord() + Math.signum(aX) * mouseLength / xLength, p.getYCoord(), p.getZCoord());
+                        GraphPanel.this.nodeToDrag.setPosition(p.getXCoord() + Math.signum(aX) * mouseLength / xLength, p.getYCoord(), p.getZCoord());
                     } else if (Math.abs(aY) > Math.abs(aZ)) {
-                        nodeToDrag.setPosition(p.getXCoord(), p.getYCoord() + Math.signum(aY) * mouseLength / yLength, p.getZCoord());
+                        GraphPanel.this.nodeToDrag.setPosition(p.getXCoord(), p.getYCoord() + Math.signum(aY) * mouseLength / yLength, p.getZCoord());
                     } else {
-                        nodeToDrag.setPosition(p.getXCoord(), p.getYCoord(), p.getZCoord() + Math.signum(aZ) * mouseLength / zLength);
+                        GraphPanel.this.nodeToDrag.setPosition(p.getXCoord(), p.getYCoord(), p.getZCoord() + Math.signum(aZ) * mouseLength / zLength);
                     }
-                    moveViewOnMousesDrag(e.getPoint());
-                    parent.redrawGUI(); // we need to repaint the graph panel
+                    this.moveViewOnMousesDrag(e.getPoint());
+                    GraphPanel.this.parent.redrawGUI(); // we need to repaint the graph panel
                 }
-            } else if (nodeToAddEdge != null) {
-                moveViewOnMousesDrag(e.getPoint());
-                targetNodeToAddEdge = getFirstNodeAtPosition(e.getX(), e.getY());
+            } else if (GraphPanel.this.nodeToAddEdge != null) {
+                this.moveViewOnMousesDrag(e.getPoint());
+                GraphPanel.this.targetNodeToAddEdge = GraphPanel.this.getFirstNodeAtPosition(e.getX(), e.getY());
                 // the drawing of the line is done while redrawing
-                repaint();
-            } else if (zoomRect != null) {
-                zoomRect.width = e.getX() - zoomRect.x;
-                zoomRect.height = e.getY() - zoomRect.y;
+                GraphPanel.this.repaint();
+            } else if (GraphPanel.this.zoomRect != null) {
+                GraphPanel.this.zoomRect.width = e.getX() - GraphPanel.this.zoomRect.x;
+                GraphPanel.this.zoomRect.height = e.getY() - GraphPanel.this.zoomRect.y;
                 // currently, it's only allowed to select the region from top left to bottom
                 // right :-(
                 // if(zoomRect.width < 0){ zoomRect.width = 0; }
                 // if(zoomRect.height < 0){ zoomRect.height = 0; }
-                repaint();
-            } else if (shiftStartPoint != null) {
-                pt.moveView(e.getX() - shiftStartPoint.x, e.getY() - shiftStartPoint.y);
-                shiftStartPoint = e.getPoint();
-                parent.redrawGUI(); // we need to redraw the graph - the view has changed
-            } else if (rotateStartPoint != null) {
-                if (pt instanceof Transformation3D) {
-                    Transformation3D t3d = (Transformation3D) pt;
-                    t3d.rotate(e.getX() - rotateStartPoint.x, e.getY() - rotateStartPoint.y, !e.isControlDown(), false); // read
+                GraphPanel.this.repaint();
+            } else if (GraphPanel.this.shiftStartPoint != null) {
+                GraphPanel.this.pt.moveView(e.getX() - GraphPanel.this.shiftStartPoint.x, e.getY() - GraphPanel.this.shiftStartPoint.y);
+                GraphPanel.this.shiftStartPoint = e.getPoint();
+                GraphPanel.this.parent.redrawGUI(); // we need to redraw the graph - the view has changed
+            } else if (GraphPanel.this.rotateStartPoint != null) {
+                if (GraphPanel.this.pt instanceof Transformation3D) {
+                    Transformation3D t3d = (Transformation3D) GraphPanel.this.pt;
+                    t3d.rotate(e.getX() - GraphPanel.this.rotateStartPoint.x, e.getY() - GraphPanel.this.rotateStartPoint.y, !e.isControlDown(), false); // read
                     // keyboard
                     // -
                     // ctrl
@@ -1133,8 +1139,8 @@ public class GraphPanel extends JPanel {
                     // to
                     // freely
                     // rotate
-                    rotateStartPoint = e.getPoint();
-                    parent.redrawGUI(); // need to redraw the graph - the view has changed
+                    GraphPanel.this.rotateStartPoint = e.getPoint();
+                    GraphPanel.this.parent.redrawGUI(); // need to redraw the graph - the view has changed
                 }
             }
             Global.log.logln(LogL.GUI_ULTRA_DETAIL, "Mouse Dragged finished");
@@ -1142,25 +1148,25 @@ public class GraphPanel extends JPanel {
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            currentCursorPosition.setLocation(e.getX(), e.getY());
-            if (pt.supportReverseTranslation()) {
-                pt.translateToLogicPosition(e.getX(), e.getY());
-                if ((pt.getLogicX() < Configuration.dimX) && (pt.getLogicX() > 0) && (pt.getLogicY() < Configuration.dimY)
-                        && (pt.getLogicY() > 0)) {
-                    parent.setMousePosition(pt.getLogicPositionString());
+            GraphPanel.this.currentCursorPosition.setLocation(e.getX(), e.getY());
+            if (GraphPanel.this.pt.supportReverseTranslation()) {
+                GraphPanel.this.pt.translateToLogicPosition(e.getX(), e.getY());
+                if ((GraphPanel.this.pt.getLogicX() < Configuration.dimX) && (GraphPanel.this.pt.getLogicX() > 0) && (GraphPanel.this.pt.getLogicY() < Configuration.dimY)
+                        && (GraphPanel.this.pt.getLogicY() > 0)) {
+                    GraphPanel.this.parent.setMousePosition(GraphPanel.this.pt.getLogicPositionString());
                 }
             }
 
-            if (userSelectsNodeMode) {
-                userSelectsNodeCurrentFocus = getFirstNodeAtPosition(e.getX(), e.getY());
-                repaint(); // async call that does not repaint the network graph, but only the stuff on top
+            if (GraphPanel.this.userSelectsNodeMode) {
+                GraphPanel.this.userSelectsNodeCurrentFocus = GraphPanel.this.getFirstNodeAtPosition(e.getX(), e.getY());
+                GraphPanel.this.repaint(); // async call that does not repaint the network graph, but only the stuff on top
                 // of the graph
             } else {
-                userSelectsNodeCurrentFocus = null;
+                GraphPanel.this.userSelectsNodeCurrentFocus = null;
             }
-            if (toolTipDrawCoordCube != null) {
-                toolTipDrawCoordCube = null;
-                repaint();
+            if (GraphPanel.this.toolTipDrawCoordCube != null) {
+                GraphPanel.this.toolTipDrawCoordCube = null;
+                GraphPanel.this.repaint();
             }
         }
 
@@ -1180,9 +1186,9 @@ public class GraphPanel extends JPanel {
             }
             int clicks = e.getWheelRotation();
             if (clicks < 0) {
-                parent.zoom(Configuration.wheelZoomStep); // zoom In
+                GraphPanel.this.parent.zoom(Configuration.wheelZoomStep); // zoom In
             } else {
-                parent.zoom(1.0 / Configuration.wheelZoomStep); // zoom out
+                GraphPanel.this.parent.zoom(1.0 / Configuration.wheelZoomStep); // zoom out
             }
         }
     } // END OF CLASS MyMouseListener
@@ -1193,20 +1199,20 @@ public class GraphPanel extends JPanel {
         public void keyPressed(KeyEvent e) {
             // react to pressing escape
             if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
-                if (nodeToDrag != null) { // stop dragging a node, and undo
-                    nodeToDrag.getPosition().assign(nodeToDragInitialPosition);
-                    nodeToDragDrawCoordCube = null;
-                    nodeToDrag = null;
-                    parent.redrawGUI(); // node position has changed, full repaint
+                if (GraphPanel.this.nodeToDrag != null) { // stop dragging a node, and undo
+                    GraphPanel.this.nodeToDrag.getPosition().assign(GraphPanel.this.nodeToDragInitialPosition);
+                    GraphPanel.this.nodeToDragDrawCoordCube = null;
+                    GraphPanel.this.nodeToDrag = null;
+                    GraphPanel.this.parent.redrawGUI(); // node position has changed, full repaint
                 }
-                if (nodeToAddEdge != null) {
-                    nodeToAddEdge = null;
-                    targetNodeToAddEdge = null;
-                    repaint(); // no need to redraw whole gui, just repaint layer
+                if (GraphPanel.this.nodeToAddEdge != null) {
+                    GraphPanel.this.nodeToAddEdge = null;
+                    GraphPanel.this.targetNodeToAddEdge = null;
+                    GraphPanel.this.repaint(); // no need to redraw whole gui, just repaint layer
                 }
-                if (zoomRect != null) {
-                    zoomRect = null;
-                    repaint();
+                if (GraphPanel.this.zoomRect != null) {
+                    GraphPanel.this.zoomRect = null;
+                    GraphPanel.this.repaint();
                 }
             }
         }
@@ -1227,13 +1233,13 @@ public class GraphPanel extends JPanel {
 
         @Override
         public void componentResized(ComponentEvent e) {
-            getNewOffscreen();
+            GraphPanel.this.getNewOffscreen();
             // don't force a redraw, s.t. if the resize happens during a simulation, the
             // graph is not repainted. (but this may leave an empty graph if a simulation is
             // running)
             // We could disallow to resize the window during simulation, but then, the
             // window flickers
-            parent.redrawGUI();
+            GraphPanel.this.parent.redrawGUI();
         }
 
         @Override

@@ -64,10 +64,10 @@ public abstract class Event implements DoublyLinkedListEntry {
      */
     public String getExecutionTimeString(int digits) {
         if (digits > 10) {
-            return Double.toString(time);
+            return Double.toString(this.time);
         }
         double factor = Math.pow(10, digits);
-        double temp = Math.round(time * factor) / factor;
+        double temp = Math.round(this.time * factor) / factor;
         return Double.toString(temp);
     }
 
@@ -130,6 +130,6 @@ public abstract class Event implements DoublyLinkedListEntry {
 
     @Override
     public DLLFingerList getDoublyLinkedListFinger() {
-        return dllFingerList;
+        return this.dllFingerList;
     }
 }

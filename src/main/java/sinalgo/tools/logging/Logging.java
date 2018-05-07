@@ -278,9 +278,9 @@ public class Logging {
      */
     public void log(boolean logFlag, String txt) {
         if (logFlag) {
-            out.print(txt);
+            this.out.print(txt);
             if (Configuration.eagerFlush) {
-                out.flush();
+                this.out.flush();
             }
         }
     }
@@ -291,9 +291,9 @@ public class Logging {
      * @param txt The text to log.
      */
     public void log(String txt) {
-        out.print(txt);
+        this.out.print(txt);
         if (Configuration.eagerFlush) {
-            out.flush();
+            this.out.flush();
         }
     }
 
@@ -305,9 +305,9 @@ public class Logging {
      */
     public void logln(boolean logFlag, String txt) {
         if (logFlag) {
-            out.println(txt);
+            this.out.println(txt);
             if (Configuration.eagerFlush) {
-                out.flush();
+                this.out.flush();
             }
         }
     }
@@ -318,9 +318,9 @@ public class Logging {
      * @param txt The log message to be printed.
      */
     public void logln(String txt) {
-        out.println(txt);
+        this.out.println(txt);
         if (Configuration.eagerFlush) {
-            out.flush();
+            this.out.flush();
         }
     }
 
@@ -328,9 +328,9 @@ public class Logging {
      * Adds a line-break to the log-file.
      */
     public void logln() {
-        out.println();
+        this.out.println();
         if (Configuration.eagerFlush) {
-            out.flush();
+            this.out.flush();
         }
     }
 
@@ -341,11 +341,11 @@ public class Logging {
      * @param txt The log message to be printed.
      */
     public void logPos(String txt) {
-        out.print(getCodePosition(1));
-        out.print(" ");
-        out.print(txt);
+        this.out.print(getCodePosition(1));
+        this.out.print(" ");
+        this.out.print(txt);
         if (Configuration.eagerFlush) {
-            out.flush();
+            this.out.flush();
         }
     }
 
@@ -358,11 +358,11 @@ public class Logging {
      */
     public void logPos(boolean logFlag, String txt) {
         if (logFlag) {
-            out.print(getCodePosition(1));
-            out.print(" ");
-            out.print(txt);
+            this.out.print(getCodePosition(1));
+            this.out.print(" ");
+            this.out.print(txt);
             if (Configuration.eagerFlush) {
-                out.flush();
+                this.out.flush();
             }
         }
     }
@@ -374,11 +374,11 @@ public class Logging {
      * @param txt The log message to be printed.
      */
     public void logPosln(String txt) {
-        out.print(getCodePosition(1));
-        out.print(" ");
-        out.println(txt);
+        this.out.print(getCodePosition(1));
+        this.out.print(" ");
+        this.out.println(txt);
         if (Configuration.eagerFlush) {
-            out.flush();
+            this.out.flush();
         }
     }
 
@@ -391,11 +391,11 @@ public class Logging {
      */
     public void logPosln(boolean logFlag, String txt) {
         if (logFlag) {
-            out.print(getCodePosition(1));
-            out.print(" ");
-            out.println(txt);
+            this.out.print(getCodePosition(1));
+            this.out.print(" ");
+            this.out.println(txt);
             if (Configuration.eagerFlush) {
-                out.flush();
+                this.out.flush();
             }
         }
     }
@@ -406,7 +406,7 @@ public class Logging {
      * @return The print stream where this logger logs to.
      */
     public PrintStream getOutputStream() {
-        return out;
+        return this.out;
     }
 
     /**
@@ -526,9 +526,9 @@ public class Logging {
             }
 
             if (append) {
-                out = new PrintStream(new FileOutputStream(dir + aFileName, true));
+                this.out = new PrintStream(new FileOutputStream(dir + aFileName, true));
             } else {
-                out = new PrintStream(dir + aFileName);
+                this.out = new PrintStream(dir + aFileName);
             }
         } catch (FileNotFoundException e) {
             throw new SinalgoFatalException("Could not open the logfile " + aFileName);
@@ -542,7 +542,7 @@ public class Logging {
      * @param aStream The stream this logger should print to.
      */
     private Logging(PrintStream aStream) {
-        out = aStream;
+        this.out = aStream;
     }
 
     /**

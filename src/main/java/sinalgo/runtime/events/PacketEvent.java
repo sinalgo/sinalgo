@@ -119,8 +119,8 @@ public class PacketEvent extends Event {
      */
     @Override
     public void free() {
-        if (packet != null) {
-            Packet.free(packet);
+        if (this.packet != null) {
+            Packet.free(this.packet);
             this.packet = null;
         }
         unusedPacketEvents.push(this);
@@ -136,16 +136,16 @@ public class PacketEvent extends Event {
         // the arrival of a packet in the asynchronous case
         if (Configuration.interference) {
             SinalgoRuntime.packetsInTheAir.performInterferenceTestBeforeRemove();
-            SinalgoRuntime.packetsInTheAir.remove(packet);
+            SinalgoRuntime.packetsInTheAir.remove(this.packet);
         }
-        if (getPacket().getEdge() != null) {
-            getPacket().getEdge().removeMessageForThisEdge(getPacket().getMessage());
+        if (this.getPacket().getEdge() != null) {
+            this.getPacket().getEdge().removeMessageForThisEdge(this.getPacket().getMessage());
         }
-        if (getPacket().isPositiveDelivery()) {
-            getPacket().getDestination().handleMessages(inbox.resetForPacket(getPacket()));
+        if (this.getPacket().isPositiveDelivery()) {
+            this.getPacket().getDestination().handleMessages(inbox.resetForPacket(this.getPacket()));
         } else {
-            if (Configuration.generateNAckMessages && getPacket().getType() == PacketType.UNICAST) {
-                getPacket().getOrigin().handleNAckMessages(nAckBox.resetForPacket(packet));
+            if (Configuration.generateNAckMessages && this.getPacket().getType() == PacketType.UNICAST) {
+                this.getPacket().getOrigin().handleNAckMessages(nAckBox.resetForPacket(this.packet));
             }
         }
     }
@@ -154,10 +154,10 @@ public class PacketEvent extends Event {
     public void drop() {
         // similar to the arrival of a packet in the asynchronous case
         if (Configuration.interference) {
-            SinalgoRuntime.packetsInTheAir.remove(getPacket());
+            SinalgoRuntime.packetsInTheAir.remove(this.getPacket());
         }
-        if (getPacket().getEdge() != null) {
-            getPacket().getEdge().removeMessageForThisEdge(getPacket().getMessage());
+        if (this.getPacket().getEdge() != null) {
+            this.getPacket().getEdge().removeMessageForThisEdge(this.getPacket().getMessage());
         }
     }
 
@@ -169,29 +169,29 @@ public class PacketEvent extends Event {
     @Override
     public String getEventListText(boolean hasExecuted) {
         if (hasExecuted) {
-            return "Packet at node " + getPacket().getDestination().getID()
-                    + (getPacket().isPositiveDelivery() ? " (delivered)" : " (dropped)");
+            return "Packet at node " + this.getPacket().getDestination().getID()
+                    + (this.getPacket().isPositiveDelivery() ? " (delivered)" : " (dropped)");
         } else {
-            return "PE (Node:" + getPacket().getDestination().getID() + ", Time:" + getExecutionTimeString(4) + ")";
+            return "PE (Node:" + this.getPacket().getDestination().getID() + ", Time:" + this.getExecutionTimeString(4) + ")";
         }
     }
 
     @Override
     public String getEventListToolTipText(boolean hasExecuted) {
         if (hasExecuted) {
-            return "The type of the message is: " + Global.toShortName(getPacket().getMessage().getClass().getName()) + "\n"
-                    + (getPacket().isPositiveDelivery() ? "The message was delivered" : "The message was dropped.");
+            return "The type of the message is: " + Global.toShortName(this.getPacket().getMessage().getClass().getName()) + "\n"
+                    + (this.getPacket().isPositiveDelivery() ? "The message was delivered" : "The message was dropped.");
         } else {
-            return "At time " + time + " a message reaches node " + getPacket().getDestination().getID() + "\n"
-                    + "The type of the message is: " + Global.toShortName(getPacket().getMessage().getClass().getName()) + "\n"
-                    + (getPacket().isPositiveDelivery() ? "Until now it seems that the message will reach its destination."
+            return "At time " + this.time + " a message reaches node " + this.getPacket().getDestination().getID() + "\n"
+                    + "The type of the message is: " + Global.toShortName(this.getPacket().getMessage().getClass().getName()) + "\n"
+                    + (this.getPacket().isPositiveDelivery() ? "Until now it seems that the message will reach its destination."
                     : "The message has already been disturbed and will not reach its destination.");
         }
     }
 
     @Override
     public Node getEventNode() {
-        return getPacket().getDestination();
+        return this.getPacket().getDestination();
     }
 
     @Override

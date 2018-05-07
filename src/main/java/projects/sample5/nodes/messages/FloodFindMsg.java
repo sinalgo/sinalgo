@@ -47,12 +47,12 @@ public class FloodFindMsg extends Message {
      * Default constructor.
      */
     public FloodFindMsg(int seqID, Node sender, Node dest) {
-        ttl = 4; // initial TTL
-        isFindMessage = true;
-        hopsToSender = 0;
-        sequenceID = seqID;
+        this.ttl = 4; // initial TTL
+        this.isFindMessage = true;
+        this.hopsToSender = 0;
+        this.sequenceID = seqID;
         this.sender = sender;
-        destination = dest;
+        this.destination = dest;
     }
 
     @Override

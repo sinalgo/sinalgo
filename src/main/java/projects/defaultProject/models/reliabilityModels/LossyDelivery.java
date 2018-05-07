@@ -58,8 +58,8 @@ public class LossyDelivery extends ReliabilityModel {
 
     @Override
     public boolean reachesDestination(Packet p) {
-        double r = rand.nextDouble();
-        return (r > dropRate);
+        double r = this.rand.nextDouble();
+        return (r > this.dropRate);
     }
 
     /**
@@ -67,7 +67,7 @@ public class LossyDelivery extends ReliabilityModel {
      */
     public LossyDelivery() {
         try {
-            dropRate = Configuration.getDoubleParameter("LossyDelivery/dropRate");
+            this.dropRate = Configuration.getDoubleParameter("LossyDelivery/dropRate");
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException("Missing configuration entry for the Message Transmission Model:\n" + e.getMessage());
         }

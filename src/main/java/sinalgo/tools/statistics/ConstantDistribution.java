@@ -72,11 +72,11 @@ public class ConstantDistribution extends Distribution {
      * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
      */
     public ConstantDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
-        value = Configuration.getDoubleParameter(mainTagPath + "/constant");
+        this.value = Configuration.getDoubleParameter(mainTagPath + "/constant");
     }
 
     @Override
     public double nextSample() {
-        return value;
+        return this.value;
     }
 }

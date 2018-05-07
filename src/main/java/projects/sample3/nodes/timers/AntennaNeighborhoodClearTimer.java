@@ -13,12 +13,12 @@ public class AntennaNeighborhoodClearTimer extends Timer {
     private TreeSet<Node> set;
 
     public AntennaNeighborhoodClearTimer(TreeSet<Node> ts) {
-        set = ts;
+        this.set = ts;
     }
 
     @Override
     public void fire() {
-        set.clear();
+        this.set.clear();
     }
 
 }

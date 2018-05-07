@@ -62,9 +62,9 @@ public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
      * @param p The parent GUI used to trigger the zooming.
      */
     public EdgePopupMenu(GUI p) {
-        parent = p;
-        info.addActionListener(this);
-        delete.addActionListener(this);
+        this.parent = p;
+        this.info.addActionListener(this);
+        this.delete.addActionListener(this);
     }
 
     /**
@@ -73,25 +73,25 @@ public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
      * @param e The edge the information is about.
      */
     public void compose(Edge e) {
-        edge = e;
+        this.edge = e;
 
         this.removeAll();
 
-        this.add(info);
-        this.add(delete);
+        this.add(this.info);
+        this.add(this.delete);
         this.addSeparator();
 
-        this.add(zoomIn);
-        this.add(zoomOut);
+        this.add(this.zoomIn);
+        this.add(this.zoomOut);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(info.getActionCommand())) {
-            new EdgeInfoDialog(parent, edge);
-        } else if (e.getActionCommand().equals(delete.getActionCommand())) {
-            SinalgoRuntime.removeEdge(edge);
-            parent.redrawGUINow();
+        if (e.getActionCommand().equals(this.info.getActionCommand())) {
+            new EdgeInfoDialog(this.parent, this.edge);
+        } else if (e.getActionCommand().equals(this.delete.getActionCommand())) {
+            SinalgoRuntime.removeEdge(this.edge);
+            this.parent.redrawGUINow();
         }
     }
 }

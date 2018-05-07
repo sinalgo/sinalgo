@@ -66,12 +66,12 @@ public class GridDistribution extends DistributionModel {
     @Override
     public void initialize() {
         try {
-            radius = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
+            this.radius = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
         } catch (CorruptConfigurationEntryException e) {
             e.printStackTrace();
         }
-        double horizontalFactor = (Configuration.dimX - 2 * radius) / (radius * 1.414);
-        double verticalFactor = (Configuration.dimY - 2 * radius) / (radius * 1.414);
+        double horizontalFactor = (Configuration.dimX - 2 * this.radius) / (this.radius * 1.414);
+        double verticalFactor = (Configuration.dimY - 2 * this.radius) / (this.radius * 1.414);
 
         int ihF = (int) horizontalFactor;
         int ivF = (int) verticalFactor;
@@ -80,8 +80,8 @@ public class GridDistribution extends DistributionModel {
 
         for (int i = 0; i < ihF + 1; i++) {
             for (int j = 0; j < ivF + 1; j++) {
-                if (number < numberOfNodes) {
-                    positions.add(new Position(radius + i * (radius * 1.414), radius + j * (radius * 1.414), 0));
+                if (number < this.numberOfNodes) {
+                    this.positions.add(new Position(this.radius + i * (this.radius * 1.414), this.radius + j * (this.radius * 1.414), 0));
                 }
             }
         }
@@ -89,11 +89,11 @@ public class GridDistribution extends DistributionModel {
 
     @Override
     public Position getNextPosition() {
-        if (returnNum < positions.size()) {
-            return positions.elementAt(returnNum++);
+        if (this.returnNum < this.positions.size()) {
+            return this.positions.elementAt(this.returnNum++);
         } else {
-            double randomPosX = rand.nextDouble() * Configuration.dimX;
-            double randomPosY = rand.nextDouble() * Configuration.dimY;
+            double randomPosX = this.rand.nextDouble() * Configuration.dimX;
+            double randomPosY = this.rand.nextDouble() * Configuration.dimY;
             return new Position(randomPosX, randomPosY, 0);
         }
     }

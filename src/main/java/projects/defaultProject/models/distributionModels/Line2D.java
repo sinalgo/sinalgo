@@ -72,34 +72,34 @@ public class Line2D extends DistributionModel {
                 && Configuration.hasParameter("DistributionModel/Line/ToX")
                 && Configuration.hasParameter("DistributionModel/Line/ToY")) {
             try {
-                previousPositionX = Configuration.getDoubleParameter("DistributionModel/Line/FromX");
-                previousPositionY = Configuration.getDoubleParameter("DistributionModel/Line/FromY");
-                dx = Configuration.getDoubleParameter("DistributionModel/Line/ToX") - previousPositionX;
-                dy = Configuration.getDoubleParameter("DistributionModel/Line/ToY") - previousPositionY;
+                this.previousPositionX = Configuration.getDoubleParameter("DistributionModel/Line/FromX");
+                this.previousPositionY = Configuration.getDoubleParameter("DistributionModel/Line/FromY");
+                this.dx = Configuration.getDoubleParameter("DistributionModel/Line/ToX") - this.previousPositionX;
+                this.dy = Configuration.getDoubleParameter("DistributionModel/Line/ToY") - this.previousPositionY;
             } catch (CorruptConfigurationEntryException e) {
                 throw new SinalgoWrappedException(e);
             }
-            if (numberOfNodes <= 1) { // place the single node in the middle
-                dx /= 2;
-                dy /= 2;
+            if (this.numberOfNodes <= 1) { // place the single node in the middle
+                this.dx /= 2;
+                this.dy /= 2;
             } else {
-                dx /= (numberOfNodes - 1);
-                dy /= (numberOfNodes - 1);
-                previousPositionX -= dx;
-                previousPositionY -= dy;
+                this.dx /= (this.numberOfNodes - 1);
+                this.dy /= (this.numberOfNodes - 1);
+                this.previousPositionX -= this.dx;
+                this.previousPositionY -= this.dy;
             }
         } else { // default horizontal line
-            dy = 0;
-            dx = ((double) Configuration.dimX) / (this.numberOfNodes + 1);
-            previousPositionX = 0;
-            previousPositionY = Configuration.dimY / 2;
+            this.dy = 0;
+            this.dx = ((double) Configuration.dimX) / (this.numberOfNodes + 1);
+            this.previousPositionX = 0;
+            this.previousPositionY = Configuration.dimY / 2;
         }
     }
 
     @Override
     public Position getNextPosition() {
-        previousPositionX += dx;
-        previousPositionY += dy;
-        return new Position(previousPositionX, previousPositionY, 0);
+        this.previousPositionX += this.dx;
+        this.previousPositionY += this.dy;
+        return new Position(this.previousPositionX, this.previousPositionY, 0);
     }
 }

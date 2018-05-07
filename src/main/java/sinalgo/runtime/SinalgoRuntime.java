@@ -210,7 +210,7 @@ public abstract class SinalgoRuntime {
                             + "be followed by the number of rounds to execute.");
                 }
                 try {
-                    setNumberOfRounds(Integer.parseInt(args[i + 1]));
+                    this.setNumberOfRounds(Integer.parseInt(args[i + 1]));
                     i++; // don't have to look at args[i+1] anymore
                 } catch (NumberFormatException e) {
                     throw new SinalgoFatalException("Cannot convert the number of rounds to execute (" + args[i + 1] + ") "
@@ -229,7 +229,7 @@ public abstract class SinalgoRuntime {
                             + "to an integer: The '-refreshRate' flag must be followed by an integer value.\n " + e);
                 }
             } else if (args[i].equals("-gen")) {
-                setNodeCreationFinished(false);
+                this.setNodeCreationFinished(false);
 
                 // format: #nodes nodeType DistModel [(params)] [{M [(params)]}*]
                 if (args.length <= i + 3) {
@@ -240,10 +240,10 @@ public abstract class SinalgoRuntime {
                             + "it is set in the configuration file.)");
                 }
 
-                numNodes = 0;
+                this.numNodes = 0;
                 try {
                     i++;
-                    numNodes = Integer.parseInt(args[i]);
+                    this.numNodes = Integer.parseInt(args[i]);
                 } catch (NumberFormatException e) {
                     throw new SinalgoFatalException("Invalid parameters for the flag '-gen', which takes at least 3 parameters:\n"
                             + "-gen #nodes nodeType DistModel [(params)] [{M [(params)]}*]"
@@ -253,23 +253,23 @@ public abstract class SinalgoRuntime {
                             + "' (which should correspond to the " + "number of nodes) to an integer.");
                 }
 
-                nodeTypeName = args[++i]; // note: pre-increments i
+                this.nodeTypeName = args[++i]; // note: pre-increments i
                 String distributionModelName = args[++i]; // note: pre-increments i
 
                 Tuple<String, Integer> optParam;
-                optParam = getOptionalParameters(args, i + 1);
+                optParam = this.getOptionalParameters(args, i + 1);
                 String distributionModelParameters = optParam.getFirst();
                 i = optParam.getSecond(); // i now points to the next arg to consider
 
-                modelNames = new String[4]; // the optional models (the params are stored at same offset in modelParams)
-                modelParams = new String[4]; // the optional parameter-strings to the optoinal models.
-                numSpecifiedModels = 0;
+                this.modelNames = new String[4]; // the optional models (the params are stored at same offset in modelParams)
+                this.modelParams = new String[4]; // the optional parameter-strings to the optoinal models.
+                this.numSpecifiedModels = 0;
 
                 while (i < args.length) {
                     if (args[i].startsWith("-")) {
                         break; // there are no further models or optional parameters for the models.
                     }
-                    if (numSpecifiedModels >= 4) { // too many models specified
+                    if (this.numSpecifiedModels >= 4) { // too many models specified
                         throw new SinalgoFatalException("Invalid command-line argument: The -gen flag takes at most 4 models\n"
                                 + "after the distribution model: (in arbitrary order)\n"
                                 + "Connectivity, Interference, Mobility, Reliability\n"
@@ -282,28 +282,28 @@ public abstract class SinalgoRuntime {
                                 + "the default model is taken.)  (The MessageTransmissionModel must not be used,\n"
                                 + "it is set in the configuration file.)");
                     }
-                    modelNames[numSpecifiedModels] = args[i++]; // note: post-incremented i
-                    optParam = getOptionalParameters(args, i); //
-                    modelParams[numSpecifiedModels] = optParam.getFirst();
+                    this.modelNames[this.numSpecifiedModels] = args[i++]; // note: post-incremented i
+                    optParam = this.getOptionalParameters(args, i); //
+                    this.modelParams[this.numSpecifiedModels] = optParam.getFirst();
                     i = optParam.getSecond(); // i now points to the next arg to consider
-                    numSpecifiedModels++;
+                    this.numSpecifiedModels++;
                 }
 
                 // initialize the distribution model
-                nodeDistribution = Model.getDistributionModelInstance(distributionModelName);
-                nodeDistribution.setParamString(distributionModelParameters);
-                nodeDistribution.setNumberOfNodes(numNodes);
-                nodeDistribution.initialize();
+                this.nodeDistribution = Model.getDistributionModelInstance(distributionModelName);
+                this.nodeDistribution.setParamString(distributionModelParameters);
+                this.nodeDistribution.setNumberOfNodes(this.numNodes);
+                this.nodeDistribution.initialize();
 
-                models = Tools.parseModels(modelNames, numSpecifiedModels);
+                this.models = Tools.parseModels(this.modelNames, this.numSpecifiedModels);
 
                 this.initProgress();
 
                 try {
                     synchronized (this) {
-                        if (!isNodeCreationFinished()) {
+                        if (!this.isNodeCreationFinished()) {
                             // wait for the end of the initialisazion progress
-                            wait();
+                            this.wait();
                         }
                     }
                 } catch (InterruptedException e) {
@@ -325,7 +325,7 @@ public abstract class SinalgoRuntime {
             }
         }
 
-        initConcreteRuntime();
+        this.initConcreteRuntime();
     }
 
     /**
@@ -553,26 +553,26 @@ public abstract class SinalgoRuntime {
      */
     public synchronized void createNodes() {
         // Create the nodes
-        for (int j = 0; j < numNodes; j++) {
+        for (int j = 0; j < this.numNodes; j++) {
 
-            this.setProgress(100.0d * j / numNodes);
+            this.setProgress(100.0d * j / this.numNodes);
 
             Node node;
             try {
-                node = Node.createNodeByClassname(nodeTypeName);
+                node = Node.createNodeByClassname(this.nodeTypeName);
             } catch (WrongConfigurationException e) {
                 throw new SinalgoWrappedException(e);
             }
-            node.setPosition(nodeDistribution.getNextPosition());
+            node.setPosition(this.nodeDistribution.getNextPosition());
 
             // set the models
-            Tools.setModels(models, modelParams, modelNames, numSpecifiedModels, node);
+            Tools.setModels(this.models, this.modelParams, this.modelNames, this.numSpecifiedModels, node);
             // set default models
             node.finishInitializationWithDefaultModels(true);
         }
         // the system nodes are initialized and thus the waiting thread (the
         // main-Thread) can be invoked again. (If it is still waiting
-        setNodeCreationFinished(true);
+        this.setNodeCreationFinished(true);
 
         this.notifyAll();
     }

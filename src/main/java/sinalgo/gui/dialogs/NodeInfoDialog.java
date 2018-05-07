@@ -49,7 +49,12 @@ import sinalgo.runtime.SinalgoRuntime;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
@@ -90,10 +95,10 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
     public NodeInfoDialog(GUI p, Node n) {
         super(p, "Edit Node " + n.getID(), true);
         GuiHelper.setWindowIcon(this);
-        parent = p;
-        node = n;
+        this.parent = p;
+        this.node = n;
 
-        node.highlight(true);
+        this.node.highlight(true);
 
         this.setLayout(new BorderLayout());
 
@@ -111,39 +116,39 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
             Node nd = nodesEnumer.nextElement();
             if (nd.getID() == n.getID()) {
                 if (!nodesEnumer.hasMoreElements()) {
-                    nextNode.setEnabled(false);
+                    this.nextNode.setEnabled(false);
                 }
-                prevNode.setEnabled(hasPrev);
+                this.prevNode.setEnabled(hasPrev);
                 break;
             }
             hasPrev = true;
         }
 
-        prevNode.addActionListener(this);
-        nodeNumber.setColumns(6);
-        nodeNumber.setValue(node.getID());
-        nodeNumber.addPropertyChangeListener("value", this);
-        nextNode.addActionListener(this);
-        nodeSel.add(prevNode);
-        nodeSel.add(nodeNumber);
-        nodeSel.add(nextNode);
+        this.prevNode.addActionListener(this);
+        this.nodeNumber.setColumns(6);
+        this.nodeNumber.setValue(this.node.getID());
+        this.nodeNumber.addPropertyChangeListener("value", this);
+        this.nextNode.addActionListener(this);
+        nodeSel.add(this.prevNode);
+        nodeSel.add(this.nodeNumber);
+        nodeSel.add(this.nextNode);
         this.add(nodeSel);
 
-        Position pos = node.getPosition();
+        Position pos = this.node.getPosition();
 
-        positionX.setText(String.valueOf(pos.getXCoord()));
-        positionY.setText(String.valueOf(pos.getYCoord()));
-        positionZ.setText(String.valueOf(pos.getZCoord()));
+        this.positionX.setText(String.valueOf(pos.getXCoord()));
+        this.positionY.setText(String.valueOf(pos.getYCoord()));
+        this.positionZ.setText(String.valueOf(pos.getZCoord()));
 
         JPanel position = new JPanel();
         position.setBorder(BorderFactory.createTitledBorder("Position"));
         position.setLayout(new BoxLayout(position, BoxLayout.Y_AXIS));
         position.setPreferredSize(new Dimension(80, 80));
 
-        position.add(positionX);
-        position.add(positionY);
+        position.add(this.positionX);
+        position.add(this.positionY);
         if (Configuration.dimensions == 3) {
-            position.add(positionZ);
+            position.add(this.positionZ);
         }
 
         nodeSelAndPosition.add(BorderLayout.NORTH, nodeSel);
@@ -163,41 +168,41 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         info.add(infoPanel);
 
         UnborderedJTextField typeLabel = new UnborderedJTextField("Node Implementation:", Font.BOLD);
-        implementationText.setText(Global.toShortName(node.getClass().getName()));
-        implementationText.setEditable(false);
+        this.implementationText.setText(Global.toShortName(this.node.getClass().getName()));
+        this.implementationText.setEditable(false);
         infoPanel.add(typeLabel);
-        infoPanel.add(implementationText);
+        infoPanel.add(this.implementationText);
 
         UnborderedJTextField connectivityLabel = new UnborderedJTextField("Node Connectivity:", Font.BOLD);
-        connectivityText.setText(Global.toShortName(node.getConnectivityModel().getClass().getName()));
-        connectivityText.setEditable(false);
+        this.connectivityText.setText(Global.toShortName(this.node.getConnectivityModel().getClass().getName()));
+        this.connectivityText.setEditable(false);
         infoPanel.add(connectivityLabel);
-        infoPanel.add(connectivityText);
+        infoPanel.add(this.connectivityText);
 
         UnborderedJTextField interferenceLabel = new UnborderedJTextField("Node Interference:", Font.BOLD);
-        interferenceText.setText(Global.toShortName(node.getInterferenceModel().getClass().getName()));
-        interferenceText.setEditable(false);
+        this.interferenceText.setText(Global.toShortName(this.node.getInterferenceModel().getClass().getName()));
+        this.interferenceText.setEditable(false);
         infoPanel.add(interferenceLabel);
-        infoPanel.add(interferenceText);
+        infoPanel.add(this.interferenceText);
 
         UnborderedJTextField mobilityLabel = new UnborderedJTextField("Node Mobility:", Font.BOLD);
-        mobilityText.setText(Global.toShortName(node.getMobilityModel().getClass().getName()));
-        mobilityText.setEditable(false);
+        this.mobilityText.setText(Global.toShortName(this.node.getMobilityModel().getClass().getName()));
+        this.mobilityText.setEditable(false);
         infoPanel.add(mobilityLabel);
-        infoPanel.add(mobilityText);
+        infoPanel.add(this.mobilityText);
 
         UnborderedJTextField reliabilityLabel = new UnborderedJTextField("Node Reliability:", Font.BOLD);
-        reliabilityText.setText(Global.toShortName(node.getReliabilityModel().getClass().getName()));
-        reliabilityText.setEditable(false);
+        this.reliabilityText.setText(Global.toShortName(this.node.getReliabilityModel().getClass().getName()));
+        this.reliabilityText.setEditable(false);
         infoPanel.add(reliabilityLabel);
-        infoPanel.add(reliabilityText);
+        infoPanel.add(this.reliabilityText);
 
-        infoText.setText(node.toString());
+        this.infoText.setText(this.node.toString());
         JLabel infoTextLabel = new JLabel("Info Text:");
-        infoText.setEditable(false);
-        infoText.setBackground(infoTextLabel.getBackground());
+        this.infoText.setEditable(false);
+        this.infoText.setBackground(infoTextLabel.getBackground());
         infoPanel.add(infoTextLabel);
-        infoPanel.add(infoText);
+        infoPanel.add(this.infoText);
 
         JPanel buttons = new JPanel();
 
@@ -215,8 +220,8 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
 
             @Override
             public void windowClosing(WindowEvent event) {
-                node.highlight(false);
-                parent.redrawGUI();
+                NodeInfoDialog.this.node.highlight(false);
+                NodeInfoDialog.this.parent.redrawGUI();
             }
         };
         this.addWindowListener(listener);
@@ -228,15 +233,15 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         focusManager.addKeyEventPostProcessor(e -> {
             if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                node.highlight(false);
+                this.node.highlight(false);
                 NodeInfoDialog.this.setVisible(false);
-                parent.redrawGUINow(); // needs blocking redrawing
+                this.parent.redrawGUINow(); // needs blocking redrawing
             }
             return false;
         });
 
         // Redraw the graph to have the selected node painted in the right color.
-        parent.redrawGUI();
+        this.parent.redrawGUI();
         this.pack();
         this.setLocationRelativeTo(p);
         this.setVisible(true);
@@ -245,57 +250,57 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
     private void revalidate(Node n, boolean hasPrev, boolean hasNext) {
         this.setTitle("Edit Node " + n.getID());
 
-        node.highlight(false);
+        this.node.highlight(false);
 
-        node = n;
+        this.node = n;
 
-        node.highlight(true);
+        this.node.highlight(true);
 
         this.prevNode.setEnabled(hasPrev);
         this.nextNode.setEnabled(hasNext);
 
-        Position pos = node.getPosition();
+        Position pos = this.node.getPosition();
 
-        positionX.setText(String.valueOf(pos.getXCoord()));
-        positionY.setText(String.valueOf(pos.getYCoord()));
-        positionZ.setText(String.valueOf(pos.getZCoord()));
+        this.positionX.setText(String.valueOf(pos.getXCoord()));
+        this.positionY.setText(String.valueOf(pos.getYCoord()));
+        this.positionZ.setText(String.valueOf(pos.getZCoord()));
 
-        implementationText.setText(Global.toShortName(node.getClass().getName()));
+        this.implementationText.setText(Global.toShortName(this.node.getClass().getName()));
 
-        connectivityText.setText(Global.toShortName(node.getConnectivityModel().getClass().getName()));
-        interferenceText.setText(Global.toShortName(node.getInterferenceModel().getClass().getName()));
-        mobilityText.setText(Global.toShortName(node.getMobilityModel().getClass().getName()));
-        reliabilityText.setText(Global.toShortName(node.getReliabilityModel().getClass().getName()));
+        this.connectivityText.setText(Global.toShortName(this.node.getConnectivityModel().getClass().getName()));
+        this.interferenceText.setText(Global.toShortName(this.node.getInterferenceModel().getClass().getName()));
+        this.mobilityText.setText(Global.toShortName(this.node.getMobilityModel().getClass().getName()));
+        this.reliabilityText.setText(Global.toShortName(this.node.getReliabilityModel().getClass().getName()));
 
-        infoText.setText(node.toString());
-        parent.redrawGUI();
+        this.infoText.setText(this.node.toString());
+        this.parent.redrawGUI();
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
         switch (event.getActionCommand()) {
             case "Cancel":
-                node.highlight(false);
+                this.node.highlight(false);
                 this.setVisible(false);
-                parent.redrawGUINow(); // needs blocking redrawing
+                this.parent.redrawGUINow(); // needs blocking redrawing
                 break;
             case "OK":
                 try {
-                    node.setPosition(new Position(Double.parseDouble(positionX.getText()),
-                            Double.parseDouble(positionY.getText()), Double.parseDouble(positionZ.getText())));
+                    this.node.setPosition(new Position(Double.parseDouble(this.positionX.getText()),
+                            Double.parseDouble(this.positionY.getText()), Double.parseDouble(this.positionZ.getText())));
                 } catch (NumberFormatException nFE) {
                     throw new SinalgoWrappedException(nFE);
                 }
-                node.highlight(false);
+                this.node.highlight(false);
                 this.setVisible(false);
-                parent.redrawGUINow(); // needs blocking redrawing
+                this.parent.redrawGUINow(); // needs blocking redrawing
                 break;
             case "Next Node": {
                 Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
                 while (nodesEnumer.hasMoreElements()) {
                     Node nd = nodesEnumer.nextElement();
-                    if (nd.getID() == node.getID() + 1) {
-                        nodeNumber.setValue(nd.getID());
+                    if (nd.getID() == this.node.getID() + 1) {
+                        this.nodeNumber.setValue(nd.getID());
                         // this triggers a property change event.
                         break;
                     }
@@ -306,8 +311,8 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
                 Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
                 while (nodesEnumer.hasMoreElements()) {
                     Node nd = nodesEnumer.nextElement();
-                    if (nd.getID() == node.getID() - 1) {
-                        nodeNumber.setValue(nd.getID());
+                    if (nd.getID() == this.node.getID() - 1) {
+                        this.nodeNumber.setValue(nd.getID());
                         // this triggers a property change event.
                         break;
                     }

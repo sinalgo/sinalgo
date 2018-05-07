@@ -65,17 +65,17 @@ public class PacketCollection extends SortableVector<Packet> {
 
     @Override
     public Iterator<Packet> iterator() {
-        if (iter == null) {
-            iter = new ReusableIter();
+        if (this.iter == null) {
+            this.iter = new ReusableIter();
         } else {
             // reset the iterator instead of returning always a new one
-            iter.reset();
+            this.iter.reset();
         }
-        return iter;
+        return this.iter;
     }
 
     private Packet remove2(int pos) {
-        return remove(pos);
+        return this.remove(pos);
     }
 
     private class ReusableIter implements ReusableIterator<Packet> {
@@ -90,8 +90,8 @@ public class PacketCollection extends SortableVector<Packet> {
          * Create a new instance of the ReusableIterator
          */
         private ReusableIter() {
-            position = 0;
-            expectedModCount = modCount;
+            this.position = 0;
+            this.expectedModCount = PacketCollection.this.modCount;
         }
 
         /**
@@ -99,24 +99,24 @@ public class PacketCollection extends SortableVector<Packet> {
          */
         @Override
         public void reset() {
-            position = 0;
-            expectedModCount = modCount;
+            this.position = 0;
+            this.expectedModCount = PacketCollection.this.modCount;
         }
 
         @Override
         public boolean hasNext() {
-            return (position + 1 <= size());
+            return (this.position + 1 <= PacketCollection.this.size());
         }
 
         @Override
         public Packet next() {
-            checkForComodification();
-            return elementAt(position++);
+            this.checkForComodification();
+            return PacketCollection.this.elementAt(this.position++);
         }
 
         @Override
         public void remove() {
-            remove2(--position);
+            PacketCollection.this.remove2(--this.position);
         }
 
         /**
@@ -128,7 +128,7 @@ public class PacketCollection extends SortableVector<Packet> {
          *                                         methods.
          */
         final void checkForComodification() {
-            if (expectedModCount != modCount) {
+            if (this.expectedModCount != PacketCollection.this.modCount) {
                 throw new ConcurrentModificationException();
             }
         }

@@ -26,7 +26,7 @@ public class BigEdge extends Edge {
 
     public BigEdge() {
         try {
-            strokeWidth = Configuration.getIntegerParameter("BigEdge/strokeWidth");
+            this.strokeWidth = Configuration.getIntegerParameter("BigEdge/strokeWidth");
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException(e.getMessage());
         }
@@ -34,38 +34,38 @@ public class BigEdge extends Edge {
 
     @Override
     public void draw(Graphics g, PositionTransformation pt) {
-        Position p1 = getStartNode().getPosition();
+        Position p1 = this.getStartNode().getPosition();
         pt.translateToGUIPosition(p1);
         int fromX = pt.getGuiX(), fromY = pt.getGuiY(); // temporarily store
-        Position p2 = getEndNode().getPosition();
+        Position p2 = this.getEndNode().getPosition();
         pt.translateToGUIPosition(p2);
 
         if ((this.getNumberOfMessagesOnThisEdge() == 0) && (this.getOppositeEdge() != null)
                 && (this.getOppositeEdge().getNumberOfMessagesOnThisEdge() > 0)) {
             // only draws the arrowHead (if drawArrows is true) - the line is drawn by the
             // 'opposite' edge
-            Arrow.drawArrowHead(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, getColor());
+            Arrow.drawArrowHead(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, this.getColor());
         } else {
-            if (getNumberOfMessagesOnThisEdge() > 0) {
-                Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, getColor());
-                g.setColor(getColor());
-                GraphPanel.drawBoldLine(g, fromX, fromY, pt.getGuiX(), pt.getGuiY(), strokeWidth);
+            if (this.getNumberOfMessagesOnThisEdge() > 0) {
+                Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, this.getColor());
+                g.setColor(this.getColor());
+                GraphPanel.drawBoldLine(g, fromX, fromY, pt.getGuiX(), pt.getGuiY(), this.strokeWidth);
             } else {
-                Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, getColor());
+                Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, this.getColor());
             }
         }
     }
 
     @Override
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-        pt.translateToGUIPosition(getStartNode().getPosition());
+        pt.translateToGUIPosition(this.getStartNode().getPosition());
         double eSX = pt.getGuiXDouble();
         double eSY = pt.getGuiYDouble();
-        pt.translateToGUIPosition(getEndNode().getPosition());
-        Color c = getColor();
+        pt.translateToGUIPosition(this.getEndNode().getPosition());
+        Color c = this.getColor();
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
-        if (getNumberOfMessagesOnThisEdge() > 0) {
-            pw.setLineWidth(0.5 * strokeWidth); // bold line
+        if (this.getNumberOfMessagesOnThisEdge() > 0) {
+            pw.setLineWidth(0.5 * this.strokeWidth); // bold line
         } else {
             pw.setLineWidth(0.5);
         }

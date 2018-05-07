@@ -54,7 +54,7 @@ public class IntMessage extends Message {
      * @param i The integer the payload has to be set to.
      */
     public IntMessage(int i) {
-        value = i;
+        this.value = i;
     }
 
     @Override

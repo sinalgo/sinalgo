@@ -63,51 +63,51 @@ public class MinimizedControlPanel extends ControlPanel {
      * @param p The Gui instance to create the MinimizedControlPanel for.
      */
     public MinimizedControlPanel(GUI p) {
-        parent = p;
+        this.parent = p;
         int controlPanelHeight = 25;
         this.setMaximumSize(new Dimension(20000, controlPanelHeight));
         this.setMinimumSize(new Dimension(20000, controlPanelHeight));
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createRaisedBevelBorder());
 
-        buttonPanel = new JPanel();
+        this.buttonPanel = new JPanel();
         FlowLayout buttonLayout = new FlowLayout(FlowLayout.LEFT, 2, 0);
-        buttonPanel.setLayout(buttonLayout);
+        this.buttonPanel.setLayout(buttonLayout);
 
-        JButton button = createFrameworkIconButton("clearGraph", "cleargraph.gif", "Clear Graph");
-        buttonPanel.add(button);
-        addToDisabledButtonList(button);
+        JButton button = this.createFrameworkIconButton("clearGraph", "cleargraph.gif", "Clear Graph");
+        this.buttonPanel.add(button);
+        this.addToDisabledButtonList(button);
 
-        button = createFrameworkIconButton("addNodes", "addnodes.gif", "Add Nodes");
-        buttonPanel.add(button);
-        addToDisabledButtonList(button);
+        button = this.createFrameworkIconButton("addNodes", "addnodes.gif", "Add Nodes");
+        this.buttonPanel.add(button);
+        this.addToDisabledButtonList(button);
 
-        button = createFrameworkIconButton("connectNodes", "connectnodes.gif", "Reevaluate Connections");
-        buttonPanel.add(button);
-        addToDisabledButtonList(button);
+        button = this.createFrameworkIconButton("connectNodes", "connectnodes.gif", "Reevaluate Connections");
+        this.buttonPanel.add(button);
+        this.addToDisabledButtonList(button);
 
-        addSeparator(buttonPanel);
+        this.addSeparator(this.buttonPanel);
 
-        button = createFrameworkIconButton("zoomIn", "zoominimage.png", "Zoom In");
-        buttonPanel.add(button);
-        addToDisabledButtonList(button);
+        button = this.createFrameworkIconButton("zoomIn", "zoominimage.png", "Zoom In");
+        this.buttonPanel.add(button);
+        this.addToDisabledButtonList(button);
 
-        button = createFrameworkIconButton("zoomOut", "zoomoutimage.png", "Zoom Out");
-        buttonPanel.add(button);
-        addToDisabledButtonList(button);
+        button = this.createFrameworkIconButton("zoomOut", "zoomoutimage.png", "Zoom Out");
+        this.buttonPanel.add(button);
+        this.addToDisabledButtonList(button);
 
-        button = createFrameworkIconButton("zoomToFit", "zoomtofit.gif", "Zoom To Fit");
-        buttonPanel.add(button);
-        addToDisabledButtonList(button);
+        button = this.createFrameworkIconButton("zoomToFit", "zoomtofit.gif", "Zoom To Fit");
+        this.buttonPanel.add(button);
+        this.addToDisabledButtonList(button);
 
-        if (parent.getTransformator() instanceof Transformation3D) {
-            button = createFrameworkIconButton("zoomToFit3D", "zoomtofit3d.gif", "Default View");
-            buttonPanel.add(button);
-            addToDisabledButtonList(button);
+        if (this.parent.getTransformator() instanceof Transformation3D) {
+            button = this.createFrameworkIconButton("zoomToFit3D", "zoomtofit3d.gif", "Default View");
+            this.buttonPanel.add(button);
+            this.addToDisabledButtonList(button);
         }
 
-        addSeparator(buttonPanel);
-        addSpacer(buttonPanel, 5);
+        this.addSeparator(this.buttonPanel);
+        this.addSpacer(this.buttonPanel, 5);
 
         // The two text fields to enter number of rounds and refresh rate
         // roundNumber.setText(String.valueOf(Configuration.defaultRoundNumber));
@@ -116,23 +116,23 @@ public class MinimizedControlPanel extends ControlPanel {
         } else {
             roundsToPerform.setToolTipText("Number of Rounds to perform");
         }
-        buttonPanel.add(roundsToPerform);
+        this.buttonPanel.add(roundsToPerform);
 
         refreshRate.setText(String.valueOf(Configuration.refreshRate));
         refreshRate.setToolTipText("Refresh Rate");
-        buttonPanel.add(refreshRate);
+        this.buttonPanel.add(refreshRate);
 
         JPanel startButtonPanel = new JPanel();
         startButtonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         startButtonPanel.add(start);
 
         // the run-selection button
-        runMenuButton = createFrameworkIconButton("RunMenu", "maximize.gif", "Run Options");
-        runMenuButton.setPreferredSize(new Dimension(13, 29));
-        addToDisabledButtonList(runMenuButton);
-        startButtonPanel.add(runMenuButton);
+        this.runMenuButton = this.createFrameworkIconButton("RunMenu", "maximize.gif", "Run Options");
+        this.runMenuButton.setPreferredSize(new Dimension(13, 29));
+        this.addToDisabledButtonList(this.runMenuButton);
+        startButtonPanel.add(this.runMenuButton);
         // raise the 'run' menu whenever the mouse idles over this button
-        runMenuButton.addMouseListener(new MouseListener() {
+        this.runMenuButton.addMouseListener(new MouseListener() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -140,14 +140,14 @@ public class MinimizedControlPanel extends ControlPanel {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (runMenuButton.isEnabled()) {
+                if (MinimizedControlPanel.this.runMenuButton.isEnabled()) {
                     start.setBorderPainted(true);
                 }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (runMenuButton.isEnabled()) {
+                if (MinimizedControlPanel.this.runMenuButton.isEnabled()) {
                     start.setBorderPainted(false);
                 }
             }
@@ -160,69 +160,69 @@ public class MinimizedControlPanel extends ControlPanel {
             public void mouseReleased(MouseEvent e) {
             }
         });
-        buttonPanel.add(startButtonPanel);
+        this.buttonPanel.add(startButtonPanel);
 
-        abort = createFrameworkIconButton("Abort", "abort.gif", "Abort Simulation");
-        abort.setEnabled(false);
-        buttonPanel.add(abort);
+        this.abort = this.createFrameworkIconButton("Abort", "abort.gif", "Abort Simulation");
+        this.abort.setEnabled(false);
+        this.buttonPanel.add(this.abort);
 
-        addSpacer(buttonPanel, 5);
+        this.addSpacer(this.buttonPanel, 5);
 
         JLabel doneRoundsLabel;
         if (Global.isAsynchronousMode) {
             doneRoundsLabel = new JLabel("Time: ");
-            roundsPerformed.setText(String.valueOf(round(sinalgo.runtime.Global.currentTime, 2)));
+            this.roundsPerformed.setText(String.valueOf(this.round(sinalgo.runtime.Global.currentTime, 2)));
         } else {
             doneRoundsLabel = new JLabel("Round: ");
-            roundsPerformed.setText(String.valueOf((int) round(sinalgo.runtime.Global.currentTime, 2)));
+            this.roundsPerformed.setText(String.valueOf((int) this.round(sinalgo.runtime.Global.currentTime, 2)));
         }
-        buttonPanel.add(doneRoundsLabel);
-        roundsPerformed.setEditable(false);
-        roundsPerformed.setBorder(BorderFactory.createEmptyBorder());
-        roundsPerformed.setToolTipText("Number of rounds performed so far");
-        buttonPanel.add(roundsPerformed);
+        this.buttonPanel.add(doneRoundsLabel);
+        this.roundsPerformed.setEditable(false);
+        this.roundsPerformed.setBorder(BorderFactory.createEmptyBorder());
+        this.roundsPerformed.setToolTipText("Number of rounds performed so far");
+        this.buttonPanel.add(this.roundsPerformed);
 
         // Add the user-defined buttons
         Vector<JButton> customButtons = super.createCustomButtons();
         if (customButtons.size() > 0) {
-            addSpacer(buttonPanel, 5);
-            addSeparator(buttonPanel);
-            addSpacer(buttonPanel, 5);
+            this.addSpacer(this.buttonPanel, 5);
+            this.addSeparator(this.buttonPanel);
+            this.addSpacer(this.buttonPanel, 5);
 
             for (JButton b : customButtons) {
-                buttonPanel.add(b);
-                addToDisabledButtonList(b);
+                this.buttonPanel.add(b);
+                this.addToDisabledButtonList(b);
             }
-            addSpacer(buttonPanel, 4); // strange, but the last button is sometimes not painted...
+            this.addSpacer(this.buttonPanel, 4); // strange, but the last button is sometimes not painted...
         }
 
-        JButton changeButton = createFrameworkIconButton("extendPanel", "maximize.gif", "Extend");
+        JButton changeButton = this.createFrameworkIconButton("extendPanel", "maximize.gif", "Extend");
         changeButton.setPreferredSize(new Dimension(13, 29));
-        addToDisabledButtonList(changeButton);
+        this.addToDisabledButtonList(changeButton);
         this.add(BorderLayout.EAST, changeButton);
-        this.add(BorderLayout.WEST, buttonPanel);
+        this.add(BorderLayout.WEST, this.buttonPanel);
 
         this.setVisible(true);
     }
 
     @Override
     public void setRoundsPerformed(double time, int eventNumber) {
-        roundsPerformed.setText(String.valueOf(round(time, 2)));
-        buttonPanel.doLayout();
+        this.roundsPerformed.setText(String.valueOf(this.round(time, 2)));
+        this.buttonPanel.doLayout();
     }
 
     @Override
     public void setRoundsPerformed(int i) {
-        roundsPerformed.setText(String.valueOf(i));
-        buttonPanel.doLayout();
+        this.roundsPerformed.setText(String.valueOf(i));
+        this.buttonPanel.doLayout();
     }
 
     @Override
     public void setCurrentEvent(Event e) {
-        setStringsForCurrentEvent(e);
+        this.setStringsForCurrentEvent(e);
         Vector<String> v = new Vector<>(1);
         v.add(currentEventString);
-        eventJList.setListData(v);
+        this.eventJList.setListData(v);
     }
 
     private void addSeparator(JPanel buttonPanel) {

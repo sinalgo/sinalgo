@@ -130,7 +130,7 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
      * is not delivered.
      */
     public void denyDelivery() {
-        positiveDelivery = false;
+        this.positiveDelivery = false;
     }
 
     /**
@@ -259,8 +259,8 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
      * @param msg The message to create a packet for.
      */
     private Packet(Message msg) {
-        setMessage(msg);
-        setID(getNextFreeID());
+        this.setMessage(msg);
+        this.setID(getNextFreeID());
     }
 
     // the DLLE entry for the DoublyLinkedList

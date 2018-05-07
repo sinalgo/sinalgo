@@ -67,8 +67,8 @@ public class DLLNodeList extends DoublyLinkedList<Node> implements NodeListInter
 
     @Override
     public ReusableListIterator<Node> iterator() {
-        theIteratorInstance.reset();
-        return theIteratorInstance;
+        this.theIteratorInstance.reset();
+        return this.theIteratorInstance;
     }
 
     @Override

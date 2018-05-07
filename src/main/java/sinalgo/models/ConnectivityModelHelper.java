@@ -74,7 +74,7 @@ public abstract class ConnectivityModelHelper extends ConnectivityModel {
             if (n.getID() != possibleNeighbor.getID()) {
                 // if the possible neighbor is connected with the the node: add the connection
                 // to the outgoing connection of n
-                if (isConnected(n, possibleNeighbor)) {
+                if (this.isConnected(n, possibleNeighbor)) {
                     // add it to the outgoing Edges of n. The EdgeCollection itself checks, if the
                     // Edge is already contained
 

@@ -27,14 +27,14 @@ public class TreeNode extends Node {
         while (inbox.hasNext()) {
             Message m = inbox.next();
             if (m instanceof MarkMessage) {
-                if (parent == null || !inbox.getSender().equals(parent)) {
+                if (this.parent == null || !inbox.getSender().equals(this.parent)) {
                     continue;// don't consider mark messages sent by children
                 }
                 this.setColor(Color.RED);
                 // forward the message to all children
-                for (Edge e : getOutgoingConnections()) {
-                    if (!e.getEndNode().equals(parent)) { // don't send it to the parent
-                        send(m, e.getEndNode());
+                for (Edge e : this.getOutgoingConnections()) {
+                    if (!e.getEndNode().equals(this.parent)) { // don't send it to the parent
+                        this.send(m, e.getEndNode());
                     }
                 }
                 // alternatively, we could broadcast the message:

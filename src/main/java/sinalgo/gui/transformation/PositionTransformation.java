@@ -117,16 +117,16 @@ public abstract class PositionTransformation {
         // Note that the subclasses may depend on the calling sequence!
         // While onChangeZoomFactor() is being called, the old value of zoomFactor
         // is still set.
-        onChangeZoomFactor(zoomFactor);
-        setZoomFactor(zoomFactor);
-        bumpVersionNumber();
+        this.onChangeZoomFactor(zoomFactor);
+        this.setZoomFactor(zoomFactor);
+        this.bumpVersionNumber();
     }
 
     /**
      * Bumps the version number by one.
      */
     protected void bumpVersionNumber() {
-        versionNumber++;
+        this.versionNumber++;
     }
 
     /**
@@ -143,7 +143,7 @@ public abstract class PositionTransformation {
      * @param rect The rectangle describing the new view.
      */
     public final void zoomToRect(Rectangle rect) {
-        onChangeZoomToRect(rect);
+        this.onChangeZoomToRect(rect);
     }
 
     /**
@@ -164,8 +164,8 @@ public abstract class PositionTransformation {
      * @param height The height of the window
      */
     public final void zoomToFit(int width, int height) {
-        onChangeZoomToFit(width, height);
-        bumpVersionNumber();
+        this.onChangeZoomToFit(width, height);
+        this.bumpVersionNumber();
     }
 
     /**
@@ -184,8 +184,8 @@ public abstract class PositionTransformation {
      * @param height The height of the window
      */
     public final void defaultView(int width, int height) {
-        onChangeDefaultView(width, height);
-        bumpVersionNumber();
+        this.onChangeDefaultView(width, height);
+        this.bumpVersionNumber();
     }
 
     /**
@@ -200,8 +200,8 @@ public abstract class PositionTransformation {
      * @param y Number of pixels to move in y-direction
      */
     public final void moveView(int x, int y) {
-        onChangeMoveView(x, y);
-        bumpVersionNumber();
+        this.onChangeMoveView(x, y);
+        this.bumpVersionNumber();
     }
 
     /**

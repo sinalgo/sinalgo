@@ -64,8 +64,8 @@ public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener 
      * @param p The Frame to add the AddNodeDialog to if the user clicked AddNode.
      */
     public SpacePopupMenu(GUI p) {
-        parent = p;
-        add.addActionListener(this);
+        this.parent = p;
+        this.add.addActionListener(this);
     }
 
     /**
@@ -74,26 +74,26 @@ public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener 
      * @param p The position the user clicked to.
      */
     public void compose(Point p) {
-        pos = p;
+        this.pos = p;
 
         this.removeAll();
 
-        if (parent.getTransformator().supportReverseTranslation()) {
-            this.add(add);
+        if (this.parent.getTransformator().supportReverseTranslation()) {
+            this.add(this.add);
             this.addSeparator();
         }
 
-        this.add(zoomIn);
-        this.add(zoomOut);
+        this.add(this.zoomIn);
+        this.add(this.zoomOut);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(add.getActionCommand())) {
-            PositionTransformation pt = parent.getTransformator();
+        if (e.getActionCommand().equals(this.add.getActionCommand())) {
+            PositionTransformation pt = this.parent.getTransformator();
             if (pt.supportReverseTranslation()) {
-                pt.translateToLogicPosition(pos.x, pos.y);
-                parent.addSingleNode(new Position(pt.getLogicX(), pt.getLogicY(), pt.getLogicZ()));
+                pt.translateToLogicPosition(this.pos.x, this.pos.y);
+                this.parent.addSingleNode(new Position(pt.getLogicX(), pt.getLogicY(), pt.getLogicZ()));
             }
         }
     }

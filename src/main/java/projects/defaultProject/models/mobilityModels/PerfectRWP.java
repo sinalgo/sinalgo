@@ -78,21 +78,21 @@ public class PerfectRWP extends RandomWayPoint {
 
     @Override
     public Position getNextPos(Node n) {
-        if (initialize) {
-            initialize = false;
+        if (this.initialize) {
+            this.initialize = false;
 
             double speed = Math.abs(speedDistribution.nextSample()); // units per round
             double wt = Math.ceil(waitingTimeDistribution.nextSample()); // potential waiting time
-            Position startPos = getNextWayPoint();
-            setNextDestination(getNextWayPoint());
-            double mt = startPos.distanceTo(getNextDestination()) / speed; // time of the move
+            Position startPos = this.getNextWayPoint();
+            this.setNextDestination(this.getNextWayPoint());
+            double mt = startPos.distanceTo(this.getNextDestination()) / speed; // time of the move
             double fraction = (wt + mt) * random.nextDouble();
-            double dx = getNextDestination().getXCoord() - startPos.getXCoord();
-            double dy = getNextDestination().getYCoord() - startPos.getYCoord();
+            double dx = this.getNextDestination().getXCoord() - startPos.getXCoord();
+            double dy = this.getNextDestination().getYCoord() - startPos.getYCoord();
             if (fraction < wt) {
                 // start waiting
-                setRemaining_waitingTime((int) Math.ceil(wt - fraction));
-                setRemaining_hops(0);
+                this.setRemaining_waitingTime((int) Math.ceil(wt - fraction));
+                this.setRemaining_hops(0);
 
                 double movedFraction = random.nextDouble();
                 startPos.setXCoord(startPos.getXCoord() + dx * movedFraction);
@@ -109,13 +109,13 @@ public class PerfectRWP extends RandomWayPoint {
                 dy *= (1 - movedFraction);
 
                 // determine the number of rounds needed to reach the target
-                double dist = getNextDestination().distanceTo(startPos);
+                double dist = this.getNextDestination().distanceTo(startPos);
                 double rounds = dist / speed;
-                setRemaining_hops((int) Math.ceil(rounds));
+                this.setRemaining_hops((int) Math.ceil(rounds));
                 // determine the moveVector which is added in each round to the position of this
                 // node
-                setMoveVector(new Position(dx / rounds, dy / rounds, 0));
-                setRemaining_waitingTime(0);
+                this.setMoveVector(new Position(dx / rounds, dy / rounds, 0));
+                this.setRemaining_waitingTime(0);
                 return startPos;
             }
         }

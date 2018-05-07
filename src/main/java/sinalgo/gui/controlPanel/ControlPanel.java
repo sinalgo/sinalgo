@@ -93,7 +93,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     /**
      * The background color of the control panel.
      */
-    public Color bgColor = new Color(getBackground().getRed(), getBackground().getGreen(), getBackground().getBlue());
+    public Color bgColor = new Color(this.getBackground().getRed(), this.getBackground().getGreen(), this.getBackground().getBlue());
     protected GUI parent = null;
     protected JTextField roundsPerformed = new JTextField(0);
     protected JTextField timePerformed = new JTextField(0);
@@ -109,12 +109,12 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     private Vector<Tuple<JButton, Method>> customButtons = new Vector<>();
 
     public ControlPanel() {
-        start = createFrameworkIconButton("Start", getRunButtonImageName(), "Run");
+        start = this.createFrameworkIconButton("Start", this.getRunButtonImageName(), "Run");
     }
 
     public void addToDisabledButtonList(JButton b) {
-        if (!disabledButtonList.contains(b)) {
-            disabledButtonList.add(b);
+        if (!this.disabledButtonList.contains(b)) {
+            this.disabledButtonList.add(b);
         }
     }
 
@@ -147,7 +147,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
             ImageIcon icon = new ImageIcon(url);
             JButton b = new JButton(icon);
             b.setPreferredSize(new Dimension(29, 29));
-            return finishButton(b, actionCommand, toolTip);
+            return this.finishButton(b, actionCommand, toolTip);
         } catch (NullPointerException e) {
             throw new SinalgoFatalException("Cannot access the application icon " + imageName
                     + ", which should be stored in\n" + path + ".");
@@ -188,13 +188,13 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         ImageIcon icon = new ImageIcon(url);
         JButton b = new JButton(icon);
         b.setPreferredSize(new Dimension(29, 29));
-        return finishButton(b, actionCommand, toolTip);
+        return this.finishButton(b, actionCommand, toolTip);
     }
 
     protected JButton createTextButton(String actionCommand, String buttonText, String toolTip) {
         JButton b = new JButton(buttonText);
         b.setFont(b.getFont().deriveFont(Font.PLAIN));
-        return finishButton(b, actionCommand, toolTip);
+        return this.finishButton(b, actionCommand, toolTip);
     }
 
     private JButton finishButton(JButton b, String actionCommand, String toolTip) {
@@ -202,7 +202,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         b.setFocusable(false);
         b.setBorderPainted(false);
         b.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
-        b.setBackground(bgColor);
+        b.setBackground(this.bgColor);
         b.addActionListener(this);
         b.addMouseListener(this); // move over the button => draw border
         b.setToolTipText(toolTip);
@@ -214,11 +214,11 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * happens when called on a 2D graph.
      */
     public void defaultViewXY() {
-        PositionTransformation pt = parent.getTransformator();
+        PositionTransformation pt = this.parent.getTransformator();
         if (pt instanceof Transformation3D) {
-            ((Transformation3D) pt).defaultViewXY(parent.getGraphPanel().getWidth(),
-                    parent.getGraphPanel().getHeight());
-            parent.setZoomFactor(pt.getZoomFactor());
+            ((Transformation3D) pt).defaultViewXY(this.parent.getGraphPanel().getWidth(),
+                    this.parent.getGraphPanel().getHeight());
+            this.parent.setZoomFactor(pt.getZoomFactor());
         }
     }
 
@@ -227,11 +227,11 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * happens when called on a 2D graph.
      */
     public void defaultViewXZ() {
-        PositionTransformation pt = parent.getTransformator();
+        PositionTransformation pt = this.parent.getTransformator();
         if (pt instanceof Transformation3D) {
-            ((Transformation3D) pt).defaultViewXZ(parent.getGraphPanel().getWidth(),
-                    parent.getGraphPanel().getHeight());
-            parent.setZoomFactor(pt.getZoomFactor());
+            ((Transformation3D) pt).defaultViewXZ(this.parent.getGraphPanel().getWidth(),
+                    this.parent.getGraphPanel().getHeight());
+            this.parent.setZoomFactor(pt.getZoomFactor());
         }
     }
 
@@ -240,11 +240,11 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * happens when called on a 2D graph.
      */
     public void defaultViewYZ() {
-        PositionTransformation pt = parent.getTransformator();
+        PositionTransformation pt = this.parent.getTransformator();
         if (pt instanceof Transformation3D) {
-            ((Transformation3D) pt).defaultViewYZ(parent.getGraphPanel().getWidth(),
-                    parent.getGraphPanel().getHeight());
-            parent.setZoomFactor(pt.getZoomFactor());
+            ((Transformation3D) pt).defaultViewYZ(this.parent.getGraphPanel().getWidth(),
+                    this.parent.getGraphPanel().getHeight());
+            this.parent.setZoomFactor(pt.getZoomFactor());
         }
     }
 
@@ -258,17 +258,17 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      */
     public synchronized void setStartButtonEnabled(boolean b) {
         if (b) {
-            abort.setBorderPainted(false);
+            this.abort.setBorderPainted(false);
         } else {
             start.setBorderPainted(false);
         }
 
-        abort.setEnabled(!b);
+        this.abort.setEnabled(!b);
         start.setEnabled(b);
         roundsToPerform.setEnabled(b);
         refreshRate.setEnabled(b);
 
-        for (JButton button : disabledButtonList) {
+        for (JButton button : this.disabledButtonList) {
             button.setEnabled(b);
         }
     }
@@ -341,7 +341,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * @param s A string representation of the position
      */
     public void setMousePosition(String s) {
-        mousePositionField.setText(s);
+        this.mousePositionField.setText(s);
     }
 
     /**
@@ -368,8 +368,8 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
                         + "' is not a positive integer.\nThe number of rounds has to be a positive integer.");
                 return;
             }
-            parent.setStartButtonEnabled(false);
-            parent.getRuntime().run(rounds, true);
+            this.parent.setStartButtonEnabled(false);
+            this.parent.getRuntime().run(rounds, true);
         } catch (java.lang.NumberFormatException nFE) {
             Main.minorError("Invalid input: '" + roundsToPerform.getText() + "' is not a valid integer.");
         }
@@ -379,51 +379,51 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * Stops a running simulation.
      */
     public void stopSimulation() {
-        parent.getRuntime().abort();
+        this.parent.getRuntime().abort();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(exit.getActionCommand())) {
+        if (e.getActionCommand().equals(this.exit.getActionCommand())) {
             Main.exitApplication();
         } else if (e.getActionCommand().equals(start.getActionCommand())) {
-            startSimulation();
-        } else if (e.getActionCommand().equals(abort.getActionCommand())) {
-            stopSimulation();
-        } else if (e.getActionCommand().equals(runMenuButton.getActionCommand())) {
+            this.startSimulation();
+        } else if (e.getActionCommand().equals(this.abort.getActionCommand())) {
+            this.stopSimulation();
+        } else if (e.getActionCommand().equals(this.runMenuButton.getActionCommand())) {
             // Show the menu containing the run options
             RunPopupMenu rp = new RunPopupMenu();
-            Point p = runMenuButton.getLocationOnScreen();
+            Point p = this.runMenuButton.getLocationOnScreen();
             Point guiP = this.getLocationOnScreen();
             rp.show(this, p.x - guiP.x - 29, p.y - guiP.y + 29);
         } else if (e.getActionCommand().equals("zoomIn")) {
-            parent.zoomIn();
+            this.parent.zoomIn();
         } else if (e.getActionCommand().equals("zoomOut")) {
-            parent.zoomOut();
+            this.parent.zoomOut();
         } else if (e.getActionCommand().equals("zoomToFit")) {
-            parent.getTransformator().zoomToFit(parent.getGraphPanel().getWidth(), parent.getGraphPanel().getHeight());
-            parent.setZoomFactor(parent.getTransformator().getZoomFactor());
+            this.parent.getTransformator().zoomToFit(this.parent.getGraphPanel().getWidth(), this.parent.getGraphPanel().getHeight());
+            this.parent.setZoomFactor(this.parent.getTransformator().getZoomFactor());
         } else if (e.getActionCommand().equals("zoomToFit3D")) {
-            parent.getTransformator().defaultView(parent.getGraphPanel().getWidth(),
-                    parent.getGraphPanel().getHeight());
-            parent.setZoomFactor(parent.getTransformator().getZoomFactor());
+            this.parent.getTransformator().defaultView(this.parent.getGraphPanel().getWidth(),
+                    this.parent.getGraphPanel().getHeight());
+            this.parent.setZoomFactor(this.parent.getTransformator().getZoomFactor());
         } else if (e.getActionCommand().equals("extendPanel")) {
-            parent.changePanel(true);
+            this.parent.changePanel(true);
         } else if (e.getActionCommand().equals("minimizedPanel")) {
-            parent.changePanel(false);
+            this.parent.changePanel(false);
         } else if (e.getActionCommand().equals("clearGraph")) {
-            parent.clearAllNodes();
+            this.parent.clearAllNodes();
         } else if (e.getActionCommand().equals("addNodes")) {
-            parent.addNodes();
+            this.parent.addNodes();
         } else if (e.getActionCommand().equals("connectNodes")) {
             SinalgoRuntime.reevaluateConnections(); // could ask...
-            parent.redrawGUI();
+            this.parent.redrawGUI();
         } else {
             // test whether its a custom button
-            for (Tuple<JButton, Method> t : customButtons) {
+            for (Tuple<JButton, Method> t : this.customButtons) {
                 if (t.getFirst() == e.getSource()) {
                     try {
-                        synchronized (parent.getTransformator()) {
+                        synchronized (this.parent.getTransformator()) {
                             // synchronize it on the transformator to grant not to be concurrent with
                             // any drawing or modifying action
                             t.getSecond().invoke(Global.customGlobal);
@@ -464,12 +464,12 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
                 String command = "GLOBAL_BUTTON_" + aF.getName();
                 JButton b;
                 if (!info.imageName().equals("")) {
-                    b = createCustomIconButton(command, info.imageName(), info.toolTipText());
+                    b = this.createCustomIconButton(command, info.imageName(), info.toolTipText());
                 } else {
-                    b = createTextButton(command, info.buttonText(), info.toolTipText());
+                    b = this.createTextButton(command, info.buttonText(), info.toolTipText());
                 }
                 buttons.add(b);
-                customButtons.add(new Tuple<>(b, aF));
+                this.customButtons.add(new Tuple<>(b, aF));
             }
         }
         return buttons;
@@ -535,7 +535,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         roundsToPerform.setEditable(isLimited);
         roundsToPerformLabel.setEnabled(isLimited);
         appConfig.guiRunOperationIsLimited = isLimited;
-        start.setIcon(getFrameworkIcon(getRunButtonImageName()));
+        start.setIcon(this.getFrameworkIcon(this.getRunButtonImageName()));
     }
 
     // -----------------------------------------------------------------
@@ -593,36 +593,36 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
 
         private static final long serialVersionUID = 7390719200202452018L;
 
-        protected JMenuItem runForever = new JMenuItem("Run Forever", getFrameworkIcon("runforever.gif"));
+        protected JMenuItem runForever = new JMenuItem("Run Forever", ControlPanel.this.getFrameworkIcon("runforever.gif"));
         protected JMenuItem runCount = new JMenuItem(
-                "Run Specified # of " + (Global.isAsynchronousMode ? "Events" : "Rounds"), getFrameworkIcon("run.gif"));
+                "Run Specified # of " + (Global.isAsynchronousMode ? "Events" : "Rounds"), ControlPanel.this.getFrameworkIcon("run.gif"));
         protected JCheckBoxMenuItem refillEventQueueMenuItem = new JCheckBoxMenuItem("Refill Event Queue",
                 Configuration.handleEmptyEventQueue);
 
         protected RunPopupMenu() {
             // if(appConfig.guiRunOperationIsLimited) {
-            this.add(runForever);
+            this.add(this.runForever);
             // } else {
-            this.add(runCount);
+            this.add(this.runCount);
             // }
             if (Configuration.asynchronousMode) {
                 this.addSeparator();
-                this.add(refillEventQueueMenuItem);
+                this.add(this.refillEventQueueMenuItem);
             }
-            runForever.addActionListener(this);
-            runCount.addActionListener(this);
-            refillEventQueueMenuItem.addActionListener(this);
+            this.runForever.addActionListener(this);
+            this.runCount.addActionListener(this);
+            this.refillEventQueueMenuItem.addActionListener(this);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals(runForever.getActionCommand())) {
-                setRunType(false);
-            } else if (e.getActionCommand().equals(runCount.getActionCommand())) {
-                setRunType(true);
-            } else if (e.getActionCommand().equals(refillEventQueueMenuItem.getActionCommand())) {
-                Configuration.handleEmptyEventQueue = refillEventQueueMenuItem.isSelected();
-                start.setIcon(getFrameworkIcon(getRunButtonImageName()));
+            if (e.getActionCommand().equals(this.runForever.getActionCommand())) {
+                ControlPanel.this.setRunType(false);
+            } else if (e.getActionCommand().equals(this.runCount.getActionCommand())) {
+                ControlPanel.this.setRunType(true);
+            } else if (e.getActionCommand().equals(this.refillEventQueueMenuItem.getActionCommand())) {
+                Configuration.handleEmptyEventQueue = this.refillEventQueueMenuItem.isSelected();
+                start.setIcon(ControlPanel.this.getFrameworkIcon(ControlPanel.this.getRunButtonImageName()));
             }
         }
 

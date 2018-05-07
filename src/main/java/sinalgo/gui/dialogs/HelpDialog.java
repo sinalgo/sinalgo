@@ -46,7 +46,11 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.net.URL;
 
@@ -64,7 +68,7 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
         this.setTitle("Sinalgo Help  (source: https://github.com/andrebrait/sinalgo)");
         GuiHelper.setWindowIcon(this);
         this.addWindowListener(this);
-        restoreWindowState();
+        this.restoreWindowState();
 
         this.setLayout(new BorderLayout());
         this.setResizable(true);
@@ -73,23 +77,23 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
         this.add(topPanel, BorderLayout.NORTH);
         topPanel.setLayout(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        topPanel.add(menuButton, BorderLayout.WEST);
-        menuButton.addActionListener(this);
+        topPanel.add(this.menuButton, BorderLayout.WEST);
+        this.menuButton.addActionListener(this);
 
-        html = new JEditorPane();
+        this.html = new JEditorPane();
         JScrollPane scroller = new JScrollPane();
         JViewport vp = scroller.getViewport();
-        vp.add(html);
+        vp.add(this.html);
         this.add(scroller, BorderLayout.CENTER);
 
         try {
-            defaultURL = new URL("https://github.com/andrebrait/sinalgo/raw/master/MANUAL.pdf");
-            currentURL = defaultURL;
-            html.setPage(currentURL);
-            html.setEditable(false);
-            html.addHyperlinkListener(getLinkListener());
+            this.defaultURL = new URL("https://github.com/andrebrait/sinalgo/raw/master/MANUAL.pdf");
+            this.currentURL = this.defaultURL;
+            this.html.setPage(this.currentURL);
+            this.html.setEditable(false);
+            this.html.addHyperlinkListener(this.getLinkListener());
         } catch (IOException e1) {
-            html.setText("Cannot display the page.\n" + e1.getMessage());
+            this.html.setText("Cannot display the page.\n" + e1.getMessage());
         }
 
         // Detect ESCAPE button
@@ -109,28 +113,28 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
         return e -> {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 if (e instanceof HTMLFrameHyperlinkEvent) {
-                    ((HTMLDocument) html.getDocument()).processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent) e);
+                    ((HTMLDocument) this.html.getDocument()).processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent) e);
                 } else {
                     try {
-                        currentURL = e.getURL();
-                        String s = currentURL.toString();
+                        this.currentURL = e.getURL();
+                        String s = this.currentURL.toString();
                         int offset = s.indexOf(".html");
                         if (offset > 0) { // .html is in the string
                             s = s.substring(0, offset + 5);
                             s += "?help";
-                            if (currentURL.getRef() != null) {
-                                s += "#" + currentURL.getRef();
+                            if (this.currentURL.getRef() != null) {
+                                s += "#" + this.currentURL.getRef();
                             }
-                            currentURL = new URL(s);
+                            this.currentURL = new URL(s);
                             HelpDialog.this.setEnabled(true);
-                            if (menuDlg != null) {
-                                menuDlg.setVisible(false);
-                                menuDlg = null;
+                            if (this.menuDlg != null) {
+                                this.menuDlg.setVisible(false);
+                                this.menuDlg = null;
                             }
                         }
-                        html.setPage(currentURL);
+                        this.html.setPage(this.currentURL);
                     } catch (IOException e1) {
-                        html.setText("Cannot display the page.\n" + e1.getMessage());
+                        this.html.setText("Cannot display the page.\n" + e1.getMessage());
                     }
                 }
             }
@@ -140,15 +144,15 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
     private MenuDialog menuDlg = null; // The menu dialog if its currently shown, otherwise null
 
     private void showMenu() {
-        Point p = menuButton.getLocationOnScreen();
-        menuDlg = new MenuDialog(this, p);
+        Point p = this.menuButton.getLocationOnScreen();
+        this.menuDlg = new MenuDialog(this, p);
         this.setEnabled(false);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource().equals(menuButton)) {
-            showMenu();
+        if (e.getSource().equals(this.menuButton)) {
+            this.showMenu();
         }
     }
 
@@ -165,48 +169,48 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 
         MenuDialog(JFrame owner, Point pos) {
             super(owner);
-            parent = owner;
+            this.parent = owner;
             this.setLayout(new BorderLayout());
 
-            ePane = new JEditorPane();
+            this.ePane = new JEditorPane();
             // ePane.getEditorKit().
-            ePane.setPreferredSize(new Dimension(250, 400));
-            ePane.setEditable(false);
+            this.ePane.setPreferredSize(new Dimension(250, 400));
+            this.ePane.setEditable(false);
             JScrollPane scroller = new JScrollPane();
             JViewport vp = scroller.getViewport();
-            vp.add(ePane);
+            vp.add(this.ePane);
             this.add(scroller, BorderLayout.CENTER);
 
             try {
                 // create the URL for the menu (ensure that the url still points to a Sinalgo
                 // page
-                String s = (currentURL == null ? defaultMenuURL : currentURL.toString());
+                String s = (HelpDialog.this.currentURL == null ? this.defaultMenuURL : HelpDialog.this.currentURL.toString());
                 URL myURL;
                 int offset = s.indexOf(".html");
                 if (offset > 0) { // .html is in the string
                     if (!s.contains("github.com/andrebrait/sinalgo/")) { // went to a different site
-                        myURL = new URL(defaultMenuURL);
+                        myURL = new URL(this.defaultMenuURL);
                     } else { // add the ?menu option
                         s = s.substring(0, offset + 5);
                         s += "?menu";
                         myURL = new URL(s);
                     }
                 } else {
-                    myURL = new URL(defaultMenuURL);
+                    myURL = new URL(this.defaultMenuURL);
                 }
-                ePane.setPage(myURL); // load the page
-                ePane.addHyperlinkListener(getLinkListener());
+                this.ePane.setPage(myURL); // load the page
+                this.ePane.addHyperlinkListener(HelpDialog.this.getLinkListener());
             } catch (IOException e1) {
-                ePane.setText("Cannot display the page.\n" + e1.getMessage());
+                this.ePane.setText("Cannot display the page.\n" + e1.getMessage());
             }
 
             JPanel menuPanel = new JPanel();
             menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.X_AXIS));
             this.add(menuPanel, BorderLayout.NORTH);
-            closeButton.addActionListener(this);
-            menuPanel.add(closeButton);
-            resetButton.addActionListener(this);
-            menuPanel.add(resetButton);
+            this.closeButton.addActionListener(this);
+            menuPanel.add(this.closeButton);
+            this.resetButton.addActionListener(this);
+            menuPanel.add(this.resetButton);
 
             this.setLocation(pos);
             this.pack();
@@ -215,20 +219,20 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource().equals(closeButton)) {
+            if (e.getSource().equals(this.closeButton)) {
                 this.setVisible(false);
-                parent.setEnabled(true);
-                menuDlg = null;
+                this.parent.setEnabled(true);
+                HelpDialog.this.menuDlg = null;
             }
-            if (e.getSource().equals(resetButton)) {
+            if (e.getSource().equals(this.resetButton)) {
                 this.setVisible(false);
-                parent.setEnabled(true);
-                menuDlg = null;
+                this.parent.setEnabled(true);
+                HelpDialog.this.menuDlg = null;
                 try {
-                    currentURL = defaultURL;
-                    html.setPage(currentURL);
+                    HelpDialog.this.currentURL = HelpDialog.this.defaultURL;
+                    HelpDialog.this.html.setPage(HelpDialog.this.currentURL);
                 } catch (IOException e1) {
-                    html.setText("Cannot display the page.\n" + e1.getMessage());
+                    HelpDialog.this.html.setText("Cannot display the page.\n" + e1.getMessage());
                 }
             }
         }
@@ -256,7 +260,7 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 
     @Override
     public void windowClosed(WindowEvent e) {
-        saveWindowState();
+        this.saveWindowState();
     }
 
     @Override
@@ -265,12 +269,12 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 
     @Override
     public void windowClosing(WindowEvent e) {
-        saveWindowState();
+        this.saveWindowState();
     }
 
     @Override
     public void windowDeactivated(WindowEvent e) {
-        saveWindowState();
+        this.saveWindowState();
     }
 
     @Override
@@ -295,12 +299,12 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
         private JFrame p;
 
         Runner(JFrame parent) {
-            p = parent;
+            this.p = parent;
         }
 
         @Override
         public void run() {
-            new HelpDialog(p);
+            new HelpDialog(this.p);
         }
 
     }

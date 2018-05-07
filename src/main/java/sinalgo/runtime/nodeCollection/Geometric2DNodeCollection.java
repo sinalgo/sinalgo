@@ -103,31 +103,31 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
     public Geometric2DNodeCollection() {
         // Immediately stop execution if rMax is not defined in the xml config file.
         try {
-            rMax = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
+            this.rMax = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException(e.getMessage());
         }
 
         // the size of the playground
-        xDim = (int) Math.ceil(Configuration.dimX / rMax);
-        yDim = (int) Math.ceil(Configuration.dimY / rMax);
+        this.xDim = (int) Math.ceil(Configuration.dimX / this.rMax);
+        this.yDim = (int) Math.ceil(Configuration.dimY / this.rMax);
 
-        lists = new DLLNodeList[xDim][yDim];
-        for (int i = 0; i < xDim; i++) {
-            for (int j = 0; j < yDim; j++) {
-                lists[i][j] = new DLLNodeList(true);
+        this.lists = new DLLNodeList[this.xDim][this.yDim];
+        for (int i = 0; i < this.xDim; i++) {
+            for (int j = 0; j < this.yDim; j++) {
+                this.lists[i][j] = new DLLNodeList(true);
             }
         }
     }
 
     @Override
     public Enumeration<Node> getPossibleNeighborsEnumeration(Node n) {
-        if (geometricNodeEnumeration == null) {
-            geometricNodeEnumeration = new GeometricNodeEnumeration(n);
+        if (this.geometricNodeEnumeration == null) {
+            this.geometricNodeEnumeration = new GeometricNodeEnumeration(n);
         } else {
-            geometricNodeEnumeration.resetForNode(n);
+            this.geometricNodeEnumeration.resetForNode(n);
         }
-        return geometricNodeEnumeration;
+        return this.geometricNodeEnumeration;
     }
 
     @Override
@@ -136,15 +136,15 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
 
         // sensitiveInformationChanged = true;
 
-        SquarePos location = getPosOfNode(n);
+        SquarePos location = this.getPosOfNode(n);
         // the node stores its position in the datastructure itself. This is ugly, but
         // it makes
         // searching faster
         n.nodeCollectionInfo = new SquarePos(location.getX(), location.getY());
 
-        lists[location.getX()][location.getY()].addNode(n);
+        this.lists[location.getX()][location.getY()].addNode(n);
 
-        localNodes.add(n);
+        this.localNodes.add(n);
     }
 
     @Override
@@ -154,19 +154,19 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
         }
         // sensitiveInformationChanged = true;
 
-        SquarePos newPosition = getPosOfNode(n);
+        SquarePos newPosition = this.getPosOfNode(n);
         SquarePos oldPosition = (SquarePos) n.nodeCollectionInfo;
         if ((oldPosition.getX() != newPosition.getX()) || oldPosition.getY() != newPosition.getY()) {
 
             // do not call this.remove. Already calculated the new position and thus we can
             // save time to directly call the remove on the list and on the localNodes.
-            NodeListInterface list = lists[oldPosition.getX()][oldPosition.getY()];
+            NodeListInterface list = this.lists[oldPosition.getX()][oldPosition.getY()];
             list.removeNode(n);
 
             oldPosition.setX(newPosition.getX());
             oldPosition.setY(newPosition.getY());
 
-            lists[newPosition.getX()][newPosition.getY()].addNode(n);
+            this.lists[newPosition.getX()][newPosition.getY()].addNode(n);
         }
 
     }
@@ -174,21 +174,21 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
     @Override
     public void _removeNode(Node n) {
         n.holdInNodeCollection = false;
-        SquarePos pos = getPosOfNode(n);
-        NodeListInterface nList = lists[pos.getX()][pos.getY()];
+        SquarePos pos = this.getPosOfNode(n);
+        NodeListInterface nList = this.lists[pos.getX()][pos.getY()];
         if (!nList.removeNode(n)) {
             // the node was not located where it said! ERROR!
             throw new SinalgoFatalException("Geometric2DNodeCollection.removeNode(Node):\n" + "A node is being removed, but it is not"
                     + "located in the matrix cell " + "in which it claims to be.");
         }
-        localNodes.remove(n);
+        this.localNodes.remove(n);
     }
 
     private SquarePos getPosOfNode(Node n) {
         Position p = n.getPosition();
-        oneSquarePos.setX((int) Math.floor(p.getXCoord() / rMax));
-        oneSquarePos.setY((int) Math.floor(p.getYCoord() / rMax));
-        return oneSquarePos;
+        this.oneSquarePos.setX((int) Math.floor(p.getXCoord() / this.rMax));
+        this.oneSquarePos.setY((int) Math.floor(p.getYCoord() / this.rMax));
+        return this.oneSquarePos;
     }
 
     class GeometricNodeEnumeration implements Enumeration<Node> {
@@ -204,14 +204,14 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
          * @param n The node to get the neighbors for.
          */
         public GeometricNodeEnumeration(Node n) {
-            if (sNLE == null) {
-                sNLE = new GeometricNodeListEnumeration(n);
+            if (this.sNLE == null) {
+                this.sNLE = new GeometricNodeListEnumeration(n);
             } else {
-                sNLE.resetForNode(n);
+                this.sNLE.resetForNode(n);
             }
 
-            if (sNLE.hasMoreElements()) {
-                nI = sNLE.nextElement().iterator();
+            if (this.sNLE.hasMoreElements()) {
+                this.nI = this.sNLE.nextElement().iterator();
             }
         }
 
@@ -223,25 +223,25 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
          * @see GeometricNodeEnumeration#GeometricNodeEnumeration(Node)
          */
         public void resetForNode(Node n) {
-            if (sNLE == null) {
-                sNLE = new GeometricNodeListEnumeration(n);
+            if (this.sNLE == null) {
+                this.sNLE = new GeometricNodeListEnumeration(n);
             } else {
-                sNLE.resetForNode(n);
+                this.sNLE.resetForNode(n);
             }
 
-            if (sNLE.hasMoreElements()) {
-                nI = sNLE.nextElement().iterator();
+            if (this.sNLE.hasMoreElements()) {
+                this.nI = this.sNLE.nextElement().iterator();
             }
         }
 
         @Override
         public boolean hasMoreElements() {
-            if (nI.hasNext()) {
+            if (this.nI.hasNext()) {
                 return true;
             } else {
-                while (sNLE.hasMoreElements()) {
-                    nI = sNLE.nextElement().iterator();
-                    if (nI.hasNext()) {
+                while (this.sNLE.hasMoreElements()) {
+                    this.nI = this.sNLE.nextElement().iterator();
+                    if (this.nI.hasNext()) {
                         return true;
                     }
                 }
@@ -251,7 +251,7 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
 
         @Override
         public Node nextElement() {
-            return nI.next();
+            return this.nI.next();
         }
 
     }
@@ -259,17 +259,17 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
     @Override
     public Enumeration<Node> getSortedNodeEnumeration(boolean backToFront) {
         // in 2D returns the same as getNodeEnumeration()
-        return localNodes.elements();
+        return this.localNodes.elements();
     }
 
     @Override
     public Enumeration<Node> getNodeEnumeration() {
-        return localNodes.elements();
+        return this.localNodes.elements();
     }
 
     @Override
     public Iterator<Node> iterator() {
-        return localNodes.iterator();
+        return this.localNodes.iterator();
     }
 
     // public boolean hasSensitiveInfoChanged() {
@@ -302,42 +302,42 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
          * @param n The Node to get all the NodeLists of potential neighbors.
          */
         public GeometricNodeListEnumeration(Node n) {
-            squares = new SquarePositionCollection();
+            this.squares = new SquarePositionCollection();
             // calculate the position in the datastructure of the node
-            location = getPosOfNode(n);
+            this.location = Geometric2DNodeCollection.this.getPosOfNode(n);
 
             // fill the vector with the addresses of the neighborhood squares
-            if (location.getX() == 0) {
-                mask[0][0] = 0;
-                mask[0][1] = 0;
-                mask[0][2] = 0;
+            if (this.location.getX() == 0) {
+                this.mask[0][0] = 0;
+                this.mask[0][1] = 0;
+                this.mask[0][2] = 0;
             }
-            if (location.getX() + 1 == xDim) {
-                mask[2][0] = 0;
-                mask[2][1] = 0;
-                mask[2][2] = 0;
+            if (this.location.getX() + 1 == Geometric2DNodeCollection.this.xDim) {
+                this.mask[2][0] = 0;
+                this.mask[2][1] = 0;
+                this.mask[2][2] = 0;
             }
-            if (location.getY() == 0) {
-                mask[0][0] = 0;
-                mask[1][0] = 0;
-                mask[2][0] = 0;
+            if (this.location.getY() == 0) {
+                this.mask[0][0] = 0;
+                this.mask[1][0] = 0;
+                this.mask[2][0] = 0;
             }
-            if (location.getY() + 1 == yDim) {
-                mask[0][2] = 0;
-                mask[1][2] = 0;
-                mask[2][2] = 0;
+            if (this.location.getY() + 1 == Geometric2DNodeCollection.this.yDim) {
+                this.mask[0][2] = 0;
+                this.mask[1][2] = 0;
+                this.mask[2][2] = 0;
             }
 
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (mask[j][i] != 0) {
-                        squares.add(location.getX() + (j - 1), location.getY() + (i - 1));
+                    if (this.mask[j][i] != 0) {
+                        this.squares.add(this.location.getX() + (j - 1), this.location.getY() + (i - 1));
                     }
                 }
             }
 
             // initialize the enumeration over the vector
-            listEnumeration = squares.elements();
+            this.listEnumeration = this.squares.elements();
         }
 
         /**
@@ -349,69 +349,69 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
          */
         public void resetForNode(Node n) {
 
-            squares.clear();
+            this.squares.clear();
 
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    mask[j][i] = 1;
+                    this.mask[j][i] = 1;
                 }
             }
 
             // calculate the position in the datastructure of the node
-            location = getPosOfNode(n);
+            this.location = Geometric2DNodeCollection.this.getPosOfNode(n);
 
             // fill the vector with the addresses of the neighborhood squares
-            if (location.getX() == 0) {
-                mask[0][0] = 0;
-                mask[0][1] = 0;
-                mask[0][2] = 0;
+            if (this.location.getX() == 0) {
+                this.mask[0][0] = 0;
+                this.mask[0][1] = 0;
+                this.mask[0][2] = 0;
             }
-            if (location.getX() + 1 == xDim) {
-                mask[2][0] = 0;
-                mask[2][1] = 0;
-                mask[2][2] = 0;
+            if (this.location.getX() + 1 == Geometric2DNodeCollection.this.xDim) {
+                this.mask[2][0] = 0;
+                this.mask[2][1] = 0;
+                this.mask[2][2] = 0;
             }
-            if (location.getY() == 0) {
-                mask[0][0] = 0;
-                mask[1][0] = 0;
-                mask[2][0] = 0;
+            if (this.location.getY() == 0) {
+                this.mask[0][0] = 0;
+                this.mask[1][0] = 0;
+                this.mask[2][0] = 0;
             }
-            if (location.getY() + 1 == yDim) {
-                mask[0][2] = 0;
-                mask[1][2] = 0;
-                mask[2][2] = 0;
+            if (this.location.getY() + 1 == Geometric2DNodeCollection.this.yDim) {
+                this.mask[0][2] = 0;
+                this.mask[1][2] = 0;
+                this.mask[2][2] = 0;
             }
 
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (mask[j][i] != 0) {
-                        squares.add(location.getX() + (j - 1), location.getY() + (i - 1));
+                    if (this.mask[j][i] != 0) {
+                        this.squares.add(this.location.getX() + (j - 1), this.location.getY() + (i - 1));
                     }
                 }
             }
             // initialize the enumeration over the vector
-            listEnumeration = squares.elements();
+            this.listEnumeration = this.squares.elements();
         }
 
         @Override
         public boolean hasMoreElements() {
-            return listEnumeration.hasMoreElements();
+            return this.listEnumeration.hasMoreElements();
         }
 
         @Override
         public NodeListInterface nextElement() {
-            SquarePos sp = listEnumeration.nextElement();
-            return lists[sp.getX()][sp.getY()];
+            SquarePos sp = this.listEnumeration.nextElement();
+            return Geometric2DNodeCollection.this.lists[sp.getX()][sp.getY()];
         }
     }
 
     @Override
     public Node getRandomNode() {
-        return super.defaultGetRandomNode(localNodes);
+        return super.defaultGetRandomNode(this.localNodes);
     }
 
     @Override
     public int size() {
-        return localNodes.size();
+        return this.localNodes.size();
     }
 }

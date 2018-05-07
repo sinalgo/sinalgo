@@ -244,7 +244,7 @@ public class Run {
             try {
                 // wait for the user to press ok in the ProjectSelector.
                 synchronized (this) {
-                    wait();
+                    this.wait();
                 }
             } catch (InterruptedException e) {
                 throw new SinalgoWrappedException(e);

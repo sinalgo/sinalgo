@@ -81,22 +81,22 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
 
     @Override
     public void addPacket(Packet p) {
-        append(p);
+        this.append(p);
     }
 
     @Override
     public void removePacket(Packet p) {
-        remove(p);
+        this.remove(p);
     }
 
     @Override
     public void updateMessageBuffer() {
         // ensure that the list of packets is clean (should already be empty)
-        arrivingPackets.clear();
+        this.arrivingPackets.clear();
 
-        bufferIterator.reset();
-        while (bufferIterator.hasNext()) {
-            Packet p = bufferIterator.next();
+        this.bufferIterator.reset();
+        while (this.bufferIterator.hasNext()) {
+            Packet p = this.bufferIterator.next();
 
             if (p.getArrivingTime() <= Global.currentTime) {
 
@@ -106,13 +106,13 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
                     SinalgoRuntime.packetsInTheAir.remove(p);
                 }
 
-                bufferIterator.remove();
+                this.bufferIterator.remove();
                 if (p.getEdge() != null) {
                     p.getEdge().removeMessageForThisEdge(p.getMessage());
                 }
                 if (p.isPositiveDelivery()) {
                     // successful transmission
-                    arrivingPackets.add(p);
+                    this.arrivingPackets.add(p);
                 } else {
                     // failed transmission, drop the package
                     if (Configuration.generateNAckMessages) {
@@ -127,7 +127,7 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
 
     @Override
     public int waitingPackets() {
-        return arrivingPackets.size();
+        return this.arrivingPackets.size();
     }
 
     @Override
@@ -142,12 +142,12 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
 
     @Override
     public Inbox getInbox() {
-        arrivingPackets.sort();
-        if (inbox == null) {
-            inbox = new Inbox(arrivingPackets);
+        this.arrivingPackets.sort();
+        if (this.inbox == null) {
+            this.inbox = new Inbox(this.arrivingPackets);
         } else {
-            inbox.resetForList(arrivingPackets);
+            this.inbox.resetForList(this.arrivingPackets);
         }
-        return inbox;
+        return this.inbox;
     }
 }

@@ -88,18 +88,18 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
         JPanel settingsPanel = new JPanel();
         settingsPanel.setLayout(new BorderLayout());
 
-        testForUpdatesAtStartup.setSelected(AppConfig.getAppConfig().checkForSinalgoUpdate);
-        testForUpdatesAtStartup.addActionListener(this);
-        settingsPanel.add(BorderLayout.LINE_START, testForUpdatesAtStartup);
+        this.testForUpdatesAtStartup.setSelected(AppConfig.getAppConfig().checkForSinalgoUpdate);
+        this.testForUpdatesAtStartup.addActionListener(this);
+        settingsPanel.add(BorderLayout.LINE_START, this.testForUpdatesAtStartup);
 
-        versionTest.addActionListener(this);
-        settingsPanel.add(BorderLayout.EAST, versionTest);
+        this.versionTest.addActionListener(this);
+        settingsPanel.add(BorderLayout.EAST, this.versionTest);
 
         buttonPanel.add(settingsPanel);
 
-        close.addActionListener(this);
+        this.close.addActionListener(this);
         JPanel closePanel = new JPanel();
-        closePanel.add(close);
+        closePanel.add(this.close);
         buttonPanel.add(BorderLayout.SOUTH, closePanel);
 
         this.add(BorderLayout.SOUTH, buttonPanel);
@@ -113,7 +113,7 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
             return false;
         });
 
-        this.getRootPane().setDefaultButton(close);
+        this.getRootPane().setDefaultButton(this.close);
 
         this.pack();
         this.setLocationRelativeTo(parent);
@@ -122,12 +122,12 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource().equals(close)) {
+        if (event.getSource().equals(this.close)) {
             this.setVisible(false);
-        } else if (event.getSource().equals(versionTest)) {
+        } else if (event.getSource().equals(this.versionTest)) {
             VersionTester.testVersion(false, true);
-        } else if (event.getSource().equals(testForUpdatesAtStartup)) {
-            AppConfig.getAppConfig().checkForSinalgoUpdate = testForUpdatesAtStartup.isSelected();
+        } else if (event.getSource().equals(this.testForUpdatesAtStartup)) {
+            AppConfig.getAppConfig().checkForSinalgoUpdate = this.testForUpdatesAtStartup.isSelected();
             AppConfig.getAppConfig().writeConfig();
         }
     }

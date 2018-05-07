@@ -69,7 +69,7 @@ public class UniformDistribution extends Distribution {
     public UniformDistribution(double min, double max) throws NumberFormatException {
         this.min = min;
         this.range = max - min;
-        if (range < 0) {
+        if (this.range < 0) {
             throw new NumberFormatException(
                     "Invalid arguments to create a uniform distribution. The upper bound of the range must be at least as big as the lower bound.");
         }
@@ -86,7 +86,7 @@ public class UniformDistribution extends Distribution {
     public UniformDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
         this.min = Configuration.getDoubleParameter(mainTagPath + "/min");
         this.range = Configuration.getDoubleParameter(mainTagPath + "/max") - this.min;
-        if (range < 0) {
+        if (this.range < 0) {
             throw new CorruptConfigurationEntryException(
                     "Invalid arguments to create a uniform distribution. The upper bound of the range must be at least as big as the lower bound.");
         }
@@ -94,7 +94,7 @@ public class UniformDistribution extends Distribution {
 
     @Override
     public double nextSample() {
-        return min + range * randomGenerator.nextDouble();
+        return this.min + this.range * randomGenerator.nextDouble();
     }
 
     /**

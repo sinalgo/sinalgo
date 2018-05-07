@@ -108,8 +108,8 @@ public class S1Node extends Node {
 
     @Override
     public void preStep() {
-        msgSent += msgSentInThisRound;
-        msgSentInThisRound = 0;
+        this.msgSent += this.msgSentInThisRound;
+        this.msgSentInThisRound = 0;
     }
 
     @Override
@@ -125,7 +125,7 @@ public class S1Node extends Node {
             // OR
             // <S1Node increment="2"/>
 
-            increment = Configuration.getIntegerParameter("s1node/increment");
+            this.increment = Configuration.getIntegerParameter("s1node/increment");
         } catch (CorruptConfigurationEntryException e) {
             // Missing entry in the configuration file: Abort the simulation and
             // display a message to the user
@@ -137,7 +137,7 @@ public class S1Node extends Node {
     public void neighborhoodChange() {
         this.setNext(null);
         for (Edge e : this.getOutgoingConnections()) {
-            if (getNext() == null) {
+            if (this.getNext() == null) {
                 this.setNext((S1Node) e.getEndNode());
             } else {
                 if (e.getEndNode().compareTo(this.getNext()) < 0) {
@@ -179,8 +179,8 @@ public class S1Node extends Node {
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         // set the color of this node
         this.setColor(
-                new Color((float) 0.5 / (1 + msgSentInThisRound), (float) 0.5, (float) 1.0 / (1 + msgSentInThisRound)));
-        String text = Integer.toString(msgSent) + "|" + msgSentInThisRound;
+                new Color((float) 0.5 / (1 + this.msgSentInThisRound), (float) 0.5, (float) 1.0 / (1 + this.msgSentInThisRound)));
+        String text = Integer.toString(this.msgSent) + "|" + this.msgSentInThisRound;
         // draw the node as a circle with the text inside
         super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
         // super.drawNodeAsSquareWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -193,12 +193,12 @@ public class S1Node extends Node {
 
     @Override
     public String toString() {
-        return "Messages sent so far: " + msgSent + "\nMessages sent in this round: " + msgSentInThisRound;
+        return "Messages sent so far: " + this.msgSent + "\nMessages sent in this round: " + this.msgSentInThisRound;
     }
 
     @Override
     public void checkRequirements() throws WrongConfigurationException {
-        if (increment < 0) {
+        if (this.increment < 0) {
             throw new WrongConfigurationException(
                     "S1Node: The increment value (specified in the config file) must be greater or equal to 1.");
         }

@@ -63,21 +63,21 @@ public class EventPopupMenu extends JPopupMenu implements ActionListener {
         this.event = e;
         this.list = l;
         this.renderer = lcr;
-        info.addActionListener(this);
-        delete.addActionListener(this);
-        deleteAll.addActionListener(this);
+        this.info.addActionListener(this);
+        this.delete.addActionListener(this);
+        this.deleteAll.addActionListener(this);
 
-        this.add(info);
+        this.add(this.info);
         this.addSeparator();
-        this.add(delete);
-        this.add(deleteAll);
+        this.add(this.delete);
+        this.add(this.deleteAll);
 
         this.addComponentListener(new ComponentListener() {
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                list.setCellRenderer(renderer);
-                list.repaint();
+                EventPopupMenu.this.list.setCellRenderer(EventPopupMenu.this.renderer);
+                EventPopupMenu.this.list.repaint();
             }
 
             @Override
@@ -97,17 +97,17 @@ public class EventPopupMenu extends JPopupMenu implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(info.getActionCommand())) {
+        if (e.getActionCommand().equals(this.info.getActionCommand())) {
             JOptionPane.showMessageDialog(null,
-                    event.getEventListText(false) + "\n" + event.getEventListToolTipText(false),
+                    this.event.getEventListText(false) + "\n" + this.event.getEventListToolTipText(false),
                     "Information about an Event", JOptionPane.INFORMATION_MESSAGE);
-        } else if (e.getActionCommand().equals(delete.getActionCommand())) {
-            SinalgoRuntime.removeEvent(event);
-        } else if (e.getActionCommand().equals(deleteAll.getActionCommand())) {
+        } else if (e.getActionCommand().equals(this.delete.getActionCommand())) {
+            SinalgoRuntime.removeEvent(this.event);
+        } else if (e.getActionCommand().equals(this.deleteAll.getActionCommand())) {
             SinalgoRuntime.removeAllAsynchronousEvents();
         }
-        list.setCellRenderer(renderer);
-        list.repaint();
+        this.list.setCellRenderer(this.renderer);
+        this.list.repaint();
     }
 
 }

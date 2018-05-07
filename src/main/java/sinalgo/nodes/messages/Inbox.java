@@ -98,11 +98,11 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      */
     @Override
     public boolean hasNext() {
-        if (packetIter != null) {
-            return packetIter.hasNext();
+        if (this.packetIter != null) {
+            return this.packetIter.hasNext();
         } else {
-            if (singlePacket != null) {
-                return activePacket == null;
+            if (this.singlePacket != null) {
+                return this.activePacket == null;
             } else {
                 return false;
             }
@@ -120,19 +120,19 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      */
     @Override
     public Message next() {
-        if (packetIter != null) {
-            activePacket = packetIter.next();
+        if (this.packetIter != null) {
+            this.activePacket = this.packetIter.next();
         } else {
-            if (activePacket == null) {
-                activePacket = singlePacket;
+            if (this.activePacket == null) {
+                this.activePacket = this.singlePacket;
             } else {
-                activePacket = null;
+                this.activePacket = null;
             }
         }
-        if (activePacket == null) {
+        if (this.activePacket == null) {
             throw new IllegalStateException("Call to 'Inbox.next', even though hasNext() returned false.");
         }
-        return activePacket.getMessage();
+        return this.activePacket.getMessage();
     }
 
     /**
@@ -143,13 +143,13 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      */
     @Override
     public void remove() {
-        activePacket = null;
-        if (packetIter != null) {
+        this.activePacket = null;
+        if (this.packetIter != null) {
             // note that this method automatically forwards the exceptions of the original
             // remove method of the iterator.
-            packetIter.remove();
+            this.packetIter.remove();
         } else {
-            singlePacket = null;
+            this.singlePacket = null;
         }
     }
 
@@ -160,10 +160,10 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      */
     @Override
     public void reset() {
-        if (packetList == null) {
-            resetForPacket(singlePacket);
+        if (this.packetList == null) {
+            this.resetForPacket(this.singlePacket);
         } else {
-            resetForList(this.packetList);
+            this.resetForList(this.packetList);
         }
     }
 
@@ -173,10 +173,10 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      * @return The number of messages hold in this inbox.
      */
     public int size() {
-        if (packetList != null) {
-            return packetList.size();
+        if (this.packetList != null) {
+            return this.packetList.size();
         } else {
-            if (singlePacket != null) {
+            if (this.singlePacket != null) {
                 return 1;
             } else {
                 return 0;
@@ -202,8 +202,8 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      *                               <code>next()</code> was never called.
      */
     public Node getSender() {
-        if (activePacket != null) {
-            return activePacket.getOrigin();
+        if (this.activePacket != null) {
+            return this.activePacket.getOrigin();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getSender', but there is no active packet.");
         }
@@ -221,8 +221,8 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      *                               <code>next()</code> was never called.
      */
     public Node getReceiver() {
-        if (activePacket != null) {
-            return activePacket.getDestination();
+        if (this.activePacket != null) {
+            return this.activePacket.getDestination();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getReceiver', but there is no active packet.");
         }
@@ -240,8 +240,8 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      *                               <code>next()</code> was never called.
      */
     public double getArrivingTime() {
-        if (activePacket != null) {
-            return activePacket.getArrivingTime();
+        if (this.activePacket != null) {
+            return this.activePacket.getArrivingTime();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getArrivingTime', but there is no active packet.");
         }
@@ -258,8 +258,8 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      *                               <code>next()</code> was never called.
      */
     public double getIntensity() {
-        if (activePacket != null) {
-            return activePacket.getIntensity();
+        if (this.activePacket != null) {
+            return this.activePacket.getIntensity();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getIntensitiy', but there is no active packet.");
         }
@@ -276,8 +276,8 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      *                               <code>next()</code> was never called.
      */
     public double getSendingTime() {
-        if (activePacket != null) {
-            return activePacket.getSendingTime();
+        if (this.activePacket != null) {
+            return this.activePacket.getSendingTime();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getSendingTime', but there is no active packet.");
         }
@@ -288,8 +288,8 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      * returned object may be null if the edge was removed in the meantime.
      */
     public Edge getIncomingEdge() {
-        if (activePacket != null) {
-            return activePacket.getEdge();
+        if (this.activePacket != null) {
+            return this.activePacket.getEdge();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getSendingTime', but there is no active packet.");
         }
@@ -315,16 +315,16 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      * for other messages after this call.)
      */
     public void freePackets() {
-        activePacket = null;
-        if (packetList != null) {
-            for (Packet aPacketList : packetList) {
+        this.activePacket = null;
+        if (this.packetList != null) {
+            for (Packet aPacketList : this.packetList) {
                 Packet.free(aPacketList);
             }
-            packetList.clear();
+            this.packetList.clear();
         } else {
-            if (singlePacket != null) {
-                Packet.free(singlePacket);
-                singlePacket = null;
+            if (this.singlePacket != null) {
+                Packet.free(this.singlePacket);
+                this.singlePacket = null;
             }
         }
     }
@@ -337,7 +337,7 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      * @param t The list of packets this inbox contains.
      */
     public Inbox(AbstractList<Packet> t) {
-        resetForList(t);
+        this.resetForList(t);
     }
 
     /**
@@ -348,14 +348,14 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      * @param p The packet this inbox contains.
      */
     public Inbox(Packet p) {
-        resetForPacket(p);
+        this.resetForPacket(p);
     }
 
     /**
      * Dummy constructor
      */
     public Inbox() {
-        resetForPacket(null);
+        this.resetForPacket(null);
     }
 
     /**
@@ -367,10 +367,10 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      * @return This inbox instance.
      */
     public Inbox resetForList(AbstractList<Packet> list) {
-        packetList = list;
-        activePacket = null;
-        packetIter = packetList.iterator();
-        singlePacket = null;
+        this.packetList = list;
+        this.activePacket = null;
+        this.packetIter = this.packetList.iterator();
+        this.singlePacket = null;
         return this;
     }
 
@@ -383,10 +383,10 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      * @return This inbox object.
      */
     public Inbox resetForPacket(Packet p) {
-        packetList = null;
-        activePacket = null;
-        packetIter = null;
-        singlePacket = p;
+        this.packetList = null;
+        this.activePacket = null;
+        this.packetIter = null;
+        this.singlePacket = p;
         return this;
     }
 }

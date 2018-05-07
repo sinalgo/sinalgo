@@ -23,7 +23,7 @@ public class RetryFloodingTimer extends Timer {
      * isActive flag is not set.
      */
     public void deactivate() {
-        isActive = false;
+        this.isActive = false;
     }
 
     /**
@@ -38,9 +38,9 @@ public class RetryFloodingTimer extends Timer {
 
     @Override
     public void fire() {
-        if (isActive) {
+        if (this.isActive) {
             FNode n = (FNode) this.getTargetNode();
-            n.lookForNode(destination, currentTTL * 2); // restart a flooding search with TTL twice as big
+            n.lookForNode(this.destination, this.currentTTL * 2); // restart a flooding search with TTL twice as big
         }
     }
 }

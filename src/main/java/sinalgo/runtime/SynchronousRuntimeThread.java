@@ -76,14 +76,14 @@ public class SynchronousRuntimeThread extends Thread {
      * @param r The instance of the GuiRuntime that has started this thread.
      */
     SynchronousRuntimeThread(GUIRuntime r) {
-        runtime = r;
+        this.runtime = r;
     }
 
     /**
      * Default constructor for the batch-mode.
      */
     SynchronousRuntimeThread() {
-        runtime = null;
+        this.runtime = null;
     }
 
     @Override

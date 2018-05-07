@@ -276,17 +276,17 @@ public abstract class AbstractCustomGlobal {
      * incrementing the global time, and after calling {@link #preRound()}.
      */
     public void handleGlobalTimers() {
-        if (globalTimers.isEmpty()) {
+        if (this.globalTimers.isEmpty()) {
             return;
         }
-        Timer t = globalTimers.first();
+        Timer t = this.globalTimers.first();
         while (t.getFireTime() <= Global.currentTime) {
-            globalTimers.remove(t);
+            this.globalTimers.remove(t);
             t.fire();
-            if (globalTimers.isEmpty()) {
+            if (this.globalTimers.isEmpty()) {
                 break;
             }
-            t = globalTimers.first(); // go to the next timer
+            t = this.globalTimers.first(); // go to the next timer
         }
     }
 

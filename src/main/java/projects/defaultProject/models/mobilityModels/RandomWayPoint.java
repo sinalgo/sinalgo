@@ -128,54 +128,54 @@ public class RandomWayPoint extends MobilityModel {
     public Position getNextPos(Node n) {
         // restart a new move to a new destination if the node was moved by another
         // means than this mobility model
-        if (getCurrentPosition() != null) {
-            if (!getCurrentPosition().equals(n.getPosition())) {
-                setRemaining_waitingTime(0);
-                setRemaining_hops(0);
+        if (this.getCurrentPosition() != null) {
+            if (!this.getCurrentPosition().equals(n.getPosition())) {
+                this.setRemaining_waitingTime(0);
+                this.setRemaining_hops(0);
             }
         } else {
-            setCurrentPosition(new Position(0, 0, 0));
+            this.setCurrentPosition(new Position(0, 0, 0));
         }
 
         Position nextPosition = new Position();
 
         // execute the waiting loop
-        if (remaining_waitingTime > 0) {
-            remaining_waitingTime--;
+        if (this.remaining_waitingTime > 0) {
+            this.remaining_waitingTime--;
             return n.getPosition();
         }
 
-        if (remaining_hops == 0) {
+        if (this.remaining_hops == 0) {
             // determine the speed at which this node moves
             double speed = Math.abs(speedDistribution.nextSample()); // units per round
 
             // determine the next point where this node moves to
-            nextDestination = getNextWayPoint();
+            this.nextDestination = this.getNextWayPoint();
 
             // determine the number of rounds needed to reach the target
-            double dist = nextDestination.distanceTo(n.getPosition());
+            double dist = this.nextDestination.distanceTo(n.getPosition());
             double rounds = dist / speed;
-            remaining_hops = (int) Math.ceil(rounds);
+            this.remaining_hops = (int) Math.ceil(rounds);
             // determine the moveVector which is added in each round to the position of this
             // node
-            double newx = (nextDestination.getXCoord() - n.getPosition().getXCoord()) / rounds;
-            double newy = (nextDestination.getYCoord() - n.getPosition().getYCoord()) / rounds;
-            double newz = (nextDestination.getZCoord() - n.getPosition().getZCoord()) / rounds;
-            moveVector.assign(newx, newy, newz);
+            double newx = (this.nextDestination.getXCoord() - n.getPosition().getXCoord()) / rounds;
+            double newy = (this.nextDestination.getYCoord() - n.getPosition().getYCoord()) / rounds;
+            double newz = (this.nextDestination.getZCoord() - n.getPosition().getZCoord()) / rounds;
+            this.moveVector.assign(newx, newy, newz);
         }
-        if (remaining_hops <= 1) { // don't add the moveVector, as this may move over the destination.
-            nextPosition.assign(nextDestination);
+        if (this.remaining_hops <= 1) { // don't add the moveVector, as this may move over the destination.
+            nextPosition.assign(this.nextDestination);
             // set the next waiting time that executes after this mobility phase
-            remaining_waitingTime = (int) Math.ceil(waitingTimeDistribution.nextSample());
-            remaining_hops = 0;
+            this.remaining_waitingTime = (int) Math.ceil(waitingTimeDistribution.nextSample());
+            this.remaining_hops = 0;
         } else {
-            double newx = n.getPosition().getXCoord() + moveVector.getXCoord();
-            double newy = n.getPosition().getYCoord() + moveVector.getYCoord();
-            double newz = n.getPosition().getZCoord() + moveVector.getZCoord();
+            double newx = n.getPosition().getXCoord() + this.moveVector.getXCoord();
+            double newy = n.getPosition().getYCoord() + this.moveVector.getYCoord();
+            double newz = n.getPosition().getZCoord() + this.moveVector.getZCoord();
             nextPosition.assign(newx, newy, newz);
-            remaining_hops--;
+            this.remaining_hops--;
         }
-        currentPosition.assign(nextPosition);
+        this.currentPosition.assign(nextPosition);
         return nextPosition;
     }
 

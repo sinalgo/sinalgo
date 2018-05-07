@@ -17,7 +17,7 @@ public class RetryPayloadMessageTimer extends Timer {
      * is cheaper than to remove the timer manually from the list)
      */
     public void deactivate() {
-        isActive = false;
+        this.isActive = false;
     }
 
     /**
@@ -29,9 +29,9 @@ public class RetryPayloadMessageTimer extends Timer {
 
     @Override
     public void fire() {
-        if (isActive) {
+        if (this.isActive) {
             FNode n = (FNode) this.getTargetNode();
-            n.sendPayloadMessage(message);
+            n.sendPayloadMessage(this.message);
             // we could also invalidate the routing entry, and search again
         }
     }

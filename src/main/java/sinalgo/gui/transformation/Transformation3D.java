@@ -99,7 +99,7 @@ public class Transformation3D extends PositionTransformation {
 
     @Override
     protected void onChangeMoveView(int x, int y) {
-        translate(x, y, 0, tm);
+        this.translate(x, y, 0, this.tm);
     }
 
     /**
@@ -113,24 +113,24 @@ public class Transformation3D extends PositionTransformation {
      */
     public void rotate(int x, int y, boolean preserveZAxis, boolean isZoomPanel) {
         // rotate around the center of the cube
-        multiply(Configuration.dimX / 2, Configuration.dimY / 2, Configuration.dimZ / 2, tm);
-        double offsetX = resultX, offsetY = resultY, offsetZ = resultZ;
-        translate(-offsetX, -offsetY, -offsetZ, tm);
+        this.multiply(Configuration.dimX / 2, Configuration.dimY / 2, Configuration.dimZ / 2, this.tm);
+        double offsetX = this.resultX, offsetY = this.resultY, offsetZ = this.resultZ;
+        this.translate(-offsetX, -offsetY, -offsetZ, this.tm);
 
-        double factor = isZoomPanel ? 0.01 : 1.5f / (maxDim * getZoomFactor()); // rotate slower with high zoom;
+        double factor = isZoomPanel ? 0.01 : 1.5f / (this.maxDim * this.getZoomFactor()); // rotate slower with high zoom;
 
         if (!preserveZAxis) {
-            rotateY(x * factor, tm);
-            rotateX(-y * factor, tm);
+            this.rotateY(x * factor, this.tm);
+            this.rotateX(-y * factor, this.tm);
         } else {
-            double tmp = tmAngleX;
-            rotateX(-tmp, tm); // do not change the direction of the z-axis
-            rotateZ(-x * factor, tm);
-            rotateX(tmp, tm);
-            rotateX(-y * factor, tm);
+            double tmp = this.tmAngleX;
+            this.rotateX(-tmp, this.tm); // do not change the direction of the z-axis
+            this.rotateZ(-x * factor, this.tm);
+            this.rotateX(tmp, this.tm);
+            this.rotateX(-y * factor, this.tm);
         }
-        translate(offsetX, offsetY, offsetZ, tm);
-        bumpVersionNumber();
+        this.translate(offsetX, offsetY, offsetZ, this.tm);
+        this.bumpVersionNumber();
     }
 
     /**
@@ -144,18 +144,18 @@ public class Transformation3D extends PositionTransformation {
      */
     private void initPolyLine(Position p1, Position p2, Position p3, Position p4, double[][] matrix,
                               boolean usePerspective) {
-        translateToGUIPosition(p1, matrix, usePerspective);
-        polyLineX[0] = polyLineX[4] = this.getGuiX();
-        polyLineY[0] = polyLineY[4] = this.getGuiY();
-        translateToGUIPosition(p2, matrix, usePerspective);
-        polyLineX[1] = this.getGuiX();
-        polyLineY[1] = this.getGuiY();
-        translateToGUIPosition(p3, matrix, usePerspective);
-        polyLineX[2] = this.getGuiX();
-        polyLineY[2] = this.getGuiY();
-        translateToGUIPosition(p4, matrix, usePerspective);
-        polyLineX[3] = this.getGuiX();
-        polyLineY[3] = this.getGuiY();
+        this.translateToGUIPosition(p1, matrix, usePerspective);
+        this.polyLineX[0] = this.polyLineX[4] = this.getGuiX();
+        this.polyLineY[0] = this.polyLineY[4] = this.getGuiY();
+        this.translateToGUIPosition(p2, matrix, usePerspective);
+        this.polyLineX[1] = this.getGuiX();
+        this.polyLineY[1] = this.getGuiY();
+        this.translateToGUIPosition(p3, matrix, usePerspective);
+        this.polyLineX[2] = this.getGuiX();
+        this.polyLineY[2] = this.getGuiY();
+        this.translateToGUIPosition(p4, matrix, usePerspective);
+        this.polyLineX[3] = this.getGuiX();
+        this.polyLineY[3] = this.getGuiY();
     }
 
     /**
@@ -165,10 +165,10 @@ public class Transformation3D extends PositionTransformation {
      * @param p2 The final position
      */
     private void drawDottedLine(Graphics g, Position p1, Position p2, double[][] matrix, boolean usePerspective) {
-        translateToGUIPosition(p1, matrix, usePerspective);
-        int fromX = getGuiX(), fromY = getGuiY();
-        translateToGUIPosition(p2, matrix, usePerspective);
-        int toX = getGuiX(), toY = getGuiY();
+        this.translateToGUIPosition(p1, matrix, usePerspective);
+        int fromX = this.getGuiX(), fromY = this.getGuiY();
+        this.translateToGUIPosition(p2, matrix, usePerspective);
+        int toX = this.getGuiX(), toY = this.getGuiY();
         GraphPanel.drawDottedLine(g, fromX, fromY, toX, toY);
     }
 
@@ -179,19 +179,19 @@ public class Transformation3D extends PositionTransformation {
      * @param p2 The final position
      */
     private void drawLine(Graphics g, Position p1, Position p2, double[][] matrix, boolean usePerspective) {
-        translateToGUIPosition(p1, matrix, usePerspective);
-        int fromX = getGuiX(), fromY = getGuiY();
-        translateToGUIPosition(p2, matrix, usePerspective);
-        int toX = getGuiX(), toY = getGuiY();
+        this.translateToGUIPosition(p1, matrix, usePerspective);
+        int fromX = this.getGuiX(), fromY = this.getGuiY();
+        this.translateToGUIPosition(p2, matrix, usePerspective);
+        int toX = this.getGuiX(), toY = this.getGuiY();
         g.drawLine(fromX, fromY, toX, toY);
     }
 
     @Override
     public void drawBackground(Graphics g) {
         // TODO: draw rulers if specified in the config
-        drawCube(g, cubeFaceColor, cubeFaceBackColor, cubeSeeThroughColor, Color.DARK_GRAY, tm,
+        this.drawCube(g, this.cubeFaceColor, this.cubeFaceBackColor, this.cubeSeeThroughColor, Color.DARK_GRAY, this.tm,
                 Configuration.usePerspectiveView);
-        drawCubeAxeArrows(g, tm, Configuration.usePerspectiveView);
+        this.drawCubeAxeArrows(g, this.tm, Configuration.usePerspectiveView);
     }
 
     /**
@@ -202,9 +202,9 @@ public class Transformation3D extends PositionTransformation {
     private void drawCube(Graphics g, Color fgColor, Color bgColor, Color seeThroughColor, Color lineColor,
                           double[][] matrix, boolean usePerspective) {
         // draw the closing sides of the box in light gray
-        determineVisibility(matrix, usePerspective);
-        drawCubeBackground(g, fgColor, bgColor, seeThroughColor, matrix, usePerspective);
-        drawCubeWireFrame(g, lineColor, matrix, usePerspective, null);
+        this.determineVisibility(matrix, usePerspective);
+        this.drawCubeBackground(g, fgColor, bgColor, seeThroughColor, matrix, usePerspective);
+        this.drawCubeWireFrame(g, lineColor, matrix, usePerspective, null);
     }
 
     /**
@@ -221,104 +221,104 @@ public class Transformation3D extends PositionTransformation {
     private void drawCubeBackground(Graphics g, Color fgColor, Color bgColor, Color seeThroughColor, double[][] matrix,
                                     boolean usePerspective) {
         g.setColor(seeThroughColor);
-        initPolyLine(pos00z, posx0z, posxyz, pos0yz, matrix, usePerspective);
-        g.fillPolygon(polyLineX, polyLineY, 5);
+        this.initPolyLine(this.pos00z, this.posx0z, this.posxyz, this.pos0yz, matrix, usePerspective);
+        g.fillPolygon(this.polyLineX, this.polyLineY, 5);
 
-        initPolyLine(pos0y0, posxy0, posxyz, pos0yz, matrix, usePerspective);
-        g.fillPolygon(polyLineX, polyLineY, 5);
+        this.initPolyLine(this.pos0y0, this.posxy0, this.posxyz, this.pos0yz, matrix, usePerspective);
+        g.fillPolygon(this.polyLineX, this.polyLineY, 5);
 
-        initPolyLine(posx00, posxy0, posxyz, posx0z, matrix, usePerspective);
-        g.fillPolygon(polyLineX, polyLineY, 5);
+        this.initPolyLine(this.posx00, this.posxy0, this.posxyz, this.posx0z, matrix, usePerspective);
+        g.fillPolygon(this.polyLineX, this.polyLineY, 5);
 
         Color colXY, colYZ, colXZ;
-        colXY = faceVisibilityXY ? fgColor : bgColor;
-        colXZ = faceVisibilityXZ ? fgColor : bgColor;
-        colYZ = faceVisibilityYZ ? fgColor : bgColor;
+        colXY = this.faceVisibilityXY ? fgColor : bgColor;
+        colXZ = this.faceVisibilityXZ ? fgColor : bgColor;
+        colYZ = this.faceVisibilityYZ ? fgColor : bgColor;
 
         // determine which of the 3 main faces is in front (the one with the largest
         // resultZ -> draw it last
-        translateToGUIPosition(posxy0, matrix, usePerspective);
-        double raiseXY = resultZ;
-        translateToGUIPosition(pos0yz, matrix, usePerspective);
-        double raiseYZ = resultZ;
-        translateToGUIPosition(posx0z, matrix, usePerspective);
-        double raiseXZ = resultZ;
+        this.translateToGUIPosition(this.posxy0, matrix, usePerspective);
+        double raiseXY = this.resultZ;
+        this.translateToGUIPosition(this.pos0yz, matrix, usePerspective);
+        double raiseYZ = this.resultZ;
+        this.translateToGUIPosition(this.posx0z, matrix, usePerspective);
+        double raiseXZ = this.resultZ;
 
         // determine sequence to draw the faces s.t. they overdraw themselves correctly
         if (raiseXY < raiseYZ) {
             if (raiseXY < raiseXZ) { // xy first
-                drawFaceXY(g, colXY, matrix, usePerspective);
+                this.drawFaceXY(g, colXY, matrix, usePerspective);
                 if (raiseXZ < raiseYZ) { // xz yz
-                    drawFaceXZ(g, colXZ, matrix, usePerspective);
-                    drawFaceYZ(g, colYZ, matrix, usePerspective);
+                    this.drawFaceXZ(g, colXZ, matrix, usePerspective);
+                    this.drawFaceYZ(g, colYZ, matrix, usePerspective);
                 } else { // yz xz
-                    drawFaceYZ(g, colYZ, matrix, usePerspective);
-                    drawFaceXZ(g, colXZ, matrix, usePerspective);
+                    this.drawFaceYZ(g, colYZ, matrix, usePerspective);
+                    this.drawFaceXZ(g, colXZ, matrix, usePerspective);
                 }
             } else { // XZ XY YZ
-                drawFaceXZ(g, colXZ, matrix, usePerspective);
-                drawFaceXY(g, colXY, matrix, usePerspective);
-                drawFaceYZ(g, colYZ, matrix, usePerspective);
+                this.drawFaceXZ(g, colXZ, matrix, usePerspective);
+                this.drawFaceXY(g, colXY, matrix, usePerspective);
+                this.drawFaceYZ(g, colYZ, matrix, usePerspective);
             }
         } else { // yz < xy
             if (raiseYZ < raiseXZ) { // yz first
-                drawFaceYZ(g, colYZ, matrix, usePerspective);
+                this.drawFaceYZ(g, colYZ, matrix, usePerspective);
                 if (raiseXY < raiseXZ) { // xy xz
-                    drawFaceXY(g, colXY, matrix, usePerspective);
-                    drawFaceXZ(g, colXZ, matrix, usePerspective);
+                    this.drawFaceXY(g, colXY, matrix, usePerspective);
+                    this.drawFaceXZ(g, colXZ, matrix, usePerspective);
                 } else { // xz xy
-                    drawFaceXZ(g, colXZ, matrix, usePerspective);
-                    drawFaceXY(g, colXY, matrix, usePerspective);
+                    this.drawFaceXZ(g, colXZ, matrix, usePerspective);
+                    this.drawFaceXY(g, colXY, matrix, usePerspective);
                 }
             } else { // xz < yz => xz yz xy
-                drawFaceXZ(g, colXZ, matrix, usePerspective);
-                drawFaceYZ(g, colYZ, matrix, usePerspective);
-                drawFaceXY(g, colXY, matrix, usePerspective);
+                this.drawFaceXZ(g, colXZ, matrix, usePerspective);
+                this.drawFaceYZ(g, colYZ, matrix, usePerspective);
+                this.drawFaceXY(g, colXY, matrix, usePerspective);
             }
         }
     }
 
     private void determineVisibility(double[][] matrix, boolean usePerspective) {
         // vectors along the axis
-        translateToGUIPosition(0, 0, 0, matrix, usePerspective);
-        double origX = resultX;
-        double origY = resultY;
-        translateToGUIPosition(posx00, matrix, usePerspective);
-        double xX = resultX - origX;
-        double xY = resultY - origY;
-        translateToGUIPosition(pos0y0, matrix, usePerspective);
-        double yX = resultX - origX;
-        double yY = resultY - origY;
-        translateToGUIPosition(pos00z, matrix, usePerspective);
-        double zX = resultX - origX;
-        double zY = resultY - origY;
+        this.translateToGUIPosition(0, 0, 0, matrix, usePerspective);
+        double origX = this.resultX;
+        double origY = this.resultY;
+        this.translateToGUIPosition(this.posx00, matrix, usePerspective);
+        double xX = this.resultX - origX;
+        double xY = this.resultY - origY;
+        this.translateToGUIPosition(this.pos0y0, matrix, usePerspective);
+        double yX = this.resultX - origX;
+        double yY = this.resultY - origY;
+        this.translateToGUIPosition(this.pos00z, matrix, usePerspective);
+        double zX = this.resultX - origX;
+        double zY = this.resultY - origY;
 
         // cross product, test whether resulting vector points into screen or out of
         // screen)
-        faceVisibilityXZ = xY * zX - xX * zY < 0;
-        faceVisibilityXY = xX * yY - xY * yX < 0;
-        faceVisibilityYZ = yX * zY - yY * zX < 0;
+        this.faceVisibilityXZ = xY * zX - xX * zY < 0;
+        this.faceVisibilityXY = xX * yY - xY * yX < 0;
+        this.faceVisibilityYZ = yX * zY - yY * zX < 0;
 
         // and the outer faces
         // vectors along the axis
-        translateToGUIPosition(posxyz, matrix, usePerspective);
-        origX = resultX;
-        origY = resultY;
-        translateToGUIPosition(pos0yz, matrix, usePerspective);
-        xX = resultX - origX;
-        xY = resultY - origY;
-        translateToGUIPosition(posx0z, matrix, usePerspective);
-        yX = resultX - origX;
-        yY = resultY - origY;
-        translateToGUIPosition(posxy0, matrix, usePerspective);
-        zX = resultX - origX;
-        zY = resultY - origY;
+        this.translateToGUIPosition(this.posxyz, matrix, usePerspective);
+        origX = this.resultX;
+        origY = this.resultY;
+        this.translateToGUIPosition(this.pos0yz, matrix, usePerspective);
+        xX = this.resultX - origX;
+        xY = this.resultY - origY;
+        this.translateToGUIPosition(this.posx0z, matrix, usePerspective);
+        yX = this.resultX - origX;
+        yY = this.resultY - origY;
+        this.translateToGUIPosition(this.posxy0, matrix, usePerspective);
+        zX = this.resultX - origX;
+        zY = this.resultY - origY;
 
         // cross product, test whether resulting vector points into screen or out of
         // screen)
-        faceVisibilityXZ2 = xY * zX - xX * zY > 0;
-        faceVisibilityXY2 = xX * yY - xY * yX > 0;
-        faceVisibilityYZ2 = yX * zY - yY * zX > 0;
+        this.faceVisibilityXZ2 = xY * zX - xX * zY > 0;
+        this.faceVisibilityXY2 = xX * yY - xY * yX > 0;
+        this.faceVisibilityYZ2 = yX * zY - yY * zX > 0;
     }
 
     private boolean faceVisibilityXZ;
@@ -338,8 +338,8 @@ public class Transformation3D extends PositionTransformation {
      */
     private void drawFaceXY(Graphics g, Color col, double[][] matrix, boolean usePerspective) {
         g.setColor(col);
-        initPolyLine(pos000, posx00, posxy0, pos0y0, matrix, usePerspective); // XY
-        g.fillPolygon(polyLineX, polyLineY, 5);
+        this.initPolyLine(this.pos000, this.posx00, this.posxy0, this.pos0y0, matrix, usePerspective); // XY
+        g.fillPolygon(this.polyLineX, this.polyLineY, 5);
     }
 
     /**
@@ -352,8 +352,8 @@ public class Transformation3D extends PositionTransformation {
      */
     private void drawFaceYZ(Graphics g, Color col, double[][] matrix, boolean usePerspective) {
         g.setColor(col);
-        initPolyLine(pos000, pos0y0, pos0yz, pos00z, matrix, usePerspective); // YZ
-        g.fillPolygon(polyLineX, polyLineY, 5);
+        this.initPolyLine(this.pos000, this.pos0y0, this.pos0yz, this.pos00z, matrix, usePerspective); // YZ
+        g.fillPolygon(this.polyLineX, this.polyLineY, 5);
     }
 
     /**
@@ -366,8 +366,8 @@ public class Transformation3D extends PositionTransformation {
      */
     private void drawFaceXZ(Graphics g, Color col, double[][] matrix, boolean usePerspective) {
         g.setColor(col);
-        initPolyLine(pos000, posx00, posx0z, pos00z, matrix, usePerspective); // XZ
-        g.fillPolygon(polyLineX, polyLineY, 5);
+        this.initPolyLine(this.pos000, this.posx00, this.posx0z, this.pos00z, matrix, usePerspective); // XZ
+        g.fillPolygon(this.polyLineX, this.polyLineY, 5);
     }
 
     /**
@@ -383,9 +383,9 @@ public class Transformation3D extends PositionTransformation {
     private void helperDrawLine(Graphics g, Position from, Position to, double[][] matrix, boolean usePerspective,
                                 EPSOutputPrintStream pw) {
         if (g != null) {
-            drawLine(g, from, to, matrix, usePerspective);
+            this.drawLine(g, from, to, matrix, usePerspective);
         } else {
-            drawLineToPostScript(pw, from, to);
+            this.drawLineToPostScript(pw, from, to);
         }
     }
 
@@ -402,9 +402,9 @@ public class Transformation3D extends PositionTransformation {
     private void helperDrawDottedLine(Graphics g, Position from, Position to, double[][] matrix, boolean usePerspective,
                                       EPSOutputPrintStream pw) {
         if (g != null) {
-            drawDottedLine(g, from, to, matrix, usePerspective);
+            this.drawDottedLine(g, from, to, matrix, usePerspective);
         } else {
-            drawDottedLineToPostScript(pw, from, to);
+            this.drawDottedLineToPostScript(pw, from, to);
         }
     }
 
@@ -425,87 +425,87 @@ public class Transformation3D extends PositionTransformation {
         }
 
         // 000 -> x00
-        if (faceVisibilityXY && faceVisibilityXZ) {
-            helperDrawDottedLine(g, pos000, posx00, matrix, usePerspective, pw);
+        if (this.faceVisibilityXY && this.faceVisibilityXZ) {
+            this.helperDrawDottedLine(g, this.pos000, this.posx00, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, pos000, posx00, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.pos000, this.posx00, matrix, usePerspective, pw);
         }
 
         // 000 -> 00z
-        if (faceVisibilityXZ && faceVisibilityYZ) {
-            helperDrawDottedLine(g, pos000, pos00z, matrix, usePerspective, pw);
+        if (this.faceVisibilityXZ && this.faceVisibilityYZ) {
+            this.helperDrawDottedLine(g, this.pos000, this.pos00z, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, pos000, pos00z, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.pos000, this.pos00z, matrix, usePerspective, pw);
         }
 
         // 000 -> 0y0
-        if (faceVisibilityYZ && faceVisibilityXY) {
-            helperDrawDottedLine(g, pos000, pos0y0, matrix, usePerspective, pw);
+        if (this.faceVisibilityYZ && this.faceVisibilityXY) {
+            this.helperDrawDottedLine(g, this.pos000, this.pos0y0, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, pos000, pos0y0, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.pos000, this.pos0y0, matrix, usePerspective, pw);
         }
 
         // xz0 -> 00z
-        if (faceVisibilityXZ && faceVisibilityXY2) {
-            helperDrawDottedLine(g, posx0z, pos00z, matrix, usePerspective, pw);
+        if (this.faceVisibilityXZ && this.faceVisibilityXY2) {
+            this.helperDrawDottedLine(g, this.posx0z, this.pos00z, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, posx0z, pos00z, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.posx0z, this.pos00z, matrix, usePerspective, pw);
         }
 
         // xz0 -> xyz
-        if (faceVisibilityYZ2 && faceVisibilityXY2) {
-            helperDrawDottedLine(g, posx0z, posxyz, matrix, usePerspective, pw);
+        if (this.faceVisibilityYZ2 && this.faceVisibilityXY2) {
+            this.helperDrawDottedLine(g, this.posx0z, this.posxyz, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, posx0z, posxyz, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.posx0z, this.posxyz, matrix, usePerspective, pw);
         }
 
         // xz0 -> x00
-        if (faceVisibilityXZ && faceVisibilityYZ2) {
-            helperDrawDottedLine(g, posx0z, posx00, matrix, usePerspective, pw);
+        if (this.faceVisibilityXZ && this.faceVisibilityYZ2) {
+            this.helperDrawDottedLine(g, this.posx0z, this.posx00, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, posx0z, posx00, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.posx0z, this.posx00, matrix, usePerspective, pw);
         }
 
         // 0yz -> 00z
-        if (faceVisibilityYZ && faceVisibilityXY2) {
-            helperDrawDottedLine(g, pos0yz, pos00z, matrix, usePerspective, pw);
+        if (this.faceVisibilityYZ && this.faceVisibilityXY2) {
+            this.helperDrawDottedLine(g, this.pos0yz, this.pos00z, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, pos0yz, pos00z, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.pos0yz, this.pos00z, matrix, usePerspective, pw);
         }
 
         // 0yz -> xyz
-        if (faceVisibilityXZ2 && faceVisibilityXY2) {
-            helperDrawDottedLine(g, pos0yz, posxyz, matrix, usePerspective, pw);
+        if (this.faceVisibilityXZ2 && this.faceVisibilityXY2) {
+            this.helperDrawDottedLine(g, this.pos0yz, this.posxyz, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, pos0yz, posxyz, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.pos0yz, this.posxyz, matrix, usePerspective, pw);
         }
 
         // 0yz -> 0y0
-        if (faceVisibilityYZ && faceVisibilityXZ2) {
-            helperDrawDottedLine(g, pos0yz, pos0y0, matrix, usePerspective, pw);
+        if (this.faceVisibilityYZ && this.faceVisibilityXZ2) {
+            this.helperDrawDottedLine(g, this.pos0yz, this.pos0y0, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, pos0yz, pos0y0, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.pos0yz, this.pos0y0, matrix, usePerspective, pw);
         }
 
         // xy0 -> xyz
-        if (faceVisibilityXZ2 && faceVisibilityYZ2) {
-            helperDrawDottedLine(g, posxy0, posxyz, matrix, usePerspective, pw);
+        if (this.faceVisibilityXZ2 && this.faceVisibilityYZ2) {
+            this.helperDrawDottedLine(g, this.posxy0, this.posxyz, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, posxy0, posxyz, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.posxy0, this.posxyz, matrix, usePerspective, pw);
         }
 
         // xy0 -> x00
-        if (faceVisibilityXY && faceVisibilityYZ2) {
-            helperDrawDottedLine(g, posxy0, posx00, matrix, usePerspective, pw);
+        if (this.faceVisibilityXY && this.faceVisibilityYZ2) {
+            this.helperDrawDottedLine(g, this.posxy0, this.posx00, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, posxy0, posx00, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.posxy0, this.posx00, matrix, usePerspective, pw);
         }
 
         // xy0 -> 0y0
-        if (faceVisibilityXY && faceVisibilityXZ2) {
-            helperDrawDottedLine(g, posxy0, pos0y0, matrix, usePerspective, pw);
+        if (this.faceVisibilityXY && this.faceVisibilityXZ2) {
+            this.helperDrawDottedLine(g, this.posxy0, this.pos0y0, matrix, usePerspective, pw);
         } else {
-            helperDrawLine(g, posxy0, pos0y0, matrix, usePerspective, pw);
+            this.helperDrawLine(g, this.posxy0, this.pos0y0, matrix, usePerspective, pw);
         }
     }
 
@@ -515,16 +515,16 @@ public class Transformation3D extends PositionTransformation {
      * @param g The graphics to draw on
      */
     private void drawCubeAxeArrows(Graphics g, double[][] matrix, boolean usePerspective) {
-        translateToGUIPosition(pos000, matrix, usePerspective);
-        int originX = getGuiX();
-        int originY = getGuiY();
+        this.translateToGUIPosition(this.pos000, matrix, usePerspective);
+        int originX = this.getGuiX();
+        int originY = this.getGuiY();
         g.setFont(new Font("", Font.PLAIN, 10));
-        translateToGUIPosition(Configuration.dimX, 0, 0, matrix, usePerspective);
-        drawAxeName(g, "x", originX, originY, getGuiX(), getGuiY());
-        translateToGUIPosition(0, Configuration.dimY, 0, matrix, usePerspective);
-        drawAxeName(g, "y", originX, originY, getGuiX(), getGuiY());
-        translateToGUIPosition(0, 0, Configuration.dimZ, matrix, usePerspective);
-        drawAxeName(g, "z", originX, originY, getGuiX(), getGuiY());
+        this.translateToGUIPosition(Configuration.dimX, 0, 0, matrix, usePerspective);
+        this.drawAxeName(g, "x", originX, originY, this.getGuiX(), this.getGuiY());
+        this.translateToGUIPosition(0, Configuration.dimY, 0, matrix, usePerspective);
+        this.drawAxeName(g, "y", originX, originY, this.getGuiX(), this.getGuiY());
+        this.translateToGUIPosition(0, 0, Configuration.dimZ, matrix, usePerspective);
+        this.drawAxeName(g, "z", originX, originY, this.getGuiX(), this.getGuiY());
     }
 
     /**
@@ -545,7 +545,7 @@ public class Transformation3D extends PositionTransformation {
         double uy = (toY - originY) * factor;
         // draw a line to connect the arrow with the axis
         g.drawLine(toX, toY, (int) (toX + 10 * ux), (int) (toY + 10 * uy));
-        drawArrow(toX, toY, toX + (int) (14 * ux), toY + (int) (14 * uy), g);
+        this.drawArrow(toX, toY, toX + (int) (14 * ux), toY + (int) (14 * uy), g);
         g.drawString(name, toX + (int) (18 * ux), toY + (int) (18 * uy));
     }
 
@@ -603,21 +603,21 @@ public class Transformation3D extends PositionTransformation {
             pw.setColor(255, 255, 255);
         }
 
-        drawPolygonToPostScript(pw, pos00z, posx0z, posxyz, pos0yz);
-        drawPolygonToPostScript(pw, pos0y0, posxy0, posxyz, pos0yz);
-        drawPolygonToPostScript(pw, posx00, posxy0, posxyz, posx0z);
+        this.drawPolygonToPostScript(pw, this.pos00z, this.posx0z, this.posxyz, this.pos0yz);
+        this.drawPolygonToPostScript(pw, this.pos0y0, this.posxy0, this.posxyz, this.pos0yz);
+        this.drawPolygonToPostScript(pw, this.posx00, this.posxy0, this.posxyz, this.posx0z);
 
         if (!Configuration.epsDrawBackgroundWhite) {
             pw.setColor(240, 240, 240);
         }
 
-        drawPolygonToPostScript(pw, pos000, posx00, posxy0, pos0y0);
-        drawPolygonToPostScript(pw, pos000, posx00, posx0z, pos00z);
-        drawPolygonToPostScript(pw, pos000, pos0y0, pos0yz, pos00z);
+        this.drawPolygonToPostScript(pw, this.pos000, this.posx00, this.posxy0, this.pos0y0);
+        this.drawPolygonToPostScript(pw, this.pos000, this.posx00, this.posx0z, this.pos00z);
+        this.drawPolygonToPostScript(pw, this.pos000, this.pos0y0, this.pos0yz, this.pos00z);
 
         pw.setColor(0, 0, 0);
 
-        determineVisibility(tm, Configuration.usePerspectiveView);
+        this.determineVisibility(this.tm, Configuration.usePerspectiveView);
         this.drawCubeWireFrame(null, null, null, false, pw);
 
         // // .........
@@ -641,15 +641,15 @@ public class Transformation3D extends PositionTransformation {
         // drawLineToPostScript(pw, posxy0, posxyz);
         // pw.println("[] 0 setdash\n");
 
-        translateToGUIPosition(pos000);
-        double originX = getGuiXDouble();
-        double originY = getGuiYDouble();
-        translateToGUIPosition(Configuration.dimX, 0, 0);
-        drawAxesToPostScript(pw, "x", originX, originY, getGuiXDouble(), getGuiYDouble());
-        translateToGUIPosition(0, Configuration.dimY, 0);
-        drawAxesToPostScript(pw, "y", originX, originY, getGuiXDouble(), getGuiYDouble());
-        translateToGUIPosition(0, 0, Configuration.dimZ);
-        drawAxesToPostScript(pw, "z", originX, originY, getGuiXDouble(), getGuiYDouble());
+        this.translateToGUIPosition(this.pos000);
+        double originX = this.getGuiXDouble();
+        double originY = this.getGuiYDouble();
+        this.translateToGUIPosition(Configuration.dimX, 0, 0);
+        this.drawAxesToPostScript(pw, "x", originX, originY, this.getGuiXDouble(), this.getGuiYDouble());
+        this.translateToGUIPosition(0, Configuration.dimY, 0);
+        this.drawAxesToPostScript(pw, "y", originX, originY, this.getGuiXDouble(), this.getGuiYDouble());
+        this.translateToGUIPosition(0, 0, Configuration.dimZ);
+        this.drawAxesToPostScript(pw, "z", originX, originY, this.getGuiXDouble(), this.getGuiYDouble());
     }
 
     private void drawAxesToPostScript(EPSOutputPrintStream pw, String name, double originX, double originY, double toX,
@@ -667,14 +667,14 @@ public class Transformation3D extends PositionTransformation {
     }
 
     private void drawPolygonToPostScript(EPSOutputPrintStream pw, Position p1, Position p2, Position p3, Position p4) {
-        translateToGUIPosition(p1);
-        double p1X = getGuiXDouble(), p1Y = getGuiYDouble();
-        translateToGUIPosition(p2);
-        double p2X = getGuiXDouble(), p2Y = getGuiYDouble();
-        translateToGUIPosition(p3);
-        double p3X = getGuiXDouble(), p3Y = getGuiYDouble();
-        translateToGUIPosition(p4);
-        double p4X = getGuiXDouble(), p4Y = getGuiYDouble();
+        this.translateToGUIPosition(p1);
+        double p1X = this.getGuiXDouble(), p1Y = this.getGuiYDouble();
+        this.translateToGUIPosition(p2);
+        double p2X = this.getGuiXDouble(), p2Y = this.getGuiYDouble();
+        this.translateToGUIPosition(p3);
+        double p3X = this.getGuiXDouble(), p3Y = this.getGuiYDouble();
+        this.translateToGUIPosition(p4);
+        double p4X = this.getGuiXDouble(), p4Y = this.getGuiYDouble();
         pw.drawFilledPolygon(p1X, p1Y, p2X, p2Y, p3X, p3Y, p4X, p4Y);
     }
 
@@ -686,11 +686,11 @@ public class Transformation3D extends PositionTransformation {
      * @param to   End point of line
      */
     private void drawLineToPostScript(EPSOutputPrintStream pw, Position from, Position to) {
-        translateToGUIPosition(from);
-        double fromX = getGuiXDouble();
-        double fromY = getGuiYDouble();
-        translateToGUIPosition(to);
-        pw.drawLine(fromX, fromY, getGuiXDouble(), getGuiYDouble());
+        this.translateToGUIPosition(from);
+        double fromX = this.getGuiXDouble();
+        double fromY = this.getGuiYDouble();
+        this.translateToGUIPosition(to);
+        pw.drawLine(fromX, fromY, this.getGuiXDouble(), this.getGuiYDouble());
     }
 
     /**
@@ -702,17 +702,17 @@ public class Transformation3D extends PositionTransformation {
      */
     private void drawDottedLineToPostScript(EPSOutputPrintStream pw, Position from, Position to) {
         pw.println("[2 2] 0 setdash\n");
-        translateToGUIPosition(from);
-        double fromX = getGuiXDouble();
-        double fromY = getGuiYDouble();
-        translateToGUIPosition(to);
-        pw.drawLine(fromX, fromY, getGuiXDouble(), getGuiYDouble());
+        this.translateToGUIPosition(from);
+        double fromX = this.getGuiXDouble();
+        double fromY = this.getGuiYDouble();
+        this.translateToGUIPosition(to);
+        pw.drawLine(fromX, fromY, this.getGuiXDouble(), this.getGuiYDouble());
         pw.println("[] 0 setdash\n");
     }
 
     @Override
     protected void onChangeZoomFactor(double zoomfactor) {
-        scaleInTheMiddleOfScreen(zoomfactor / getZoomFactor(), tm);
+        this.scaleInTheMiddleOfScreen(zoomfactor / this.getZoomFactor(), this.tm);
     }
 
     /**
@@ -724,10 +724,10 @@ public class Transformation3D extends PositionTransformation {
      * @param matrix    The transformation matrix
      */
     private void scaleInTheMiddleOfScreen(double deltaZoom, double[][] matrix) {
-        scale(deltaZoom, matrix);
+        this.scale(deltaZoom, matrix);
         // move the window back s.t. the center of the screen before zooming lies again
         // in the center of the screen
-        translate(getWidth() / 2 * (1 - deltaZoom), getHeight() / 2 * (1 - deltaZoom), 0, matrix);
+        this.translate(this.getWidth() / 2 * (1 - deltaZoom), this.getHeight() / 2 * (1 - deltaZoom), 0, matrix);
     }
 
     /**
@@ -738,24 +738,24 @@ public class Transformation3D extends PositionTransformation {
      * @param matrix    The transformation matrix
      */
     private void scaleInTheMiddleOfCube(double deltaZoom, double[][] matrix) {
-        multiply(Configuration.dimX / 2, Configuration.dimY / 2, Configuration.dimZ / 2, matrix);
-        double offsetX = resultX;
-        double offsetY = resultY;
-        double offsetZ = resultZ;
-        translate(-offsetX, -offsetY, -offsetZ, matrix);
-        scale(deltaZoom, matrix);
-        translate(offsetX, offsetY, offsetZ, matrix);
+        this.multiply(Configuration.dimX / 2, Configuration.dimY / 2, Configuration.dimZ / 2, matrix);
+        double offsetX = this.resultX;
+        double offsetY = this.resultY;
+        double offsetZ = this.resultZ;
+        this.translate(-offsetX, -offsetY, -offsetZ, matrix);
+        this.scale(deltaZoom, matrix);
+        this.translate(offsetX, offsetY, offsetZ, matrix);
     }
 
     @Override
     protected void onChangeZoomToFit(int width, int height) {
-        setZoomFactor(getZoomFactor() * zoomToFit(width, height, tm, Configuration.usePerspectiveView));
+        this.setZoomFactor(this.getZoomFactor() * this.zoomToFit(width, height, this.tm, Configuration.usePerspectiveView));
     }
 
     @Override
     protected void onChangeDefaultView(int width, int height) {
-        rotateToDefault(tm);
-        onChangeZoomToFit(width, height);
+        this.rotateToDefault(this.tm);
+        this.onChangeZoomToFit(width, height);
     }
 
     /**
@@ -766,9 +766,9 @@ public class Transformation3D extends PositionTransformation {
      * @param height The height of the window
      */
     public void defaultViewXY(int width, int height) {
-        reset(tm);
-        onChangeZoomToFit(width, height);
-        bumpVersionNumber();
+        this.reset(this.tm);
+        this.onChangeZoomToFit(width, height);
+        this.bumpVersionNumber();
     }
 
     /**
@@ -779,10 +779,10 @@ public class Transformation3D extends PositionTransformation {
      * @param height The height of the window
      */
     public void defaultViewXZ(int width, int height) {
-        reset(tm);
-        this.rotateX(Math.PI / 2, tm);
-        onChangeZoomToFit(width, height);
-        bumpVersionNumber();
+        this.reset(this.tm);
+        this.rotateX(Math.PI / 2, this.tm);
+        this.onChangeZoomToFit(width, height);
+        this.bumpVersionNumber();
     }
 
     /**
@@ -793,11 +793,11 @@ public class Transformation3D extends PositionTransformation {
      * @param height The height of the window
      */
     public void defaultViewYZ(int width, int height) {
-        reset(tm);
-        this.rotateZ(Math.PI / 2, tm);
-        this.rotateX(Math.PI / 2, tm);
-        onChangeZoomToFit(width, height);
-        bumpVersionNumber();
+        this.reset(this.tm);
+        this.rotateZ(Math.PI / 2, this.tm);
+        this.rotateX(Math.PI / 2, this.tm);
+        this.onChangeZoomToFit(width, height);
+        this.bumpVersionNumber();
     }
 
     /**
@@ -807,18 +807,18 @@ public class Transformation3D extends PositionTransformation {
      */
     private void rotateToDefault(double[][] matrix) {
         // set the rotation matrix such that it looks nice.
-        reset(matrix);
+        this.reset(matrix);
         // rotate around the center of the cube
-        multiply(Configuration.dimX / 2, Configuration.dimY / 2, Configuration.dimZ / 2, tm);
-        double offsetX = resultX, offsetY = resultY, offsetZ = resultZ;
-        translate(-offsetX, -offsetY, -offsetZ, matrix);
+        this.multiply(Configuration.dimX / 2, Configuration.dimY / 2, Configuration.dimZ / 2, this.tm);
+        double offsetX = this.resultX, offsetY = this.resultY, offsetZ = this.resultZ;
+        this.translate(-offsetX, -offsetY, -offsetZ, matrix);
 
-        rotateZ(Math.PI / 2, matrix);
-        rotateX(Math.PI / 2, matrix);
-        rotateY(-Math.PI / 6, matrix);
-        rotateX(-Math.PI / 8, matrix);
+        this.rotateZ(Math.PI / 2, matrix);
+        this.rotateX(Math.PI / 2, matrix);
+        this.rotateY(-Math.PI / 6, matrix);
+        this.rotateX(-Math.PI / 8, matrix);
 
-        translate(offsetX, offsetY, offsetZ, matrix);
+        this.translate(offsetX, offsetY, offsetZ, matrix);
     }
 
     /**
@@ -832,13 +832,13 @@ public class Transformation3D extends PositionTransformation {
      */
     private double zoomToFit(int width, int height, double[][] matrix, boolean usePerspective) {
         int axesOffset = 30; // border to allow for names of axes
-        determineBoundingBox(matrix, usePerspective);
-        double currentWidth = maxX - minX; // add some space for the axe naming
-        double currentHeight = maxY - minY;
+        this.determineBoundingBox(matrix, usePerspective);
+        double currentWidth = this.maxX - this.minX; // add some space for the axe naming
+        double currentHeight = this.maxY - this.minY;
         double delta = Math.min((width - 2 * axesOffset) / currentWidth, (height - 2 * axesOffset) / currentHeight);
-        scaleInTheMiddleOfCube(delta, matrix);
-        determineBoundingBox(matrix, usePerspective);
-        translate(-minX + (width - (maxX - minX)) / 2, -minY + (height - (maxY - minY)) / 2, 0, matrix);
+        this.scaleInTheMiddleOfCube(delta, matrix);
+        this.determineBoundingBox(matrix, usePerspective);
+        this.translate(-this.minX + (width - (this.maxX - this.minX)) / 2, -this.minY + (height - (this.maxY - this.minY)) / 2, 0, matrix);
         return delta;
     }
 
@@ -857,84 +857,84 @@ public class Transformation3D extends PositionTransformation {
     }
 
     private void rotateX(double angle, double[][] matrix) {
-        if (matrix == tm) {
-            tmAngleX += angle;
+        if (matrix == this.tm) {
+            this.tmAngleX += angle;
         }
         // top row
-        rotm[0][0] = 1;
-        rotm[0][1] = 0;
-        rotm[0][2] = 0;
-        rotm[0][3] = 0;
+        this.rotm[0][0] = 1;
+        this.rotm[0][1] = 0;
+        this.rotm[0][2] = 0;
+        this.rotm[0][3] = 0;
 
-        rotm[1][0] = 0;
-        rotm[1][1] = Math.cos(angle);
-        rotm[1][2] = -Math.sin(angle);
-        rotm[1][3] = 0;
+        this.rotm[1][0] = 0;
+        this.rotm[1][1] = Math.cos(angle);
+        this.rotm[1][2] = -Math.sin(angle);
+        this.rotm[1][3] = 0;
 
-        rotm[2][0] = 0;
-        rotm[2][1] = Math.sin(angle);
-        rotm[2][2] = Math.cos(angle);
-        rotm[2][3] = 0;
+        this.rotm[2][0] = 0;
+        this.rotm[2][1] = Math.sin(angle);
+        this.rotm[2][2] = Math.cos(angle);
+        this.rotm[2][3] = 0;
 
-        rotm[3][0] = 0;
-        rotm[3][1] = 0;
-        rotm[3][2] = 0;
-        rotm[3][3] = 1;
-        multiply(matrix);
+        this.rotm[3][0] = 0;
+        this.rotm[3][1] = 0;
+        this.rotm[3][2] = 0;
+        this.rotm[3][3] = 1;
+        this.multiply(matrix);
     }
 
     private void rotateY(double angle, double[][] matrix) {
-        if (matrix == tm) {
-            tmAngleY += angle;
+        if (matrix == this.tm) {
+            this.tmAngleY += angle;
         }
         // top row
-        rotm[0][0] = Math.cos(angle);
-        rotm[0][1] = 0;
-        rotm[0][2] = Math.sin(angle);
-        rotm[0][3] = 0;
+        this.rotm[0][0] = Math.cos(angle);
+        this.rotm[0][1] = 0;
+        this.rotm[0][2] = Math.sin(angle);
+        this.rotm[0][3] = 0;
 
-        rotm[1][0] = 0;
-        rotm[1][1] = 1;
-        rotm[1][2] = 0;
-        rotm[1][3] = 0;
+        this.rotm[1][0] = 0;
+        this.rotm[1][1] = 1;
+        this.rotm[1][2] = 0;
+        this.rotm[1][3] = 0;
 
-        rotm[2][0] = -Math.sin(angle);
-        rotm[2][1] = 0;
-        rotm[2][2] = Math.cos(angle);
-        rotm[2][3] = 0;
+        this.rotm[2][0] = -Math.sin(angle);
+        this.rotm[2][1] = 0;
+        this.rotm[2][2] = Math.cos(angle);
+        this.rotm[2][3] = 0;
 
-        rotm[3][0] = 0;
-        rotm[3][1] = 0;
-        rotm[3][2] = 0;
-        rotm[3][3] = 1;
-        multiply(matrix);
+        this.rotm[3][0] = 0;
+        this.rotm[3][1] = 0;
+        this.rotm[3][2] = 0;
+        this.rotm[3][3] = 1;
+        this.multiply(matrix);
     }
 
     private void rotateZ(double angle, double[][] matrix) {
-        if (matrix == tm) {
-            tmAngleZ += angle;
+        if (matrix == this.tm) {
+            this.tmAngleZ += angle;
         }
         // top row
-        rotm[0][0] = Math.cos(angle);
-        rotm[0][1] = -Math.sin(angle);
-        rotm[0][2] = 0;
-        rotm[0][3] = 0;
+        this.rotm[0][0] = Math.cos(angle);
+        this.rotm[0][1] = -Math.sin(angle);
+        this.rotm[0][2] = 0;
+        this.rotm[0][3] = 0;
 
-        rotm[1][0] = Math.sin(angle);
-        rotm[1][1] = Math.cos(angle);
-        rotm[1][2] = 0;
-        rotm[1][3] = 0;
+        this.rotm[1][0] = Math.sin(angle);
+        this.rotm[1][1] = Math.cos(angle);
+        this.rotm[1][2] = 0;
+        this.rotm[1][3] = 0;
 
-        rotm[2][0] = 0;
-        rotm[2][1] = 0;
-        rotm[2][2] = 1;
-        rotm[2][3] = 0;
+        this.rotm[2][0] = 0;
+        this.rotm[2][1] = 0;
+        this.rotm[2][2] = 1;
+        this.rotm[2][3] = 0;
 
-        rotm[3][0] = 0;
-        rotm[3][1] = 0;
-        rotm[3][2] = 0;
-        rotm[3][3] = 1;
-        multiply(matrix);
+        this.rotm[3][0] = 0;
+        this.rotm[3][1] = 0;
+        this.rotm[3][2] = 0;
+        this.rotm[3][3] = 1;
+        this.multiply(matrix);
     }
 
     /**
@@ -960,13 +960,13 @@ public class Transformation3D extends PositionTransformation {
             for (int j = 0; j < 4; j++) {
                 double sum = 0;
                 for (int k = 0; k < 4; k++) {
-                    sum += rotm[i][k] * matrix[k][j];
+                    sum += this.rotm[i][k] * matrix[k][j];
                 }
-                tempm[i][j] = sum;
+                this.tempm[i][j] = sum;
             }
         }
         for (int i = 0; i < 4; i++) {
-            System.arraycopy(tempm[i], 0, matrix[i], 0, 4);
+            System.arraycopy(this.tempm[i], 0, matrix[i], 0, 4);
         }
     }
 
@@ -975,22 +975,22 @@ public class Transformation3D extends PositionTransformation {
      * coordinates of the cube in the member variables minX, maxX, minY, maxY.
      */
     private void determineBoundingBox(double[][] matrix, boolean usePerspective) {
-        translateToGUIPosition(posList[0], matrix, usePerspective);
-        minX = maxX = getGuiX();
-        minY = maxY = getGuiY();
+        this.translateToGUIPosition(this.posList[0], matrix, usePerspective);
+        this.minX = this.maxX = this.getGuiX();
+        this.minY = this.maxY = this.getGuiY();
         for (int i = 1; i < 8; i++) {
-            translateToGUIPosition(posList[i], matrix, usePerspective);
-            if (getGuiX() < minX) {
-                minX = getGuiX();
+            this.translateToGUIPosition(this.posList[i], matrix, usePerspective);
+            if (this.getGuiX() < this.minX) {
+                this.minX = this.getGuiX();
             }
-            if (getGuiX() > maxX) {
-                maxX = getGuiX();
+            if (this.getGuiX() > this.maxX) {
+                this.maxX = this.getGuiX();
             }
-            if (getGuiY() < minY) {
-                minY = getGuiY();
+            if (this.getGuiY() < this.minY) {
+                this.minY = this.getGuiY();
             }
-            if (getGuiY() > maxY) {
-                maxY = getGuiY();
+            if (this.getGuiY() > this.maxY) {
+                this.maxY = this.getGuiY();
             }
         }
     }
@@ -999,25 +999,25 @@ public class Transformation3D extends PositionTransformation {
      * Default constructor
      */
     public Transformation3D() {
-        posList[0] = pos000;
-        posList[1] = posx00;
-        posList[2] = pos0y0;
-        posList[3] = pos00z;
-        posList[4] = posxy0;
-        posList[5] = posx0z;
-        posList[6] = pos0yz;
-        posList[7] = posxyz;
+        this.posList[0] = this.pos000;
+        this.posList[1] = this.posx00;
+        this.posList[2] = this.pos0y0;
+        this.posList[3] = this.pos00z;
+        this.posList[4] = this.posxy0;
+        this.posList[5] = this.posx0z;
+        this.posList[6] = this.pos0yz;
+        this.posList[7] = this.posxyz;
 
-        reset(tm);
+        this.reset(this.tm);
     }
 
     /**
      * Resets the transformation matrix
      */
     private void reset(double[][] matrix) {
-        if (matrix == tm) {
-            tmAngleX = tmAngleY = tmAngleZ = 0;
-            setZoomFactor(1);
+        if (matrix == this.tm) {
+            this.tmAngleX = this.tmAngleY = this.tmAngleZ = 0;
+            this.setZoomFactor(1);
         }
         // initialize the default transformation matrix (no rotation at all)
         for (int i = 0; i < 4; i++) {
@@ -1038,14 +1038,14 @@ public class Transformation3D extends PositionTransformation {
     private void multiply(double x, double y, double z, double[][] matrix) {
         // Note that we negate the logic y value to mirror the cube, such as to obtain
         // the usual x y z coordinate system orientation
-        resultX = x * matrix[0][0] - y * matrix[0][1] + z * matrix[0][2] + matrix[0][3];
-        resultY = x * matrix[1][0] - y * matrix[1][1] + z * matrix[1][2] + matrix[1][3];
-        resultZ = x * matrix[2][0] - y * matrix[2][1] + z * matrix[2][2] + matrix[2][3];
+        this.resultX = x * matrix[0][0] - y * matrix[0][1] + z * matrix[0][2] + matrix[0][3];
+        this.resultY = x * matrix[1][0] - y * matrix[1][1] + z * matrix[1][2] + matrix[1][3];
+        this.resultZ = x * matrix[2][0] - y * matrix[2][1] + z * matrix[2][2] + matrix[2][3];
     }
 
     @Override
     public void translateToGUIPosition(double x, double y, double z) {
-        translateToGUIPosition(x, y, z, tm, Configuration.usePerspectiveView);
+        this.translateToGUIPosition(x, y, z, this.tm, Configuration.usePerspectiveView);
     }
 
     /**
@@ -1058,19 +1058,19 @@ public class Transformation3D extends PositionTransformation {
      * @param matrix The matrix which defines the transformation
      */
     private void translateToGUIPosition(double x, double y, double z, double[][] matrix, boolean usePerspective) {
-        multiply(x, y, z, matrix);
+        this.multiply(x, y, z, matrix);
         // we project onto the X/Y field
         // possibly add some perspective
         if (usePerspective) {
-            double perspectiveZ = Configuration.perspectiveViewDistance * maxDim * getZoomFactor();
-            resultX = getWidth() / 2 + (getWidth() / 2 - resultX) * perspectiveZ / (resultZ - perspectiveZ);
-            resultY = getHeight() / 2 + (getHeight() / 2 - resultY) * perspectiveZ / (resultZ - perspectiveZ);
+            double perspectiveZ = Configuration.perspectiveViewDistance * this.maxDim * this.getZoomFactor();
+            this.resultX = this.getWidth() / 2 + (this.getWidth() / 2 - this.resultX) * perspectiveZ / (this.resultZ - perspectiveZ);
+            this.resultY = this.getHeight() / 2 + (this.getHeight() / 2 - this.resultY) * perspectiveZ / (this.resultZ - perspectiveZ);
         }
 
-        this.setGuiXDouble(resultX);
-        this.setGuiYDouble(resultY);
-        this.setGuiX((int) resultX);
-        this.setGuiY((int) resultY);
+        this.setGuiXDouble(this.resultX);
+        this.setGuiYDouble(this.resultY);
+        this.setGuiX((int) this.resultX);
+        this.setGuiY((int) this.resultY);
     }
 
     /**
@@ -1078,7 +1078,7 @@ public class Transformation3D extends PositionTransformation {
      * @param matrix The rotation matrix to use
      */
     private void translateToGUIPosition(Position pos, double[][] matrix, boolean usePerspective) {
-        translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), matrix, usePerspective);
+        this.translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), matrix, usePerspective);
     }
 
     /**
@@ -1092,13 +1092,13 @@ public class Transformation3D extends PositionTransformation {
      * @return The z-coordinate of
      */
     public double translateToGUIPositionAndGetZOffset(Position pos) {
-        translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), tm, Configuration.usePerspectiveView);
-        return resultZ;
+        this.translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), this.tm, Configuration.usePerspectiveView);
+        return this.resultZ;
     }
 
     @Override
     public void translateToGUIPosition(Position pos) {
-        translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), tm, Configuration.usePerspectiveView);
+        this.translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), this.tm, Configuration.usePerspectiveView);
     }
 
     @Override
@@ -1116,32 +1116,32 @@ public class Transformation3D extends PositionTransformation {
     public void drawZoomPanel(Graphics g, int side, int offsetX, int offsetY, int bgwidth, int bgheight) {
         // copy the current transformation matrix
         for (int i = 0; i < 4; i++) {
-            System.arraycopy(tm[i], 0, zpm[i], 0, 4);
+            System.arraycopy(this.tm[i], 0, this.zpm[i], 0, 4);
         }
 
-        zoomPanelZoom = getZoomFactor() * zoomToFit(side, side, zpm, false); // note: we copied tm to zpm
+        this.zoomPanelZoom = this.getZoomFactor() * this.zoomToFit(side, side, this.zpm, false); // note: we copied tm to zpm
         // draw the background first in gray, then at the end, paint the visible part in
         // white
-        determineVisibility(zpm, false);
+        this.determineVisibility(this.zpm, false);
         Color faceColor = new Color(0.8f, 0.8f, 0.8f);
-        drawCubeBackground(g, faceColor, faceColor, new Color(0.85f, 0.85f, 0.85f), zpm, false);
+        this.drawCubeBackground(g, faceColor, faceColor, new Color(0.85f, 0.85f, 0.85f), this.zpm, false);
 
-        determineBoundingBox(zpm, false);
-        offsetX += minX;
-        offsetY += minY;
-        int boundingBoxWidth = maxX - minX;
-        int boundingBoxHeight = maxY - minY;
+        this.determineBoundingBox(this.zpm, false);
+        offsetX += this.minX;
+        offsetY += this.minY;
+        int boundingBoxWidth = this.maxX - this.minX;
+        int boundingBoxHeight = this.maxY - this.minY;
 
-        determineBoundingBox(tm, false);
+        this.determineBoundingBox(this.tm, false);
 
-        double dimX = (maxX - minX) / getZoomFactor();
-        double dimY = (maxY - minY) / getZoomFactor();
-        translateToGUIPosition(0, 0, 0, zpm, false);
+        double dimX = (this.maxX - this.minX) / this.getZoomFactor();
+        double dimY = (this.maxY - this.minY) / this.getZoomFactor();
+        this.translateToGUIPosition(0, 0, 0, this.zpm, false);
 
-        int ax = (int) (zoomPanelZoom * dimX * (-minX) / (maxX - minX));
-        int ay = (int) (zoomPanelZoom * dimY * (-minY) / (maxY - minY));
-        int bx = (int) (zoomPanelZoom * dimX * (getWidth() - minX) / (maxX - minX));
-        int by = (int) (zoomPanelZoom * dimY * (getHeight() - minY) / (maxY - minY));
+        int ax = (int) (this.zoomPanelZoom * dimX * (-this.minX) / (this.maxX - this.minX));
+        int ay = (int) (this.zoomPanelZoom * dimY * (-this.minY) / (this.maxY - this.minY));
+        int bx = (int) (this.zoomPanelZoom * dimX * (this.getWidth() - this.minX) / (this.maxX - this.minX));
+        int by = (int) (this.zoomPanelZoom * dimY * (this.getHeight() - this.minY) / (this.maxY - this.minY));
         ax = Math.max(0, ax);
         ay = Math.max(0, ay);
         bx = Math.min(boundingBoxWidth, bx);
@@ -1151,38 +1151,38 @@ public class Transformation3D extends PositionTransformation {
 
         // draw a red line around the visible part
         g.setClip(offsetX + ax - 1, offsetY + ay - 1, bx - ax + 2, by - ay + 2);
-        drawCubeBackground(g, Color.RED, Color.RED, Color.RED, zpm, false);
+        this.drawCubeBackground(g, Color.RED, Color.RED, Color.RED, this.zpm, false);
         // ...but not on the wireframe
-        drawCubeWireFrame(g, Color.BLACK, zpm, false, null);
+        this.drawCubeWireFrame(g, Color.BLACK, this.zpm, false, null);
         g.setClip(offsetX + ax, offsetY + ay, bx - ax, by - ay);
         // and draw in white the visible area
-        drawCubeBackground(g, cubeFaceColor, cubeFaceBackColor, cubeSeeThroughColor, zpm, false);
+        this.drawCubeBackground(g, this.cubeFaceColor, this.cubeFaceBackColor, this.cubeSeeThroughColor, this.zpm, false);
         g.setClip(oldClip);
         // put on top the wire frame and the axes
-        drawCubeWireFrame(g, Color.BLACK, zpm, false, null);
-        drawCubeAxeArrows(g, zpm, false);
+        this.drawCubeWireFrame(g, Color.BLACK, this.zpm, false, null);
+        this.drawCubeAxeArrows(g, this.zpm, false);
     }
 
     @Override
     public double getZoomPanelZoomFactor() {
-        return zoomPanelZoom;
+        return this.zoomPanelZoom;
     }
 
     @Override
     public String getLogicPositionString() {
-        return "(" + getLogicX() + ", " + getLogicY() + ", " + getLogicZ() + ")";
+        return "(" + this.getLogicX() + ", " + this.getLogicY() + ", " + this.getLogicZ() + ")";
     }
 
     @Override
     public String getGUIPositionString() {
-        return "(" + getGuiX() + ", " + getGuiY() + ")";
+        return "(" + this.getGuiX() + ", " + this.getGuiY() + ")";
     }
 
     @Override
     protected void onChangeZoomToRect(Rectangle rect) {
-        double delta = Math.min((double) (getWidth()) / rect.width, (double) (getHeight()) / rect.height);
-        onChangeMoveView(-rect.x, -rect.y);
-        scale(delta, tm);
-        setZoomFactor(getZoomFactor() * delta);
+        double delta = Math.min((double) (this.getWidth()) / rect.width, (double) (this.getHeight()) / rect.height);
+        this.onChangeMoveView(-rect.x, -rect.y);
+        this.scale(delta, this.tm);
+        this.setZoomFactor(this.getZoomFactor() * delta);
     }
 }

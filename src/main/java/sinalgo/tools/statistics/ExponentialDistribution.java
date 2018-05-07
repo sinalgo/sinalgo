@@ -77,12 +77,12 @@ public class ExponentialDistribution extends Distribution {
      * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
      */
     public ExponentialDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
-        lambda = Configuration.getDoubleParameter(mainTagPath + "/lambda");
+        this.lambda = Configuration.getDoubleParameter(mainTagPath + "/lambda");
     }
 
     @Override
     public double nextSample() {
-        return -Math.log(randomGenerator.nextDouble()) / lambda;
+        return -Math.log(randomGenerator.nextDouble()) / this.lambda;
     }
 
     /**

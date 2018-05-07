@@ -49,7 +49,11 @@ import sinalgo.runtime.SinalgoRuntime;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Random;
 
@@ -68,7 +72,7 @@ public class Exporter {
      * @param p The parent frame to attach the save-dialog to.
      */
     public Exporter(JFrame p) {
-        parent = p;
+        this.parent = p;
     }
 
     /**
@@ -107,7 +111,7 @@ public class Exporter {
 
         fc.setAcceptAllFileFilterUsed(false); // only allow the above file types
 
-        if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
+        if (fc.showSaveDialog(this.parent) == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
 
             if (file.exists()) {
@@ -127,11 +131,11 @@ public class Exporter {
             if (file.getName().endsWith(posFf.getExtension())) {
                 PositionFileIO.printPos(file.getPath());
             } else if (file.getName().endsWith(psFf.getExtension())) {
-                graphToPS(file, boundingBox, pt);
+                this.graphToPS(file, boundingBox, pt);
             } else if (file.getName().endsWith(pdfFf.getExtension())) {
                 File tmpFile = new File(getEmptyTempFile(Configuration.appTmpFolder));
-                graphToPS(tmpFile, boundingBox, pt);
-                psToPdf(tmpFile, file);
+                this.graphToPS(tmpFile, boundingBox, pt);
+                this.psToPdf(tmpFile, file);
                 tmpFile.delete();
             }
         }
@@ -273,7 +277,7 @@ public class Exporter {
          * @param ext the only file-extension this filter allows.
          */
         public void setExtension(String ext) {
-            extension = ext;
+            this.extension = ext;
         }
 
         /**
@@ -282,7 +286,7 @@ public class Exporter {
          * @return only file-extension this filter allows.
          */
         public String getExtension() {
-            return extension;
+            return this.extension;
         }
 
         @Override
@@ -290,7 +294,7 @@ public class Exporter {
             if (pathname.isDirectory()) {
                 return true;
             }
-            return pathname.getName().toLowerCase().endsWith(extension);
+            return pathname.getName().toLowerCase().endsWith(this.extension);
         }
     }
 
@@ -305,7 +309,7 @@ public class Exporter {
          * file filter.
          */
         private EPSFileFilter() {
-            setExtension(".eps");
+            this.setExtension(".eps");
         }
 
         @Override
@@ -313,7 +317,7 @@ public class Exporter {
             if (pathname.isDirectory()) {
                 return true;
             }
-            return pathname.getName().toLowerCase().endsWith(getExtension());
+            return pathname.getName().toLowerCase().endsWith(this.getExtension());
         }
 
         @Override
@@ -333,7 +337,7 @@ public class Exporter {
          * file filter.
          */
         private PDFFileFilter() {
-            setExtension(".pdf");
+            this.setExtension(".pdf");
         }
 
         @Override
@@ -341,7 +345,7 @@ public class Exporter {
             if (pathname.isDirectory()) {
                 return true;
             }
-            return pathname.getName().toLowerCase().endsWith(getExtension());
+            return pathname.getName().toLowerCase().endsWith(this.getExtension());
         }
 
         @Override
@@ -361,7 +365,7 @@ public class Exporter {
          * file filter.
          */
         public PositionFileFilter() {
-            setExtension(".pos");
+            this.setExtension(".pos");
         }
 
         @Override
@@ -369,7 +373,7 @@ public class Exporter {
             if (pathname.isDirectory()) {
                 return true;
             }
-            return pathname.getName().toLowerCase().endsWith(getExtension());
+            return pathname.getName().toLowerCase().endsWith(this.getExtension());
         }
 
         @Override

@@ -74,7 +74,7 @@ public abstract class DistributionModel extends Model {
      * @param num The number of nodes
      */
     public void setNumberOfNodes(int num) {
-        numberOfNodes = num;
+        this.numberOfNodes = num;
     }
 
     /**

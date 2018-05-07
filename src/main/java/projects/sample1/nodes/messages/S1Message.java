@@ -59,12 +59,12 @@ public class S1Message extends Message {
      * Increments the value of the data by one.
      */
     public final void incrementData() {
-        data++;
+        this.data++;
     }
 
     @Override
     public Message clone() {
-        return new S1Message(data);
+        return new S1Message(this.data);
     }
 
 }

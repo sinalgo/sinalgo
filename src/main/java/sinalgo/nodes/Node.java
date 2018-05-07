@@ -46,10 +46,18 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
-import sinalgo.models.*;
+import sinalgo.models.ConnectivityModel;
+import sinalgo.models.InterferenceModel;
+import sinalgo.models.MobilityModel;
+import sinalgo.models.Model;
+import sinalgo.models.ReliabilityModel;
 import sinalgo.nodes.edges.Edge;
-import sinalgo.nodes.messages.*;
+import sinalgo.nodes.messages.Inbox;
+import sinalgo.nodes.messages.Message;
+import sinalgo.nodes.messages.NackBox;
+import sinalgo.nodes.messages.Packet;
 import sinalgo.nodes.messages.Packet.PacketType;
+import sinalgo.nodes.messages.PacketCollection;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.runtime.GUIRuntime;
 import sinalgo.runtime.Global;
@@ -233,7 +241,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @return The collection of timers currently active at this node.
      */
     public TimerCollection getTimers() {
-        return timers;
+        return this.timers;
     }
 
     /**
@@ -295,7 +303,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param n The node to which a connection should be established.
      */
     public void addConnectionTo(Node n) {
-        outgoingConnections.add(this, n, false);
+        this.outgoingConnections.add(this, n, false);
     }
 
     /**
@@ -310,7 +318,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param n The node to which a connection should be established.
      */
     public void addBidirectionalConnectionTo(Node n) {
-        outgoingConnections.add(this, n, false);
+        this.outgoingConnections.add(this, n, false);
         n.getOutgoingConnections().add(n, this, false); // BUG FIX 8 April 2008
     }
 
@@ -318,7 +326,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * Sets the position of this node.
      */
     public final void setPosition(Position p) {
-        setPosition(p.getXCoord(), p.getYCoord(), p.getZCoord());
+        this.setPosition(p.getXCoord(), p.getYCoord(), p.getZCoord());
     }
 
     /**
@@ -329,11 +337,11 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param z The new z-coordinate of this node
      */
     public final void setPosition(double x, double y, double z) {
-        getPosition().assign(x, y, z);
-        cropPos(position);
+        this.getPosition().assign(x, y, z);
+        this.cropPos(this.position);
         SinalgoRuntime.nodes.updateNodeCollection(this); // note that this method tests whether the node is already added to
         // the node collection
-        onChangePosition();
+        this.onChangePosition();
     }
 
     /**
@@ -371,7 +379,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
                 i = 1.0;
             }
         }
-        intensity = i;
+        this.intensity = i;
     }
 
     /**
@@ -380,7 +388,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @return The intensity of the radio module.
      */
     public final double getRadioIntensity() {
-        return intensity;
+        return this.intensity;
     }
 
     /**
@@ -393,9 +401,9 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
     public final void send(Message m, Node target, double intensity) {
         Edge connection = null;
         // check, if a connection to the destination node exists
-        edgeIteratorInstance.reset();
-        while (edgeIteratorInstance.hasNext()) {
-            Edge edge = edgeIteratorInstance.next();
+        this.edgeIteratorInstance.reset();
+        while (this.edgeIteratorInstance.hasNext()) {
+            Edge edge = this.edgeIteratorInstance.next();
             if (edge.getEndNode().equals(target)) {
                 connection = edge;
                 break;
@@ -403,7 +411,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         }
         // If there is no edge, the message is marked to not arrive immediately in the
         // sendMessage() method
-        Packet sentP = sendMessage(m, connection, this, target, intensity);
+        Packet sentP = this.sendMessage(m, connection, this, target, intensity);
         if (Configuration.interference) { // only add the message in the packetsInTheAirBuffer, if interference is
             // turned on
             SinalgoRuntime.packetsInTheAir.add(sentP);
@@ -421,7 +429,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param target The target node.
      */
     public final void send(Message m, Node target) {
-        send(m, target, this.intensity);
+        this.send(m, target, this.intensity);
     }
 
     /**
@@ -454,7 +462,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         packet.setOrigin(this);
         packet.setDestination(target);
         packet.setEdge(null);
-        packet.setIntensity(intensity);
+        packet.setIntensity(this.intensity);
         packet.setPositiveDelivery(true); // no disturbtion
         packet.setType(PacketType.UNICAST);
 
@@ -495,7 +503,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param m The message to be sent to all the neighbors.
      */
     public final void broadcast(Message m) {
-        broadcastMessage(m, this.intensity);
+        this.broadcastMessage(m, this.intensity);
     }
 
     /**
@@ -509,7 +517,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param intensity The intensity to send the messages with.
      */
     public final void broadcast(Message m, double intensity) {
-        broadcastMessage(m, intensity);
+        this.broadcastMessage(m, intensity);
     }
 
     // -----------------------------------------------------------------------------------
@@ -545,7 +553,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param cM The new ConnectivityModel.
      */
     public final void setConnectivityModel(ConnectivityModel cM) {
-        connectivityModel = cM;
+        this.connectivityModel = cM;
     }
 
     /**
@@ -554,7 +562,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @return The ConnectivityModel currently used by this node.
      */
     public final ConnectivityModel getConnectivityModel() {
-        return connectivityModel;
+        return this.connectivityModel;
     }
 
     /**
@@ -563,7 +571,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param rM The new ReliabilityModel.
      */
     public final void setReliabilityModel(ReliabilityModel rM) {
-        reliabilityModel = rM;
+        this.reliabilityModel = rM;
     }
 
     /**
@@ -572,7 +580,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @return The ReliabilityModel currently used by this node.
      */
     public final ReliabilityModel getReliabilityModel() {
-        return reliabilityModel;
+        return this.reliabilityModel;
     }
 
     /**
@@ -581,7 +589,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param iM The new InterferenceModel.
      */
     public final void setInterferenceModel(InterferenceModel iM) {
-        interferenceModel = iM;
+        this.interferenceModel = iM;
     }
 
     /**
@@ -590,7 +598,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @return The InterferenceModel currently used by this node.
      */
     public final InterferenceModel getInterferenceModel() {
-        return interferenceModel;
+        return this.interferenceModel;
     }
 
     /**
@@ -599,7 +607,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param mM The new MobilityModel.
      */
     public final void setMobilityModel(MobilityModel mM) {
-        mobilityModel = mM;
+        this.mobilityModel = mM;
     }
 
     /**
@@ -608,7 +616,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @return The MobilityModel currently used by this node.
      */
     public final MobilityModel getMobilityModel() {
-        return mobilityModel;
+        return this.mobilityModel;
     }
 
     // -----------------------------------------------------------------------------------
@@ -666,7 +674,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param size The size in pixels of this node, when the zoom factor equals 1.
      */
     public void setDefaultDrawingSizeInPixels(int size) {
-        defaultDrawingSizeInPixels = size;
+        this.defaultDrawingSizeInPixels = size;
     }
 
     /**
@@ -683,19 +691,19 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         Color backupColor = g.getColor();
-        drawingSizeInPixels = (int) (defaultDrawingSizeInPixels * pt.getZoomFactor()); // half the side-length in pixels
+        this.drawingSizeInPixels = (int) (this.defaultDrawingSizeInPixels * pt.getZoomFactor()); // half the side-length in pixels
         // of the square
-        pt.translateToGUIPosition(position);
-        int x = pt.getGuiX() - (drawingSizeInPixels >> 1);
-        int y = pt.getGuiY() - (drawingSizeInPixels >> 1);
-        Color color = getColor();
+        pt.translateToGUIPosition(this.position);
+        int x = pt.getGuiX() - (this.drawingSizeInPixels >> 1);
+        int y = pt.getGuiY() - (this.drawingSizeInPixels >> 1);
+        Color color = this.getColor();
         if (highlight) {
             // a highlighted node is surrounded by a red square
             g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
-            g.fillRect(x - 2, y - 2, drawingSizeInPixels + 4, drawingSizeInPixels + 4);
+            g.fillRect(x - 2, y - 2, this.drawingSizeInPixels + 4, this.drawingSizeInPixels + 4);
         }
         g.setColor(color);
-        g.fillRect(x, y, drawingSizeInPixels, drawingSizeInPixels);
+        g.fillRect(x, y, this.drawingSizeInPixels, this.drawingSizeInPixels);
         g.setColor(backupColor);
     }
 
@@ -710,18 +718,18 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     protected void drawAsDisk(Graphics g, PositionTransformation pt, boolean highlight, int sizeInPixels) {
         Color backupColor = g.getColor();
-        drawingSizeInPixels = sizeInPixels;
-        pt.translateToGUIPosition(position);
-        int x = pt.getGuiX() - (drawingSizeInPixels >> 1);
-        int y = pt.getGuiY() - (drawingSizeInPixels >> 1);
-        Color color = getColor();
+        this.drawingSizeInPixels = sizeInPixels;
+        pt.translateToGUIPosition(this.position);
+        int x = pt.getGuiX() - (this.drawingSizeInPixels >> 1);
+        int y = pt.getGuiY() - (this.drawingSizeInPixels >> 1);
+        Color color = this.getColor();
         if (highlight) {
             // a highlighted node is surrounded by a red square
             g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
-            g.fillOval(x - 2, y - 2, drawingSizeInPixels + 4, drawingSizeInPixels + 4);
+            g.fillOval(x - 2, y - 2, this.drawingSizeInPixels + 4, this.drawingSizeInPixels + 4);
         }
         g.setColor(color);
-        g.fillOval(x, y, drawingSizeInPixels, drawingSizeInPixels);
+        g.fillOval(x, y, this.drawingSizeInPixels, this.drawingSizeInPixels);
         g.setColor(backupColor);
     }
 
@@ -749,7 +757,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
 
         // reset the cover-area of this node s.t. mouse events are recognized correctly
         this.drawingSizeInPixels = Math.max(h, w);
-        pt.translateToGUIPosition(getPosition());
+        pt.translateToGUIPosition(this.getPosition());
 
         // Draw the node
         Color c = g.getColor();
@@ -790,7 +798,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
 
         // reset the cover-area of this node s.t. mouse events are recognized correctly
         this.drawingSizeInPixels = Math.max(h, w);
-        pt.translateToGUIPosition(getPosition());
+        pt.translateToGUIPosition(this.getPosition());
 
         // Draw the node
         Color c = g.getColor();
@@ -821,12 +829,12 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         }
 
         Color backupColor = g.getColor();
-        drawingSizeInPixels = sizeInPixels;
+        this.drawingSizeInPixels = sizeInPixels;
         sizeInPixels >>= 1; // div by 2
-        pt.translateToGUIPosition(getPosition());
+        pt.translateToGUIPosition(this.getPosition());
         int x = pt.getGuiX();
         int y = pt.getGuiY();
-        Color color = getColor();
+        Color color = this.getColor();
         if (highlight) {
             // a highlighted node is surrounded by a red square
             g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
@@ -856,7 +864,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      *           of this edge.
      */
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-        drawToPostscriptAsSquare(pw, pt, drawingSizeInPixels, getColor());
+        this.drawToPostscriptAsSquare(pw, pt, this.drawingSizeInPixels, this.getColor());
     }
 
     /**
@@ -869,7 +877,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param c    The color to draw this square with
      */
     protected void drawToPostscriptAsSquare(EPSOutputPrintStream pw, PositionTransformation pt, double size, Color c) {
-        pt.translateToGUIPosition(getPosition());
+        pt.translateToGUIPosition(this.getPosition());
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
         pw.drawFilledRectangle(pt.getGuiXDouble() - (size / 2.0), pt.getGuiYDouble() - (size / 2.0), size, size);
     }
@@ -884,7 +892,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param c      The color to draw this disk with
      */
     protected void drawToPostScriptAsDisk(EPSOutputPrintStream pw, PositionTransformation pt, double radius, Color c) {
-        pt.translateToGUIPosition(getPosition());
+        pt.translateToGUIPosition(this.getPosition());
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
         pw.drawFilledCircle(pt.getGuiXDouble(), pt.getGuiYDouble(), radius);
     }
@@ -899,7 +907,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param c    The color to use
      */
     protected void drawToPostscriptAsRoute(EPSOutputPrintStream pw, PositionTransformation pt, double size, Color c) {
-        pt.translateToGUIPosition(getPosition());
+        pt.translateToGUIPosition(this.getPosition());
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
         double d = size / 2;
         pw.drawFilledPolygon(pt.getGuiXDouble(), pt.getGuiYDouble() + d, pt.getGuiXDouble() - d, pt.getGuiYDouble(), pt.getGuiXDouble(),
@@ -925,19 +933,19 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
     public final void step() throws WrongConfigurationException {
 
         // update the message buffer
-        packetBuffer.updateMessageBuffer();
+        this.packetBuffer.updateMessageBuffer();
 
-        preStep();
+        this.preStep();
 
         // check, if some connections have changed in the last step
-        if (neighborhoodChanged) {
-            neighborhoodChange();
+        if (this.neighborhoodChanged) {
+            this.neighborhoodChange();
         }
 
         timersToHandle.clear();
         // Fire all timers which are going off in this round
-        if (timers.size() > 0) {
-            Iterator<Timer> it = timers.iterator();
+        if (this.timers.size() > 0) {
+            Iterator<Timer> it = this.timers.iterator();
             while (it.hasNext()) {
                 Timer timer = it.next();
                 if (timer.getFireTime() <= Global.currentTime) {
@@ -960,28 +968,28 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         // Handle dropped messages (messages that were sent by this node, but that do
         // not arrive.
         if (Configuration.generateNAckMessages) {
-            PacketCollection pc = Global.isEvenRound ? nAckBufferEvenRound : nAckBufferOddRound;
-            if (nackBox == null) {
-                nackBox = new NackBox(pc);
+            PacketCollection pc = Global.isEvenRound ? this.nAckBufferEvenRound : this.nAckBufferOddRound;
+            if (this.nackBox == null) {
+                this.nackBox = new NackBox(pc);
             } else {
-                nackBox.resetForList(pc);
+                this.nackBox.resetForList(pc);
             }
-            handleNAckMessages(nackBox);
+            this.handleNAckMessages(this.nackBox);
         }
 
         // call the 'handleMessages' ALWAYS, and pass the appropriate Inbox. This Inbox
         // can also be a an Iterator over an empty list.
-        inbox = packetBuffer.getInbox();
-        handleMessages(inbox);
+        this.inbox = this.packetBuffer.getInbox();
+        this.handleMessages(this.inbox);
 
         // a custom method that may do something at the end of the step
-        postStep();
+        this.postStep();
 
         // all the packets in the inbox and nackBox are not used anymore and can be
         // freed.
-        inbox.freePackets();
+        this.inbox.freePackets();
         if (Configuration.generateNAckMessages) {
-            nackBox.freePackets(); // this resets the nAckBuffer
+            this.nackBox.freePackets(); // this resets the nAckBuffer
         }
     }
 
@@ -1054,7 +1062,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
     /**
      * A node-internal iterator over all outgoing edges of this node.
      */
-    private ReusableListIterator<Edge> edgeIteratorInstance = outgoingConnections.iterator();
+    private ReusableListIterator<Edge> edgeIteratorInstance = this.outgoingConnections.iterator();
 
     /**
      * The buffer, where all arriving messages are stored.
@@ -1107,7 +1115,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     protected Node() {
         try {
-            defaultDrawingSizeInPixels = Configuration.getIntegerParameter("Node/defaultSize");
+            this.defaultDrawingSizeInPixels = Configuration.getIntegerParameter("Node/defaultSize");
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException(e.getMessage());
         }
@@ -1121,7 +1129,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * update all outgoing connections of this node.
      */
     public final void updateConnections() {
-        neighborhoodChanged = connectivityModel.updateConnections(this);
+        this.neighborhoodChanged = this.connectivityModel.updateConnections(this);
     }
 
     /**
@@ -1131,7 +1139,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @return The list of packets that are being sent to this node.
      */
     public PacketBuffer getInboxPacketBuffer() {
-        return packetBuffer;
+        return this.packetBuffer;
     }
 
     /**
@@ -1146,9 +1154,9 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
             return; // only nacknowledge unicast messages
         }
         if (Global.isEvenRound) { // add to the buffer of the next round
-            nAckBufferOddRound.add(p);
+            this.nAckBufferOddRound.add(p);
         } else {
-            nAckBufferEvenRound.add(p);
+            this.nAckBufferEvenRound.add(p);
         }
     }
 
@@ -1191,8 +1199,8 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @return True if this node covers the given position, otherwise false.
      */
     public final boolean isInside(int x, int y, PositionTransformation pt) {
-        pt.translateToGUIPosition(position);
-        int delta = (int) (0.5 * drawingSizeInPixels); // half the side-length in pixels of the square
+        pt.translateToGUIPosition(this.position);
+        int delta = (int) (0.5 * this.drawingSizeInPixels); // half the side-length in pixels of the square
         return Math.abs(x - pt.getGuiX()) <= delta && Math.abs(y - pt.getGuiY()) <= delta;
     }
 
@@ -1223,21 +1231,21 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
     public final void finishInitializationWithDefaultModels(boolean addToRuntime) throws WrongConfigurationException {
         // set default (empty) models if they're not yet set
         try {
-            if (connectivityModel == null) {
-                setConnectivityModel(Model.getConnectivityModelInstance(Configuration.DefaultConnectivityModel));
+            if (this.connectivityModel == null) {
+                this.setConnectivityModel(Model.getConnectivityModelInstance(Configuration.DefaultConnectivityModel));
             }
-            if (interferenceModel == null) {
-                setInterferenceModel(Model.getInterferenceModelInstance(Configuration.DefaultInterferenceModel));
+            if (this.interferenceModel == null) {
+                this.setInterferenceModel(Model.getInterferenceModelInstance(Configuration.DefaultInterferenceModel));
             }
-            if (mobilityModel == null) {
-                setMobilityModel(Model.getMobilityModelInstance(Configuration.DefaultMobilityModel));
+            if (this.mobilityModel == null) {
+                this.setMobilityModel(Model.getMobilityModelInstance(Configuration.DefaultMobilityModel));
             }
-            if (reliabilityModel == null) {
-                setReliabilityModel(Model.getReliabilityModelInstance(Configuration.DefaultReliabilityModel));
+            if (this.reliabilityModel == null) {
+                this.setReliabilityModel(Model.getReliabilityModelInstance(Configuration.DefaultReliabilityModel));
             }
             if (addToRuntime) {
-                init();
-                checkRequirements();
+                this.init();
+                this.checkRequirements();
                 SinalgoRuntime.addNode(this);
             }
         } catch (NullPointerException nPE) {
@@ -1280,10 +1288,10 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
             Packet longestPacket = null; // find the packet that takes longest until delivery
 
             // send the Message to all your neighbors
-            edgeIteratorInstance.reset();
-            while (edgeIteratorInstance.hasNext()) {
-                Edge e = edgeIteratorInstance.next();
-                Packet sentP = sendMessage(m, e, e.getStartNode(), e.getEndNode(), intensity);
+            this.edgeIteratorInstance.reset();
+            while (this.edgeIteratorInstance.hasNext()) {
+                Edge e = this.edgeIteratorInstance.next();
+                Packet sentP = this.sendMessage(m, e, e.getStartNode(), e.getEndNode(), intensity);
                 sentP.setType(PacketType.MULTICAST);
                 SinalgoRuntime.packetsInTheAir.addPassivePacket(sentP);
                 if (longestPacket == null || longestPacket.compareTo(sentP) < 0) {
@@ -1299,16 +1307,16 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
             } else { // there was no neighbor
                 // For the interference, we need to send a packet anyways. Send it to this
                 // node itself.
-                Packet sentP = sendMessage(m, null, this, this, intensity);
+                Packet sentP = this.sendMessage(m, null, this, this, intensity);
                 sentP.setType(PacketType.MULTICAST);
                 sentP.denyDelivery(); // ensure that the packet never arrives at this node
                 SinalgoRuntime.packetsInTheAir.add(sentP);
             }
         } else { // no interference
-            edgeIteratorInstance.reset();
-            while (edgeIteratorInstance.hasNext()) {
-                Edge e = edgeIteratorInstance.next();
-                Packet sentP = sendMessage(m, e, e.getStartNode(), e.getEndNode(), intensity);
+            this.edgeIteratorInstance.reset();
+            while (this.edgeIteratorInstance.hasNext()) {
+                Edge e = this.edgeIteratorInstance.next();
+                Packet sentP = this.sendMessage(m, e, e.getStartNode(), e.getEndNode(), intensity);
                 sentP.setType(PacketType.DUMMY);
             }
         }
@@ -1332,9 +1340,9 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     private Packet sendMessage(Message msg, Edge edge, Node sender, Node target, double intensity) {
         if (Global.isAsynchronousMode) {
-            return asynchronousSending(msg, edge, sender, target, intensity);
+            return this.asynchronousSending(msg, edge, sender, target, intensity);
         } else {
-            return synchronousSending(msg, edge, sender, target, intensity);
+            return this.synchronousSending(msg, edge, sender, target, intensity);
         }
     }
 
@@ -1369,7 +1377,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         packet.setType(PacketType.UNICAST);
         // this property must be checked when the entire packet was assembled
         if (edge != null) {
-            packet.setPositiveDelivery(reliabilityModel.reachesDestination(packet));
+            packet.setPositiveDelivery(this.reliabilityModel.reachesDestination(packet));
             edge.addMessageForThisEdge(packet.getMessage());
         } else {
             packet.setPositiveDelivery(false); // when there is no edge, the packet is immediately dropped
@@ -1425,7 +1433,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
             packet.setType(PacketType.UNICAST);
             // this property must be checked when the entire packet was assembled
             if (edge != null) {
-                packet.setPositiveDelivery(reliabilityModel.reachesDestination(packet));
+                packet.setPositiveDelivery(this.reliabilityModel.reachesDestination(packet));
                 edge.addMessageForThisEdge(packet.getMessage());
             } else {
                 packet.setPositiveDelivery(false); // when there is no edge, the packet is immediately dropped

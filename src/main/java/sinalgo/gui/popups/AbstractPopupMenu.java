@@ -55,8 +55,8 @@ public abstract class AbstractPopupMenu extends JPopupMenu {
     protected JMenuItem zoomOut = new JMenuItem("Zoom Out");
 
     protected AbstractPopupMenu() {
-        zoomIn.addActionListener(new ZoomListener());
-        zoomOut.addActionListener(new ZoomListener());
+        this.zoomIn.addActionListener(new ZoomListener());
+        this.zoomOut.addActionListener(new ZoomListener());
     }
 
     // Listening to the zoom in and zoom out action events
@@ -64,10 +64,10 @@ public abstract class AbstractPopupMenu extends JPopupMenu {
 
         @Override
         public void actionPerformed(ActionEvent event) {
-            if (event.getActionCommand().equals(zoomIn.getActionCommand())) {
-                parent.zoomIn();
-            } else if (event.getActionCommand().equals(zoomOut.getActionCommand())) {
-                parent.zoomOut();
+            if (event.getActionCommand().equals(AbstractPopupMenu.this.zoomIn.getActionCommand())) {
+                AbstractPopupMenu.this.parent.zoomIn();
+            } else if (event.getActionCommand().equals(AbstractPopupMenu.this.zoomOut.getActionCommand())) {
+                AbstractPopupMenu.this.parent.zoomOut();
             }
         }
     }

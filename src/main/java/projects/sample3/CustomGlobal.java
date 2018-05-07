@@ -84,14 +84,14 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     @AbstractCustomGlobal.GlobalMethod(menuText = "Toggle Automatic SMS")
     public void toggleAutomaticSMS() {
-        automaticSMS = !automaticSMS;
+        this.automaticSMS = !this.automaticSMS;
     }
 
     @Override
     public void postRound() {
-        if (automaticSMS) {
-            Node sender = getRandomMobileNode();
-            Node receiver = getRandomMobileNode();
+        if (this.automaticSMS) {
+            Node sender = this.getRandomMobileNode();
+            Node receiver = this.getRandomMobileNode();
             SmsTimer t = new SmsTimer("Automatic SMS", receiver);
             t.startRelative(1, sender);
             sender.setColor(Color.RED);

@@ -38,7 +38,11 @@ package sinalgo.runtime;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.*;
+import sinalgo.exception.NotInBatchModeException;
+import sinalgo.exception.NotInGUIModeException;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.SinalgoWrappedException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.ProjectSelector;
 import sinalgo.io.IOUtils;
@@ -102,7 +106,7 @@ public class Main {
                 try {
                     // wait for the user to press ok in the ProjectSelector.
                     synchronized (this) {
-                        wait();
+                        this.wait();
                     }
                 } catch (InterruptedException e) {
                     throw new SinalgoWrappedException(e);

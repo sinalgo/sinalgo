@@ -68,9 +68,9 @@ public class S4Node extends Node {
                 S4Message m = (S4Message) msg;
                 // green and yellow messages are forwarded to all neighbors
                 if (m.color == Color.GREEN && !this.getColor().equals(m.color)) {
-                    broadcast(m);
+                    this.broadcast(m);
                 } else if (m.color == Color.YELLOW && !this.getColor().equals(m.color)) {
-                    broadcast(m);
+                    this.broadcast(m);
                 }
                 this.setColor(m.color); // set this node's color
             }
@@ -79,22 +79,22 @@ public class S4Node extends Node {
 
     @NodePopupMethod(menuText = "Multicast RED")
     public void multicastRED() {
-        sendColorMessage(Color.RED, null);
+        this.sendColorMessage(Color.RED, null);
     }
 
     @NodePopupMethod(menuText = "Multicast BLUE")
     public void multicastBLUE() {
-        sendColorMessage(Color.BLUE, null);
+        this.sendColorMessage(Color.BLUE, null);
     }
 
     @NodePopupMethod(menuText = "BROADCAST GREEN")
     public void broadcastGREEN() {
-        sendColorMessage(Color.GREEN, null);
+        this.sendColorMessage(Color.GREEN, null);
     }
 
     @NodePopupMethod(menuText = "BROADCAST YELLOW")
     public void broadcastYELLOW() {
-        sendColorMessage(Color.YELLOW, null);
+        this.sendColorMessage(Color.YELLOW, null);
     }
 
     /**
@@ -111,9 +111,9 @@ public class S4Node extends Node {
         if (Tools.isSimulationInAsynchroneMode()) {
             // sending the messages directly is OK in async mode
             if (to != null) {
-                send(msg, to);
+                this.send(msg, to);
             } else {
-                broadcast(msg);
+                this.broadcast(msg);
             }
         } else {
             // In Synchronous mode, a node is only allowed to send messages during the
@@ -137,7 +137,7 @@ public class S4Node extends Node {
             if (n == null) {
                 return; // the user aborted
             }
-            sendColorMessage(Color.GRAY, n);
+            this.sendColorMessage(Color.GRAY, n);
         }, "Select a node to which you want to send a 'yellow' message.");
     }
 
@@ -147,7 +147,7 @@ public class S4Node extends Node {
             if (n == null) {
                 return; // the user aborted
             }
-            sendColorMessage(Color.CYAN, n);
+            this.sendColorMessage(Color.CYAN, n);
         }, "Select a node to which you want to send a 'cyan' message.");
     }
 
@@ -164,7 +164,7 @@ public class S4Node extends Node {
             S4Message msg = new S4Message();
             msg.color = Color.pink;
             if (Tools.isSimulationInAsynchroneMode()) {
-                sendDirect(msg, n);
+                this.sendDirect(msg, n);
             } else {
                 // we need to set a timer, such that the message is
                 // sent during the next round, when this node performs its step.
@@ -180,12 +180,12 @@ public class S4Node extends Node {
     public void init() {
         if (Configuration.hasParameter("S4Node/simpleDraw")) {
             try {
-                simpleDraw = Configuration.getBooleanParameter("S4Node/simpleDraw");
+                this.simpleDraw = Configuration.getBooleanParameter("S4Node/simpleDraw");
             } catch (CorruptConfigurationEntryException e) {
                 throw new SinalgoFatalException("Invalid config field S4Node/simpleDraw: Expected a boolean.\n" + e.getMessage());
             }
         } else {
-            simpleDraw = false;
+            this.simpleDraw = false;
         }
         // nothing to do here
     }
@@ -208,25 +208,25 @@ public class S4Node extends Node {
     private boolean drawRound = false;
 
     private boolean isDrawRound() {
-        if (drawRound) {
+        if (this.drawRound) {
             return true;
         }
-        return getColor().equals(Color.YELLOW);
+        return this.getColor().equals(Color.YELLOW);
     }
 
     @NodePopupMethod(menuText = "Draw as Circle")
     public void drawRound() {
-        drawRound = !drawRound;
+        this.drawRound = !this.drawRound;
         Tools.repaintGUI();
     }
 
     @Override
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         // overwrite the draw method to change how the GUI represents this node
-        if (simpleDraw) {
+        if (this.simpleDraw) {
             super.draw(g, pt, highlight);
         } else {
-            if (isDrawRound()) {
+            if (this.isDrawRound()) {
                 super.drawNodeAsDiskWithText(g, pt, highlight, Integer.toString(this.getID()), 16, Color.WHITE);
             } else {
                 super.drawNodeAsSquareWithText(g, pt, highlight, Integer.toString(this.getID()), 16, Color.WHITE);
@@ -236,10 +236,10 @@ public class S4Node extends Node {
 
     @Override
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-        if (isDrawRound()) {
-            super.drawToPostScriptAsDisk(pw, pt, drawingSizeInPixels / 2, getColor());
+        if (this.isDrawRound()) {
+            super.drawToPostScriptAsDisk(pw, pt, this.drawingSizeInPixels / 2, this.getColor());
         } else {
-            super.drawToPostscriptAsSquare(pw, pt, drawingSizeInPixels, getColor());
+            super.drawToPostscriptAsSquare(pw, pt, this.drawingSizeInPixels, this.getColor());
         }
     }
 }

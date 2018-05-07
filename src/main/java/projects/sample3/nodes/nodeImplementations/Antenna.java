@@ -35,16 +35,16 @@ public class Antenna extends Node {
             Message msg = inbox.next();
             // -----------------------------------------------------------------------------
             if (msg instanceof SubscirbeMessage) {
-                neighbors.add(inbox.getSender());
+                this.neighbors.add(inbox.getSender());
             }
             // -----------------------------------------------------------------------------
             else if (msg instanceof ByeBye) {
-                neighbors.remove(inbox.getSender());
+                this.neighbors.remove(inbox.getSender());
             }
             // -----------------------------------------------------------------------------
             else if (msg instanceof SmsMessage) {
                 SmsMessage sms = (SmsMessage) msg;
-                if (isNeighbor(sms.getReceiver())) {
+                if (this.isNeighbor(sms.getReceiver())) {
                     this.send(sms, sms.getReceiver()); // forward the message to the destination
                 } else if (inbox.getSender() instanceof MobileNode) {
                     for (Antenna a : antennaList) {
@@ -58,10 +58,10 @@ public class Antenna extends Node {
     }
 
     private boolean isNeighbor(Node aNode) {
-        if (neighbors.contains(aNode)) {
+        if (this.neighbors.contains(aNode)) {
             return true;
         }
-        return oldNeighborhood.contains(aNode);
+        return this.oldNeighborhood.contains(aNode);
     }
 
     private TreeSet<Node> neighbors = new TreeSet<>(new NodeComparer());
@@ -76,12 +76,12 @@ public class Antenna extends Node {
         // switch the two neighborhoods, s.t. the old neighborhood is the current
         // neighborhood
         // and the new neighborhood becomes empty
-        TreeSet<Node> temp = oldNeighborhood;
-        oldNeighborhood = neighbors;
-        neighbors = temp;
-        neighbors.clear();
+        TreeSet<Node> temp = this.oldNeighborhood;
+        this.oldNeighborhood = this.neighbors;
+        this.neighbors = temp;
+        this.neighbors.clear();
         // start a timer to clear the oldNeighborhood
-        AntennaNeighborhoodClearTimer t = new AntennaNeighborhoodClearTimer(oldNeighborhood);
+        AntennaNeighborhoodClearTimer t = new AntennaNeighborhoodClearTimer(this.oldNeighborhood);
         t.startRelative(3, this);
     }
 
@@ -109,12 +109,12 @@ public class Antenna extends Node {
     public String toString() {
         // show the list of subscribed nodes
         StringBuilder list = new StringBuilder();
-        for (Node n : neighbors) {
+        for (Node n : this.neighbors) {
             list.append(" ").append(n.getID());
         }
-        if (oldNeighborhood.size() > 0) {
+        if (this.oldNeighborhood.size() > 0) {
             list.append("\n(");
-            for (Node n : oldNeighborhood) {
+            for (Node n : this.oldNeighborhood) {
                 list.append(" ").append(n.getID());
             }
             list.append(")");
@@ -136,8 +136,8 @@ public class Antenna extends Node {
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         Color bckup = g.getColor();
         g.setColor(Color.BLACK);
-        this.drawingSizeInPixels = (int) (defaultDrawingSizeInPixels * pt.getZoomFactor());
-        super.drawAsDisk(g, pt, highlight, drawingSizeInPixels);
+        this.drawingSizeInPixels = (int) (this.defaultDrawingSizeInPixels * pt.getZoomFactor());
+        super.drawAsDisk(g, pt, highlight, this.drawingSizeInPixels);
         g.setColor(Color.LIGHT_GRAY);
         pt.translateToGUIPosition(this.getPosition());
         int r = (int) (radius * pt.getZoomFactor());

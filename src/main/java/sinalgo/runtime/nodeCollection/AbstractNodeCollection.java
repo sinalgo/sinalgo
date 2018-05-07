@@ -124,7 +124,7 @@ public abstract class AbstractNodeCollection implements Iterable<Node> {
      * @param n The node to add to the collection.
      */
     public void addNode(Node n) {
-        _addNode(n);
+        this._addNode(n);
         for (NodeCollectionListener l : listeners) {
             l.nodeAdded(n);
         }
@@ -148,7 +148,7 @@ public abstract class AbstractNodeCollection implements Iterable<Node> {
      * @param n The node to remove.
      */
     public void removeNode(Node n) {
-        _removeNode(n);
+        this._removeNode(n);
         for (NodeCollectionListener l : listeners) {
             l.nodeRemoved(n);
         }
@@ -172,7 +172,7 @@ public abstract class AbstractNodeCollection implements Iterable<Node> {
      * @param n The node which changed its sensitive information.
      */
     public void updateNodeCollection(Node n) {
-        _updateNodeCollection(n);
+        this._updateNodeCollection(n);
         for (NodeCollectionListener l : listeners) {
             l.nodeUpdated(n);
         }
