@@ -61,7 +61,7 @@ at the example of a balanced tree.
 
 	To add a connection from a given node u to node v, insert an edge to the
 	list of outgoing connections of u:
-      u.outgoingConnections.add(u, v, true);
+      u.getOutgoingConnections().add(u, v, true);
 	If the edge-type is set to be BidirectionalEdge, an edge in both directions
 	is created automatically. Otherwise, only an edge from u to v is created, and
 	v cannot send a message to u, unless you also insert an edge from v to u.

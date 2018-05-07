@@ -76,7 +76,7 @@ public class GraphInfoDialog extends JDialog implements ActionListener {
         while (nodeEnumer.hasMoreElements()) {
             numNodes++;
             Node node = nodeEnumer.nextElement();
-            numEdges += node.outgoingConnections.size();
+            numEdges += node.getOutgoingConnections().size();
         }
 
         JPanel cp = new JPanel();

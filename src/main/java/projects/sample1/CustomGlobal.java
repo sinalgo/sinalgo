@@ -167,7 +167,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
         if (Global.isGuiMode) {
             if (max != null) {
                 JOptionPane.showMessageDialog(((GUIRuntime) Main.getRuntime()).getGUI(),
-                        "The node with the maximum sent number of messages is the node with id " + max.ID
+                        "The node with the maximum sent number of messages is the node with id " + max.getID()
                                 + ". \nIt sent " + max.msgSent + " messages until now.");
             } else {
                 JOptionPane.showMessageDialog(((GUIRuntime) Main.getRuntime()).getGUI(), "There is no node.");

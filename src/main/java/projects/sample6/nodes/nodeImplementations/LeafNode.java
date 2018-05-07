@@ -58,7 +58,7 @@ public class LeafNode extends TreeNode {
 
     @Override
     public String toString() {
-        return smallID + " (" + ID + ")";
+        return smallID + " (" + getID() + ")";
     }
 
 }

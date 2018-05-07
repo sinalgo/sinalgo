@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--suppress CheckImageSize -->
 <html>
 <head>
     <title>Sinalgo</title>
@@ -31,7 +32,7 @@
     }
 
     function getWindowHeight() {
-        if (typeof(window.innerWidth) == 'number') { //Non-IE
+        if (typeof(window.innerWidth) === 'number') { //Non-IE
             return window.innerHeight;
         } else if (document.documentElement && document.documentElement.clientHeight) { //IE 6+ in 'standards compliant mode'
             return document.documentElement.clientHeight;
@@ -48,7 +49,7 @@
 </head>
 
 <body class="text" bgcolor="#FFFFFF" onload="setup()">
-<table align="center" width="100%" style="margin-bottom:0px"
+<table align="center" width="100%" style="margin-bottom:0"
        cellpadding="0" cellspacing="0" border="0">
     <tr class="height80">
         <td><img src="../pics/spacer.gif" width="210" height="80"
@@ -222,9 +223,9 @@
                 the maximum distance between any two connected nodes.
 
                 <br>
-            <div class="code codeTab"><b>
+            <div class="code codeTab"><strong>
                 &lt;GeometricNodeCollection rMax="150"/&gt;
-            </b></div>
+            </strong></div>
 
             <p>The <span class="code">NodeCollectionInterface</span> interface
                 provides a method <span
@@ -237,7 +238,7 @@
                 package <span class="code">sinalgo.models</span> gives an example on how
                 to use this range query.
 
-            <p class="note"><b>Note: </b>The <span
+            <p class="note"><strong>Note: </strong>The <span
                     class="code">GeometricNodeCollection</span> comes in two flavors, one
                 for 2D and one for 3D. However, you may implement your own subclass
                 of <span class="code">NodeCollectionInterface</span> to obtain range
@@ -245,7 +246,7 @@
                 contains an entry which specifies the node collection implementation
                 to use.</p>
 
-            <p class="note"><b>Implementation Note: </b> The <span
+            <p class="note"><strong>Implementation Note: </strong> The <span
                     class="code">GeometricNodeCollection</span> partitions the deployment
                 area in a 2-dimensional (3-dimensional) grid with cell-size <span
                         class="code">rMax</span>. Each cell stores the nodes that are
@@ -274,53 +275,53 @@
 
             <p>The simulation mode determines when exactly the method <span
                     class="code">handleMessage()</span> is called when a node receives a
-                message, and when exactly the timers are fired when they expired.
+                message, and when exactly the timers are fired when they expired.</p>
 
-                <div class="subsubbody">
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <h3>Synchronous Simulation</h3>
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+            <div class="subsubbody">
+                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                <h3>Synchronous Simulation</h3>
+                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-                    The synchronous simulation is based on <i>rounds</i>. At the
-                    beginning of each round, the framework increments the global time by
-                    one unit. Then, it moves the nodes according to their mobility models
-                    and updates the connections according to the connectivity
-                    model. After that, the framework iterates over the set of nodes and
-                    performs the method <span class="code">step()</span> on each
-                    node. The calling sequence of this method is described in the <a
-                        href="Implementation.html#Sync Call Sequence"
-                        class="nav_link">Node Implementation tutorial</a>. The nodes are
-                    visited in a framework specific order, which the simulation should
-                    not rely on.
+                The synchronous simulation is based on <em>rounds</em>. At the
+                beginning of each round, the framework increments the global time by
+                one unit. Then, it moves the nodes according to their mobility models
+                and updates the connections according to the connectivity
+                model. After that, the framework iterates over the set of nodes and
+                performs the method <span class="code">step()</span> on each
+                node. The calling sequence of this method is described in the <a
+                    href="Implementation.html#Sync Call Sequence"
+                    class="nav_link">Node Implementation tutorial</a>. The nodes are
+                visited in a framework specific order, which the simulation should
+                not rely on.
 
-            <p>Each message and timer carries a time stamp that indicates at
-                which time the event (arrival of message, execution of timer-handler)
-                should happen. Because the time advances in steps of 1 unit, each
-                node handles in its <span class="code">step()</span> method all
-                events whose time stamp is smaller or equal to the current time. For
-                both, the set of messages and the set of timers, the node sorts the
-                events according to their time stamp, such that the events happen in
-                order on each individual node.
+                <p>Each message and timer carries a time stamp that indicates at
+                    which time the event (arrival of message, execution of timer-handler)
+                    should happen. Because the time advances in steps of 1 unit, each
+                    node handles in its <span class="code">step()</span> method all
+                    events whose time stamp is smaller or equal to the current time. For
+                    both, the set of messages and the set of timers, the node sorts the
+                    events according to their time stamp, such that the events happen in
+                    order on each individual node.
 
-            <p class="note"><b>Note:</b> From a global view, the message
-                receptions and timer-handlers may not be executed <i>in order</i>:
-                Suppose the case where node A receives a message M1 at 15.23 and M2
-                at 15.88 and node B receives a message M3 at 15.17 and M4 at
-                15.77. If the framework first executes the step() method on node A,
-                then the messages M1 and M2 are handled prior to the messages M3 and
-                M4, which are only handled in the call to step() of node B.
-            </p>
+                <p class="note"><strong>Note:</strong> From a global view, the message
+                    receptions and timer-handlers may not be executed <em>in order</em>:
+                    Suppose the case where node A receives a message M1 at 15.23 and M2
+                    at 15.88 and node B receives a message M3 at 15.17 and M4 at
+                    15.77. If the framework first executes the step() method on node A,
+                    then the messages M1 and M2 are handled prior to the messages M3 and
+                    M4, which are only handled in the call to step() of node B.
+                </p>
 
-            <p class="note"><b>Implementation Note:</b> If your project simulates
-                mobile nodes, the position of the nodes is updated at the beginning
-                of every round. As a result, the nodes hop around, which does not
-                quite correspond a continuous path. To achieve a better
-                approximation, you may increase the time resolution of the simulation
-                by a given factor, e.g. 10: Decrease the node speed by this factor,
-                and increase the message delivery time, as well as the countdown-time
-                of all timers by the same factor. This inserts several (in this case
-                9) more rounds for the same distance a node moves, which gives a
-                better approximation of the movement.</p>
+                <p class="note"><strong>Implementation Note:</strong> If your project simulates
+                    mobile nodes, the position of the nodes is updated at the beginning
+                    of every round. As a result, the nodes hop around, which does not
+                    quite correspond a continuous path. To achieve a better
+                    approximation, you may increase the time resolution of the simulation
+                    by a given factor, e.g. 10: Decrease the node speed by this factor,
+                    and increase the message delivery time, as well as the countdown-time
+                    of all timers by the same factor. This inserts several (in this case
+                    9) more rounds for the same distance a node moves, which gives a
+                    better approximation of the movement.</p>
             </div>
 
             <div class="subsubbody">
@@ -365,7 +366,7 @@
             <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
             Whenever a node sends a message to another node of the network, the
-            framework encapsulates the message object in a <i>packet</i> object,
+            framework encapsulates the message object in a <em>packet</em> object,
             which contains the following meta information for the message
             delivery.
             <ul>
@@ -385,9 +386,7 @@
             <p>Project developers only get in touch with <span
                     class="code">Packet</span> objects when implementing a new
                 interference model. The member
-            <p><span class="code codeTab">
- <b>public boolean</b> positiveDelivery
-</span>
+            <p><span class="code codeTab"><strong>public boolean</strong> positiveDelivery</span>
             <p>
                 indicates whether the message hold in the packet will be received
                 properly at the destination. If this flag is set to false, the
@@ -409,18 +408,18 @@
                                                      href="Models.html#Connectivity Model">Connectivity
             Model</a>
             is responsible to decide which node pairs are within communication
-            range. Each node carries a list of its <i>outgoing
-            connections</i>. I.e. the set of edges through which the node is
+            range. Each node carries a list of its <em>outgoing
+            connections</em>. I.e. the set of edges through which the node is
             connected to its direct neighbors. Because the edges are
-            <i>unidirectional</i>, an edge object is contained in exactly one set
+            <em>unidirectional</em>, an edge object is contained in exactly one set
             of outgoing connections. Furthermore, if two nodes are connected in
-            both directions, there are <i>two</i> edge objects, one hold by each
+            both directions, there are <em>two</em> edge objects, one hold by each
             end node.
 
-            <p>Sinalgo requires that the <i>same</i> edge object is present between
+            <p>Sinalgo requires that the <em>same</em> edge object is present between
                 two nodes until the connection breaks. Upon reconnection of the two
                 nodes, a new edge object has to be used. To distinguish edges, each
-                edge object carries a <i>unique ID</i>.
+                edge object carries a <em>unique ID</em>.
 
             <p>The <span class="code">send</span> and <span
                     class="code">broadcast</span> methods provided by the node superclass
@@ -431,79 +430,82 @@
                 used to simulate a wired overlay network, or to send messages between
                 network nodes that are connected through another means.
 
-            <p><b>Note:</b> Especially when manually adding an edge
+            <p><strong>Note:</strong> Especially when manually adding an edge
                 in GUI mode, remember that the added edge is
-                <i>unidirectional</i>. To connect two nodes A and B in both
+                <em>unidirectional</em>. To connect two nodes A and B in both
                 direction, you need to add an edge from A to B, and another edge from
-                B to A. To avoid this issue, you may want to use bidirectional edges.
+                B to A. To avoid this issue, you may want to use bidirectional edges.</p>
 
-                <div class="subsubBody">
-                    <h3>Bidirectional Edges</h3>
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-                    The use of unidirectional links may be desirable to simulate lossy
-                    and unpredictable networks. However, one may often want to abstract
-                    from these low-level issues and only consider bidirectional links. To
-                    ensure, that there is either no link at all between two nodes, or a
-                    link in both directions (a bidirectional link), use the <span
-                        class="code">BidirectionalEdge</span>. This edge implementation
-                    automatically ensures that there is an edge in both directions
-                    between a given pair of nodes.
-
-            <p>To implement bidirectional edges, and to draw edges properly, each
-                edge (not only the bidirectional ones) has a member <span
-                        class="code">oppositeEdge</span>, which points to the edge that
-                connects the two end-nodes in the opposite direction, or is null, if
-                there is no such edge.
-                </div>
-
-                <div class="subsubBody">
-                    <h3>Edge Creation, <span class="code">valid</span> Flag</h3>
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-                    At any time, Sinalgo uses the <i>same edge type for all edges</i> - the
-                    framework holds one global factory that creates the new edges. The
-                    type of edges to be used is defined in the configuration file, and
-                    may be changed at runtime. But note that when changing the edge type
-                    at runtime, the existing edge objects are not replaced and thus
-                    implement the previous edge type. A change of the edge time at
-                    runtime only affects edges that are added to the network graph
-                    afterwards.
-
-            <p>We have seen that the <a class="nav_link"
-                                        href="Models.html#Connectivity Model">Connectivity Model</a>
-                determines to which other nodes a given node N is connected by adding
-                and removing edges from the <span
-                        class="code">outgoingConnections</span> list of N. In most cases,
-                this model is too powerful, and the simpler <span
-                        class="code">ConnectivityModelHelper</span> class can be used, where
-                the subclass only needs to answer whether node N is connected to
-                another node B. If node N has a (unidirectional) connection to node
-                A, the model calls <span class="code">N.outgoingConnections.add(N, B,
- true);</span>, which adds an edge NB to the set of outgoing
-                connections of node N. If the edge already exists, the call to <span
-                        class="code">add</span> does <i>not</i> replace the existing edge.
-
-            <p>The removal of the edges is somewhat more involved, because Sinalgo requires the <i>same</i> edge object
-                to remain installed until the
-                corresponding connection breaks up. Therefore, we may not just empty
-                the set of outgoing connections before calling the connectivity
-                model. Sinalgo proposes to handle this issue using the <span
-                        class="code">valid</span> member of each edge: Whenever the
-                connectivity model calls <span
-                        class="code">N.outgoingConnections.add(N,B,true)</span> to ensure
-                that there is an edge NB, the <span class="code">valid</span> flag of
-                the added (or already existing) edge is set to true. Before the
-                connectivity model returns, it calls
-                N.outgoingConnections.removeInvalidLinks(), which iterates over all
-                outgoing edges of N and removes the ones whose <span
-                        class="code">valid</span> flag is false. (At the same time, the
-                method resets the <span class="code">valid</span> flags to false for
-                the next round.)
-                </div>
-
-
+            <div class="subsubBody">
+                <h3>Bidirectional Edges</h3>
                 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+                The use of unidirectional links may be desirable to simulate lossy
+                and unpredictable networks. However, one may often want to abstract
+                from these low-level issues and only consider bidirectional links. To
+                ensure, that there is either no link at all between two nodes, or a
+                link in both directions (a bidirectional link), use the <span
+                    class="code">BidirectionalEdge</span>. This edge implementation
+                automatically ensures that there is an edge in both directions
+                between a given pair of nodes.
+
+                <p>To implement bidirectional edges, and to draw edges properly, each
+                    edge (not only the bidirectional ones) has a member <span
+                            class="code">oppositeEdge</span>, which points to the edge that
+                    connects the two end-nodes in the opposite direction, or is null, if
+                    there is no such edge.
+                </p>
+            </div>
+
+            <div class="subsubBody">
+                <h3>Edge Creation, <span class="code">valid</span> Flag</h3>
+                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+                At any time, Sinalgo uses the <em>same edge type for all edges</em> - the
+                framework holds one global factory that creates the new edges. The
+                type of edges to be used is defined in the configuration file, and
+                may be changed at runtime. But note that when changing the edge type
+                at runtime, the existing edge objects are not replaced and thus
+                implement the previous edge type. A change of the edge time at
+                runtime only affects edges that are added to the network graph
+                afterwards.
+
+                <p>We have seen that the <a class="nav_link"
+                                            href="Models.html#Connectivity Model">Connectivity Model</a>
+                    determines to which other nodes a given node N is connected by adding
+                    and removing edges from the <span
+                            class="code">outgoingConnections</span> list of N. In most cases,
+                    this model is too powerful, and the simpler <span
+                            class="code">ConnectivityModelHelper</span> class can be used, where
+                    the subclass only needs to answer whether node N is connected to
+                    another node B. If node N has a (unidirectional) connection to node
+                    A, the model calls <span class="code">N.outgoingConnections.add(N, B,
+ true);</span>, which adds an edge NB to the set of outgoing
+                    connections of node N. If the edge already exists, the call to <span
+                            class="code">add</span> does <em>not</em> replace the existing edge.
+
+                <p>The removal of the edges is somewhat more involved, because Sinalgo requires the <em>same</em> edge
+                    object
+                    to remain installed until the
+                    corresponding connection breaks up. Therefore, we may not just empty
+                    the set of outgoing connections before calling the connectivity
+                    model. Sinalgo proposes to handle this issue using the <span
+                            class="code">valid</span> member of each edge: Whenever the
+                    connectivity model calls <span
+                            class="code">N.outgoingConnections.add(N,B,true)</span> to ensure
+                    that there is an edge NB, the <span class="code">valid</span> flag of
+                    the added (or already existing) edge is set to true. Before the
+                    connectivity model returns, it calls
+                    N.outgoingConnections.removeInvalidLinks(), which iterates over all
+                    outgoing edges of N and removes the ones whose <span
+                            class="code">valid</span> flag is false. (At the same time, the
+                    method resets the <span class="code">valid</span> flags to false for
+                    the next round.)
+                </p>
+            </div>
+
+
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
             <h2>Interference<a name="Interference"></a></h2>
             <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -520,7 +522,7 @@
             configuration file.
 
             <p>Each sender node can send its message with a given signal power,
-                which we call <i>intensity</i>. The interference model can use the
+                which we call <em>intensity</em>. The interference model can use the
                 set of all messages and their corresponding intensity to determine
                 the noise-level a given receiver node experiences.
 
@@ -548,7 +550,7 @@
                 new objects allocated, and if the network graph changes frequently,
                 many edge objects need to be allocated.
 
-            <p>To alleviate this problem, Sinalgo tries to <i>recycle</i> objects as
+            <p>To alleviate this problem, Sinalgo tries to <em>recycle</em> objects as
                 often as possible: Instead of returning a removed edge to the GC,
                 Sinalgo stores the edge object for reuse the next time an edge object of
                 this type is needed. The same holds for the packets, which
@@ -557,8 +559,8 @@
                 Sinalgo for storage. Whenever a message is sent, Sinalgo only creates a new
                 packet object if there is no recycled packet left.
 
-            <p class="note"><b>Note:</b> Remind from the <a class="nav_link"
-                                                            href="Implementation.html#Messages">message
+            <p class="note"><strong>Note:</strong> Remind from the <a class="nav_link"
+                                                                      href="Implementation.html#Messages">message
                 implementation
                 section</a> that a sent message object is cloned by default. To save
                 memory, a project may apply a read-only policy for all messages, in

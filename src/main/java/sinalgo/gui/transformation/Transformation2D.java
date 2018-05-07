@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.transformation;
 
+import lombok.NoArgsConstructor;
 import sinalgo.configuration.Configuration;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.nodes.Position;
@@ -47,17 +48,11 @@ import java.awt.*;
  * This transformation instance is to be used in 2D situations, when the nodes
  * only carry 2D position information.
  */
+@NoArgsConstructor
 public class Transformation2D extends PositionTransformation {
 
     // The offset
     private int dx, dy;
-
-    /**
-     * Default constructor
-     */
-    public Transformation2D() {
-        dx = dy = 0;
-    }
 
     @Override
     public int getNumberOfDimensions() {
@@ -65,29 +60,29 @@ public class Transformation2D extends PositionTransformation {
     }
 
     @Override
-    protected void _zoomToFit(int width, int height) {
+    protected void onChangeZoomToFit(int width, int height) {
         int border = 1; // one pixel s.t. border is drawn in GUI
         double newZoom = Math.min((double) (width - border) / Configuration.dimX,
                 (double) (height - border) / Configuration.dimY);
-        setZoomFactor(newZoom);
+        changeZoomFactor(newZoom);
         dx = Math.max(0, (int) ((width - border - Configuration.dimX * newZoom) / 2));
         dy = Math.max(0, (int) ((height - border - Configuration.dimY * newZoom) / 2));
     }
 
     @Override
-    protected void _defaultView(int width, int height) {
+    protected void onChangeDefaultView(int width, int height) {
         zoomToFit(width, height);// the same in 2D
     }
 
     @Override
-    protected void _setZoomFactor(double newFactor) {
+    protected void onChangeZoomFactor(double zoomfactor) {
         // ensure that the center of the visible area remains at the same point
         determineCenter();
         translateToLogicPosition(centerX, centerY);
-        double cx = logicX, cy = logicY, cz = logicZ;
-        this.zoomFactor = newFactor; // we need to set the new factor already now
+        double cx = getLogicX(), cy = getLogicY(), cz = getLogicZ();
+        setZoomFactor(zoomfactor); // we need to set the new factor already now
         translateToGUIPosition(cx, cy, cz);
-        moveView(-guiX + centerX, -guiY + centerY);
+        moveView(-getGuiX() + centerX, -getGuiY() + centerY);
     }
 
     private int centerX, centerY;
@@ -98,9 +93,9 @@ public class Transformation2D extends PositionTransformation {
      */
     private void determineCenter() {
         translateToGUIPosition(0, 0, 0);
-        int minX = Math.max(guiX, 0), minY = Math.max(guiY, 0);
+        int minX = Math.max(getGuiX(), 0), minY = Math.max(getGuiY(), 0);
         translateToGUIPosition(Configuration.dimX, Configuration.dimY, Configuration.dimZ);
-        int maxX = Math.min(guiX, width), maxY = Math.min(guiY, height);
+        int maxX = Math.min(getGuiX(), getWidth()), maxY = Math.min(getGuiY(), getHeight());
         centerX = (minX + maxX) / 2;
         centerY = (minY + maxY) / 2;
     }
@@ -109,15 +104,15 @@ public class Transformation2D extends PositionTransformation {
     public void translateToGUIPosition(double x, double y, double z) {
         // we already have a planar field - only need to scale according to the zoom
         // factor
-        this.guiXDouble = dx + x * zoomFactor;
-        this.guiYDouble = dy + y * zoomFactor;
-        this.guiX = (int) guiXDouble;
-        this.guiY = (int) guiYDouble;
+        this.setGuiXDouble(dx + x * getZoomFactor());
+        this.setGuiYDouble(dy + y * getZoomFactor());
+        this.setGuiX((int) getGuiXDouble());
+        this.setGuiY((int) getGuiYDouble());
     }
 
     @Override
     public void translateToGUIPosition(Position pos) {
-        translateToGUIPosition(pos.xCoord, pos.yCoord, pos.zCoord);
+        translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord());
     }
 
     @Override
@@ -127,13 +122,13 @@ public class Transformation2D extends PositionTransformation {
 
     @Override
     public void translateToLogicPosition(int x, int y) {
-        logicX = (x - dx) / zoomFactor;
-        logicY = (y - dy) / zoomFactor;
-        logicZ = 0;
+        this.setLogicX((x - dx) / getZoomFactor());
+        this.setLogicY((y - dy) / getZoomFactor());
+        this.setLogicZ(0);
     }
 
     @Override
-    protected void _moveView(int x, int y) {
+    protected void onChangeMoveView(int x, int y) {
         dx += x;
         dy += y;
     }
@@ -142,12 +137,12 @@ public class Transformation2D extends PositionTransformation {
     public void drawBackground(Graphics g) {
         translateToGUIPosition(Configuration.dimX, Configuration.dimY, Configuration.dimZ);
         g.setColor(Color.WHITE);
-        g.fillRect(dx, dy, guiX - dx, guiY - dy);
+        g.fillRect(dx, dy, getGuiX() - dx, getGuiY() - dy);
         g.setColor(Color.BLACK);
-        g.drawLine(dx, dy, guiX, dy);
-        g.drawLine(dx, dy, dx, guiY);
-        g.drawLine(guiX, dy, guiX, guiY);
-        g.drawLine(dx, guiY, guiX, guiY);
+        g.drawLine(dx, dy, getGuiX(), dy);
+        g.drawLine(dx, dy, dx, getGuiY());
+        g.drawLine(getGuiX(), dy, getGuiX(), getGuiY());
+        g.drawLine(dx, getGuiY(), getGuiX(), getGuiY());
 
         // TODO: draw rulers if specified in the config
     }
@@ -157,14 +152,14 @@ public class Transformation2D extends PositionTransformation {
         // translateToGUIPosition(Configuration.dimX, Configuration.dimY,
         // Configuration.dimZ);
         translateToGUIPosition(0, 0, 0);
-        double x0 = guiXDouble, y0 = guiYDouble;
+        double x0 = getGuiXDouble(), y0 = getGuiYDouble();
         translateToGUIPosition(Configuration.dimX, Configuration.dimY, 0);
         // draw the bounding box (black)
         ps.setColor(0, 0, 0);
-        ps.drawLine(x0, y0, this.guiXDouble, y0);
-        ps.drawLine(x0, y0, x0, this.guiYDouble);
-        ps.drawLine(this.guiXDouble, this.guiYDouble, x0, this.guiYDouble);
-        ps.drawLine(this.guiXDouble, this.guiYDouble, this.guiXDouble, y0);
+        ps.drawLine(x0, y0, this.getGuiXDouble(), y0);
+        ps.drawLine(x0, y0, x0, this.getGuiYDouble());
+        ps.drawLine(this.getGuiXDouble(), this.getGuiYDouble(), x0, this.getGuiYDouble());
+        ps.drawLine(this.getGuiXDouble(), this.getGuiYDouble(), this.getGuiXDouble(), y0);
     }
 
     private double zoomPanelRatio = 1;
@@ -189,17 +184,17 @@ public class Transformation2D extends PositionTransformation {
         g.drawRect(offx, offy, -1 + (int) (Configuration.dimX * ratio), -1 + (int) (Configuration.dimY * ratio));
 
         translateToGUIPosition(0, 0, 0);
-        int leftX = guiX;
-        int leftY = guiY;
+        int leftX = getGuiX();
+        int leftY = getGuiY();
         translateToGUIPosition(Configuration.dimX, Configuration.dimY, Configuration.dimZ);
-        int rightX = guiX;
-        int rightY = guiY;
+        int rightX = getGuiX();
+        int rightY = getGuiY();
 
         int ax = (int) (ratio * Configuration.dimX * (-leftX) / (rightX - leftX));
         int ay = (int) (ratio * Configuration.dimY * (-leftY) / (rightY - leftY));
 
-        int bx = (int) (ratio * Configuration.dimX * (width - leftX) / (rightX - leftX));
-        int by = (int) (ratio * Configuration.dimY * (height - leftY) / (rightY - leftY));
+        int bx = (int) (ratio * Configuration.dimX * (getWidth() - leftX) / (rightX - leftX));
+        int by = (int) (ratio * Configuration.dimY * (getHeight() - leftY) / (rightY - leftY));
 
         ax = Math.max(0, ax);
         ay = Math.max(0, ay);
@@ -261,22 +256,22 @@ public class Transformation2D extends PositionTransformation {
 
     @Override
     public String getLogicPositionString() {
-        return "(" + (int) logicX + ", " + (int) logicY + ")";
+        return "(" + (int) getLogicX() + ", " + (int) getLogicY() + ")";
     }
 
     @Override
     public String getGUIPositionString() {
-        return "(" + guiX + ", " + guiY + ")";
+        return "(" + getGuiX() + ", " + getGuiY() + ")";
     }
 
     @Override
-    protected void _zoomToRect(Rectangle rect) {
+    protected void onChangeZoomToRect(Rectangle rect) {
         translateToLogicPosition(rect.x, rect.y);
-        double lx = logicX, ly = logicY, lz = logicZ;
-        double newZoomFactor = zoomFactor * Math.min((double) (width) / rect.width, (double) (height) / rect.height);
+        double lx = getLogicX(), ly = getLogicY(), lz = getLogicZ();
+        double newZoomFactor = getZoomFactor() * Math.min((double) (getWidth()) / rect.width, (double) (getHeight()) / rect.height);
         // and set the new zoom factor
-        _setZoomFactor(newZoomFactor);
+        onChangeZoomFactor(newZoomFactor);
         translateToGUIPosition(lx, ly, lz);
-        moveView(-guiX, -guiY);
+        moveView(-getGuiX(), -getGuiY());
     }
 }

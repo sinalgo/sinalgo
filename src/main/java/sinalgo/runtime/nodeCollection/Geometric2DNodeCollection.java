@@ -186,8 +186,8 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
 
     private SquarePos getPosOfNode(Node n) {
         Position p = n.getPosition();
-        oneSquarePos.x = (int) Math.floor(p.xCoord / rMax);
-        oneSquarePos.y = (int) Math.floor(p.yCoord / rMax);
+        oneSquarePos.x = (int) Math.floor(p.getXCoord() / rMax);
+        oneSquarePos.y = (int) Math.floor(p.getYCoord() / rMax);
         return oneSquarePos;
     }
 

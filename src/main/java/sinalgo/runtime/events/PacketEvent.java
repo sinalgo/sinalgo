@@ -165,10 +165,10 @@ public class PacketEvent extends Event {
     @Override
     public String getEventListText(boolean hasExecuted) {
         if (hasExecuted) {
-            return "Packet at node " + packet.destination.ID
+            return "Packet at node " + packet.destination.getID()
                     + (packet.positiveDelivery ? " (delivered)" : " (dropped)");
         } else {
-            return "PE (Node:" + packet.destination.ID + ", Time:" + getExecutionTimeString(4) + ")";
+            return "PE (Node:" + packet.destination.getID() + ", Time:" + getExecutionTimeString(4) + ")";
         }
     }
 
@@ -178,7 +178,7 @@ public class PacketEvent extends Event {
             return "The type of the message is: " + Global.toShortName(packet.message.getClass().getName()) + "\n"
                     + (packet.positiveDelivery ? "The message was delivered" : "The message was dropped.");
         } else {
-            return "At time " + time + " a message reaches node " + packet.destination.ID + "\n"
+            return "At time " + time + " a message reaches node " + packet.destination.getID() + "\n"
                     + "The type of the message is: " + Global.toShortName(packet.message.getClass().getName()) + "\n"
                     + (packet.positiveDelivery ? "Until now it seems that the message will reach its destination."
                     : "The message has already been disturbed and will not reach its destination.");

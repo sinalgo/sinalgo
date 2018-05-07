@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--suppress CheckImageSize -->
 <html>
 <head>
     <title>Sinalgo</title>
@@ -48,7 +49,7 @@
 </head>
 
 <body class="text" bgcolor="#FFFFFF" onload="setup()">
-<table align="center" width="100%" style="margin-bottom:0px"
+<table align="center" width="100%" style="margin-bottom:0"
        cellpadding="0" cellspacing="0" border="0">
     <tr class="height80">
         <td><img src="../pics/spacer.gif" width="210" height="80"
@@ -226,7 +227,7 @@
                 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
                 In the synchronous simulation mode, the framework performs the
-                following actions for each <b>round</b>. Bold text indicates methods that
+                following actions for each <strong>round</strong>. Bold text indicates methods that
                 you may overwrite or implement to define the behavior of the network
                 nodes and the simulation. Note that the execution is strictly sequential,
                 i.e. a single thread executes the following actions. As a result, no
@@ -234,49 +235,56 @@
 
                 <ol class="unstyled extra-space">
                     <li>The framework increments the global time by 1.</li>
-                    <li><span class="code"><b>CustomGlobal.preRound();</b></span> <i class="smallBodyText">(Optional,
-                        project specific code. This method is called at the beginning of every round.)</i></li>
+                    <li><span class="code"><strong>CustomGlobal.preRound();</strong></span> <em class="smallBodyText">(Optional,
+                        project specific code. This method is called at the beginning of every round.)</em></li>
 
-                    <li>The framework handles <b>global timers</b> that fire in this round.</li>
+                    <li>The framework handles <strong>global timers</strong> that fire in this round.</li>
 
-                    <li>The framework moves the nodes according to their <b>mobility models</b>, if mobility is enabled.
+                    <li>The framework moves the nodes according to their <strong>mobility models</strong>, if mobility
+                        is enabled.
                     </li>
 
-                    <li>The framework calls each node to update its set of outgoing connections according to its <b>connectivity
-                        models</b>.
+                    <li>The framework calls each node to update its set of outgoing connections according to its
+                        <strong>connectivity
+                            models</strong>.
                     </li>
 
-                    <li>The framework calls <b>interference</b> tests for all messages being sent, if interference is
+                    <li>The framework calls <strong>interference</strong> tests for all messages being sent, if
+                        interference is
                         enabled.
                     </li>
 
                     <li>The framework iterates over all nodes and calls <span
-                            class="code">Node.<b>step()</b></span> on each node. <i class="smallBodyText"> The method
+                            class="code">Node.<strong>step()</strong></span> on each node. <em class="smallBodyText">
+                        The method
                         'step' performs the following
-                        actions for each node:</i><br>
+                        actions for each node:</em><br>
 
                         <ol class="unstyled extra-space">
                             <li>The node gathers all messages that arrive in this round.</li>
-                            <li><span class="code"><b>Node.preStep();</b></span> <i class="smallBodyText">(Optional,
-                                project specific code. This method is called at the beginning of very step.)</i></li>
+                            <li><span class="code"><strong>Node.preStep();</strong></span> <em class="smallBodyText">(Optional,
+                                project specific code. This method is called at the beginning of very step.)</em></li>
                             <li>If this node's set of outgoing connections has changed in this round, the node calls
-                                <span class="code"><b>Node.neighborhoodChange();</b></span></li>
-                            <li>The node handles <b>timers</b> that fire in this round.</li>
-                            <li><span class="code"><b>Node.handleNAckMessages();</b></span> <i class="smallBodyText">(Handle
-                                dropped messages, if</i> <span class="code">generateNAckMessages</span><i
-                                    class="smallBodyText"> is enabled.)</i></li>
-                            <li><span class="code"><b>Node.handleMessages();</b></span> <i class="smallBodyText">(Handle
-                                the arriving messages.)</i></li>
-                            <li><span class="code"><b>Node.postStep();</b></span> <i class="smallBodyText">(Optional,
-                                project specific code. This method is called at the end of each step.)</i></li>
+                                <span class="code"><strong>Node.neighborhoodChange();</strong></span></li>
+                            <li>The node handles <strong>timers</strong> that fire in this round.</li>
+                            <li><span class="code"><strong>Node.handleNAckMessages();</strong></span> <em
+                                    class="smallBodyText">(Handle
+                                dropped messages, if</em> <span class="code">generateNAckMessages</span><em
+                                    class="smallBodyText"> is enabled.)</em></li>
+                            <li><span class="code"><strong>Node.handleMessages();</strong></span> <em
+                                    class="smallBodyText">(Handle
+                                the arriving messages.)</em></li>
+                            <li><span class="code"><strong>Node.postStep();</strong></span> <em class="smallBodyText">(Optional,
+                                project specific code. This method is called at the end of each step.)</em></li>
                         </ol>
 
                     </li>
 
-                    <li><span class="code"><b>CustomGlobal.postRound();</b></span> <i class="smallBodyText">(Optional,
-                        project specific code. This method is called at the end of every round.)</i></li>
+                    <li><span class="code"><strong>CustomGlobal.postRound();</strong></span> <em class="smallBodyText">(Optional,
+                        project specific code. This method is called at the end of every round.)</em></li>
 
-                    <li>If <span class="code"><b>CustomGlobal.hasTerminated();</b></span> returns true, the simulation
+                    <li>If <span class="code"><strong>CustomGlobal.hasTerminated();</strong></span> returns true, the
+                        simulation
                         exits.
                     </li>
                 </ol>
@@ -289,9 +297,9 @@
 
                 In asynchronous simulation mode, there are only two events upon which
                 nodes react: Arriving messages and timer events. Thus, only the
-                methods <span class="code">Node.<b>handleMessages()</b></span>,
-                (<span class="code">Node.<b>handleNAckMessages()</b></span>), and
-                <span class="code">Timer.<b>fire()</b></span> are called. Before
+                methods <span class="code">Node.<strong>handleMessages()</strong></span>,
+                (<span class="code">Node.<strong>handleNAckMessages()</strong></span>), and
+                <span class="code">Timer.<strong>fire()</strong></span> are called. Before
                 performing a scheduled event, the global time of the system is set to
                 the time when the event happens.
 
@@ -309,7 +317,7 @@
             and place the source file in the <span
                 class="code">node/nodeImplementation/</span> folder of your
             project. Implement the method <span
-                class="code"><b>Node.handleMessages();</b></span> and optionally any
+                class="code"><strong>Node.handleMessages();</strong></span> and optionally any
             of the other abstract methods from the <span
                 class="code">sinalgo.nodes.Node</span> class.
 
@@ -321,7 +329,7 @@
             <p>
             <table border="1" cellpadding="5" cellspacing="0">
                 <tr>
-                    <td colspan="2"><b>Public Member Variables</b></td>
+                    <td colspan="2"><strong>Public Member Variables</strong></td>
                 </tr>
 
                 <tr>
@@ -345,7 +353,7 @@
                 </tr>
 
                 <tr>
-                    <td colspan="2"><b>Methods</b></td>
+                    <td colspan="2"><strong>Methods</strong></td>
                 </tr>
 
                 <tr>
@@ -516,14 +524,14 @@
                         class="code">checkRequirements()</span> which you may overwrite in
                 your subclass:
 
-                <br><span class="code">Node.<b>init()</b></span> is called once at the
+                <br><span class="code">Node.<strong>init()</strong></span> is called once at the
                 beginning of the lifecycle of a node object. It may be used to
                 initialize the start state of the node. Note that this function may
                 not depend on the neighborhood of the node as the init function is
                 called before the connections are set up and before the set of all
                 nodes is available.
 
-                <br><span class="code">Node.<b>checkRequirements()</b></span> is called
+                <br><span class="code">Node.<strong>checkRequirements()</strong></span> is called
                 after the init() method to check whether all requirements to use this
                 node type are met. This may include a test whether appropriate models
                 have been selected.
@@ -552,10 +560,10 @@
                         <p>
                         <div class="code codeTab">
                             @NodePopupMethod(menuText="Multicast 2")<br>
-                            <b>public</b> <b>void</b> myPopupMethod() {<br>
-                            <div class="codeTab">IntMessage msg = <b>new</b> IntMessage(2);<br>
-                                MessageTimer timer = <b>new</b> MessageTimer(msg);<br>
-                                timer.startRelative(1, <b>this</b>);
+                            <strong>public</strong> <strong>void</strong> myPopupMethod() {<br>
+                            <div class="codeTab">IntMessage msg = <strong>new</strong> IntMessage(2);<br>
+                                MessageTimer timer = <strong>new</strong> MessageTimer(msg);<br>
+                                timer.startRelative(1, <strong>this</strong>);
                             </div>
                             }
                         </div>
@@ -580,7 +588,7 @@
                 create a timer which fires in the next round and performs the desired
                 action.
 
-            <p><b>Note:</b> The <span class="code">MessageTimer</span> is
+            <p><strong>Note:</strong> The <span class="code">MessageTimer</span> is
                 available in the <span class="code">defaultProject</span>. This timer
                 may send a unicast message to a given node, or multicast a message to
                 all immediate neighbors. Please consult the documentation of the
@@ -612,10 +620,10 @@
 
             <p>The abstract class <span class="code">Message</span> requires you
                 to implement a single method that returns a clone of the message,
-                i.e. an exact <i>copy</i> of the message object:<br> <span
-                        class="code codeTab"><b>public</b> Message clone()</span>
+                i.e. an exact <em>copy</em> of the message object:<br> <span
+                        class="code codeTab"><strong>public</strong> Message clone()</span>
 
-            <p class="note"><b>Implementation Note:</b> When a node sends a
+            <p class="note"><strong>Implementation Note:</strong> When a node sends a
                 message to a neighbor node, it is assumed that the destination
                 receives the message-content that was sent through the <span
                         class="code">send()</span> method. The framework has however no means
@@ -623,11 +631,11 @@
                 message-object, and therefore may be able to alter its content. To
                 avoid such problems, the framework sends separate copies to all
                 receivers of a send() or multicast() call. Thus, for a multicast to
-                <i>n</i> neighbors, the framework obtains <i>n</i> copies of the
+                <em>n</em> neighbors, the framework obtains <em>n</em> copies of the
                 message and sends a copy to each of the neighbors.
             </p>
 
-            <p>If <b>and only if</b> your project ensures that a message-object
+            <p>If <strong>and only if</strong> your project ensures that a message-object
                 is not altered after it was sent, you may omit the copying process by
                 providing the following implementation of the <span
                         class="code">clone()</span> method. (Note that the process of sending
@@ -635,8 +643,9 @@
                 node may safely forward the same message-object it has received.)<br>
 
             <div class="code codeTab">
-                <b>public</b> Message clone() {<br>
-                <div class="codeTab"><b>return this</b>;<i>// This message requires a read-only policy</i></div>
+                <strong>public</strong> Message clone() {<br>
+                <div class="codeTab"><strong>return this</strong>;<em>// This message requires a read-only policy</em>
+                </div>
                 }
             </div>
 
@@ -669,10 +678,10 @@
 
             <p>
             <div class="code codeTab">
-                <b>while</b>(inbox.hasNext()) {<br>
+                <strong>while</strong>(inbox.hasNext()) {<br>
                 <div class="codeTab">Message msg = inbox.next();<br>
-                    <b>if</b>(msg <b>instanceof </b>...) {<br>
-                    <div class="codeTab"><i>\\ handle this type of message</i></div>
+                    <strong>if</strong>(msg <strong>instanceof </strong>...) {<br>
+                    <div class="codeTab"><em>\\ handle this type of message</em></div>
                     }
                 </div>
                 }
@@ -685,7 +694,7 @@
 
             Messages may be dropped, due to changes to the connectivity graph,
             interference, or the message transmission model. The framework
-            provides a means to inform the sender node whenever a <i>unicast</i>
+            provides a means to inform the sender node whenever a <em>unicast</em>
             message sent by the node does not reach the destination. This is an
             optional feature that needs to be enabled through the project
             configuration: set the entry <span
@@ -722,11 +731,11 @@
 
             <p>
             <div class="code codeTab">
-                <b>public void</b> handleNAckMessages(NackBox nackBox) {
-                <div class="codeTab"><b>while</b>(nackBox.hasNext()) {<br>
+                <strong>public void</strong> handleNAckMessages(NackBox nackBox) {
+                <div class="codeTab"><strong>while</strong>(nackBox.hasNext()) {<br>
                     <div class="codeTab">Message msg = nackBox.next();<br>
-                        <b>if</b>(msg <b>instanceof </b>...) {<br>
-                        <div class="codeTab"><i>\\ handle this type of message</i></div>
+                        <strong>if</strong>(msg <strong>instanceof </strong>...) {<br>
+                        <div class="codeTab"><em>\\ handle this type of message</em></div>
                         }
                     </div>
                     }
@@ -746,7 +755,7 @@
                 class="code">sinalgo.nodes.edges.Edge</span> and put the source file in
             the <span class="code">nodes/edges/</span> folder of your project.
 
-            <p><b>Note:</b> The framework only supports one edge type at any
+            <p><strong>Note:</strong> The framework only supports one edge type at any
                 time. The type to use can be specified in the configuration file, and
                 it may be switched at runtime through the <span
                         class="code">Preferences</span> menu. Changing the edge type at
@@ -840,7 +849,7 @@ projects.defaultProject.nodes<br>.edges.GreenEdge
             future. When the task is due, the timer wakes up the node and
             performs the given task. Any timer object is a subclass of <span
                 class="code">sinalgo.nodes.timers.Timer</span> and implements the method
-            <span class="code"><b>void</b> fire()</span>, which contains the task
+            <span class="code"><strong>void</strong> fire()</span>, which contains the task
             this timer needs to perform.
 
             <p>To write a project specific timer, implement a subclass of <span
@@ -853,37 +862,37 @@ projects.defaultProject.nodes<br>.edges.GreenEdge
                 should be scheduled, and the node specifies the node on which the
                 task should be executed.
 
-            <p><b>Hint:</b> The default project provides a <span
+            <p><strong>Hint:</strong> The default project provides a <span
                     class="code">MessageTimer</span> that schedules to send a message at
                 a given time. The message may be unicast to a specified recipient, or
-                multicast to all immediate neighbors.
+                multicast to all immediate neighbors.</p>
 
-                <div class="subsubBody">
-                    <h3>Global Timers</h3>
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+            <div class="subsubBody">
+                <h3>Global Timers</h3>
+                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-                    A timer object can also be used to perform a task for the simulation
-                    framework at a given time. Such a global task is not executing
-                    on a particular node, and is suited to perform simulation specific
-                    tasks (e.g. add/drop some nodes, select a random node to perform
-                    an action, change the network, ...) In synchronous simulation mode,
-                    the global timers are handled after the
-                    <span class="code">CustomGlobal.preRound()</span> method. In
-                    asynchronous simulation mode, a global timer becomes an event that
-                    executes when the simulation time reached the execution time of the
-                    timer.
+                A timer object can also be used to perform a task for the simulation
+                framework at a given time. Such a global task is not executing
+                on a particular node, and is suited to perform simulation specific
+                tasks (e.g. add/drop some nodes, select a random node to perform
+                an action, change the network, ...) In synchronous simulation mode,
+                the global timers are handled after the
+                <span class="code">CustomGlobal.preRound()</span> method. In
+                asynchronous simulation mode, a global timer becomes an event that
+                executes when the simulation time reached the execution time of the
+                timer.
 
-            <p>To create a global timer, implement a subclass of <span
-                    class="code">sinalgo.nodes.timers.Timer</span> just as for the
-                regular node timers. But in contrast to the node related timers, start
-                the timer with its method <span class="code">startGlobalTimer(double relativeTime)</span>.
+                <p>To create a global timer, implement a subclass of <span
+                        class="code">sinalgo.nodes.timers.Timer</span> just as for the
+                    regular node timers. But in contrast to the node related timers, start
+                    the timer with its method <span class="code">startGlobalTimer(double relativeTime)</span>.
 
-            <p><b>Hint:</b> You may use the same timer implementation as a node-related timer and
-                as a global timer. Just make sure that the <span class="code">fire()</span>
-                method of the timer class does not access the <span class="code">node</span> member
-                when the timer was started as a global timer. This member is set only when the
-                timer is started as a node-related timer.
-                </div>
+                <p><strong>Hint:</strong> You may use the same timer implementation as a node-related timer and
+                    as a global timer. Just make sure that the <span class="code">fire()</span>
+                    method of the timer class does not access the <span class="code">node</span> member
+                    when the timer was started as a global timer. This member is set only when the
+                    timer is started as a node-related timer.
+            </div>
 
             <h2>Customized, Globally Visible Methods: CustomGlobal.java<a name="CustomGlobal"></a></h2>
             <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -900,239 +909,239 @@ projects.defaultProject.nodes<br>.edges.GreenEdge
             the abstract superclass <span
                 class="code">AbstractCustomGlobal.java</span> with an empty body.)
 
-            <p>
-                <table border="1" cellpadding="5" cellspacing="0">
-                    <tr>
-                        <td valign="top"><span class="code">
+            <table border="1" cellpadding="5" cellspacing="0">
+                <tr>
+                    <td valign="top"><span class="code">
 customPaint(...)
 </span></td>
-                        <td>
-                            This paint method is called after the network graph has been drawn. It allows for
-                            customizing the drawing of the graph by painting additional information onto the graphics.
-                        </td>
-                    </tr>
+                    <td>
+                        This paint method is called after the network graph has been drawn. It allows for
+                        customizing the drawing of the graph by painting additional information onto the graphics.
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 handleEmptyEventQueue()
 </span></td>
-                        <td>
-                            The framework calls this method when running in asynchronous mode and
-                            there is no event left in the queue. You may generate new events in
-                            this method to keep the simulation going.
+                    <td>
+                        The framework calls this method when running in asynchronous mode and
+                        there is no event left in the queue. You may generate new events in
+                        this method to keep the simulation going.
 
-            <p>Note that the batch mode terminates when the event queue is
-                emptied and this method does not insert any new events.
-        </td>
-    </tr>
+                        <p>Note that the batch mode terminates when the event queue is
+                            emptied and this method does not insert any new events.
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 preRun()
 </span></td>
-        <td>
-            Called <i>once</i> prior to starting the first round in
-            synchronous mode, or prior to executing the first event in
-            asynchronous mode. Use this method to initialize the simulation.
-        </td>
-    </tr>
+                    <td>
+                        Called <em>once</em> prior to starting the first round in
+                        synchronous mode, or prior to executing the first event in
+                        asynchronous mode. Use this method to initialize the simulation.
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 onExit()
 </span></td>
-        <td>
-            Called by the framework before shutting down. To ensure that this
-            method is called in all cases, you should use <span
-                class="code">sinalgo.tools.Tools.exit()</span> to exit, instead of
-            <span class="code">System.exit()</span>.
-        </td>
-    </tr>
+                    <td>
+                        Called by the framework before shutting down. To ensure that this
+                        method is called in all cases, you should use <span
+                            class="code">sinalgo.tools.Tools.exit()</span> to exit, instead of
+                        <span class="code">System.exit()</span>.
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 preRound()
 </span></td>
-        <td>
-            Called in synchronous mode prior to every round. This method may be
-            suited to perform statistics and write log-files.
-        </td>
-    </tr>
+                    <td>
+                        Called in synchronous mode prior to every round. This method may be
+                        suited to perform statistics and write log-files.
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 postRound()
 </span></td>
-        <td>
-            Called in synchronous mode after every round. This method may be
-            suited to perform statistics and write log-files.
-        </td>
-    </tr>
+                    <td>
+                        Called in synchronous mode after every round. This method may be
+                        suited to perform statistics and write log-files.
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 checkProjectRequirements()
 </span></td>
-        <td>
-            The framework calls this method at startup after having selected a
-            project to check whether the necessary requirements for this project
-            are given. For algorithms that only work correctly in synchronous
-            mode this method check that the user didn't try to execute it in
-            asynchronous mode. If the requirements are not met, you may call
-            <span class="code">sinalgo.tools.Tools.fatalError(String msg)</span>
-            to terminate the application with a fatal error.
-        </td>
-    </tr>
+                    <td>
+                        The framework calls this method at startup after having selected a
+                        project to check whether the necessary requirements for this project
+                        are given. For algorithms that only work correctly in synchronous
+                        mode this method check that the user didn't try to execute it in
+                        asynchronous mode. If the requirements are not met, you may call
+                        <span class="code">sinalgo.tools.Tools.fatalError(String msg)</span>
+                        to terminate the application with a fatal error.
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 nodeAddedEvent(Node n)
 </span></td>
-        <td>
-            Called by the framework whenever a node is added to the
-            framework (which is done through the method <span class="code">Runtime.addNode(Node n)</span>).
-            This event may be useful for applications that need to update
-            some graph properties whenever a new node is added (e.g. by the user
-            through the GUI).
-            <p>Note that this method is also called individually for each node created through
-                the <span class="code">-gen</span> command-line tool, and when the user
-                creates nodes using the GUI menu.
-        </td>
-    </tr>
+                    <td>
+                        Called by the framework whenever a node is added to the
+                        framework (which is done through the method <span class="code">Runtime.addNode(Node n)</span>).
+                        This event may be useful for applications that need to update
+                        some graph properties whenever a new node is added (e.g. by the user
+                        through the GUI).
+                        <p>Note that this method is also called individually for each node created through
+                            the <span class="code">-gen</span> command-line tool, and when the user
+                            creates nodes using the GUI menu.
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 nodeRemovedEvent(Node n)
 </span></td>
-        <td>
-            Called by the framework whenever a node is removed from the
-            framework (which is done through the method <span class="code">Runtime.removeNode(Node n)</span>).
-            This event may be useful for applications that need to update
-            some graph properties whenever a node is removed (e.g. by the user
-            through the GUI).
-            <p>Note that this method is <i>not</i> called when the user removes
-                all nodes using the <span class="code">Runtime.clearAllNodes()</span> method.
+                    <td>
+                        Called by the framework whenever a node is removed from the
+                        framework (which is done through the method <span class="code">Runtime.removeNode(Node n)</span>).
+                        This event may be useful for applications that need to update
+                        some graph properties whenever a node is removed (e.g. by the user
+                        through the GUI).
+                        <p>Note that this method is <em>not</em> called when the user removes
+                            all nodes using the <span class="code">Runtime.clearAllNodes()</span> method.
+                    </td>
+                </tr>
+
+
+            </table>
+            <span class="caption">Methods you may overwrite in the project owned <span
+                    class="code">CustomGlobal</span> class.</span>
+
+
+            <div class="subsubBody">
+                <h3>Stopping the Simulation</h3>
+                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+                Most importantly for the batch mode, the <span
+                    class="code"><strong>hasTerminated()</strong></span> method in the <span
+                    class="code">CustomGlobal</span> class lets you specify whether a
+                <em>synchronous</em> simulation has reached the final state and the
+                framework may exit. See the <a class="nav_link"
+                                               href="Implementation.html#Sync Call Sequence">calling
+                sequence</a> of the synchronous mode for details on when <span
+                    class="code">hasTerminated()</span> is called.
+
+                In asynchronous simulation, the simulation terminates when all events
+                have been handled. To stop execution prior to handling all events, or
+                at an arbitrary place in synchronous mode, call <span
+                    class="code"><strong>sinalgo.tools.Tools.exit()</strong></span>. This method
+                executes some cleanup and is preferred to calling <span
+                    class="code">System.exit()</span>. In particular, <span
+                    class="code">sinalgo.tools.Tools.exit()</span> calls <span
+                    class="code">AbstractCustomGlobal.<strong>onExit()</strong></span>, which you
+                may overwrite in your project specific <span
+                    class="">CustomGlobal.java</span> file.
+
+                <p><strong>Hint:</strong> The <span class="code">onExit()</span> method may be
+                    a good place to perform final logging steps and project specific
+                    cleanup.
+            </div>
+
+
+            <div class="subsubBody">
+                <h3>Project Specific Drop Down Methods and Buttons</h3>
+                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+                You may extend the GUI with project specific drop down menus and
+                buttons: Add a dummy-method that takes no parameters to your <span
+                    class="code">CustomGlobal</span> and implement the desired behavior
+                in its body. There are three different ways to register the method
+                with the GUI:
+
+                <p><strong>1) Drop Down Menu Entry:</strong> Prefix the method with the annotation
+                    <span class="code">@AbstractCustomGlobal.GlobalMethod</span> and
+                    specify the <span class="code">menuText</span>. E.g.
+                    <br>
+                <div class="code codeTab">
+                    @AbstractCustomGlobal.GlobalMethod( menuText="Toggle TC view")<br>
+                    public void myMenuMethod() {<br>
+                    <div class="codeTab">// ...</div>
+                    }
+                </div>
+
+                <p><strong>2) Icon Button:</strong> Prefix the method with the annotation <span
+                        class="code">@AbstractCustomGlobal.CustomButton</span> and specify
+                    the <span class="code">imageName</span> and <span
+                            class="code">toolTipText</span>. The <span
+                            class="code">imageName</span> should be the name of a <span
+                            class="code">gif</span> image of size 21x21 pixels, located in the
+                    <span class="code">images</span> folder of the project.
+                    E.g.
+                    <br>
+                <div class="code codeTab">
+                    @CustomButton( imageName="myImage.gif", toolTipText="Click me!")<br>
+                    public void myImageButtonMethod() {<br>
+                    <div class="codeTab">// ...</div>
+                    }
+                </div>
+
+                <p><strong>3) Text Button:</strong> Prefix the method with the annotation <span
+                        class="code">@AbstractCustomGlobal.CustomButton</span> and specify
+                    the <span class="code">buttonText</span> and <span
+                            class="code">toolTipText</span>. E.g.
+                    <br>
+                <div class="code codeTab">
+                    @CustomButton( buttonText="Clear", toolTipText="Click me!")<br>
+                    public void myTextButtonMethod() {<br>
+                    <div class="codeTab">// ...</div>
+                    }
+                </div>
+
+                <p>
+                <table border="0">
+                    <tr>
+                        <td>
+                            <img src="../pics/customMenu.png" alt="Image of Menu">
+                            <br><span class="caption">Project specific menu</span>
+                        </td>
+                        <td>
+                            <img src="../pics/customButtons.png" alt="Image of buttons">
+                            <br><span class="caption">Project specific buttons</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <br>
+                <p>The drop down menu entries (but not the buttons) may be adapted at
+                    runtime: Every time the user opens the 'Global' menu,
+                    the menu is assembled and includes methods annotated
+                    with the <span class="code">GlobalMethod</span> annotation. Before including such a
+                    method in the list, the framework calls
+                    <span class="code">AbstractCustomGlobal.includeGlobalMethodInMenu(Method m, String defaultText)</span>
+                    to allow the project to decide at runtime whether the method should be included or not, and,
+                    if necessary, change the default menu text.
+                <p>Overwrite the method <span
+                        class="code">includeGlobalMethodInMenu(Method m, String defaultText)</span>
+                    in your project specific <span class="code">CustomGlobal.java</span> file to control the appearance
+                    of the 'Global' menu at runtime. The method returns the text to be displayed for each method, or
+                    <span class="code">null</span> if the method should not be included.
+
+            </div> <!-- End of subsubSection-->
+
         </td>
+        <td><img src="../pics/spacer.gif" width="30" height="1" alt=""></td>
     </tr>
-
-
-</table>
-<span class="caption">Methods you may overwrite in the project owned <span
-        class="code">CustomGlobal</span> class.</span>
-
-
-<div class="subsubBody">
-    <h3>Stopping the Simulation</h3>
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-    Most importantly for the batch mode, the <span
-        class="code"><b>hasTerminated()</b></span> method in the <span
-        class="code">CustomGlobal</span> class lets you specify whether a
-    <i>synchronous</i> simulation has reached the final state and the
-    framework may exit. See the <a class="nav_link"
-                                   href="Implementation.html#Sync Call Sequence">calling
-    sequence</a> of the synchronous mode for details on when <span
-        class="code">hasTerminated()</span> is called.
-
-    In asynchronous simulation, the simulation terminates when all events
-    have been handled. To stop execution prior to handling all events, or
-    at an arbitrary place in synchronous mode, call <span
-        class="code"><b>sinalgo.tools.Tools.exit()</b></span>. This method
-    executes some cleanup and is preferred to calling <span
-        class="code">System.exit()</span>. In particular, <span
-        class="code">sinalgo.tools.Tools.exit()</span> calls <span
-        class="code">AbstractCustomGlobal.<b>onExit()</b></span>, which you
-    may overwrite in your project specific <span
-        class="">CustomGlobal.java</span> file.
-
-    <p><b>Hint:</b> The <span class="code">onExit()</span> method may be
-        a good place to perform final logging steps and project specific
-        cleanup.
-</div>
-
-
-<div class="subsubBody">
-    <h3>Project Specific Drop Down Methods and Buttons</h3>
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-    You may extend the GUI with project specific drop down menus and
-    buttons: Add a dummy-method that takes no parameters to your <span
-        class="code">CustomGlobal</span> and implement the desired behavior
-    in its body. There are three different ways to register the method
-    with the GUI:
-
-    <p><b>1) Drop Down Menu Entry:</b> Prefix the method with the annotation
-        <span class="code">@AbstractCustomGlobal.GlobalMethod</span> and
-        specify the <span class="code">menuText</span>. E.g.
-        <br>
-    <div class="code codeTab">
-        @AbstractCustomGlobal.GlobalMethod( menuText="Toggle TC view")<br>
-        public void myMenuMethod() {<br>
-        <div class="codeTab">// ...</div>
-        }
-    </div>
-
-    <p><b>2) Icon Button:</b> Prefix the method with the annotation <span
-            class="code">@AbstractCustomGlobal.CustomButton</span> and specify
-        the <span class="code">imageName</span> and <span
-                class="code">toolTipText</span>. The <span
-                class="code">imageName</span> should be the name of a <span
-                class="code">gif</span> image of size 21x21 pixels, located in the
-        <span class="code">images</span> folder of the project.
-        E.g.
-        <br>
-    <div class="code codeTab">
-        @CustomButton( imageName="myImage.gif", toolTipText="Click me!")<br>
-        public void myImageButtonMethod() {<br>
-        <div class="codeTab">// ...</div>
-        }
-    </div>
-
-    <p><b>3) Text Button:</b> Prefix the method with the annotation <span
-            class="code">@AbstractCustomGlobal.CustomButton</span> and specify
-        the <span class="code">buttonText</span> and <span
-                class="code">toolTipText</span>. E.g.
-        <br>
-    <div class="code codeTab">
-        @CustomButton( buttonText="Clear", toolTipText="Click me!")<br>
-        public void myTextButtonMethod() {<br>
-        <div class="codeTab">// ...</div>
-        }
-    </div>
-
-    <p>
-    <table border="0">
-        <tr>
-            <td>
-                <img src="../pics/customMenu.png" alt="Image of Menu">
-                <br><span class="caption">Project specific menu</span>
-            </td>
-            <td>
-                <img src="../pics/customButtons.png" alt="Image of buttons">
-                <br><span class="caption">Project specific buttons</span>
-            </td>
-        </tr>
-    </table>
-
-    <br>
-    <p>The drop down menu entries (but not the buttons) may be adapted at
-        runtime: Every time the user opens the 'Global' menu,
-        the menu is assembled and includes methods annotated
-        with the <span class="code">GlobalMethod</span> annotation. Before including such a
-        method in the list, the framework calls
-        <span class="code">AbstractCustomGlobal.includeGlobalMethodInMenu(Method m, String defaultText)</span>
-        to allow the project to decide at runtime whether the method should be included or not, and,
-        if necessary, change the default menu text.
-    <p>Overwrite the method <span class="code">includeGlobalMethodInMenu(Method m, String defaultText)</span>
-        in your project specific <span class="code">CustomGlobal.java</span> file to control the appearance
-        of the 'Global' menu at runtime. The method returns the text to be displayed for each method, or
-        <span class="code">null</span> if the method should not be included.
-
-</div> <!-- End of subsubSection-->
-
-</td>
-<td><img src="../pics/spacer.gif" width="30" height="1" alt=""></td>
-</tr>
 </table>
 
 <table border="0" cellspacing="0" cellpadding="0" width="99%" align="center">

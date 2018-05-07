@@ -96,7 +96,7 @@ public class GraphFileReader {
     // type-name.
     //
     // int id = Integer.parseInt(params[1].split("=")[1]);
-    // oneNode.ID = id;
+    // oneNode.getID() = id;
     //
     // double posX = Double.parseDouble(params[2].substring(5,
     // params[2].length()-1).split(",")[0]);
@@ -127,7 +127,7 @@ public class GraphFileReader {
     //
     // while(nodeEnumer.hasMoreElements()){
     // Node n = nodeEnumer.nextElement();
-    // if(n.ID == ID){
+    // if(n.getID() == ID){
     // n.deSerialize(oneLine);
     // break;
     // }

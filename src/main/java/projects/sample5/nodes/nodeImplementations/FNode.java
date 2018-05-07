@@ -171,7 +171,7 @@ public class FNode extends Node {
         Logging log = Logging.getLogger();
         while (nackBox.hasNext()) {
             nackBox.next();
-            log.logln("Node " + this.ID + " could not send a message to " + nackBox.getReceiver().ID);
+            log.logln("Node " + this.getID() + " could not send a message to " + nackBox.getReceiver().getID());
         }
     }
 
@@ -270,7 +270,7 @@ public class FNode extends Node {
         // show the routing table entries
         StringBuilder r = new StringBuilder();
         for (Entry<Node, RoutingEntry> e : routingTable.entrySet()) {
-            r.append(e.getKey().ID).append(" => ").append(e.getValue().nextHop.ID).append(" (").append(e.getValue().numHops).append(")").append("\n");
+            r.append(e.getKey().getID()).append(" => ").append(e.getValue().nextHop.getID()).append(" (").append(e.getValue().numHops).append(")").append("\n");
         }
         return "\n" + r;
     }

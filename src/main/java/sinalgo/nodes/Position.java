@@ -88,7 +88,7 @@ public class Position {
      * @param p The position object from which to copy the x,y and z coordinates.
      */
     public void assign(Position p) {
-        assign(p.xCoord, p.yCoord, p.zCoord);
+        assign(p.getXCoord(), p.getYCoord(), p.getZCoord());
     }
 
     /**

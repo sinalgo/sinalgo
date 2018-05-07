@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--suppress CssRedundantUnit, CheckImageSize -->
 <html>
 <head>
     <title>Sinalgo</title>
@@ -31,7 +32,7 @@
     }
 
     function getWindowHeight() {
-        if (typeof(window.innerWidth) == 'number') { //Non-IE
+        if (typeof(window.innerWidth) === 'number') { //Non-IE
             return window.innerHeight;
         } else if (document.documentElement && document.documentElement.clientHeight) { //IE 6+ in 'standards compliant mode'
             return document.documentElement.clientHeight;
@@ -48,7 +49,7 @@
 </head>
 
 <body class="text" bgcolor="#FFFFFF" onload="setup()">
-<table align="center" width="100%" style="margin-bottom:0px"
+<table align="center" width="100%" style="margin-bottom:0"
        cellpadding="0" cellspacing="0" border="0">
     <tr class="height80">
         <td><img src="../pics/spacer.gif" width="210" height="80"
@@ -197,7 +198,7 @@
             project. Instances of this model implement
 
             <br><span
-                class="code codeTab"><b>boolean</b> updateConnections(Node n) <b>throws</b>
+                class="code codeTab"><strong>boolean</strong> updateConnections(Node n) <strong>throws</strong>
  WrongConfigurationException;</span>
 
             <br>which determines for a given node <span class="code">n</span> the
@@ -226,11 +227,11 @@
 
             <p>To facilitate the implementation of a new connectivity model, you
                 may create a subclass of <span
-                        class="code">sinalgo.models.<b>ConnectivityModelHelper</b></span>. This
+                        class="code">sinalgo.models.<strong>ConnectivityModelHelper</strong></span>. This
                 helper class implements the <span class="code">updateConnections(Node
  n)</span> method, and asks the subclass to implement the method
 
-                <br><span class="code codeTab"><b>boolean</b> isConnected(Node from,
+                <br><span class="code codeTab"><strong>boolean</strong> isConnected(Node from,
  Node to);</span>
 
                 <br> which is often easier to implement.
@@ -239,13 +240,13 @@
                 the connectivity is geometric. I.e. there is a maximum distance
                 between connected nodes, above which no node pair is connected. This
                 assumption permits to drastically cut down the neighbor-nodes the
-                helper class needs to test. <b>Note</b> that this maximum distance
+                helper class needs to test. <strong>Note</strong> that this maximum distance
                 needs to be specified for each project. Refer to the <a class="nav_link"
                                                                         href="Configuration.html">configuration</a>
                 and <a class="nav_link"
                        href="Architecture.html">architecture</a> section of this
                 tutorial to learn more about how to configure a project and how the
-                <i>geometric node collection</i> stores the nodes to perform range
+                <em>geometric node collection</em> stores the nodes to perform range
                 queries for neighbor nodes.
 
             <p>For your convenience, the <span class="code">defaultProject</span>
@@ -329,11 +330,11 @@ StaticConnectivity
             folder of your project.
 
             <p>The model requires to implement the method <span
-                    class="code"><b>boolean isDisturbed(Packet p)</b></span>, which
+                    class="code"><strong>boolean isDisturbed(Packet p)</strong></span>, which
                 tests, whether a message arriving at this node may be disturbed by
                 interference.
 
-            <p class="note"><b>Implementation Notes:</b> The <span
+            <p class="note"><strong>Implementation Notes:</strong> The <span
                     class="code">Packet</span> object passed to the <span
                     class="code">isDisturbed(Packet p)</span> method holds the message,
                 the sender and receiver node, the intensity at which the sender is
@@ -351,18 +352,18 @@ StaticConnectivity
                 asynchronous simulations, the interference test is performed whenever
                 an additional message is being sent or a message arrived.
 
-            <p><b>Additive interference in asynchronous mode</b>: By default, the
+            <p><strong>Additive interference in asynchronous mode</strong>: By default, the
                 asynchronous mode performs an interference test on all messages that
                 have not yet arrived whenever an additional message is sent, or a
                 message arrives. This is a quite expensive operation, and is not
                 necessary in most cases, where the interference is
-                <b>additive</b>. We call interference <i>additive</i>, if <br><span
+                <strong>additive</strong>. We call interference <em>additive</em>, if <br><span
                         class="codeTab">a) an additional message can only increase (or not
  alter) the interference at any other receiver node, and</span>
                 <br><span class="codeTab">b) the interference decreases (or remains
  the same) if any of the messages is not considered.</span><br>
 
-                If all used interference models are <i>additive</i>, the framework
+                If all used interference models are <em>additive</em>, the framework
                 can reduce the calls to the interference test drastically. Additive
                 interference can be enabled/disabled in the configuration file of the
                 project.
@@ -431,7 +432,7 @@ StaticConnectivity
                 class="code">models/mobilityModels/</span> folder of your project.
 
             <p>The model requires to implement the method <span
-                    class="code"><b>Position getNextPos(Node n)</b></span>, which returns
+                    class="code"><strong>Position getNextPos(Node n)</strong></span>, which returns
                 the new position of node <span class="code">n</span>.
 
             <p>In Sinalgo, mobility is simulated in terms of rounds. At the
@@ -441,7 +442,7 @@ StaticConnectivity
                                         href="Implementation.html#Sync Call Sequence">calling
                     sequence</a> for more details.)
 
-            <p class="note"><b>Implementation Note:</b> The discretization of the
+            <p class="note"><strong>Implementation Note:</strong> The discretization of the
                 movement may be refined in the following way: Assume a simulation,
                 where nodes move 1 distance unit per round. At the same time, a
                 message takes 1 round to arrive at its destination. To achieve a
@@ -457,291 +458,293 @@ StaticConnectivity
                 <a class="nav_link" href="Configuration.html">configuration
                     settings</a> to your project, depending on which model you select.
 
-            <p>
-                <table border="1" cellpadding="5" cellspacing="0">
+            </p>
+            <table border="1" cellpadding="5" cellspacing="0">
 
-                    <tr>
-                        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 RandomWayPoint
 </span></td>
-                        <td>
+                    <td>
 
-                            A node that moves according to the random way point mobility model
-                            moves on a straight line to a (uniformly and randomly selected)
-                            position in the deployment field. Once arrived, it waits for a
-                            predefined amount of time, before it selects a new position to walk
-                            to.
+                        A node that moves according to the random way point mobility model
+                        moves on a straight line to a (uniformly and randomly selected)
+                        position in the deployment field. Once arrived, it waits for a
+                        predefined amount of time, before it selects a new position to walk
+                        to.
 
-            <p>The node speed and waiting time have to be configured through the
-                project configuration. Both of them are defined through <a
-                        class="nav_link" href="Tools.html">distributions</a>. An
-                entry in the configuration file may look as following:
+                        <p>The node speed and waiting time have to be configured through the
+                            project configuration. Both of them are defined through <a
+                                    class="nav_link" href="Tools.html">distributions</a>. An
+                            entry in the configuration file may look as following:
 
-            <div class="code codeTab">
-                &lt;RandomWayPoint&gt;
-                <div class="codeTab">
-                    &lt;Speed distribution="Gaussian" mean="10" variance="20" /&gt;<br>
-                    &lt;WaitingTime distribution="Poisson" lambda="10" /&gt;
-                </div>
-                &lt;/RandomWayPoint&gt;
-            </div>
+                        <div class="code codeTab">
+                            &lt;RandomWayPoint&gt;
+                            <div class="codeTab">
+                                &lt;Speed distribution="Gaussian" mean="10" variance="20" /&gt;<br>
+                                &lt;WaitingTime distribution="Poisson" lambda="10" /&gt;
+                            </div>
+                            &lt;/RandomWayPoint&gt;
+                        </div>
 
-            <p class="note"><b>Note:</b> The stationary distribution of nodes
-                moving according to the random way point model is <i>not</i>
-                uniformly distributed. The nodes tend to be more often around the center
-                of the deployment area than close to the boundary.</p>
+                        <p class="note"><strong>Note:</strong> The stationary distribution of nodes
+                            moving according to the random way point model is <em>not</em>
+                            uniformly distributed. The nodes tend to be more often around the center
+                            of the deployment area than close to the boundary.</p>
 
-        </td>
-    </tr>
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 RandomDirection
 </span></td>
-        <td>
+                    <td>
 
-            Similarly to the random way point model, the random direction model
-            alternates between waiting and moving periods. The only difference is
-            the choice of the target: Instead of picking a random point from the
-            deployment field, the random direction chooses a direction in which
-            the node should walk, and how long the node should walk in this
-            direction. If the node hits the boundary of the deployment area, it
-            is reflected just as a billard ball.
+                        Similarly to the random way point model, the random direction model
+                        alternates between waiting and moving periods. The only difference is
+                        the choice of the target: Instead of picking a random point from the
+                        deployment field, the random direction chooses a direction in which
+                        the node should walk, and how long the node should walk in this
+                        direction. If the node hits the boundary of the deployment area, it
+                        is reflected just as a billard ball.
 
-            <p>The node speed, move-time, and waiting time have to be configured
-                through the project configuration and are defined through <a
-                        class="nav_link" href="Tools.html">distributions</a>. An
-                entry in the configuration file may look as following:
+                        <p>The node speed, move-time, and waiting time have to be configured
+                            through the project configuration and are defined through <a
+                                    class="nav_link" href="Tools.html">distributions</a>. An
+                            entry in the configuration file may look as following:
 
-            <div class="code codeTab">
-                &lt;RandomDirection&gt;
-                <div class="codeTab">
-                    &lt;NodeSpeed distribution="Constant" constant="0.4" /&gt;<br>
-                    &lt;WaitingTime distribution="Exponential" lambda="10" /&gt;<br>
-                    &lt;MoveTime distribution="Uniform" min="5" max="20" /&gt;
-                </div>
-                &lt;/RandomDirection&gt;
-            </div>
+                        <div class="code codeTab">
+                            &lt;RandomDirection&gt;
+                            <div class="codeTab">
+                                &lt;NodeSpeed distribution="Constant" constant="0.4" /&gt;<br>
+                                &lt;WaitingTime distribution="Exponential" lambda="10" /&gt;<br>
+                                &lt;MoveTime distribution="Uniform" min="5" max="20" /&gt;
+                            </div>
+                            &lt;/RandomDirection&gt;
+                        </div>
 
-            <p class="note"><b>Note:</b> The stationary distribution of nodes
-                moving according to the random direction model is uniformly distributed.</p>
+                        <p class="note"><strong>Note:</strong> The stationary distribution of nodes
+                            moving according to the random direction model is uniformly distributed.</p>
 
-        </td>
-    </tr>
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 NoMobility
 </span></td>
-        <td>
+                    <td>
 
-            A dummy mobility model that does not move the nodes. When using
-            this model for all nodes, you should turn off the support for
-            mobility in the project configuration.
+                        A dummy mobility model that does not move the nodes. When using
+                        this model for all nodes, you should turn off the support for
+                        mobility in the project configuration.
 
-        </td>
-    </tr>
+                    </td>
+                </tr>
 
-</table>
-<span class="caption">Mobility models provided by the <span class="code">defaultProject</span> project.</span>
+            </table>
+            <span class="caption">Mobility models provided by the <span
+                    class="code">defaultProject</span> project.</span>
 
 
-<h2>Reliability Model<a name="Reliability Model"></a></h2>
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+            <h2>Reliability Model<a name="Reliability Model"></a></h2>
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-The reliability model installed on each node decides for each
-message, whether it should arrive at the destination or not. This
-model may be interesting to simulate a lossy packet networks, where
-some messages do not arrive for various reasons. To create your own
-reliability model, implement a subclass of <span
-        class="code">sinalgo.models.ReliabilityModel</span> and place the file
-in the <span class="code">models/reliabilityModels/</span> folder of
-your project.
+            The reliability model installed on each node decides for each
+            message, whether it should arrive at the destination or not. This
+            model may be interesting to simulate a lossy packet networks, where
+            some messages do not arrive for various reasons. To create your own
+            reliability model, implement a subclass of <span
+                class="code">sinalgo.models.ReliabilityModel</span> and place the file
+            in the <span class="code">models/reliabilityModels/</span> folder of
+            your project.
 
-<p>The model requires to implement the method <span
-        class="code"><b>boolean reachesDestination(Packet p)</b></span>,
-    which determines whether the message arrives at the destination or
-    not. Note that the interference model may overrule this decision and
-    drop a message due to interference. However, the interference model
-    cannot reincarnate an already dropped message.
+            <p>The model requires to implement the method <span
+                    class="code"><strong>boolean reachesDestination(Packet p)</strong></span>,
+                which determines whether the message arrives at the destination or
+                not. Note that the interference model may overrule this decision and
+                drop a message due to interference. However, the interference model
+                cannot reincarnate an already dropped message.
 
-<p>For your convenience, the <span class="code">defaultProject</span>
-    already contains the following reliability models. Note that these
-    models are written as generic as possible. Therefore, you may need to
-    add <a class="nav_link"
-           href="Configuration.html">configuration settings</a> to your
-    project, depending on which model you select.
+            <p>For your convenience, the <span class="code">defaultProject</span>
+                already contains the following reliability models. Note that these
+                models are written as generic as possible. Therefore, you may need to
+                add <a class="nav_link"
+                       href="Configuration.html">configuration settings</a> to your
+                project, depending on which model you select.
 
-<p>
-<table border="1" cellpadding="5" cellspacing="0">
+            <p>
+            <table border="1" cellpadding="5" cellspacing="0">
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
  LossyDelivery
 </span></td>
-        <td>
+                    <td>
 
-            A lossy reliability model that drops messages with a constant
-            probability. The percentage of dropped messages has to be specified
-            in the configuration file:<br>
-            <div class="code codeTab">&lt;LossyDelivery dropRate="..."/&gt;</div>
+                        A lossy reliability model that drops messages with a constant
+                        probability. The percentage of dropped messages has to be specified
+                        in the configuration file:<br>
+                        <div class="code codeTab">&lt;LossyDelivery dropRate="..."/&gt;</div>
 
-        </td>
-    </tr>
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
  ReliableDelivery
 </span></td>
-        <td>
-            A dummy implementation of the reliability model that does not drop any messages.
-        </td>
-    </tr>
+                    <td>
+                        A dummy implementation of the reliability model that does not drop any messages.
+                    </td>
+                </tr>
 
-</table>
-<span class="caption">Reliability models provided by the <span class="code">defaultProject</span> project.</span>
-
-
-<h2>Message Transmission Model<a name="Msg Transm. Model"></a></h2>
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-The message transmission model determines the time a message needs
-until it arrives at the destination node. The framework holds only
-one instance of this model, which applies for all nodes and all
-message types. To create your own message transmission model,
-implement a subclass of <span
-        class="code">sinalgo.models.MessageTransmissionModel</span> and place
-the file in the <span
-        class="code">models/messageTransmissionModels/</span> folder of your
-project.
-
-<p>The model requires to implement the method <span
-        class="code"><b>double timeToReach(Node startNode, Node endNode,
- Message msg)</b></span>, which determines the time to send a message
-    from the <span class="code">startNode</span> to the <span
-            class="code">endNode</span>. For synchronous simulations, the time is
-    specified in rounds, where a time of <span class="code">1</span>
-    specifies the following round. In the asynchronous setting, this
-    method returns the time units after which the message should arrive.
+            </table>
+            <span class="caption">Reliability models provided by the <span
+                    class="code">defaultProject</span> project.</span>
 
 
-    ....
+            <h2>Message Transmission Model<a name="Msg Transm. Model"></a></h2>
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-<p>The <span class="code">defaultProject</span> contains the
-    following two message transmission models.
+            The message transmission model determines the time a message needs
+            until it arrives at the destination node. The framework holds only
+            one instance of this model, which applies for all nodes and all
+            message types. To create your own message transmission model,
+            implement a subclass of <span
+                class="code">sinalgo.models.MessageTransmissionModel</span> and place
+            the file in the <span
+                class="code">models/messageTransmissionModels/</span> folder of your
+            project.
 
-<p>
-<table border="1" cellpadding="5" cellspacing="0">
+            <p>The model requires to implement the method <span
+                    class="code"><strong>double timeToReach(Node startNode, Node endNode,
+ Message msg)</strong></span>, which determines the time to send a message
+                from the <span class="code">startNode</span> to the <span
+                        class="code">endNode</span>. For synchronous simulations, the time is
+                specified in rounds, where a time of <span class="code">1</span>
+                specifies the following round. In the asynchronous setting, this
+                method returns the time units after which the message should arrive.
 
-    <tr>
-        <td valign="top"><span class="code">
+
+                ....
+
+            <p>The <span class="code">defaultProject</span> contains the
+                following two message transmission models.
+
+            <p>
+            <table border="1" cellpadding="5" cellspacing="0">
+
+                <tr>
+                    <td valign="top"><span class="code">
 ConstantTime
 </span></td>
-        <td>
-            Delivers the messages after a constant delay. It requires a
-            configuration entry of the following form to specify the delay:<br>
-            <div class="code codeTab">
-                &lt;MessageTransmission ConstantTime="..."/&gt;
-            </div>
-        </td>
-    </tr>
+                    <td>
+                        Delivers the messages after a constant delay. It requires a
+                        configuration entry of the following form to specify the delay:<br>
+                        <div class="code codeTab">
+                            &lt;MessageTransmission ConstantTime="..."/&gt;
+                        </div>
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 RandomTime
 </span></td>
-        <td>
-            Delivers the messages after a random delay, which is defined through
-            a distribution. It requires a configuration entry of the following
-            form to specify the delay:<br>
-            <div class="code codeTab">
-                &lt;RandomMessageTransmission distribution="Uniform" min="0.1" max="4.2"/&gt;
-            </div>
-        </td>
-    </tr>
-</table>
-<span class="caption">Message transmission models provided by the <span
-        class="code">defaultProject</span> project.</span>
+                    <td>
+                        Delivers the messages after a random delay, which is defined through
+                        a distribution. It requires a configuration entry of the following
+                        form to specify the delay:<br>
+                        <div class="code codeTab">
+                            &lt;RandomMessageTransmission distribution="Uniform" min="0.1" max="4.2"/&gt;
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <span class="caption">Message transmission models provided by the <span
+                    class="code">defaultProject</span> project.</span>
 
 
-<h2>Distribution Model<a name="Distribution Model"></a></h2>
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+            <h2>Distribution Model<a name="Distribution Model"></a></h2>
+            <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-The distribution model describes how the nodes are placed initially
-onto the deployment field when they are created. Whenever the
-framework creates a set of nodes, there needs to be an instance of a
-distribution model that places the nodes. To create your own
-distribution model, implement a subclass of <span
-        class="code">sinalgo.models.DistributionModel</span> and place the file
-in the <span class="code">models/distributionModels/</span> folder of
-your project.
+            The distribution model describes how the nodes are placed initially
+            onto the deployment field when they are created. Whenever the
+            framework creates a set of nodes, there needs to be an instance of a
+            distribution model that places the nodes. To create your own
+            distribution model, implement a subclass of <span
+                class="code">sinalgo.models.DistributionModel</span> and place the file
+            in the <span class="code">models/distributionModels/</span> folder of
+            your project.
 
-<p>The distribution models implement an iterator-like interface that
-    allows to retrieve the node positions in sequence. The model requires
-    to implement the method <span class="code"><b>Position
- getNextPosition()</b></span>, which returns the position of a
-    node. The framework calls this method exactly once for each created node.
+            <p>The distribution models implement an iterator-like interface that
+                allows to retrieve the node positions in sequence. The model requires
+                to implement the method <span class="code"><strong>Position
+ getNextPosition()</strong></span>, which returns the position of a
+                node. The framework calls this method exactly once for each created node.
 
-<p><b>Initialization:</b> After creating an instance of the
-    distribution model, the framework sets the member variable <span
-            class="code">numberOfNodes</span>, and then calls the <span
-            class="code">initialize()</span> method. This method may be used to
-    pre-calculate the positions of the nodes and obtain an iterator
-    instance on the positions. The positions are retrieved only after
-    this call.
+            <p><strong>Initialization:</strong> After creating an instance of the
+                distribution model, the framework sets the member variable <span
+                        class="code">numberOfNodes</span>, and then calls the <span
+                        class="code">initialize()</span> method. This method may be used to
+                pre-calculate the positions of the nodes and obtain an iterator
+                instance on the positions. The positions are retrieved only after
+                this call.
 
-<p>For your convenience, the <span class="code">defaultProject</span>
-    already contains the following distribution models. Note that these
-    models are written as generic as possible. Therefore, you may need to add
-    <a class="nav_link" href="Configuration.html">configuration
-        settings</a> to your project, depending on which model you select.
+            <p>For your convenience, the <span class="code">defaultProject</span>
+                already contains the following distribution models. Note that these
+                models are written as generic as possible. Therefore, you may need to add
+                <a class="nav_link" href="Configuration.html">configuration
+                    settings</a> to your project, depending on which model you select.
 
-<p>
-<table border="1" cellpadding="5" cellspacing="0">
+            <p>
+            <table border="1" cellpadding="5" cellspacing="0">
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 Random 
 </span></td>
-        <td>
-            Places the nodes randomly on the deployment area. This model may be used in 2D and 3D.
-        </td>
-    </tr>
+                    <td>
+                        Places the nodes randomly on the deployment area. This model may be used in 2D and 3D.
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 Circle 
 </span></td>
-        <td>
-            Places the nodes on a circle.
-        </td>
-    </tr>
+                    <td>
+                        Places the nodes on a circle.
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 Grid2D
 </span></td>
-        <td>
-            Places the nodes on a regular grid in the XY plane.
-        </td>
-    </tr>
+                    <td>
+                        Places the nodes on a regular grid in the XY plane.
+                    </td>
+                </tr>
 
-    <tr>
-        <td valign="top"><span class="code">
+                <tr>
+                    <td valign="top"><span class="code">
 Line2D 
 </span></td>
-        <td>
-            Places the nodes evenly distributed on a line. You may specify the
-            start and end point of the line in the project configuration.
+                    <td>
+                        Places the nodes evenly distributed on a line. You may specify the
+                        start and end point of the line in the project configuration.
+                    </td>
+                </tr>
+
+            </table>
+            <span class="caption">Distribution models provided by the <span class="code">defaultProject</span> project.</span>
+
         </td>
+        <td><img src="../pics/spacer.gif" width="30" height="1" alt=""></td>
     </tr>
-
-</table>
-<span class="caption">Distribution models provided by the <span class="code">defaultProject</span> project.</span>
-
-</td>
-<td><img src="../pics/spacer.gif" width="30" height="1" alt=""></td>
-</tr>
 </table>
 
 <table border="0" cellspacing="0" cellpadding="0" width="99%" align="center">

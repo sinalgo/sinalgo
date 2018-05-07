@@ -227,9 +227,9 @@ public class S4Node extends Node {
             super.draw(g, pt, highlight);
         } else {
             if (isDrawRound()) {
-                super.drawNodeAsDiskWithText(g, pt, highlight, Integer.toString(this.ID), 16, Color.WHITE);
+                super.drawNodeAsDiskWithText(g, pt, highlight, Integer.toString(this.getID()), 16, Color.WHITE);
             } else {
-                super.drawNodeAsSquareWithText(g, pt, highlight, Integer.toString(this.ID), 16, Color.WHITE);
+                super.drawNodeAsSquareWithText(g, pt, highlight, Integer.toString(this.getID()), 16, Color.WHITE);
             }
         }
     }

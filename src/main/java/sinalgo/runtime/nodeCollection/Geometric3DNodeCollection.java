@@ -45,11 +45,7 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * This 3D node collection implementation stores nodes placed in a 3 dimensional
@@ -126,7 +122,7 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
         return (int) Math.floor(c / rMax);
     }
 
-    private int lastVersionNumber = 0;
+    private long lastVersionNumber = 0;
 
     @Override
     public Enumeration<Node> getSortedNodeEnumeration(boolean backToFront) {
@@ -134,7 +130,7 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
             return flatList.elements();
         }
         PositionTransformation t3d = Main.getRuntime().getTransformator();
-        int actualVersionNumber = t3d.getVersionNumber();
+        long actualVersionNumber = t3d.getVersionNumber();
         if ((lastVersionNumber != actualVersionNumber) || (flatListChanged)) {
             // the transformation has changed. Need to resort the array.
             lastVersionNumber = actualVersionNumber;
@@ -208,9 +204,9 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
         n.holdInNodeCollection = true;
 
         Position pos = n.getPosition();
-        int x = mapCoord(pos.xCoord);
-        int y = mapCoord(pos.yCoord);
-        int z = mapCoord(pos.zCoord);
+        int x = mapCoord(pos.getXCoord());
+        int y = mapCoord(pos.getYCoord());
+        int z = mapCoord(pos.getZCoord());
         n.nodeCollectionInfo = new CubePos(x, y, z);
 
         list[x][y][z].addNode(n);
@@ -245,9 +241,9 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
         CubePos oldPos = (CubePos) n.nodeCollectionInfo;
         // the new position in the matrix
         Position pos = n.getPosition();
-        int x = mapCoord(pos.xCoord);
-        int y = mapCoord(pos.yCoord);
-        int z = mapCoord(pos.zCoord);
+        int x = mapCoord(pos.getXCoord());
+        int y = mapCoord(pos.getYCoord());
+        int z = mapCoord(pos.getZCoord());
         if (oldPos.x != x || oldPos.y != y || oldPos.z != z) {
             // the node needs to be stored in a different cell of the matrix
             // remove it from the old matrix cell...
@@ -304,9 +300,9 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
             // The base position is located below the matrix cell where this node is
             // contained, s.t. we can add {0|1|2} to each coordinate in all different
             // permuations to obtain the 27 different fields.
-            ox = Math.min(numX - 1, mapCoord(pos.xCoord)) - 1;
-            oy = Math.min(numY - 1, mapCoord(pos.yCoord)) - 1;
-            oz = Math.min(numZ - 1, mapCoord(pos.zCoord)) - 1;
+            ox = Math.min(numX - 1, mapCoord(pos.getXCoord())) - 1;
+            oy = Math.min(numY - 1, mapCoord(pos.getYCoord())) - 1;
+            oz = Math.min(numZ - 1, mapCoord(pos.getZCoord())) - 1;
             dx = dy = 0;
             dz = -1; // is incremented in call 'getNextValidMatrixCell'
             gotoNextValidMatrixCell(); // get the first iterator - there's at least one

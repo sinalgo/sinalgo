@@ -62,7 +62,7 @@ public class EdgeInfoDialog extends JDialog implements ActionListener {
      * @param e The Edge to get the Information about.
      */
     public EdgeInfoDialog(JFrame p, Edge e) {
-        super(p, "Edge from " + e.startNode.ID + " to " + e.endNode.ID, true);
+        super(p, "Edge from " + e.getStartNode().getID() + " to " + e.getEndNode().getID(), true);
         GuiHelper.setWindowIcon(this);
 
         this.setLayout(new BorderLayout());
@@ -80,13 +80,13 @@ public class EdgeInfoDialog extends JDialog implements ActionListener {
 
         UnborderedJTextField startLabel = new UnborderedJTextField("Start Node:", Font.BOLD);
         infoGrid.add(startLabel);
-        UnborderedJTextField startNode = new UnborderedJTextField(Integer.toString(e.startNode.ID), Font.PLAIN);
+        UnborderedJTextField startNode = new UnborderedJTextField(Integer.toString(e.getStartNode().getID()), Font.PLAIN);
         startNode.setEditable(false);
         infoGrid.add(startNode);
 
         UnborderedJTextField endLabel = new UnborderedJTextField("End Node:", Font.BOLD);
         infoGrid.add(endLabel);
-        UnborderedJTextField endNode = new UnborderedJTextField(Integer.toString(e.endNode.ID), Font.PLAIN);
+        UnborderedJTextField endNode = new UnborderedJTextField(Integer.toString(e.getEndNode().getID()), Font.PLAIN);
         endNode.setEditable(false);
         infoGrid.add(endNode);
 

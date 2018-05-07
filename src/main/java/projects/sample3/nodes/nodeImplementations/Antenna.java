@@ -110,12 +110,12 @@ public class Antenna extends Node {
         // show the list of subscribed nodes
         StringBuilder list = new StringBuilder();
         for (Node n : neighbors) {
-            list.append(" ").append(n.ID);
+            list.append(" ").append(n.getID());
         }
         if (oldNeighborhood.size() > 0) {
             list.append("\n(");
             for (Node n : oldNeighborhood) {
-                list.append(" ").append(n.ID);
+                list.append(" ").append(n.getID());
             }
             list.append(")");
         }
@@ -141,7 +141,7 @@ public class Antenna extends Node {
         g.setColor(Color.LIGHT_GRAY);
         pt.translateToGUIPosition(this.getPosition());
         int r = (int) (radius * pt.getZoomFactor());
-        g.drawOval(pt.guiX - r, pt.guiY - r, r * 2, r * 2);
+        g.drawOval(pt.getGuiX() - r, pt.getGuiY() - r, r * 2, r * 2);
         g.setColor(bckup);
     }
 
@@ -160,7 +160,7 @@ public class Antenna extends Node {
 
         @Override
         public int compare(Node n1, Node n2) {
-            return n1.ID < n2.ID ? -1 : n1.ID == n2.ID ? 0 : 1;
+            return n1.getID() < n2.getID() ? -1 : n1.getID() == n2.getID() ? 0 : 1;
         }
     }
 

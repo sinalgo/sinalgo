@@ -409,12 +409,12 @@ public abstract class SinalgoRuntime {
         Enumeration<Node> nodeEnumer = nodes.getNodeEnumeration();
         while (nodeEnumer.hasMoreElements()) {
             Node node = nodeEnumer.nextElement();
-            Edge e = node.outgoingConnections.remove(node, n); // does only remove it it really exists
+            Edge e = node.getOutgoingConnections().remove(node, n); // does only remove it it really exists
             if (e != null) {
                 e.free();
             }
         }
-        n.outgoingConnections.removeAndFreeAllEdges();
+        n.getOutgoingConnections().removeAndFreeAllEdges();
 
         nodes.removeNode(n);
         eventQueue.removeAllEventsForThisNode(n);
@@ -435,7 +435,7 @@ public abstract class SinalgoRuntime {
      */
     public static void removeEdge(Edge edge) {
         edge.removeEdgeFromGraph(); // invalidate, does not free the edge
-        edge.startNode.outgoingConnections.remove(edge.startNode, edge.endNode); // remove the edge from the list of
+        edge.getStartNode().getOutgoingConnections().remove(edge.getStartNode(), edge.getEndNode()); // remove the edge from the list of
         // outgoing connections from this
         // node
         edge.free();
@@ -520,7 +520,7 @@ public abstract class SinalgoRuntime {
 
         packetsInTheAir = new PacketsInTheAirBuffer();
         for (Node n : nodes) {
-            n.outgoingConnections.removeAndFreeAllEdges();
+            n.getOutgoingConnections().removeAndFreeAllEdges();
         }
         nodes = createNewNodeCollection();
         Node.resetIDCounter(); // new nodes restart their ID with 1

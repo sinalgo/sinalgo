@@ -58,15 +58,15 @@ public class Animations {
                 double fraction = (time - p.sendingTime) / (p.arrivingTime - p.sendingTime);
                 Position startPos = p.origin.getPosition();
                 Position endPos = p.destination.getPosition();
-                double x = startPos.xCoord + (endPos.xCoord - startPos.xCoord) * fraction;
-                double y = startPos.yCoord + (endPos.yCoord - startPos.yCoord) * fraction;
-                double z = startPos.zCoord + (endPos.zCoord - startPos.zCoord) * fraction;
+                double x = startPos.getXCoord() + (endPos.getXCoord() - startPos.getXCoord()) * fraction;
+                double y = startPos.getYCoord() + (endPos.getYCoord() - startPos.getYCoord()) * fraction;
+                double z = startPos.getZCoord() + (endPos.getZCoord() - startPos.getZCoord()) * fraction;
                 pt.translateToGUIPosition(x, y, z);
                 Color c = p.message.getEnvelopeColor(); // may return null, in which case the default color is chosen
                 if (c == null) {
                     c = Configuration.messageAnimationEnvelopeColor;
                 }
-                drawEnvelope(g, pt.guiX, pt.guiY, pt.getZoomFactor(), c);
+                drawEnvelope(g, pt.getGuiX(), pt.getGuiY(), pt.getZoomFactor(), c);
             }
         }
     }

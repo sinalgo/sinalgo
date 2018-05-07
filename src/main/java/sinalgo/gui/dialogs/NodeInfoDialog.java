@@ -88,7 +88,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
      * @param n The node the information is about.
      */
     public NodeInfoDialog(GUI p, Node n) {
-        super(p, "Edit Node " + n.ID, true);
+        super(p, "Edit Node " + n.getID(), true);
         GuiHelper.setWindowIcon(this);
         parent = p;
         node = n;
@@ -109,7 +109,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
         while (nodesEnumer.hasMoreElements()) {
             Node nd = nodesEnumer.nextElement();
-            if (nd.ID == n.ID) {
+            if (nd.getID() == n.getID()) {
                 if (!nodesEnumer.hasMoreElements()) {
                     nextNode.setEnabled(false);
                 }
@@ -121,7 +121,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
 
         prevNode.addActionListener(this);
         nodeNumber.setColumns(6);
-        nodeNumber.setValue(node.ID);
+        nodeNumber.setValue(node.getID());
         nodeNumber.addPropertyChangeListener("value", this);
         nextNode.addActionListener(this);
         nodeSel.add(prevNode);
@@ -131,9 +131,9 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
 
         Position pos = node.getPosition();
 
-        positionX.setText(String.valueOf(pos.xCoord));
-        positionY.setText(String.valueOf(pos.yCoord));
-        positionZ.setText(String.valueOf(pos.zCoord));
+        positionX.setText(String.valueOf(pos.getXCoord()));
+        positionY.setText(String.valueOf(pos.getYCoord()));
+        positionZ.setText(String.valueOf(pos.getZCoord()));
 
         JPanel position = new JPanel();
         position.setBorder(BorderFactory.createTitledBorder("Position"));
@@ -243,7 +243,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
     }
 
     private void revalidate(Node n, boolean hasPrev, boolean hasNext) {
-        this.setTitle("Edit Node " + n.ID);
+        this.setTitle("Edit Node " + n.getID());
 
         node.highlight(false);
 
@@ -256,9 +256,9 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
 
         Position pos = node.getPosition();
 
-        positionX.setText(String.valueOf(pos.xCoord));
-        positionY.setText(String.valueOf(pos.yCoord));
-        positionZ.setText(String.valueOf(pos.zCoord));
+        positionX.setText(String.valueOf(pos.getXCoord()));
+        positionY.setText(String.valueOf(pos.getYCoord()));
+        positionZ.setText(String.valueOf(pos.getZCoord()));
 
         implementationText.setText(Global.toShortName(node.getClass().getName()));
 
@@ -294,8 +294,8 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
                 Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
                 while (nodesEnumer.hasMoreElements()) {
                     Node nd = nodesEnumer.nextElement();
-                    if (nd.ID == node.ID + 1) {
-                        nodeNumber.setValue(nd.ID);
+                    if (nd.getID() == node.getID() + 1) {
+                        nodeNumber.setValue(nd.getID());
                         // this triggers a property change event.
                         break;
                     }
@@ -306,8 +306,8 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
                 Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
                 while (nodesEnumer.hasMoreElements()) {
                     Node nd = nodesEnumer.nextElement();
-                    if (nd.ID == node.ID - 1) {
-                        nodeNumber.setValue(nd.ID);
+                    if (nd.getID() == node.getID() - 1) {
+                        nodeNumber.setValue(nd.getID());
                         // this triggers a property change event.
                         break;
                     }
@@ -326,7 +326,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
         while (nodesEnumer.hasMoreElements()) {
             Node nd = nodesEnumer.nextElement();
-            if (nd.ID == newId) {
+            if (nd.getID() == newId) {
                 boolean hasNext = true;
                 if (!nodesEnumer.hasMoreElements()) {
                     hasNext = false;

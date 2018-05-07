@@ -83,8 +83,8 @@ public class S2Node extends Node implements Comparable<S2Node> {
 
     @Override
     public void neighborhoodChange() {
-        for (Edge e : this.outgoingConnections) {
-            neighbors.add((S2Node) e.endNode); // only adds really new neighbors
+        for (Edge e : this.getOutgoingConnections()) {
+            neighbors.add((S2Node) e.getEndNode()); // only adds really new neighbors
         }
     }
 
@@ -172,7 +172,7 @@ public class S2Node extends Node implements Comparable<S2Node> {
 
     @Override
     public int compareTo(S2Node tmp) {
-        return Integer.compare(this.ID, tmp.ID);
+        return Integer.compare(this.getID(), tmp.getID());
     }
 
 }

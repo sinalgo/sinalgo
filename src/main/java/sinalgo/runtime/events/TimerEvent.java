@@ -134,9 +134,9 @@ public class TimerEvent extends Event {
     public String getEventListText(boolean hasExecuted) {
         if (timer.isNodeTimer()) {
             if (hasExecuted) {
-                return "Timer at node " + timer.getTargetNode().ID;
+                return "Timer at node " + timer.getTargetNode().getID();
             } else {
-                return "TE (Node:" + timer.getTargetNode().ID + ", Time:" + getExecutionTimeString(4) + ")";
+                return "TE (Node:" + timer.getTargetNode().getID() + ", Time:" + getExecutionTimeString(4) + ")";
             }
         } else {
             if (hasExecuted) {
@@ -151,10 +151,10 @@ public class TimerEvent extends Event {
     public String getEventListToolTipText(boolean hasExecuted) {
         if (timer.isNodeTimer()) {
             if (hasExecuted) {
-                return "The timer fired at node " + timer.getTargetNode().ID + "\nThe type of the timer was "
+                return "The timer fired at node " + timer.getTargetNode().getID() + "\nThe type of the timer was "
                         + Global.toShortName(timer.getClass().getName());
             } else {
-                return "At time " + time + " a timer fires at node " + timer.getTargetNode().ID
+                return "At time " + time + " a timer fires at node " + timer.getTargetNode().getID()
                         + "\nThe type of the timer is " + Global.toShortName(timer.getClass().getName());
             }
         } else { // a global timer

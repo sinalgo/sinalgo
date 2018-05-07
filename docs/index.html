@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--suppress CheckImageSize -->
 <html>
 <head>
     <title>Sinalgo</title>
@@ -31,7 +32,7 @@
     }
 
     function getWindowHeight() {
-        if (typeof(window.innerWidth) == 'number') { //Non-IE
+        if (typeof(window.innerWidth) === 'number') { //Non-IE
             return window.innerHeight;
         } else if (document.documentElement && document.documentElement.clientHeight) { //IE 6+ in 'standards compliant mode'
             return document.documentElement.clientHeight;
@@ -48,7 +49,7 @@
 </head>
 
 <body class="text" bgcolor="#FFFFFF" onload="setup()">
-<table align="center" width="100%" style="margin-bottom:0px"
+<table align="center" width="100%" style="margin-bottom:0"
        cellpadding="0" cellspacing="0" border="0">
     <tr class="height80">
         <td><img src="pics/spacer.gif" width="210" height="80"
@@ -152,41 +153,41 @@
                 <li>Asynchronous and synchronous simulation</li>
                 <li>Customizable visualization of the network graph</li>
                 <li>Platform independent - the project is written in Java</li>
-                <li>Sinalgo is for <i>free</i>, published under a BSD license</li>
+            <li>Sinalgo is for <em>free</em>, published under a BSD license</li>
             </ul>
 
             To guarantee easy extensibility, Sinalgo offers a set of extension
-            points, the so called <i>models</i>. The following list gives an
+            points, the so called <em>models</em>. The following list gives an
             overview of the available models, to each of which you may add your
             own extension. To facilitate your life, Sinalgo ships with a
             set of frequently used models.
 
             <ul class="unstiled extra-space">
-                <li>The <i>mobility model</i> describes how the nodes change their
-                    position over time. Examples are <i>random waypoint</i>, <i>random
-                        walk</i>, <i>random direction</i>, and many others.
+                <li>The <em>mobility model</em> describes how the nodes change their
+                    position over time. Examples are <em>random waypoint</em>, <em>random
+                        walk</em>, <em>random direction</em>, and many others.
                 </li>
 
-                <li>The <i>connectivity model</i> defines when two nodes are in
-                    communication range. The best known examples are the <i>unit disk
-                        graph (UDG)</i> and the <i>quasi-UDG (QUDG)</i>.
+                <li>The <em>connectivity model</em> defines when two nodes are in
+                    communication range. The best known examples are the <em>unit disk
+                        graph (UDG)</em> and the <em>quasi-UDG (QUDG)</em>.
 
-                <li>The <i>distribution model</i> is responsible to initially place
+                <li>The <em>distribution model</em> is responsible to initially place
                     the network nodes in the simulation area. E.g. place the nodes
-                    <i>randomly</i>, evenly distributed on a <i>line</i> or <i>grid</i>
+                    <em>randomly</em>, evenly distributed on a <em>line</em> or <em>grid</em>
                     or according to a stationary regime of a mobility model.
                 </li>
 
-                <li>Use the <i>interference model</i> to define whether simultaneous
+                <li>Use the <em>interference model</em> to define whether simultaneous
                     message transmissions may interfere.
                 </li>
 
-                <li>The <i>reliability model</i> is a simplified form of the
+                <li>The <em>reliability model</em> is a simplified form of the
                     interference model and lets you define for every message whether it
                     should arrive or not. E.g. drop one percent of all messages.
                 </li>
 
-                <li>Last but not least, the <i>transmission model</i> lets you define
+                <li>Last but not least, the <em>transmission model</em> lets you define
                     how long a message takes until it arrives at its destination.
                 </li>
             </ul>

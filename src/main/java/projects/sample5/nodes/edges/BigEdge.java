@@ -9,7 +9,6 @@ import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
-import sinalgo.tools.Tools;
 
 import java.awt.*;
 
@@ -35,46 +34,46 @@ public class BigEdge extends Edge {
 
     @Override
     public void draw(Graphics g, PositionTransformation pt) {
-        Position p1 = startNode.getPosition();
+        Position p1 = getStartNode().getPosition();
         pt.translateToGUIPosition(p1);
-        int fromX = pt.guiX, fromY = pt.guiY; // temporarily store
-        Position p2 = endNode.getPosition();
+        int fromX = pt.getGuiX(), fromY = pt.getGuiY(); // temporarily store
+        Position p2 = getEndNode().getPosition();
         pt.translateToGUIPosition(p2);
 
-        if ((this.numberOfMessagesOnThisEdge == 0) && (this.oppositeEdge != null)
-                && (this.oppositeEdge.numberOfMessagesOnThisEdge > 0)) {
+        if ((this.getNumberOfMessagesOnThisEdge() == 0) && (this.getOppositeEdge() != null)
+                && (this.getOppositeEdge().getNumberOfMessagesOnThisEdge() > 0)) {
             // only draws the arrowHead (if drawArrows is true) - the line is drawn by the
             // 'opposite' edge
-            Arrow.drawArrowHead(fromX, fromY, pt.guiX, pt.guiY, g, pt, getColor());
+            Arrow.drawArrowHead(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, getColor());
         } else {
-            if (numberOfMessagesOnThisEdge > 0) {
-                Arrow.drawArrow(fromX, fromY, pt.guiX, pt.guiY, g, pt, getColor());
+            if (getNumberOfMessagesOnThisEdge() > 0) {
+                Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, getColor());
                 g.setColor(getColor());
-                GraphPanel.drawBoldLine(g, fromX, fromY, pt.guiX, pt.guiY, strokeWidth);
+                GraphPanel.drawBoldLine(g, fromX, fromY, pt.getGuiX(), pt.getGuiY(), strokeWidth);
             } else {
-                Arrow.drawArrow(fromX, fromY, pt.guiX, pt.guiY, g, pt, getColor());
+                Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, getColor());
             }
         }
     }
 
     @Override
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-        pt.translateToGUIPosition(startNode.getPosition());
-        double eSX = pt.guiXDouble;
-        double eSY = pt.guiYDouble;
-        pt.translateToGUIPosition(endNode.getPosition());
+        pt.translateToGUIPosition(getStartNode().getPosition());
+        double eSX = pt.getGuiXDouble();
+        double eSY = pt.getGuiYDouble();
+        pt.translateToGUIPosition(getEndNode().getPosition());
         Color c = getColor();
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
-        if (numberOfMessagesOnThisEdge > 0) {
+        if (getNumberOfMessagesOnThisEdge() > 0) {
             pw.setLineWidth(0.5 * strokeWidth); // bold line
         } else {
             pw.setLineWidth(0.5);
         }
 
         if (Configuration.drawArrows) {
-            pw.drawArrow(eSX, eSY, pt.guiXDouble, pt.guiYDouble);
+            pw.drawArrow(eSX, eSY, pt.getGuiXDouble(), pt.getGuiYDouble());
         } else {
-            pw.drawLine(eSX, eSY, pt.guiXDouble, pt.guiYDouble);
+            pw.drawLine(eSX, eSY, pt.getGuiXDouble(), pt.getGuiYDouble());
         }
     }
 

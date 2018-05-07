@@ -82,7 +82,7 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
         edgeIterator.reset();
         while (edgeIterator.hasNext()) {
             Edge edge = edgeIterator.next();
-            if ((from.ID == edge.startNode.ID) && (to.ID == edge.endNode.ID)) {
+            if ((from.getID() == edge.getStartNode().getID()) && (to.getID() == edge.getEndNode().getID())) {
                 edgeIterator.remove();
                 edge.removeEdgeFromGraph(); // does not free the edge
                 return edge;
@@ -107,7 +107,7 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
         edgeIterator.reset();
         while (edgeIterator.hasNext()) {
             Edge e = edgeIterator.next();
-            if ((e.startNode.ID == startNode.ID) && (e.endNode.ID == endNode.ID)) {
+            if ((e.getStartNode().getID() == startNode.getID()) && (e.getEndNode().getID() == endNode.getID())) {
                 return true;
             }
         }
@@ -167,7 +167,7 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
         edgeIterator.reset();
         while (edgeIterator.hasNext()) {
             Edge e = edgeIterator.next();
-            if ((e.startNode.ID == edge.startNode.ID) && (e.endNode.ID == edge.endNode.ID)) {
+            if ((e.getStartNode().getID() == edge.getStartNode().getID()) && (e.getEndNode().getID() == edge.getEndNode().getID())) {
                 e.valid = valid;
                 return true;
             }
@@ -193,7 +193,7 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
         edgeIterator.reset();
         while (edgeIterator.hasNext()) {
             Edge e = edgeIterator.next();
-            if ((e.startNode.ID == startNode.ID) && (e.endNode.ID == endNode.ID)) {
+            if ((e.getStartNode().getID() == startNode.getID()) && (e.getEndNode().getID() == endNode.getID())) {
                 e.valid = valid;
                 return true;
             }

@@ -70,7 +70,7 @@ public class Map {
      */
     public Map(String aMapImageFile) throws FileNotFoundException {
         // Read the image (preferably a bmp file)
-            ClassLoader cldr = Thread.currentThread().getContextClassLoader();
+        ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         try (InputStream in = cldr.getResourceAsStream(aMapImageFile)) {
             BufferedImage img;
             if ((img = ImageIO.read(in)) == null) {
@@ -130,7 +130,7 @@ public class Map {
     }
 
     public Color getColor(Position p) {
-        return getColor(p.xCoord, p.yCoord);
+        return getColor(p.getXCoord(), p.getYCoord());
     }
 
     /**
@@ -147,7 +147,7 @@ public class Map {
     }
 
     public boolean isWhite(Position p) {
-        return isWhite(p.xCoord, p.yCoord);
+        return isWhite(p.getXCoord(), p.getYCoord());
     }
 
     /**
@@ -227,11 +227,11 @@ public class Map {
         for (int i = 0; i < imgWidth; i++) {
             for (int j = 0; j < imgHeight; j++) {
                 pt.translateToGUIPosition(i * lengthX, j * lengthY, 0); // top left corner of cell
-                int topLeftX = pt.guiX, topLeftY = pt.guiY;
+                int topLeftX = pt.getGuiX(), topLeftY = pt.getGuiY();
                 pt.translateToGUIPosition((i + 1) * lengthX, (j + 1) * lengthY, 0); // bottom right corner of cell
                 Color col = new Color(grid[i][j]);
                 g.setColor(col);
-                g.fillRect(topLeftX, topLeftY, pt.guiX - topLeftX, pt.guiY - topLeftY);
+                g.fillRect(topLeftX, topLeftY, pt.getGuiX() - topLeftX, pt.getGuiY() - topLeftY);
             }
         }
     }
@@ -247,11 +247,11 @@ public class Map {
                     continue; // don't paint white
                 }
                 pt.translateToGUIPosition(i * lengthX, j * lengthY, 0); // top left corner of cell
-                double topLeftX = pt.guiXDouble, topLeftY = pt.guiYDouble;
+                double topLeftX = pt.getGuiXDouble(), topLeftY = pt.getGuiYDouble();
                 pt.translateToGUIPosition((i + 1) * lengthX, (j + 1) * lengthY, 0); // bottom right corner of cell
 
                 pw.setColor(col.getRed(), col.getGreen(), col.getBlue());
-                pw.drawFilledRectangle(topLeftX, topLeftY, pt.guiXDouble - topLeftX, pt.guiYDouble - topLeftY);
+                pw.drawFilledRectangle(topLeftX, topLeftY, pt.getGuiXDouble() - topLeftX, pt.getGuiYDouble() - topLeftY);
             }
         }
     }

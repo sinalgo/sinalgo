@@ -73,18 +73,18 @@ public class MobileNode extends Node {
                 SmsAckMessage ack = (SmsAckMessage) msg;
                 if (ack.receiver.equals(this)) {
                     ack.smsTimer.disable(); // stop the timer - the message arrived
-                    log.logln("Message <" + this.ID + "," + ack.sender.ID + "> acknowledged. Message: " + ack.text);
+                    log.logln("Message <" + this.getID() + "," + ack.sender.getID() + "> acknowledged. Message: " + ack.text);
                     this.setColor(Color.YELLOW);
                 } else {
-                    log.logln("Message <" + ack.receiver.ID + "," + ack.sender.ID + "> ACK arrived at wrong node ("
-                            + this.ID + ") Message: " + ack.text);
+                    log.logln("Message <" + ack.receiver.getID() + "," + ack.sender.getID() + "> ACK arrived at wrong node ("
+                            + this.getID() + ") Message: " + ack.text);
                 }
             }
             // -----------------------------------------------------------------------------
             else if (msg instanceof SmsMessage) {
                 SmsMessage sms = (SmsMessage) msg;
                 if (sms.receiver.equals(this)) {
-                    log.logln("Message <" + sms.sender.ID + "," + sms.receiver.ID + "> arrived. Message: " + sms.text);
+                    log.logln("Message <" + sms.sender.getID() + "," + sms.receiver.getID() + "> arrived. Message: " + sms.text);
                     this.setColor(Color.GREEN);
                     // send ACK
                     if (currentAntenna != null) {
@@ -93,8 +93,8 @@ public class MobileNode extends Node {
                         this.send(ack, currentAntenna);
                     }
                 } else {
-                    log.logln("Message <" + sms.sender.ID + "," + sms.receiver.ID + "> arrived at wrong node ("
-                            + this.ID + ") Message: " + sms.text);
+                    log.logln("Message <" + sms.sender.getID() + "," + sms.receiver.getID() + "> arrived at wrong node ("
+                            + this.getID() + ") Message: " + sms.text);
                 }
             }
         }
@@ -140,7 +140,7 @@ public class MobileNode extends Node {
     @Override
     public String toString() {
         if (currentAntenna != null) {
-            return "Connected to Antenna " + currentAntenna.ID;
+            return "Connected to Antenna " + currentAntenna.getID();
         } else {
             return "Currently not connected.";
         }
@@ -170,9 +170,9 @@ public class MobileNode extends Node {
                 SmsTimer st = (SmsTimer) t;
                 if (st.enabled) {
                     pt.translateToGUIPosition(this.getPosition());
-                    int fromX = pt.guiX, fromY = pt.guiY;
+                    int fromX = pt.getGuiX(), fromY = pt.getGuiY();
                     pt.translateToGUIPosition(st.destination.getPosition());
-                    Arrow.drawArrow(fromX, fromY, pt.guiX, pt.guiY, g, pt, Color.RED);
+                    Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, Color.RED);
                 }
             }
         }

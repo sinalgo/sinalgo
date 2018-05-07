@@ -372,7 +372,7 @@ public class Tools {
      */
     public static Node getNodeByID(int id) {
         for (Node n : SinalgoRuntime.nodes) {
-            if (n.ID == id) {
+            if (n.getID() == id) {
                 return n;
             }
         }
@@ -956,10 +956,10 @@ public class Tools {
      */
     public static Node getRandomNeighbor(Node n) {
         Random rand = Tools.getRandomNumberGenerator();
-        int offset = rand.nextInt(n.outgoingConnections.size());
-        for (Edge e : n.outgoingConnections) {
+        int offset = rand.nextInt(n.getOutgoingConnections().size());
+        for (Edge e : n.getOutgoingConnections()) {
             if (offset == 0) {
-                return e.endNode;
+                return e.getEndNode();
             }
             offset--;
         }

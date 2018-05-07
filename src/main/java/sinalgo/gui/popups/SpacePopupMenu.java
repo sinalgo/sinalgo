@@ -93,7 +93,7 @@ public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener 
             PositionTransformation pt = parent.getTransformator();
             if (pt.supportReverseTranslation()) {
                 pt.translateToLogicPosition(pos.x, pos.y);
-                parent.addSingleNode(new Position(pt.logicX, pt.logicY, pt.logicZ));
+                parent.addSingleNode(new Position(pt.getLogicX(), pt.getLogicY(), pt.getLogicZ()));
             }
         }
     }

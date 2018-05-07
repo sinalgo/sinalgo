@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.transformation;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.GraphPanel;
@@ -55,42 +58,6 @@ import java.lang.reflect.InvocationTargetException;
  */
 public abstract class PositionTransformation {
 
-    // every time the transformation changes, this number is incremented by 1
-    // I.e. in each public method call that changes the transformation, increment
-    // this member.
-    protected int versionNumber = 0;
-
-    // The zoom factor.
-    protected double zoomFactor = 1;
-
-    /**
-     * Width (in pixel) of the panel on which the graph is painted
-     */
-    protected int width;
-
-    /**
-     * height(in pixel) of the panel on which the graph is painted
-     */
-    protected int height;
-
-    /**
-     * Set the width (in pixel) of the panel on which the graph is painted
-     *
-     * @param width The new width.
-     */
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    /**
-     * Set the height (in pixel) of the panel on which the graph is painted
-     *
-     * @param height The new height.
-     */
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
     /**
      * The version number of a position transformation object is incremented every
      * time the transformation changes.
@@ -104,39 +71,68 @@ public abstract class PositionTransformation {
      *
      * @return The version number of this transformation object.
      */
-    public int getVersionNumber() {
-        return versionNumber;
-    }
+    // every time the transformation changes, this number is incremented by 1
+    // I.e. in each public method call that changes the transformation, increment
+    // this member.
+    @Getter
+    private long versionNumber = 0;
+
+    /**
+     * The current zoom factor used to draw the elements of the field
+     * (nodes, edges).
+     *
+     * @return The current zoom factor.
+     */
+    @Getter
+    @Setter(AccessLevel.PROTECTED)
+    private double zoomFactor = 1;
+
+    /**
+     * Width (in pixel) of the panel on which the graph is painted
+     *
+     * @param width The new width.
+     * @return The current width.
+     */
+    @Getter
+    @Setter
+    private int width;
+
+    /**
+     * Height(in pixel) of the panel on which the graph is painted
+     *
+     * @param height The new height.
+     * @return The current height.
+     */
+    @Getter
+    @Setter
+    private int height;
 
     /**
      * Sets the zoom factor for drawing the GUI. This value indicates the factor at
      * which all GUI elements of the field (nodes, edges) are scaled.
      *
-     * @param factor The factor all GUI elements of the field are scaled with.
+     * @param zoomFactor The factor all GUI elements of the field are scaled with.
      */
-    public final void setZoomFactor(double factor) {
+    public final void changeZoomFactor(double zoomFactor) {
         // Note that the subclasses may depend on the calling sequence!
-        // While _setZoomFactor() is being called, the old value of zoomFactor
+        // While onChangeZoomFactor() is being called, the old value of zoomFactor
         // is still set.
-        _setZoomFactor(factor);
-        zoomFactor = factor;
+        onChangeZoomFactor(zoomFactor);
+        setZoomFactor(zoomFactor);
+        bumpVersionNumber();
+    }
+
+    /**
+     * Bumps the version number by one.
+     */
+    protected void bumpVersionNumber() {
         versionNumber++;
     }
 
     /**
-     * @see PositionTransformation#setZoomFactor(double)
+     * @see PositionTransformation#changeZoomFactor(double)
      */
-    protected abstract void _setZoomFactor(double factor);
-
-    /**
-     * Returns the current zoom factor used to draw the elements of the field
-     * (nodes, edges).
-     *
-     * @return The current zoom factor.
-     */
-    public double getZoomFactor() {
-        return zoomFactor;
-    }
+    protected abstract void onChangeZoomFactor(double zoomfactor);
 
     /**
      * Zoomes such that the indicated rectangle (given in GUI coordinates) becomes
@@ -147,15 +143,14 @@ public abstract class PositionTransformation {
      * @param rect The rectangle describing the new view.
      */
     public final void zoomToRect(Rectangle rect) {
-        _zoomToRect(rect);
-        versionNumber++;
+        onChangeZoomToRect(rect);
     }
 
     /**
      * @param rect The rectangle describing the new view.
      * @see PositionTransformation#zoomToRect(Rectangle)
      */
-    protected abstract void _zoomToRect(Rectangle rect);
+    protected abstract void onChangeZoomToRect(Rectangle rect);
 
     /**
      * Adapts the transformation such that the graph nicely fits into the window,
@@ -169,14 +164,14 @@ public abstract class PositionTransformation {
      * @param height The height of the window
      */
     public final void zoomToFit(int width, int height) {
-        _zoomToFit(width, height);
-        versionNumber++;
+        onChangeZoomToFit(width, height);
+        bumpVersionNumber();
     }
 
     /**
      * @see PositionTransformation#zoomToFit(int, int)
      */
-    protected abstract void _zoomToFit(int width, int height);
+    protected abstract void onChangeZoomToFit(int width, int height);
 
     /**
      * Adapts the transformation to a default view.
@@ -189,14 +184,14 @@ public abstract class PositionTransformation {
      * @param height The height of the window
      */
     public final void defaultView(int width, int height) {
-        _defaultView(width, height);
-        versionNumber++;
+        onChangeDefaultView(width, height);
+        bumpVersionNumber();
     }
 
     /**
      * @see PositionTransformation#defaultView(int, int)
      */
-    protected abstract void _defaultView(int width, int height);
+    protected abstract void onChangeDefaultView(int width, int height);
 
     /**
      * Translates the view
@@ -205,14 +200,14 @@ public abstract class PositionTransformation {
      * @param y Number of pixels to move in y-direction
      */
     public final void moveView(int x, int y) {
-        _moveView(x, y);
-        versionNumber++;
+        onChangeMoveView(x, y);
+        bumpVersionNumber();
     }
 
     /**
      * @see PositionTransformation#moveView(int, int)
      */
-    protected abstract void _moveView(int x, int y);
+    protected abstract void onChangeMoveView(int x, int y);
 
     /**
      * Draw the background for the graph. I.e. the white background and the rulers,
@@ -236,43 +231,57 @@ public abstract class PositionTransformation {
      * The x-offset of the GUI coordinate determined in the last call to
      * translateToGUIPosition
      */
-    public int guiX;
+    @Getter
+    @Setter
+    private int guiX;
 
     /**
      * The x-offset of the GUI coordinate determined in the last call to
      * translateToGUIPosition
      */
-    public int guiY;
+    @Getter
+    @Setter
+    private int guiY;
 
     /**
      * The exact x-offset of the GUI coordinate determined in the last call to
      * translateToGUIPosition
      */
-    public double guiXDouble;
+    @Getter
+    @Setter
+    private double guiXDouble;
 
     /**
      * The exact y-offset of the GUI coordinate determined in the last call to
      * translateToGUIPosition
      */
-    public double guiYDouble;
+    @Getter
+    @Setter
+    private double guiYDouble;
 
     /**
      * The x-offset of the GUI coordinate determined in the last call to
      * translateToLogicPosition.
      */
-    public double logicX;
+    @Getter
+    @Setter
+    private double logicX;
 
     /**
      * The y-offset of the GUI coordinate determined in the last call to
      * translateToLogicPosition.
      */
-    public double logicY;
+    @Getter
+    @Setter
+    private double logicY;
 
     /**
      * The z-offset of the GUI coordinate determined in the last call to
      * translateToLogicPosition.
      */
-    public double logicZ;
+    @Getter
+    @Setter
+    private double logicZ;
 
     /**
      * Translates a position from the simulation intern view (logic view) to GUI
@@ -371,10 +380,10 @@ public abstract class PositionTransformation {
      */
     public void drawLine(Graphics g, Position from, Position to) {
         this.translateToGUIPosition(from);
-        int fromX = this.guiX;
-        int fromY = this.guiY;
+        int fromX = this.getGuiX();
+        int fromY = this.getGuiY();
         this.translateToGUIPosition(to);
-        g.drawLine(fromX, fromY, this.guiX, this.guiY);
+        g.drawLine(fromX, fromY, this.getGuiX(), this.getGuiY());
     }
 
     /**
@@ -387,10 +396,10 @@ public abstract class PositionTransformation {
      */
     public void drawBoldLine(Graphics g, Position from, Position to, int strokeWidth) {
         this.translateToGUIPosition(from);
-        int fromX = this.guiX;
-        int fromY = this.guiY;
+        int fromX = this.getGuiX();
+        int fromY = this.getGuiY();
         this.translateToGUIPosition(to);
-        GraphPanel.drawBoldLine(g, fromX, fromY, this.guiX, this.guiY, strokeWidth);
+        GraphPanel.drawBoldLine(g, fromX, fromY, this.getGuiX(), this.getGuiY(), strokeWidth);
     }
 
     /**
@@ -402,10 +411,10 @@ public abstract class PositionTransformation {
      */
     public void drawDottedLine(Graphics g, Position from, Position to) {
         this.translateToGUIPosition(from);
-        int fromX = this.guiX;
-        int fromY = this.guiY;
+        int fromX = this.getGuiX();
+        int fromY = this.getGuiY();
         this.translateToGUIPosition(to);
-        GraphPanel.drawDottedLine(g, fromX, fromY, this.guiX, this.guiY);
+        GraphPanel.drawDottedLine(g, fromX, fromY, this.getGuiX(), this.getGuiY());
     }
 
     /**
@@ -418,7 +427,7 @@ public abstract class PositionTransformation {
     public void drawCircle(Graphics g, Position center, double radius) {
         this.translateToGUIPosition(center);
         int r = (int) (this.getZoomFactor() * radius);
-        g.drawOval(this.guiX - r, this.guiY - r, 2 * r, 2 * r);
+        g.drawOval(this.getGuiX() - r, this.getGuiY() - r, 2 * r, 2 * r);
     }
 
     /**
@@ -428,8 +437,8 @@ public abstract class PositionTransformation {
      * @return The new field transformation object.
      */
     public static PositionTransformation loadFieldTransformator() {
-        PositionTransformation result = null;
-        String name = null;
+        PositionTransformation result;
+        String name;
         if (Configuration.dimensions == 2) {
             name = Configuration.guiPositionTransformation2D;
         } else if (Configuration.dimensions == 3) {

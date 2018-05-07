@@ -44,7 +44,6 @@ import sinalgo.nodes.Position;
 import sinalgo.nodes.messages.Packet;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.SinalgoRuntime;
-import sinalgo.tools.Tools;
 import sinalgo.tools.logging.LogL;
 
 /**
@@ -105,7 +104,7 @@ public class SINR extends InterferenceModel {
             if (pack == p) {
                 continue; // that's the packet we want
             }
-            if (pack.origin.ID == p.destination.ID) {
+            if (pack.origin.getID() == p.destination.getID()) {
                 // the receiver node of p is sending a packet itself
                 if (!Configuration.canReceiveWhileSending) {
                     return true;
@@ -114,7 +113,7 @@ public class SINR extends InterferenceModel {
             }
             // Detect multiple packets that want to arrive in parallel at the same
             // destination.
-            if (!Configuration.canReceiveMultiplePacketsInParallel && pack.destination.ID == p.destination.ID) {
+            if (!Configuration.canReceiveMultiplePacketsInParallel && pack.destination.getID() == p.destination.getID()) {
                 return true;
             }
 
@@ -127,7 +126,7 @@ public class SINR extends InterferenceModel {
         boolean disturbed = signal < beta * noise;
 
         if (LogL.INTERFERENCE_DETAIL) {
-            Global.log.logln("Node " + p.destination.ID + " is checking a packet from " + p.origin.ID);
+            Global.log.logln("Node " + p.destination.getID() + " is checking a packet from " + p.origin.getID());
             if (disturbed) {
                 Global.log.logln("Dropped the message due to too much interference.");
             }

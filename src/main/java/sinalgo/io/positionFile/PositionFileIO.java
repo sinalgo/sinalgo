@@ -51,7 +51,7 @@ public class PositionFileIO {
 
             for (Node n : Tools.getNodeList()) {
                 Position p = n.getPosition();
-                ps.println(p.xCoord + ", " + p.yCoord + ", " + p.zCoord);
+                ps.println(p.getXCoord() + ", " + p.getYCoord() + ", " + p.getZCoord());
             }
             return true;
         } catch (FileNotFoundException e) {

@@ -199,7 +199,7 @@ public abstract class Node implements DoublyLinkedListEntry {
      */
     @Override
     public String toString() {
-        return "Node(ID=" + this.ID + ")";
+        return "Node(ID=" + this.getID() + ")";
     }
 
     /**
@@ -311,7 +311,7 @@ public abstract class Node implements DoublyLinkedListEntry {
      */
     public void addBidirectionalConnectionTo(Node n) {
         outgoingConnections.add(this, n, false);
-        n.outgoingConnections.add(n, this, false); // BUG FIX 8 April 2008
+        n.getOutgoingConnections().add(n, this, false); // BUG FIX 8 April 2008
     }
 
     /**
@@ -484,7 +484,7 @@ public abstract class Node implements DoublyLinkedListEntry {
                 // send messages outside of their simulation cycle due to synchronisazion
                 // issues. Instead
                 // of calling the send-method directly please use a timer.
-                throw new SinalgoFatalException("The node " + this.ID + " tried to send a message outside of its simulation "
+                throw new SinalgoFatalException("The node " + this.getID() + " tried to send a message outside of its simulation "
                         + "cycle. Due to synchroniazion issues, this is not allowed.\n"
                         + "This problem probably came up due to a call from a nodes popup method.\n"
                         + "Do not directly call the send-method but start a timer\n"
@@ -726,8 +726,8 @@ public abstract class Node implements DoublyLinkedListEntry {
         drawingSizeInPixels = (int) (defaultDrawingSizeInPixels * pt.getZoomFactor()); // half the side-length in pixels
         // of the square
         pt.translateToGUIPosition(position);
-        int x = pt.guiX - (drawingSizeInPixels >> 1);
-        int y = pt.guiY - (drawingSizeInPixels >> 1);
+        int x = pt.getGuiX() - (drawingSizeInPixels >> 1);
+        int y = pt.getGuiY() - (drawingSizeInPixels >> 1);
         Color color = getColor();
         if (highlight) {
             // a highlighted node is surrounded by a red square
@@ -752,8 +752,8 @@ public abstract class Node implements DoublyLinkedListEntry {
         Color backupColor = g.getColor();
         drawingSizeInPixels = sizeInPixels;
         pt.translateToGUIPosition(position);
-        int x = pt.guiX - (drawingSizeInPixels >> 1);
-        int y = pt.guiY - (drawingSizeInPixels >> 1);
+        int x = pt.getGuiX() - (drawingSizeInPixels >> 1);
+        int y = pt.getGuiY() - (drawingSizeInPixels >> 1);
         Color color = getColor();
         if (highlight) {
             // a highlighted node is surrounded by a red square
@@ -797,12 +797,12 @@ public abstract class Node implements DoublyLinkedListEntry {
         int d = Math.max(h, w); // draw a square with equal edge length that surrounds the text
         if (highlight) { // Add a red ring if highlighted
             g.setColor(Color.RED);
-            g.fillOval(pt.guiX - d / 2 - 2, pt.guiY - d / 2 - 2, d + 4, d + 4); // print a circle for the node
+            g.fillOval(pt.getGuiX() - d / 2 - 2, pt.getGuiY() - d / 2 - 2, d + 4, d + 4); // print a circle for the node
         }
-        g.fillOval(pt.guiX - d / 2, pt.guiY - d / 2, d, d); // print a circle for the node
+        g.fillOval(pt.getGuiX() - d / 2, pt.getGuiY() - d / 2, d, d); // print a circle for the node
 
         g.setColor(textColor); // color of the font
-        g.drawString(text, pt.guiX - w / 2, pt.guiY + h / 2 - 2); // print the text onto the circle
+        g.drawString(text, pt.getGuiX() - w / 2, pt.getGuiY() + h / 2 - 2); // print the text onto the circle
         g.setColor(c); // restore color
     }
 
@@ -838,12 +838,12 @@ public abstract class Node implements DoublyLinkedListEntry {
         int d = Math.max(h, w); // draw a square with equal edge length that surrounds the text
         if (highlight) { // Add a red ring if highlighted
             g.setColor(Color.RED);
-            g.fillRect(pt.guiX - d / 2 - 2, pt.guiY - d / 2 - 2, d + 4, d + 4); // print a circle for the node
+            g.fillRect(pt.getGuiX() - d / 2 - 2, pt.getGuiY() - d / 2 - 2, d + 4, d + 4); // print a circle for the node
         }
-        g.fillRect(pt.guiX - d / 2, pt.guiY - d / 2, d, d); // print a circle for the node
+        g.fillRect(pt.getGuiX() - d / 2, pt.getGuiY() - d / 2, d, d); // print a circle for the node
 
         g.setColor(textColor); // color of the font
-        g.drawString(text, pt.guiX - w / 2, pt.guiY + h / 2 - 2); // print the text onto the circle
+        g.drawString(text, pt.getGuiX() - w / 2, pt.getGuiY() + h / 2 - 2); // print the text onto the circle
         g.setColor(c); // restore color
     }
 
@@ -864,8 +864,8 @@ public abstract class Node implements DoublyLinkedListEntry {
         drawingSizeInPixels = sizeInPixels;
         sizeInPixels >>= 1; // div by 2
         pt.translateToGUIPosition(getPosition());
-        int x = pt.guiX;
-        int y = pt.guiY;
+        int x = pt.getGuiX();
+        int y = pt.getGuiY();
         Color color = getColor();
         if (highlight) {
             // a highlighted node is surrounded by a red square
@@ -911,7 +911,7 @@ public abstract class Node implements DoublyLinkedListEntry {
     protected void drawToPostscriptAsSquare(EPSOutputPrintStream pw, PositionTransformation pt, double size, Color c) {
         pt.translateToGUIPosition(getPosition());
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
-        pw.drawFilledRectangle(pt.guiXDouble - (size / 2.0), pt.guiYDouble - (size / 2.0), size, size);
+        pw.drawFilledRectangle(pt.getGuiXDouble() - (size / 2.0), pt.getGuiYDouble() - (size / 2.0), size, size);
     }
 
     /**
@@ -926,7 +926,7 @@ public abstract class Node implements DoublyLinkedListEntry {
     protected void drawToPostScriptAsDisk(EPSOutputPrintStream pw, PositionTransformation pt, double radius, Color c) {
         pt.translateToGUIPosition(getPosition());
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
-        pw.drawFilledCircle(pt.guiXDouble, pt.guiYDouble, radius);
+        pw.drawFilledCircle(pt.getGuiXDouble(), pt.getGuiYDouble(), radius);
     }
 
     /**
@@ -942,8 +942,8 @@ public abstract class Node implements DoublyLinkedListEntry {
         pt.translateToGUIPosition(getPosition());
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
         double d = size / 2;
-        pw.drawFilledPolygon(pt.guiXDouble, pt.guiYDouble + d, pt.guiXDouble - d, pt.guiYDouble, pt.guiXDouble,
-                pt.guiYDouble - d, pt.guiXDouble + d, pt.guiYDouble);
+        pw.drawFilledPolygon(pt.getGuiXDouble(), pt.getGuiYDouble() + d, pt.getGuiXDouble() - d, pt.getGuiYDouble(), pt.getGuiXDouble(),
+                pt.getGuiYDouble() - d, pt.getGuiXDouble() + d, pt.getGuiYDouble());
     }
 
     // -----------------------------------------------------------------------------------
@@ -1133,7 +1133,7 @@ public abstract class Node implements DoublyLinkedListEntry {
             throw new SinalgoFatalException(e.getMessage());
         }
         // assign the next free ID
-        this.ID = ++idCounter;
+        this.setID(++idCounter);
     }
 
     /**
@@ -1214,7 +1214,7 @@ public abstract class Node implements DoublyLinkedListEntry {
     public final boolean isInside(int x, int y, PositionTransformation pt) {
         pt.translateToGUIPosition(position);
         int delta = (int) (0.5 * drawingSizeInPixels); // half the side-length in pixels of the square
-        return Math.abs(x - pt.guiX) <= delta && Math.abs(y - pt.guiY) <= delta;
+        return Math.abs(x - pt.getGuiX()) <= delta && Math.abs(y - pt.getGuiY()) <= delta;
     }
 
     /**
@@ -1290,7 +1290,7 @@ public abstract class Node implements DoublyLinkedListEntry {
             // send messages outside of their simulation cycle due to synchronisazion
             // issues. Instead
             // of calling the broadcast method directly please use a timer.
-            throw new SinalgoFatalException("The node " + this.ID + " tried to broadcast a message outside of its simulation "
+            throw new SinalgoFatalException("The node " + this.getID() + " tried to broadcast a message outside of its simulation "
                     + "cycle. Due to synchroniazion issues, this is not allowed.\n"
                     + "This problem probably came up due to a call from a nodes popup method.\n"
                     + "Do not directly call the broadcast-method but start a timer so that the node sends during its simulation cycle.");
@@ -1422,7 +1422,7 @@ public abstract class Node implements DoublyLinkedListEntry {
             // send messages outside of their simulation cycle due to synchronisazion
             // issues. Instead
             // of calling the send-method directly please use a timer.
-            throw new SinalgoFatalException("The node " + this.ID + " tried to send a message outside of its simulation "
+            throw new SinalgoFatalException("The node " + this.getID() + " tried to send a message outside of its simulation "
                     + "cycle. Due to synchroniazion issues, this is not allowed.\n"
                     + "This problem probably came up due to a call from a nodes popup method.\n"
                     + "Do not directly call the send-method but start a timer so that the node sends during its simulation cycle.");

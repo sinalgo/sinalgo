@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--suppress CheckImageSize -->
 <html>
 <head>
     <title>Sinalgo</title>
@@ -31,7 +32,7 @@
     }
 
     function getWindowHeight() {
-        if (typeof(window.innerWidth) == 'number') { //Non-IE
+        if (typeof(window.innerWidth) === 'number') { //Non-IE
             return window.innerHeight;
         } else if (document.documentElement && document.documentElement.clientHeight) { //IE 6+ in 'standards compliant mode'
             return document.documentElement.clientHeight;
@@ -48,7 +49,7 @@
 </head>
 
 <body class="text" bgcolor="#FFFFFF" onload="setup()">
-<table align="center" width="100%" style="margin-bottom:0px"
+<table align="center" width="100%" style="margin-bottom:0"
        cellpadding="0" cellspacing="0" border="0">
     <tr class="height80">
         <td><img src="../pics/spacer.gif" width="210" height="80"
@@ -168,7 +169,7 @@
             Sinalgo provides to configure the framework and your projects.
 
             <p>In a nutshell, the entire configuration is done through the <span
-                    class="code"><b>config.xml</b></span> file, that is located in the
+                    class="code"><strong>config.xml</strong></span> file, that is located in the
                 root folder of each project. This file contains information on how
                 the framework should run, as well as project specific settings. The
                 file has the following structure:
@@ -192,7 +193,7 @@
                     class="code">&lt;Custom&gt;</span> tag contains project specific
                 settings. You may edit the <span class="code">config.xml</span>
                 directly in your favorite text or XML editor. Alternatively, you can
-                start Sinalgo <i>without</i> specifying the project with the <span
+                start Sinalgo <em>without</em> specifying the project with the <span
                     class="code">-project</span> flag. In the latter case, Sinalgo opens a
                 project selection window, which shows the available projects. After
                 selecting a project from the list, the <span
@@ -216,16 +217,16 @@
                 the <span class="code">&lt;Framework&gt;</span> tag, it expects to
                 find entries of the form <br>
             <div class="code
- codeTab">&lt;<i>memberName</i> value="...."&gt;
+ codeTab">&lt;<em>memberName</em> value="...."&gt;
             </div>
             <br> where <span
-                class="code"><i>memberName</i></span> is the name of a member
+                class="code"><em>memberName</em></span> is the name of a member
             variable of <span
                 class="code">sinalgo.configuration.Configuration</span>, and the
             attribute <span class="code">value</span> the value (as a string)
             that should be assigned to the member variable.
 
-            <p><b>Note:</b> When modifying the configuration file through the
+            <p><strong>Note:</strong> When modifying the configuration file through the
                 project selector, you can get a description of the entries by
                 pointing the mouse on the corresponding field.
 
@@ -233,7 +234,7 @@
                 <span class="caption">A sample tooltip help when pointing with the mouse on the entry <span
                         class="code">mobility</span>.</span>
 
-            <p class="note"><b>Implementation Note:</b> The member variables of
+            <p class="note"><strong>Implementation Note:</strong> The member variables of
                 <span class="code">sinalgo.configuration.Configuration</span> are
                 overwritten by the entries contained in the configuration
                 file. Therefore, you may not modify these member variables in the
@@ -252,7 +253,7 @@
             table.
 
             <p>All settings are assumed to be specified through tag
-                <i>attributes</i> in the following way:
+                <em>attributes</em> in the following way:
 
             <p>
             <div class="code codeTab">
@@ -289,7 +290,7 @@
 
             <p>For each attribute, the key for the lookup table is composed by
                 concatenating the names of all parental tag-names and the name of the
-                attribute, separated by slashes. <i>Exception:</i> If the name of the
+                attribute, separated by slashes. <em>Exception:</em> If the name of the
                 attribute is <span class="code">value</span>, the key only consists
                 of the concatenated parental tag-names. The example above would
                 result in a lookup table with the following content:
@@ -297,9 +298,9 @@
             <div class="codeTab">
                 <table cellpadding="0" cellspacing="2">
                     <tr>
-                        <td><b>Key</b></td>
+                        <td><strong>Key</strong></td>
                         <td width="30"></td>
-                        <td><b>Value</b></td>
+                        <td><strong>Value</strong></td>
                     </tr>
                     <tr>
                         <td>"Node"</td>
@@ -387,7 +388,7 @@
             stored in <span
                 class="code">sinalgo.configuration.Configuration</span>. This class
             provides the following set of static methods to retrieve these config
-            entries. Note that all of these methods are <i>case insensitive</i>.
+            entries. Note that all of these methods are <em>case insensitive</em>.
 
             <p>
             <table border="1" cellpadding="5" cellspacing="0">
@@ -478,7 +479,7 @@
             As described in the <a class="nav_link"
                                    href="Execution.html#Cmd Args">Execution</a> section of
             this tutorial, the <span class="code">-overwrite</span> command line
-            argument can be used to <i>overwrite</i> settings from the
+            argument can be used to <em>overwrite</em> settings from the
             configuration file. This may be handy to write a script to run
             several simulations with a set of slightly different settings without
             chaning the configuration file manually.
@@ -495,7 +496,7 @@
                 framework setting, nor to a project setting, a new key/value pair is
                 added to the lookup table of the project configuration.
 
-            <p><b>Example:</b> The following command line argument sets several
+            <p><strong>Example:</strong> The following command line argument sets several
                 framework settings (mobility, interference, dimX, dimY, and dimZ), as
                 well as two project specific settings (GeometricNodeCollection/rMax,
                 Node/defaultSize).

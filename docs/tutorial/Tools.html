@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--suppress CheckImageSize -->
 <html>
 <head>
     <title>Sinalgo</title>
@@ -31,7 +32,7 @@
     }
 
     function getWindowHeight() {
-        if (typeof(window.innerWidth) == 'number') { //Non-IE
+        if (typeof(window.innerWidth) === 'number') { //Non-IE
             return window.innerHeight;
         } else if (document.documentElement && document.documentElement.clientHeight) { //IE 6+ in 'standards compliant mode'
             return document.documentElement.clientHeight;
@@ -48,7 +49,7 @@
 </head>
 
 <body class="text" bgcolor="#FFFFFF" onload="setup()">
-<table align="center" width="100%" style="margin-bottom:0px"
+<table align="center" width="100%" style="margin-bottom:0"
        cellpadding="0" cellspacing="0" border="0">
     <tr class="height80">
         <td><img src="../pics/spacer.gif" width="210" height="80"
@@ -184,8 +185,8 @@
             <h2>Tools.java - a Collection of Useful Methods<a name="Tools.java"></a></h2>
             <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-            The class <span class="code"><b>Tools</b></span> in the package
-            <span class="code">sinalgo.tools</span> is a collection of <i>static</i>
+            The class <span class="code"><strong>Tools</strong></span> in the package
+            <span class="code">sinalgo.tools</span> is a collection of <em>static</em>
             methods that may be useful in several circumstances. It contains
 
             <ul class="unstyled extra-space">
@@ -199,7 +200,7 @@
                 <li>And others...</li>
             </ul>
 
-            <p class="note"><b>Note:</b> Most of the methods provided in this
+            <p class="note"><strong>Note:</strong> Most of the methods provided in this
                 class are wrapper methods. The <span class="code">Tools</span>
                 class just collects these helpful methods, which are sometimes
                 difficult to find in their original place.</p>
@@ -214,8 +215,8 @@
             behavior, or to find errors. However, when the algorithms take some
             decisions purely randomly, it is impossible to rerun the exactly same
             simulation. To circumvent this problem, Sinalgo offers its own instance
-            of a random number generator, which <b>should be used
-            exclusively</b>. To access this instance, write <p>
+            of a random number generator, which <strong>should be used
+            exclusively</strong>. To access this instance, write <p>
             <div class="code
  codeTab"> java.util.Random rand =
                 sinalgo.tools.Tools.getRandomNumberGenerator();
@@ -289,14 +290,14 @@ ConstantDistribution
 
             <p>All of these distributions extend from <span
                     class="code">sinalgo.tools.statistics.Distribution</span> and implement
-                the method <span class="code"><b>double nextSample()</b></span>,
+                the method <span class="code"><strong>double nextSample()</strong></span>,
                 which returns the next random sample of the distribution. To obtain
                 an instance of the Gaussian distribution, you can write:
             <p>
             <div class="code codeTab">
                 GaussianDistribution gauss = new GaussianDistribution(mean, var);<br>
-                gauss.nextSample(); <i>// returns a random variable, normally distributed with the given mean and
-                var</i>
+                gauss.nextSample(); <em>// returns a random variable, normally distributed with the given mean and
+                var</em>
             </div>
 
             <p>Alternatively, you can specify the type and settings of the
@@ -319,10 +320,11 @@ ConstantDistribution
             <p>
             <div class="code codeTab">
                 Distribution dist = Distribution.getDistributionFromConfigFile("MyNode/speed");<br>
-                dist.nextSample(); <i>// Returns a random variable distributed according to the chosen distribution.</i>
+                dist.nextSample(); <em>// Returns a random variable distributed according to the chosen
+                distribution.</em>
             </div>
 
-            <p><b>Note:</b> These classes base upon the random number generator
+            <p><strong>Note:</strong> These classes base upon the random number generator
                 of the framework and implement the seed-feature described in the <a
                         href="Tools.html#Random Numbers" class="nav_link">Random
                     Numbers</a> section. Thus, a rerun of the exact same simulation is
@@ -341,11 +343,12 @@ ConstantDistribution
             <p>For each series of data you want to have a statistical analysis
                 on, create a new object of this class and add the samples using the
                 <span class="code">addSample()</span> method. You can retrieve the
-                <b>mean</b>, <b>variance</b>, <b>standard deviance</b>, <b>sum</b>,
-                <b>minimum</b>, <b>maximum</b>, and <b>count</b> of the added samples.
+                <strong>mean</strong>, <strong>variance</strong>, <strong>standard deviance</strong>,
+                <strong>sum</strong>,
+                <strong>minimum</strong>, <strong>maximum</strong>, and <strong>count</strong> of the added samples.
 
-            <p class="note"><b>Implementation Note:</b> A DataSeries object does
-                <i>not</i> store the added samples individually. Instead, it
+            <p class="note"><strong>Implementation Note:</strong> A DataSeries object does
+                <em>not</em> store the added samples individually. Instead, it
                 processes the samples immediately upon addition. Therefore, you may
                 sample many huge data series without using up a lot of memory.
             </p>
@@ -411,7 +414,7 @@ ConstantDistribution
             <p>
             <div class="code codeTab">
                 myLog.log("Test");
-                myLog.logln("Test"); <i>// appends a new-line to the given string</i>
+                myLog.logln("Test"); <em>// appends a new-line to the given string</em>
             </div>
 
             <p>Subsequent calls to <span
@@ -471,10 +474,10 @@ ConstantDistribution
 
             <p>
             <div class="code codeTab">
-                <b>public class </b>LogL <b>extends</b> sinalgo.tools.logging.LogL {<br>
+                <strong>public class </strong>LogL <strong>extends</strong> sinalgo.tools.logging.LogL {<br>
                 <div class="codeTab">
-                    <b>public static final boolean</b> testLog = <b>false</b>;<br>
-                    <b>public static final boolean</b> nodeSpeed = <b>true</b>;
+                    <strong>public static final boolean</strong> testLog = <strong>false</strong>;<br>
+                    <strong>public static final boolean</strong> nodeSpeed = <strong>true</strong>;
                 </div>
                 }
             </div>
@@ -491,7 +494,7 @@ ConstantDistribution
             <p>The first log-statement won't be printed, as <span
                     class="code">LogL.testLog</span> is set to false.
 
-            <p class="note"><b>Implementation Remark:</b> In order to change the
+            <p class="note"><strong>Implementation Remark:</strong> In order to change the
                 log-levels at runtime, you need to remove the <span
                         class="code">final</span> modifier for the corresponding log-levels in
                 the <span class="code">LogL.java</span> file.
@@ -503,7 +506,7 @@ ConstantDistribution
             The logging class allows to append to an existing log-file from a
             previous run. To do so, call the <span
                 class="code">getLogger()</span> method with the second optional
-            parameter set to <span class="code"><b>true</b></span>. Note that
+            parameter set to <span class="code"><strong>true</strong></span>. Note that
             log-files created with the append flag set to true are always placed
             in the <span class="code">logs</span> folder and ignore the <span
                 class="code">logToTimeDirectory</span> flag.
@@ -543,8 +546,8 @@ ConstantDistribution
 
             <p>
             <div class="code codeTab">
-                <b>if</b>(LogL.testLog) {<br>
-                <div class="codeTab">myLog.log("Test"); <i> //we don't need the log-level anymore</i>
+                <strong>if</strong>(LogL.testLog) {<br>
+                <div class="codeTab">myLog.log("Test"); <em> //we don't need the log-level anymore</em>
                 </div>
                 }
             </div>

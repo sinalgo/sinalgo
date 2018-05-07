@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui;
 
+import lombok.Getter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.ExportException;
@@ -167,7 +168,8 @@ public class GUI extends JFrame implements ActionListener {
     /**
      * The instance of the runtime to make changes comming from the gui.
      */
-    public SinalgoRuntime runtime;
+    @Getter
+    private SinalgoRuntime runtime;
 
     // The zoom level used to draw the graph.
     private double zoomFactor = 1;
@@ -199,7 +201,7 @@ public class GUI extends JFrame implements ActionListener {
     public void setZoomFactorNoRepaint(double zoom) {
         zoomFactor = Math.max(zoom, Configuration.minZoomFactor); // we have open-end zooming ;-)
 
-        runtime.getTransformator().setZoomFactor(zoomFactor);
+        runtime.getTransformator().changeZoomFactor(zoomFactor);
     }
 
     /**

@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--suppress CheckImageSize -->
 <html>
 <head>
     <title>Sinalgo</title>
@@ -31,7 +32,7 @@
     }
 
     function getWindowHeight() {
-        if (typeof(window.innerWidth) == 'number') { //Non-IE
+        if (typeof(window.innerWidth) === 'number') { //Non-IE
             return window.innerHeight;
         } else if (document.documentElement && document.documentElement.clientHeight) { //IE 6+ in 'standards compliant mode'
             return document.documentElement.clientHeight;
@@ -48,7 +49,7 @@
 </head>
 
 <body class="text" bgcolor="#FFFFFF" onload="setup()">
-<table align="center" width="100%" style="margin-bottom:0px"
+<table align="center" width="100%" style="margin-bottom:0"
        cellpadding="0" cellspacing="0" border="0">
     <tr class="height80">
         <td><img src="pics/spacer.gif" width="210" height="80"
@@ -117,22 +118,22 @@
             <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
             <a class="nav_link_subsubtitle" href="https://sourceforge.net/project/showfiles.php?group_id=192227">
-                Toy Release</a> <i>For a quick glance at the project</i><br>
+                Toy Release</a> <em>For a quick glance at the project</em><br>
 
             This is a full version of Sinalgo compiled to an executable JAR
             file. Some sample projects are included to explore the features of
             the framework. This version does not contain the source code and
-            is <i>not suited for setting up your own simulation</i>.
+            is <em>not suited for setting up your own simulation</em>.
 
             <p><a class="nav_link_subsubtitle" href="https://sourceforge.net/project/showfiles.php?group_id=192227">
-                Regular Release</a> <i>For running your own simulations</i><br>
+                Regular Release</a> <em>For running your own simulations</em><br>
 
                 The regular release contains all you need to write your own
                 simulations, including the source code of the framework, the
                 sample projects, and the build files.
 
             <p><a class="nav_link_subsubtitle" href="">
-                All-In-One Tutorial</a> <i>The tutorial of this website, all on a single site.</i><br>
+                All-In-One Tutorial</a> <em>The tutorial of this website, all on a single site.</em><br>
 
                 If you intend to print the entire tutorial offered on this
                 website, you may consider the link above, which gives you the
@@ -155,11 +156,11 @@
 
             <h2>Requirements</h2>
             <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-            <b>Hardware:</b><br>
+            <strong>Hardware:</strong><br>
             As much RAM as possible :)<br>
             A mouse with 2 buttons and a wheel to interact more easily with the GUI.
             <br><br>
-            <b>Software:</b><br>
+            <strong>Software:</strong><br>
             <a href="http://java.sun.com/j2se/1.5.0/download.jsp" target="_blank" class="text_nav_link">Java 2 Platform
                 Standard Edition 5.0</a> or later<br>
             Optional: <a href="http://ant.apache.org/" target="_blank" class="text_nav_link">Apache ANT</a> To use our
@@ -175,7 +176,8 @@
             <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
             <span class="note">The software is published under the following BSD license.</span>
 
-            <p><b>Copyright (c) 2007</b>, Distributed Computing Group (DCG), ETH Zurich, Switzerland, disco.ethz.ch
+            <p><strong>Copyright (c) 2007</strong>, Distributed Computing Group (DCG), ETH Zurich, Switzerland,
+                disco.ethz.ch
             <p>
                 All rights reserved.
             <p>

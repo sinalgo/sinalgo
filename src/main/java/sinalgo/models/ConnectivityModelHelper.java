@@ -71,7 +71,7 @@ public abstract class ConnectivityModelHelper extends ConnectivityModel {
         Enumeration<Node> pNE = SinalgoRuntime.nodes.getPossibleNeighborsEnumeration(n);
         while (pNE.hasMoreElements()) {
             Node possibleNeighbor = pNE.nextElement();
-            if (n.ID != possibleNeighbor.ID) {
+            if (n.getID() != possibleNeighbor.getID()) {
                 // if the possible neighbor is connected with the the node: add the connection
                 // to the outgoing connection of n
                 if (isConnected(n, possibleNeighbor)) {

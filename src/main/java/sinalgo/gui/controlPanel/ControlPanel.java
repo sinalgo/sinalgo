@@ -369,7 +369,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
                 return;
             }
             parent.setStartButtonEnabled(false);
-            parent.runtime.run(rounds, true);
+            parent.getRuntime().run(rounds, true);
         } catch (java.lang.NumberFormatException nFE) {
             Main.minorError("Invalid input: '" + roundsToPerform.getText() + "' is not a valid integer.");
         }
@@ -379,7 +379,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * Stops a running simulation.
      */
     public void stopSimulation() {
-        parent.runtime.abort();
+        parent.getRuntime().abort();
     }
 
     @Override

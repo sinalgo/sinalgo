@@ -168,7 +168,7 @@ public class Exporter {
                 Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
                 while (nodeEnumer.hasMoreElements()) {
                     Node n = nodeEnumer.nextElement();
-                    for (Edge e : n.outgoingConnections) {
+                    for (Edge e : n.getOutgoingConnections()) {
                         e.drawToPostScript(pw, pt);
                     }
                 }

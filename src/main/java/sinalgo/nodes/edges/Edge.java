@@ -121,7 +121,7 @@ public class Edge implements DoublyLinkedListEntry {
             Edge oe = this.oppositeEdge;
             this.oppositeEdge = null;
             oe.oppositeEdge = null; // set unlink oppositeEdges to avoid loops
-            this.endNode.getOutgoingConnections().remove(this.endNode, this.startNode); // remove the opposite edge
+            this.getEndNode().getOutgoingConnections().remove(this.getEndNode(), this.getStartNode()); // remove the opposite edge
             oe.free();
         }
     }
@@ -199,16 +199,16 @@ public class Edge implements DoublyLinkedListEntry {
     public void draw(Graphics g, PositionTransformation pt) {
         Position p1 = startNode.getPosition();
         pt.translateToGUIPosition(p1);
-        int fromX = pt.guiX, fromY = pt.guiY; // temporarily store
+        int fromX = pt.getGuiX(), fromY = pt.getGuiY(); // temporarily store
         Position p2 = endNode.getPosition();
         pt.translateToGUIPosition(p2);
 
         if ((this.numberOfMessagesOnThisEdge == 0) && (this.oppositeEdge != null)
                 && (this.oppositeEdge.numberOfMessagesOnThisEdge > 0)) {
             // only draws the arrowHead (if drawArrows is true)
-            Arrow.drawArrowHead(fromX, fromY, pt.guiX, pt.guiY, g, pt, getColor());
+            Arrow.drawArrowHead(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, getColor());
         } else {
-            Arrow.drawArrow(fromX, fromY, pt.guiX, pt.guiY, g, pt, getColor());
+            Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, getColor());
         }
     }
 
@@ -221,17 +221,17 @@ public class Edge implements DoublyLinkedListEntry {
      */
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
         pt.translateToGUIPosition(startNode.getPosition());
-        double eSX = pt.guiXDouble;
-        double eSY = pt.guiYDouble;
+        double eSX = pt.getGuiXDouble();
+        double eSY = pt.getGuiYDouble();
         pt.translateToGUIPosition(endNode.getPosition());
         Color c = getColor();
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
         pw.setLineWidth(0.5);
 
         if (Configuration.drawArrows) {
-            pw.drawArrow(eSX, eSY, pt.guiXDouble, pt.guiYDouble);
+            pw.drawArrow(eSX, eSY, pt.getGuiXDouble(), pt.getGuiYDouble());
         } else {
-            pw.drawLine(eSX, eSY, pt.guiXDouble, pt.guiYDouble);
+            pw.drawLine(eSX, eSY, pt.getGuiXDouble(), pt.getGuiYDouble());
         }
     }
 
@@ -316,7 +316,7 @@ public class Edge implements DoublyLinkedListEntry {
      */
     protected final void findOppositeEdge() {
         for (Edge e : endNode.getOutgoingConnections()) {
-            if ((e.startNode.ID == endNode.ID) && (e.endNode.ID == startNode.ID)) {
+            if ((e.getStartNode().getID() == endNode.getID()) && (e.getEndNode().getID() == startNode.getID())) {
                 this.oppositeEdge = e;
                 e.oppositeEdge = this;
                 return;
@@ -345,10 +345,10 @@ public class Edge implements DoublyLinkedListEntry {
     public boolean isInside(int xCoord, int yCoord, PositionTransformation pt) {
         Position p1 = startNode.getPosition();
         pt.translateToGUIPosition(p1);
-        int fromX = pt.guiX, fromY = pt.guiY; // temporarily store
+        int fromX = pt.getGuiX(), fromY = pt.getGuiY(); // temporarily store
         Position p2 = endNode.getPosition();
         pt.translateToGUIPosition(p2);
-        double dist = Line2D.ptSegDist(fromX, fromY, pt.guiX, pt.guiY, xCoord, yCoord);
+        double dist = Line2D.ptSegDist(fromX, fromY, pt.getGuiX(), pt.getGuiY(), xCoord, yCoord);
         return dist < 3;
     }
 
@@ -388,7 +388,7 @@ public class Edge implements DoublyLinkedListEntry {
         Edge edge = freeEdges.get();
         // TODO: this is expensive!
         if (edge != null) { // we can recycle an edge
-            if (edge.startNode != null || edge.endNode != null) { // sanity check
+            if (edge.getStartNode() != null || edge.getEndNode() != null) { // sanity check
                 throw new SinalgoFatalException(Logging.getCodePosition()
                         + " Edge factory failed! About to return an edge that was already returned. (Probably, free() was called > 1 on this edge.)");
             }
@@ -462,7 +462,7 @@ public class Edge implements DoublyLinkedListEntry {
             // often.
             SinalgoRuntime.eventQueue.invalidatePacketEventsForThisEdge(this);
         } else {
-            this.endNode.getInboxPacketBuffer().invalidatePacketsSentOverThisEdge(this);
+            this.getEndNode().getInboxPacketBuffer().invalidatePacketsSentOverThisEdge(this);
         }
         this.cleanUp();
     }

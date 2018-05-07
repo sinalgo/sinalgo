@@ -98,7 +98,7 @@ public class Transformation3D extends PositionTransformation {
     }
 
     @Override
-    protected void _moveView(int x, int y) {
+    protected void onChangeMoveView(int x, int y) {
         translate(x, y, 0, tm);
     }
 
@@ -117,7 +117,7 @@ public class Transformation3D extends PositionTransformation {
         double offsetX = resultX, offsetY = resultY, offsetZ = resultZ;
         translate(-offsetX, -offsetY, -offsetZ, tm);
 
-        double factor = isZoomPanel ? 0.01 : 1.5f / (maxDim * zoomFactor); // rotate slower with high zoom;
+        double factor = isZoomPanel ? 0.01 : 1.5f / (maxDim * getZoomFactor()); // rotate slower with high zoom;
 
         if (!preserveZAxis) {
             rotateY(x * factor, tm);
@@ -130,7 +130,7 @@ public class Transformation3D extends PositionTransformation {
             rotateX(-y * factor, tm);
         }
         translate(offsetX, offsetY, offsetZ, tm);
-        versionNumber++;
+        bumpVersionNumber();
     }
 
     /**
@@ -145,17 +145,17 @@ public class Transformation3D extends PositionTransformation {
     private void initPolyLine(Position p1, Position p2, Position p3, Position p4, double[][] matrix,
                               boolean usePerspective) {
         translateToGUIPosition(p1, matrix, usePerspective);
-        polyLineX[0] = polyLineX[4] = this.guiX;
-        polyLineY[0] = polyLineY[4] = this.guiY;
+        polyLineX[0] = polyLineX[4] = this.getGuiX();
+        polyLineY[0] = polyLineY[4] = this.getGuiY();
         translateToGUIPosition(p2, matrix, usePerspective);
-        polyLineX[1] = this.guiX;
-        polyLineY[1] = this.guiY;
+        polyLineX[1] = this.getGuiX();
+        polyLineY[1] = this.getGuiY();
         translateToGUIPosition(p3, matrix, usePerspective);
-        polyLineX[2] = this.guiX;
-        polyLineY[2] = this.guiY;
+        polyLineX[2] = this.getGuiX();
+        polyLineY[2] = this.getGuiY();
         translateToGUIPosition(p4, matrix, usePerspective);
-        polyLineX[3] = this.guiX;
-        polyLineY[3] = this.guiY;
+        polyLineX[3] = this.getGuiX();
+        polyLineY[3] = this.getGuiY();
     }
 
     /**
@@ -166,9 +166,9 @@ public class Transformation3D extends PositionTransformation {
      */
     private void drawDottedLine(Graphics g, Position p1, Position p2, double[][] matrix, boolean usePerspective) {
         translateToGUIPosition(p1, matrix, usePerspective);
-        int fromX = guiX, fromY = guiY;
+        int fromX = getGuiX(), fromY = getGuiY();
         translateToGUIPosition(p2, matrix, usePerspective);
-        int toX = guiX, toY = guiY;
+        int toX = getGuiX(), toY = getGuiY();
         GraphPanel.drawDottedLine(g, fromX, fromY, toX, toY);
     }
 
@@ -180,9 +180,9 @@ public class Transformation3D extends PositionTransformation {
      */
     private void drawLine(Graphics g, Position p1, Position p2, double[][] matrix, boolean usePerspective) {
         translateToGUIPosition(p1, matrix, usePerspective);
-        int fromX = guiX, fromY = guiY;
+        int fromX = getGuiX(), fromY = getGuiY();
         translateToGUIPosition(p2, matrix, usePerspective);
-        int toX = guiX, toY = guiY;
+        int toX = getGuiX(), toY = getGuiY();
         g.drawLine(fromX, fromY, toX, toY);
     }
 
@@ -516,15 +516,15 @@ public class Transformation3D extends PositionTransformation {
      */
     private void drawCubeAxeArrows(Graphics g, double[][] matrix, boolean usePerspective) {
         translateToGUIPosition(pos000, matrix, usePerspective);
-        int originX = guiX;
-        int originY = guiY;
+        int originX = getGuiX();
+        int originY = getGuiY();
         g.setFont(new Font("", Font.PLAIN, 10));
         translateToGUIPosition(Configuration.dimX, 0, 0, matrix, usePerspective);
-        drawAxeName(g, "x", originX, originY, guiX, guiY);
+        drawAxeName(g, "x", originX, originY, getGuiX(), getGuiY());
         translateToGUIPosition(0, Configuration.dimY, 0, matrix, usePerspective);
-        drawAxeName(g, "y", originX, originY, guiX, guiY);
+        drawAxeName(g, "y", originX, originY, getGuiX(), getGuiY());
         translateToGUIPosition(0, 0, Configuration.dimZ, matrix, usePerspective);
-        drawAxeName(g, "z", originX, originY, guiX, guiY);
+        drawAxeName(g, "z", originX, originY, getGuiX(), getGuiY());
     }
 
     /**
@@ -642,14 +642,14 @@ public class Transformation3D extends PositionTransformation {
         // pw.println("[] 0 setdash\n");
 
         translateToGUIPosition(pos000);
-        double originX = guiXDouble;
-        double originY = guiYDouble;
+        double originX = getGuiXDouble();
+        double originY = getGuiYDouble();
         translateToGUIPosition(Configuration.dimX, 0, 0);
-        drawAxesToPostScript(pw, "x", originX, originY, guiXDouble, guiYDouble);
+        drawAxesToPostScript(pw, "x", originX, originY, getGuiXDouble(), getGuiYDouble());
         translateToGUIPosition(0, Configuration.dimY, 0);
-        drawAxesToPostScript(pw, "y", originX, originY, guiXDouble, guiYDouble);
+        drawAxesToPostScript(pw, "y", originX, originY, getGuiXDouble(), getGuiYDouble());
         translateToGUIPosition(0, 0, Configuration.dimZ);
-        drawAxesToPostScript(pw, "z", originX, originY, guiXDouble, guiYDouble);
+        drawAxesToPostScript(pw, "z", originX, originY, getGuiXDouble(), getGuiYDouble());
     }
 
     private void drawAxesToPostScript(EPSOutputPrintStream pw, String name, double originX, double originY, double toX,
@@ -668,13 +668,13 @@ public class Transformation3D extends PositionTransformation {
 
     private void drawPolygonToPostScript(EPSOutputPrintStream pw, Position p1, Position p2, Position p3, Position p4) {
         translateToGUIPosition(p1);
-        double p1X = guiXDouble, p1Y = guiYDouble;
+        double p1X = getGuiXDouble(), p1Y = getGuiYDouble();
         translateToGUIPosition(p2);
-        double p2X = guiXDouble, p2Y = guiYDouble;
+        double p2X = getGuiXDouble(), p2Y = getGuiYDouble();
         translateToGUIPosition(p3);
-        double p3X = guiXDouble, p3Y = guiYDouble;
+        double p3X = getGuiXDouble(), p3Y = getGuiYDouble();
         translateToGUIPosition(p4);
-        double p4X = guiXDouble, p4Y = guiYDouble;
+        double p4X = getGuiXDouble(), p4Y = getGuiYDouble();
         pw.drawFilledPolygon(p1X, p1Y, p2X, p2Y, p3X, p3Y, p4X, p4Y);
     }
 
@@ -687,10 +687,10 @@ public class Transformation3D extends PositionTransformation {
      */
     private void drawLineToPostScript(EPSOutputPrintStream pw, Position from, Position to) {
         translateToGUIPosition(from);
-        double fromX = guiXDouble;
-        double fromY = guiYDouble;
+        double fromX = getGuiXDouble();
+        double fromY = getGuiYDouble();
         translateToGUIPosition(to);
-        pw.drawLine(fromX, fromY, guiXDouble, guiYDouble);
+        pw.drawLine(fromX, fromY, getGuiXDouble(), getGuiYDouble());
     }
 
     /**
@@ -703,16 +703,16 @@ public class Transformation3D extends PositionTransformation {
     private void drawDottedLineToPostScript(EPSOutputPrintStream pw, Position from, Position to) {
         pw.println("[2 2] 0 setdash\n");
         translateToGUIPosition(from);
-        double fromX = guiXDouble;
-        double fromY = guiYDouble;
+        double fromX = getGuiXDouble();
+        double fromY = getGuiYDouble();
         translateToGUIPosition(to);
-        pw.drawLine(fromX, fromY, guiXDouble, guiYDouble);
+        pw.drawLine(fromX, fromY, getGuiXDouble(), getGuiYDouble());
         pw.println("[] 0 setdash\n");
     }
 
     @Override
-    protected void _setZoomFactor(double newFactor) {
-        scaleInTheMiddleOfScreen(newFactor / zoomFactor, tm);
+    protected void onChangeZoomFactor(double zoomfactor) {
+        scaleInTheMiddleOfScreen(zoomfactor / getZoomFactor(), tm);
     }
 
     /**
@@ -727,7 +727,7 @@ public class Transformation3D extends PositionTransformation {
         scale(deltaZoom, matrix);
         // move the window back s.t. the center of the screen before zooming lies again
         // in the center of the screen
-        translate(width / 2 * (1 - deltaZoom), height / 2 * (1 - deltaZoom), 0, matrix);
+        translate(getWidth() / 2 * (1 - deltaZoom), getHeight() / 2 * (1 - deltaZoom), 0, matrix);
     }
 
     /**
@@ -748,14 +748,14 @@ public class Transformation3D extends PositionTransformation {
     }
 
     @Override
-    protected void _zoomToFit(int width, int height) {
-        zoomFactor *= zoomToFit(width, height, tm, Configuration.usePerspectiveView);
+    protected void onChangeZoomToFit(int width, int height) {
+        setZoomFactor(getZoomFactor() * zoomToFit(width, height, tm, Configuration.usePerspectiveView));
     }
 
     @Override
-    protected void _defaultView(int width, int height) {
+    protected void onChangeDefaultView(int width, int height) {
         rotateToDefault(tm);
-        _zoomToFit(width, height);
+        onChangeZoomToFit(width, height);
     }
 
     /**
@@ -767,8 +767,8 @@ public class Transformation3D extends PositionTransformation {
      */
     public void defaultViewXY(int width, int height) {
         reset(tm);
-        _zoomToFit(width, height);
-        versionNumber++;
+        onChangeZoomToFit(width, height);
+        bumpVersionNumber();
     }
 
     /**
@@ -781,8 +781,8 @@ public class Transformation3D extends PositionTransformation {
     public void defaultViewXZ(int width, int height) {
         reset(tm);
         this.rotateX(Math.PI / 2, tm);
-        _zoomToFit(width, height);
-        versionNumber++;
+        onChangeZoomToFit(width, height);
+        bumpVersionNumber();
     }
 
     /**
@@ -796,8 +796,8 @@ public class Transformation3D extends PositionTransformation {
         reset(tm);
         this.rotateZ(Math.PI / 2, tm);
         this.rotateX(Math.PI / 2, tm);
-        _zoomToFit(width, height);
-        versionNumber++;
+        onChangeZoomToFit(width, height);
+        bumpVersionNumber();
     }
 
     /**
@@ -976,21 +976,21 @@ public class Transformation3D extends PositionTransformation {
      */
     private void determineBoundingBox(double[][] matrix, boolean usePerspective) {
         translateToGUIPosition(posList[0], matrix, usePerspective);
-        minX = maxX = guiX;
-        minY = maxY = guiY;
+        minX = maxX = getGuiX();
+        minY = maxY = getGuiY();
         for (int i = 1; i < 8; i++) {
             translateToGUIPosition(posList[i], matrix, usePerspective);
-            if (guiX < minX) {
-                minX = guiX;
+            if (getGuiX() < minX) {
+                minX = getGuiX();
             }
-            if (guiX > maxX) {
-                maxX = guiX;
+            if (getGuiX() > maxX) {
+                maxX = getGuiX();
             }
-            if (guiY < minY) {
-                minY = guiY;
+            if (getGuiY() < minY) {
+                minY = getGuiY();
             }
-            if (guiY > maxY) {
-                maxY = guiY;
+            if (getGuiY() > maxY) {
+                maxY = getGuiY();
             }
         }
     }
@@ -1017,7 +1017,7 @@ public class Transformation3D extends PositionTransformation {
     private void reset(double[][] matrix) {
         if (matrix == tm) {
             tmAngleX = tmAngleY = tmAngleZ = 0;
-            zoomFactor = 1;
+            setZoomFactor(1);
         }
         // initialize the default transformation matrix (no rotation at all)
         for (int i = 0; i < 4; i++) {
@@ -1062,15 +1062,15 @@ public class Transformation3D extends PositionTransformation {
         // we project onto the X/Y field
         // possibly add some perspective
         if (usePerspective) {
-            double perspectiveZ = Configuration.perspectiveViewDistance * maxDim * zoomFactor;
-            resultX = width / 2 + (width / 2 - resultX) * perspectiveZ / (resultZ - perspectiveZ);
-            resultY = height / 2 + (height / 2 - resultY) * perspectiveZ / (resultZ - perspectiveZ);
+            double perspectiveZ = Configuration.perspectiveViewDistance * maxDim * getZoomFactor();
+            resultX = getWidth() / 2 + (getWidth() / 2 - resultX) * perspectiveZ / (resultZ - perspectiveZ);
+            resultY = getHeight() / 2 + (getHeight() / 2 - resultY) * perspectiveZ / (resultZ - perspectiveZ);
         }
 
-        this.guiXDouble = resultX;
-        this.guiYDouble = resultY;
-        this.guiX = (int) resultX;
-        this.guiY = (int) resultY;
+        this.setGuiXDouble(resultX);
+        this.setGuiYDouble(resultY);
+        this.setGuiX((int) resultX);
+        this.setGuiY((int) resultY);
     }
 
     /**
@@ -1078,7 +1078,7 @@ public class Transformation3D extends PositionTransformation {
      * @param matrix The rotation matrix to use
      */
     private void translateToGUIPosition(Position pos, double[][] matrix, boolean usePerspective) {
-        translateToGUIPosition(pos.xCoord, pos.yCoord, pos.zCoord, matrix, usePerspective);
+        translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), matrix, usePerspective);
     }
 
     /**
@@ -1092,13 +1092,13 @@ public class Transformation3D extends PositionTransformation {
      * @return The z-coordinate of
      */
     public double translateToGUIPositionAndGetZOffset(Position pos) {
-        translateToGUIPosition(pos.xCoord, pos.yCoord, pos.zCoord, tm, Configuration.usePerspectiveView);
+        translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), tm, Configuration.usePerspectiveView);
         return resultZ;
     }
 
     @Override
     public void translateToGUIPosition(Position pos) {
-        translateToGUIPosition(pos.xCoord, pos.yCoord, pos.zCoord, tm, Configuration.usePerspectiveView);
+        translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), tm, Configuration.usePerspectiveView);
     }
 
     @Override
@@ -1119,7 +1119,7 @@ public class Transformation3D extends PositionTransformation {
             System.arraycopy(tm[i], 0, zpm[i], 0, 4);
         }
 
-        zoomPanelZoom = zoomFactor * zoomToFit(side, side, zpm, false); // note: we copied tm to zpm
+        zoomPanelZoom = getZoomFactor() * zoomToFit(side, side, zpm, false); // note: we copied tm to zpm
         // draw the background first in gray, then at the end, paint the visible part in
         // white
         determineVisibility(zpm, false);
@@ -1134,14 +1134,14 @@ public class Transformation3D extends PositionTransformation {
 
         determineBoundingBox(tm, false);
 
-        double dimX = (maxX - minX) / zoomFactor;
-        double dimY = (maxY - minY) / zoomFactor;
+        double dimX = (maxX - minX) / getZoomFactor();
+        double dimY = (maxY - minY) / getZoomFactor();
         translateToGUIPosition(0, 0, 0, zpm, false);
 
         int ax = (int) (zoomPanelZoom * dimX * (-minX) / (maxX - minX));
         int ay = (int) (zoomPanelZoom * dimY * (-minY) / (maxY - minY));
-        int bx = (int) (zoomPanelZoom * dimX * (width - minX) / (maxX - minX));
-        int by = (int) (zoomPanelZoom * dimY * (height - minY) / (maxY - minY));
+        int bx = (int) (zoomPanelZoom * dimX * (getWidth() - minX) / (maxX - minX));
+        int by = (int) (zoomPanelZoom * dimY * (getHeight() - minY) / (maxY - minY));
         ax = Math.max(0, ax);
         ay = Math.max(0, ay);
         bx = Math.min(boundingBoxWidth, bx);
@@ -1170,19 +1170,19 @@ public class Transformation3D extends PositionTransformation {
 
     @Override
     public String getLogicPositionString() {
-        return "(" + logicX + ", " + logicY + ", " + logicZ + ")";
+        return "(" + getLogicX() + ", " + getLogicY() + ", " + getLogicZ() + ")";
     }
 
     @Override
     public String getGUIPositionString() {
-        return "(" + guiX + ", " + guiY + ")";
+        return "(" + getGuiX() + ", " + getGuiY() + ")";
     }
 
     @Override
-    protected void _zoomToRect(Rectangle rect) {
-        double delta = Math.min((double) (width) / rect.width, (double) (height) / rect.height);
-        _moveView(-rect.x, -rect.y);
+    protected void onChangeZoomToRect(Rectangle rect) {
+        double delta = Math.min((double) (getWidth()) / rect.width, (double) (getHeight()) / rect.height);
+        onChangeMoveView(-rect.x, -rect.y);
         scale(delta, tm);
-        this.zoomFactor *= delta;
+        setZoomFactor(getZoomFactor() * delta);
     }
 }

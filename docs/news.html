@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--suppress CheckImageSize -->
 <html>
 <head>
     <title>Sinalgo</title>
@@ -31,7 +32,7 @@
     }
 
     function getWindowHeight() {
-        if (typeof(window.innerWidth) == 'number') { //Non-IE
+        if (typeof(window.innerWidth) === 'number') { //Non-IE
             return window.innerHeight;
         } else if (document.documentElement && document.documentElement.clientHeight) { //IE 6+ in 'standards compliant mode'
             return document.documentElement.clientHeight;
@@ -48,7 +49,7 @@
 </head>
 
 <body class="text" bgcolor="#FFFFFF" onload="setup()">
-<table align="center" width="100%" style="margin-bottom:0px"
+<table align="center" width="100%" style="margin-bottom:0"
        cellpadding="0" cellspacing="0" border="0">
     <tr class="height80">
         <td><img src="pics/spacer.gif" width="210" height="80"
@@ -122,7 +123,6 @@
             The latest version features many small changes that are not required,
             but nice to have. E.g. support to export the position of all nodes,
             limiting the memory usage through the config file.
-            </p>
 
 
             <h2 class="news">[12.6.07] New release on SourceForge.net</h2>
@@ -131,34 +131,29 @@
                                               href="https://sourceforge.net/projects/sinalgo/">SourceForge.net</a>.
             The latest version fixes a memory bug that prevented the GC to do
             its work. Furthermore, a bunch of new features were added to the tool.
-            </p>
 
             <h2 class="news">[13.4.07] New release on SourceForge.net</h2>
             <br>
             Version 0.73.1 is available on <a class="nav_link"
                                               href="https://sourceforge.net/projects/sinalgo/">SourceForge.net</a>.
             The latest version fixes the 'Exit button' bug in Sinalgo 0.73.0.
-            </p>
 
             <h2 class="news">[23.3.07] Sinalgo on SourceForge.net</h2>
             <br>
             Sinalgo is available on <a class="nav_link"
                                        href="https://sourceforge.net/projects/sinalgo/">SourceForge.net</a>.
-            </p>
 
             <h2 class="news">[23.3.07] Version 0.70.1 Released</h2>
             <br>
             The latest revision is out. Please visit the <a
                 href="download.html"
                 class="text_nav_link">download</a> section for more details.
-            </p>
 
             <h2 class="news">[29.1.07] Version 0.4 Released</h2>
             <br>
             The latest revision is out. Please visit the <a
                 href="download.html"
                 class="text_nav_link">download</a> section for more details.
-            </p>
         </td>
         <td><img src="pics/spacer.gif" width="30" height="1" alt=""></td>
     </tr>

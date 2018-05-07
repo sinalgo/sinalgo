@@ -166,14 +166,14 @@ public class CustomGlobal extends AbstractCustomGlobal {
                     tn.finishInitializationWithDefaultModels(true);
                     treeNodes.add(tn);
                     toProcess2.add(tn);
-                    leftMostXOffset = currentNode.getPosition().xCoord;
+                    leftMostXOffset = currentNode.getPosition().getXCoord();
                     numAdded = 0;
                 }
                 currentNode.addConnectionTo(tn);
                 currentNode.parent = tn;
                 numAdded++;
                 if (numAdded >= fanOut) {
-                    tn.setPosition((leftMostXOffset + currentNode.getPosition().xCoord) / 2, posY, 0);
+                    tn.setPosition((leftMostXOffset + currentNode.getPosition().getXCoord()) / 2, posY, 0);
                     tn = null;
                 }
             }
@@ -181,7 +181,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             // children
             // for the parent, we need to finish the parent's placement outside the loop.
             if (tn != null) {
-                tn.setPosition((leftMostXOffset + currentNode.getPosition().xCoord) / 2, posY, 0);
+                tn.setPosition((leftMostXOffset + currentNode.getPosition().getXCoord()) / 2, posY, 0);
             }
 
             // prepare the toProcess lists to contain the new parents

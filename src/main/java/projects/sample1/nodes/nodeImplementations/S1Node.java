@@ -133,8 +133,8 @@ public class S1Node extends Node {
             if (next == null) {
                 next = (S1Node) e.getEndNode();
             } else {
-                if (e.getEndNode().ID < next.ID) {
-                    next = (S1Node) e.endNode;
+                if (e.getEndNode().getID() < next.getID()) {
+                    next = (S1Node) e.getEndNode();
                 }
             }
         }
@@ -165,7 +165,7 @@ public class S1Node extends Node {
         // be used for exactly this purpose.
         MessageTimer msgTimer = new MessageTimer(new S1Message(1)); // broadcast
         msgTimer.startRelative(1, this);
-        Tools.appendToOutput("Start Routing from node " + this.ID + "\n");
+        Tools.appendToOutput("Start Routing from node " + this.getID() + "\n");
     }
 
     @Override

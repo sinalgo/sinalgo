@@ -32,9 +32,9 @@ public class TreeNode extends Node {
                 }
                 this.setColor(Color.RED);
                 // forward the message to all children
-                for (Edge e : outgoingConnections) {
-                    if (!e.endNode.equals(parent)) { // don't send it to the parent
-                        send(m, e.endNode);
+                for (Edge e : getOutgoingConnections()) {
+                    if (!e.getEndNode().equals(parent)) { // don't send it to the parent
+                        send(m, e.getEndNode());
                     }
                 }
                 // alternatively, we could broadcast the message:
