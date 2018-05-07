@@ -140,9 +140,9 @@ public abstract class SinalgoRuntime {
      * (like the map)
      */
     public SinalgoRuntime() {
-        if (Configuration.useMap) {
+        if (Configuration.isUseMap()) {
             try {
-                map = new Map(IOUtils.getAsPath(Configuration.userProjectsPackage, Global.projectName, Configuration.map));
+                map = new Map(IOUtils.getAsPath(Configuration.getUserProjectsPackage(), Global.projectName, Configuration.getMap()));
             } catch (FileNotFoundException e) {
                 throw new SinalgoWrappedException(e);
             }
@@ -196,7 +196,7 @@ public abstract class SinalgoRuntime {
     public void initializeRuntimeSystem(String[] args)
             throws WrongConfigurationException {
 
-        if (Configuration.mobility && Configuration.asynchronousMode) {
+        if (Configuration.isMobility() && Configuration.isAsynchronousMode()) {
             throw new SinalgoFatalException("You tried to run the simulation in the asynchronous mode and mobility is turned on. "
                     + "In the asynchronous mode mobility is not allowed.");
         }
@@ -222,7 +222,7 @@ public abstract class SinalgoRuntime {
                             + "be followed by the number of rounds between consecutive screen refreshs.");
                 }
                 try {
-                    Configuration.refreshRate = Integer.parseInt(args[i + 1]);
+                    Configuration.setRefreshRate(Integer.parseInt(args[i + 1]));
                     i++; // don't have to look at args[i+1] anymore
                 } catch (NumberFormatException e) {
                     throw new SinalgoFatalException("Cannot convert the refreshrate (" + args[i + 1] + ") "
@@ -469,10 +469,10 @@ public abstract class SinalgoRuntime {
         // load the node collection specified in the config file
         AbstractNodeCollection result;
         String name;
-        if (Configuration.dimensions == 2) {
-            name = Configuration.nodeCollection2D;
-        } else if (Configuration.dimensions == 3) {
-            name = Configuration.nodeCollection3D;
+        if (Configuration.getDimensions() == 2) {
+            name = Configuration.getNodeCollection2D();
+        } else if (Configuration.getDimensions() == 3) {
+            name = Configuration.getNodeCollection3D();
         } else {
             throw new SinalgoFatalException(
                     "The 'dimensions' field in the configuration file is invalid. Valid values are either '2' for 2D or '3' for 3D. (Cannot create corresponding node collection.)");

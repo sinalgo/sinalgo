@@ -76,7 +76,7 @@ public abstract class InterferenceModel extends Model {
      * The default constructor tests that interference is enabled.
      */
     protected InterferenceModel() {
-        if (firstTime && !Configuration.interference) {
+        if (firstTime && !Configuration.isInterference()) {
             Main.warning(
                     "Some nodes are using an interference model even though interference is explicitly turned off in the XML Configuration file.");
             firstTime = false; // important to only have one message.
@@ -91,7 +91,7 @@ public abstract class InterferenceModel extends Model {
      *              performed if false.
      */
     protected InterferenceModel(boolean check) {
-        if (check && firstTime && !Configuration.interference) {
+        if (check && firstTime && !Configuration.isInterference()) {
             Main.warning(
                     "Some nodes are using an interference model even though interference is explicitly turned off in the XML Configuration file.");
             firstTime = false;

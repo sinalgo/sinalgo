@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.configuration;
 
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.runtime.Global;
@@ -45,6 +47,8 @@ import sinalgo.tools.storage.SortableVector;
 
 import javax.naming.ConfigurationException;
 import java.awt.*;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.PrintStream;
 import java.lang.annotation.ElementType;
@@ -54,6 +58,8 @@ import java.lang.annotation.Target;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -62,7 +68,14 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.*;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_CONNECTIVITY;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_DISTRIBUTION;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_INTERFERENCE;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_MESSAGE_TRANSMISSION;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_MOBILITY;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_RELIABILITY;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.NODES_EDGES;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.NODES_IMPLEMENTATIONS;
 
 /**
  * This class provides globally visible constants and access to the custom
@@ -201,21 +214,29 @@ public class Configuration {
     // -------------------------------------------------------------------------
     // Simulation Area
     // -------------------------------------------------------------------------
+    @Getter
+    @Setter
     @SectionInConfigFile("Simulation Area")
     @DefaultInConfigFile("Number of dimensions (2 for 2D, 3 for 3D)")
-    public static int dimensions = 2;
+    private static int dimensions = 2;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("Length of the deployment field along the x-axis.")
-    public static int dimX = 500;
+    private static int dimX = 500;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("Length of the deployment field along the y-axis.")
-    public static int dimY = 500;
+    private static int dimY = 500;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("Length of the deployment field along the z-axis.")
-    public static int dimZ = 500;
+    private static int dimZ = 500;
 
     /// ** */
     // @OptionalInConfigFile("True if the simulation area is connected like a
@@ -227,26 +248,34 @@ public class Configuration {
     // -------------------------------------------------------------------------
 
     /** */
+    @Getter
+    @Setter
     @SectionInConfigFile("Simulation")
     @DefaultInConfigFile("Switches between synchronous and asynchronous mode.")
-    public static boolean asynchronousMode = false;
+    private static boolean asynchronousMode = false;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("If set to true, the runtime obtains for each node a new\n"
             + "position from the mobility model at the beginning of each\n"
             + "round. This flag needs to be turned on if the chosen \n"
             + "mobility model of any node may change the node's position.\n"
             + "Set this flag to FALSE for static graphs whose nodes do never\n"
             + "change their position to increase performance.")
-    public static boolean mobility = true;
+    private static boolean mobility = true;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("If set to true, the chosen interference model is called at the\n"
             + "end of every round to test for interferring packets.\n"
             + "To increase performance, set this flag to FALSE if you do not\n" + "consider interference.")
-    public static boolean interference = true;
+    private static boolean interference = true;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("Set this flag to true if interference only decreases if\n"
             + "fewer messages are being sent and increases if more messages\n" + "are being sent.\n"
             + "If this flag is NOT set, interference for all messages currently\n"
@@ -255,222 +284,297 @@ public class Configuration {
             + "interference tests are reduced to a minimum, using the additivity\n" + "property.\n"
             + "This flag only affects the asynchronous mode. In synchronous mode,\n"
             + "interference is checked exactly once for every message in every round.")
-    public static boolean interferenceIsAdditive = true;
+    private static boolean interferenceIsAdditive = true;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("Set this flag to true if a node can receive messages while\n"
             + "it is sending messages itself, otherwise to false. This flag\n"
             + "is only relevant if interference is turned on, and it must be\n"
             + "handled properly in the used interference model.")
-    public static boolean canReceiveWhileSending = true;
+    private static boolean canReceiveWhileSending = true;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("Set this flag to true if a node can receive multiple messages\n"
             + "in parallel, otherwise to false. When set to false, concurrent\n"
             + "packets are all dropped. This flag is only relevant if\n"
             + "interference is turned on, and it must be handled properly in\n" + "the used interference model.")
-    public static boolean canReceiveMultiplePacketsInParallel = true;
+    private static boolean canReceiveMultiplePacketsInParallel = true;
 
     /**
      * The type of the edge to be created in the edge factory. This field is
      * private, but has a setter and getter method.
+     *
+     * @return The type of the Edges
      */
+    @Getter
     @ImplementationChoiceInConfigFile(NODES_EDGES)
     @PrivateInConfigFile("The type of the edges with which nodes are connected.")
     private static String edgeType = "Edge";
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("If set to true, the application exits as soon as the\n"
             + "termination criteria is met. This flag only affects\n" + "the GUI mode.")
-    public static boolean exitOnTerminationInGUI = false;
+    private static boolean exitOnTerminationInGUI = false;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("If set true, in asynchronous mode the connections are initialized\n"
             + "before the first event executes. Note that this flag is useless in synchronous mode\n"
             + "as the connections are updated in every step anyway.")
-    public static boolean initializeConnectionsOnStartup = false;
+    private static boolean initializeConnectionsOnStartup = false;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("Defines how often the GUI is updated. The GUI is\n"
             + "redrawn after every refreshRate-th round.")
-    public static int refreshRate = 1;
+    private static int refreshRate = 1;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("If set to true, the framework will inform a sender whenever \n"
             + "a unicast message is dropped. In synchronous mode, the sender \n"
             + "is informed in the round after the message should have arrived, and \n"
             + "immediately upon arrival in asynchronous mode.")
-    public static boolean generateNAckMessages = false;
+    private static boolean generateNAckMessages = false;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("This flag only affects the asynchronous simulation mode. \n"
             + "When set to true, the framework calls handleEmptyEventQueue \n"
             + "on the project specific CustomGlobal whenever the event queue \n" + "becomes empty.")
-    public static boolean handleEmptyEventQueue = true;
+    private static boolean handleEmptyEventQueue = true;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("The java-command used to start the simulation process.\n"
             + "E.g. 'java', 'nice -n 19 java', 'time java'\n"
             + "This command should NOT contain the -Xmx flag, nor set\n" + "the classpath of java.")
-    public static String javaCmd = "java";
+    private static String javaCmd = "java";
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("Maximum memory the Java VM is allowed to use (in MB)")
-    public static int javaVMmaxMem = 500;
+    private static int javaVMmaxMem = 500;
 
     // -------------------------------------------------------------------------
     // Seed for random number generator
     // -------------------------------------------------------------------------
 
     /** */
+    @Getter
+    @Setter
     @SectionInConfigFile("Random number generators")
     @DefaultInConfigFile("If set to true, the random number generators of the\n"
             + "framework use the same seed as in the previous run.")
-    public static boolean useSameSeedAsInPreviousRun = false;
+    private static boolean useSameSeedAsInPreviousRun = false;
 
+    @Getter
+    @Setter
     @DefaultInConfigFile("If set to true, and useSameSeedAsInPreviousRun is set to false, \n"
             + "the random number generators of the\n" + "framework uses the specified fixed seed.")
-    public static boolean useFixedSeed = false;
+    private static boolean useFixedSeed = false;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("The seed to be used by the random number generators\n" + "if useFixedSeed is set to true.")
-    public static long fixedSeed = 77654767;
+    private static long fixedSeed = 77654767;
 
     // -------------------------------------------------------------------------
     // Logging
     // -------------------------------------------------------------------------
 
     /** */
+    @Getter
+    @Setter
     @SectionInConfigFile("Logging")
     @DefaultInConfigFile("Name of the default log file, used by the system,\n"
             + "but also for use by the end-user. (This log file\n" + "is stored under sinalgo.runtime.Global.log.)")
-    public static String logFileName = "logfile.txt";
+    private static String logFileName = "logfile.txt";
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("Redirects the default log file to the console.\n"
             + "No logfile will be created if set to true.")
-    public static boolean outputToConsole = true;
+    private static boolean outputToConsole = true;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("Indicates whether all log-files of the current simulation \n"
             + "are stored in a new directory. The name of the new directory\n"
             + "is given by the string-representation of the date\n" + "when the simulation starts.")
-    public static boolean logToTimeDirectory = true;
+    private static boolean logToTimeDirectory = true;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("If set to true, the system configuration is written to\n"
             + "the default log file after the application has been started.")
-    public static boolean logConfiguration = true;
+    private static boolean logConfiguration = true;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("If set to true, the log files are flushed every time\n" + "a new log is added.")
-    public static boolean eagerFlush = false;
+    private static boolean eagerFlush = false;
 
     // -------------------------------------------------------------------------
     // GUI
     // -------------------------------------------------------------------------
 
     /** */
+    @Getter
+    @Setter
     @SectionInConfigFile("GUI")
     @DefaultInConfigFile("If true, the application shows an extended control panel.")
-    public static boolean extendedControl = true;
+    private static boolean extendedControl = true;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("If true, the graph edges are drawn as directed arrows,\n otherwise simple lines.")
-    public static boolean drawArrows = false;
+    private static boolean drawArrows = false;
 
     /** */
+    @Getter
+    @Setter
     // @OverwriteInConfigFile("If true, draw ruler along the axes of the graph")
-    public static boolean drawRulers = true;
+    private static boolean drawRulers = true;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Fraction of the old and new zoom values for a zoom step.")
-    public static double zoomStep = 1.2;
+    private static double zoomStep = 1.2;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Fraction of the old and new zoom values for a zoom \n"
             + "step when zooming with the mouse wheel.")
-    public static double wheelZoomStep = 1.05;
+    private static double wheelZoomStep = 1.05;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("The minimum required zoom")
-    public static double minZoomFactor = 0.05;
+    private static double minZoomFactor = 0.05;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("If set to true, the nodes are ordered according to their \n"
             + "elevation before drawing, such that nodes closer to the \n"
             + "viewer are drawn on top. This setting only applies to 3D.")
-    public static boolean draw3DGraphNodesInProperOrder = true;
+    private static boolean draw3DGraphNodesInProperOrder = true;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("If set to true and in 3D mode, the cube is drawn\n" + "with perspective.")
-    public static boolean usePerspectiveView = true;
+    private static boolean usePerspectiveView = true;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Factor that defines the distance of the observer from the cube\n"
             + "when useing the perspective view in 3D. Default: 30")
-    public static int perspectiveViewDistance = 40;
+    private static int perspectiveViewDistance = 40;
 
     // -------------------------------------------------------------------------
     // Background Map for GUI
     // -------------------------------------------------------------------------
 
     /** */
+    @Getter
+    @Setter
     @SectionInConfigFile("Background map in 2D")
     @DefaultInConfigFile("If set to true, the background of a 2D simulation is colored\n"
             + "according to a map, specified in a map-file, specified\n" + "by the field map")
-    public static boolean useMap = false;
+    private static boolean useMap = false;
 
     /** */
+    @Getter
+    @Setter
     @DefaultInConfigFile("In 2D, the background can be colored depending on a map file.\n"
             + "This field contains the file name for this map, which is supposed\n"
             + "to be located in the resource folder of the current project.\n"
             + "The map is only painted if useMap is set to true.")
-    public static String map = "Map.mp";
+    private static String map = "Map.mp";
 
     // -------------------------------------------------------------------------
     // The models that are selected by default.
     // -------------------------------------------------------------------------
+    @Getter
+    @Setter
     @SectionInConfigFile("Models")
     @ImplementationChoiceInConfigFile(MODELS_MESSAGE_TRANSMISSION)
     @OptionalInConfigFile("The message transmission model used when none is specified")
-    public static String DefaultMessageTransmissionModel = "ConstantTime";
+    private static String defaultMessageTransmissionModel = "ConstantTime";
 
     /** */
+    @Getter
+    @Setter
     @ImplementationChoiceInConfigFile(MODELS_CONNECTIVITY)
     @OptionalInConfigFile("Default connectivity model used when none is specified")
-    public static String DefaultConnectivityModel = "UDG";
+    private static String defaultConnectivityModel = "UDG";
 
     /** */
+    @Getter
+    @Setter
     @ImplementationChoiceInConfigFile(MODELS_DISTRIBUTION)
     @OptionalInConfigFile("Default distribution model used when none is specified")
-    public static String DefaultDistributionModel = "Random";
+    private static String defaultDistributionModel = "Random";
 
     /** */
+    @Getter
+    @Setter
     @ImplementationChoiceInConfigFile(MODELS_INTERFERENCE)
     @OptionalInConfigFile("Default interference model used when none is specified")
-    public static String DefaultInterferenceModel = "NoInterference";
+    private static String defaultInterferenceModel = "NoInterference";
 
     /** */
+    @Getter
+    @Setter
     @ImplementationChoiceInConfigFile(MODELS_MOBILITY)
     @OptionalInConfigFile("Default mobility model used when none is specified")
-    public static String DefaultMobilityModel = "NoMobility";
+    private static String defaultMobilityModel = "NoMobility";
 
     /** */
+    @Getter
+    @Setter
     @ImplementationChoiceInConfigFile(MODELS_RELIABILITY)
     @OptionalInConfigFile("Default reliability model used when none is specified")
-    public static String DefaultReliabilityModel = "ReliableDelivery";
+    private static String defaultReliabilityModel = "ReliableDelivery";
 
     /** */
+    @Getter
+    @Setter
     @ImplementationChoiceInConfigFile(NODES_IMPLEMENTATIONS)
     @OptionalInConfigFile("Default node implementation used when none is specified")
-    public static String DefaultNodeImplementation = "DummyNode";
+    private static String defaultNodeImplementation = "DummyNode";
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Show the models implemented by all projects in the drop\n"
             + "down options. When set to false, only the models by the\n"
             + "selected project and the default project are shown.")
-    public static boolean showModelsOfAllProjects = false;
+    private static boolean showModelsOfAllProjects = false;
 
     // -------------------------------------------------------------------------
     // The default transformation and node collection implementations for the 2D /
@@ -478,30 +582,40 @@ public class Configuration {
     // -------------------------------------------------------------------------
 
     /** */
+    @Getter
+    @Setter
     @SectionInConfigFile("Node storage, position transformation")
     @OptionalInConfigFile("Transformation implementation for 2D. (This is\n"
             + "used to translate between the logic positions used by\n"
             + "the simulation to the 2D coordinate system used by the\n" + "GUI to display the graph)")
-    public static String guiPositionTransformation2D = "sinalgo.gui.transformation.Transformation2D";
+    private static String guiPositionTransformation2D = "sinalgo.gui.transformation.Transformation2D";
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Transformation implementation for 3D. (This is\n"
             + "used to translate between the logic positions used by\n"
             + "the simulation to the 2D coordinate system used by the\n" + "GUI to display the graph)")
-    public static String guiPositionTransformation3D = "sinalgo.gui.transformation.Transformation3D";
+    private static String guiPositionTransformation3D = "sinalgo.gui.transformation.Transformation3D";
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Node collection implementation for 2D.")
-    public static String nodeCollection2D = "sinalgo.runtime.nodeCollection.Geometric2DNodeCollection";
+    private static String nodeCollection2D = "sinalgo.runtime.nodeCollection.Geometric2DNodeCollection";
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Node collection implementation for 3D.")
-    public static String nodeCollection3D = "sinalgo.runtime.nodeCollection.Geometric3DNodeCollection";
+    private static String nodeCollection3D = "sinalgo.runtime.nodeCollection.Geometric3DNodeCollection";
 
     // -------------------------------------------------------------------------
     // Export Settings
     // -------------------------------------------------------------------------
     /** */
+    @Getter
+    @Setter
     @SectionInConfigFile("Export Settings")
     @OptionalInConfigFile("EPS 2 PDF command:\n" + "This is the command that is used to convert an EPS file \n"
             + "into a PDF file. You can use the following parameters:\n"
@@ -510,76 +624,104 @@ public class Configuration {
             + "  %t is the complete path from the root folder of the\n"
             + "     framework to the TARGET file (the pdf)\n" + "These placeholders are set by the framework.\n"
             + "Example:\n" + "  'epstopdf %s')")
-    public static String epsToPdfCommand = "epstopdf %s";
+    private static String epsToPdfCommand = "epstopdf %s";
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Enables the drawing of the bounding box of the deployment to EPS/PDF.")
-    public static boolean epsDrawDeploymentAreaBoundingBox = true;
+    private static boolean epsDrawDeploymentAreaBoundingBox = true;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Indicates whether the background in the ps should be\n " + "white or gray.\n "
             + "The gray version is easier to understand (especially in 3D)\n"
             + "but the white one should be more useful to be imported in reports." + "")
-    public static boolean epsDrawBackgroundWhite = true;
+    private static boolean epsDrawBackgroundWhite = true;
 
     // -------------------------------------------------------------------------
     // Diverse
     // -------------------------------------------------------------------------
     /** */
+    @Getter
+    @Setter
     @SectionInConfigFile("Animation Settings")
     @OptionalInConfigFile("Draw an envelope for each message that is being sent")
-    public static boolean showMessageAnimations = false;
+    private static boolean showMessageAnimations = false;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Width of the envelope (when the message animation is enabled)")
-    public static double messageAnimationEnvelopeWidth = 30;
+    private static double messageAnimationEnvelopeWidth = 30;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Height of the envelope (when the message animation is enabled)")
-    public static double messageAnimationEnvelopeHeight = 20;
+    private static double messageAnimationEnvelopeHeight = 20;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Color of the envelope (when the message animation is enabled)")
-    public static Color messageAnimationEnvelopeColor = Color.YELLOW;
+    private static Color messageAnimationEnvelopeColor = Color.YELLOW;
 
     // -------------------------------------------------------------------------
     // Diverse
     // -------------------------------------------------------------------------
     /** */
+    @Getter
+    @Setter
     @SectionInConfigFile("Diverse Settings")
     @OptionalInConfigFile("Show hints on how to further optimize the simulation when\n"
             + "some parameters seem not to be set optimally.")
-    public static boolean showOptimizationHints = true;
+    private static boolean showOptimizationHints = true;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Indicates whether the edges are drawn in the default\n"
             + "draw implementation for the graph.")
-    public static boolean drawEdges = true;
+    private static boolean drawEdges = true;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Indicates whether the nodes are drawn in the default\n"
             + "draw implementation for the graph.")
-    public static boolean drawNodes = true;
+    private static boolean drawNodes = true;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("The number of future events that are shown in the control\n" + "panel")
-    public static int shownEventQueueSize = 10;
+    private static int shownEventQueueSize = 10;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("Height of the output text field in pixels.")
-    public static int outputTextFieldHeight = 200;
+    private static int outputTextFieldHeight = 200;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("The length of the arrows. This length is multiplied by the current " + "zoomLevel.")
-    public static int arrowLength = 8;
+    private static int arrowLength = 8;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("The width of the arrows. This width is multiplied by the current " + "zoomLevel.")
-    public static int arrowWidth = 2;
+    private static int arrowWidth = 2;
 
     /** */
+    @Getter
+    @Setter
     @OptionalInConfigFile("The dsfault value of the rounds field.")
-    public static int defaultRoundNumber = 1;
+    private static int defaultRoundNumber = 1;
 
     /**
      * Indicates whether the three plotted frame lines are also exported to the eps
@@ -640,9 +782,9 @@ public class Configuration {
             edgeType = "sinalgo.nodes.edges.BidirectionalEdge";
         } else if (selectedType.contains(":")) { // edge specification of the form project:edgeName
             String[] modelParts = selectedType.split(":");
-            edgeType = Configuration.userProjectsPackage + "." + modelParts[0] + ".nodes.edges." + modelParts[1];
+            edgeType = Configuration.getUserProjectsPackage() + "." + modelParts[0] + ".nodes.edges." + modelParts[1];
         } else if (!selectedType.contains(".")) { // just the name of an edge (without '.') -> from the default project
-            edgeType = Configuration.defaultProjectPackage + ".nodes.edges." + selectedType;
+            edgeType = Configuration.getDefaultProjectPackage() + ".nodes.edges." + selectedType;
         } else { // the edge is given already in explicit form
             edgeType = selectedType;
             edgeTypeShortName = Global.toShortName(edgeType);
@@ -651,16 +793,7 @@ public class Configuration {
     }
 
     /**
-     * This method returns the current type of the edges.
-     *
-     * @return The type of the Edges.
-     */
-    public static String getEdgeType() {
-        return edgeType;
-    }
-
-    /**
-     * @return
+     * @return The short name for the current edge type.
      */
     public static String getEdgeTypeShortName() {
         return edgeTypeShortName;
@@ -676,7 +809,7 @@ public class Configuration {
         if (c.equals(String.class)) {
             return text;
         }
-        if (c.equals(java.awt.Color.class)) {
+        if (c.equals(Color.class)) {
             // try if it's the name of a system color, e.g. yellow, red, black, ...
             try {
                 Field f = Color.class.getDeclaredField(text.toLowerCase());
@@ -735,7 +868,7 @@ public class Configuration {
         if (o instanceof String) {
             return o.toString();
         }
-        if (o instanceof java.awt.Color) {
+        if (o instanceof Color) {
             Color c = (Color) o;
             return "r=" + c.getRed() + ",g=" + c.getGreen() + ",b=" + c.getBlue();
         }
@@ -916,21 +1049,27 @@ public class Configuration {
     /**
      * The name of this application.
      */
-    public static String appName = "Sinalgo";
+    @Getter
+    @Setter
+    private static String appName = "Sinalgo";
 
     /**
      * The folder where configurations, logs, etc. will be stored.
      */
-    public static String appConfigDir = System.getProperty("user.home", "") + "/." + appName.toLowerCase();
+    @Getter
+    @Setter
+    private static String appConfigDir = System.getProperty("user.home", "") + "/." + getAppName().toLowerCase();
 
     /**
      * The folder where the temporary files are generated
      */
-    public static String appTmpFolder = getTemporaryFolder();
+    @Getter
+    @Setter
+    private static String appTmpFolder = getTemporaryFolder();
 
     private static String getTemporaryFolder() {
         try {
-            return Files.createTempDirectory(appName.toLowerCase()).toString().replace(File.separatorChar, '/');
+            return Files.createTempDirectory(getAppName().toLowerCase()).toString().replace(File.separatorChar, '/');
         } catch (Exception e) {
             throw new SinalgoFatalException("Could not create a temporary working directory:\n\n" + e);
         }
@@ -939,56 +1078,76 @@ public class Configuration {
     /**
      * The directory where the logfiles are stored.
      */
-    public static String logFileDirectory = appConfigDir + "/logs";
+    @Getter
+    @Setter
+    private static String logFileDirectory = getAppConfigDir() + "/logs";
 
     /**
      * The path where user-specific projects are stored. This path has to be
      * postfixed with the users project name.
      */
-    public static String userProjectsPackage = "projects";
+    @Getter
+    @Setter
+    private static String userProjectsPackage = "projects";
 
     /**
      * The default project's name
      */
-    public static String defaultProjectName = "defaultProject";
+    @Getter
+    @Setter
+    private static String defaultProjectName = "defaultProject";
 
     /**
      * The path where the default project is stored.
      */
-    public static String defaultProjectPackage = userProjectsPackage + "." + defaultProjectName;
+    @Getter
+    @Setter
+    private static String defaultProjectPackage = getUserProjectsPackage() + "." + getDefaultProjectName();
 
     /**
      * The name of the description file in the project folder.
      */
-    public static String descriptionFileName = "description.txt";
+    @Getter
+    @Setter
+    private static String descriptionFileName = "description.txt";
 
     /**
      * The name of the description file in the project folder.
      */
-    public static String configfileFileName = "Config.xml";
+    @Getter
+    @Setter
+    private static String configfileFileName = "Config.xml";
 
     /**
      * The directory where the resources for sinalgo are stored;
      */
-    public static String sinalgoResourceDirPrefix = "sinalgo";
+    @Getter
+    @Setter
+    private static String sinalgoResourceDirPrefix = "sinalgo";
 
     /**
      * The directory where the images are stored. Remember to use the
      * ClassLoader.getResource() method to map the file name to a url, such that the
      * images can be accessed when they are stored in a jar file.
      */
-    public static String sinalgoImageDir = sinalgoResourceDirPrefix + "/images";
+    @Getter
+    @Setter
+    private static String sinalgoImageDir = getSinalgoResourceDirPrefix() + "/images";
 
     /**
      * The directory where the resources for the projects are stored
      */
-    public static String projectResourceDirPrefix = userProjectsPackage;
+    @Getter
+    @Setter
+    private static String projectResourceDirPrefix = getUserProjectsPackage();
 
     /**
      * A semicolon separated list of project names that should not be considered as
      * user-projects
      */
-    public static String nonUserProjectNames = "defaultProject;template";
+    @Getter
+    @Setter
+    private static String nonUserProjectNames = "defaultProject;template";
 
     /**
      * Assigns a value to the configuration file. This method should only be called
@@ -1003,13 +1162,21 @@ public class Configuration {
         if (fieldName.equals("edgeType")) { // special case for the 'edgeType'
             Configuration.setEdgeType(value);
         } else {
-            Field field = null;
+            String type = null;
             try {
-                field = Configuration.class.getField(fieldName);
+                Method setter = null;
+                Field field = Configuration.class.getDeclaredField(fieldName);
+                type = field.getType().getTypeName();
+                try {
+                    setter = new PropertyDescriptor(fieldName, Configuration.class).getWriteMethod();
+                } catch (IntrospectionException ignore) {
+                }
 
-                if (!Modifier.isPublic(field.getModifiers())) {
+                boolean useSetter = !Modifier.isPublic(field.getModifiers()) && setter != null;
+
+                if (!Modifier.isPublic(field.getModifiers()) && setter == null) {
                     throw new SinalgoFatalException("Error while parsing the configuration file: The entry '" + fieldName
-                            + "' in Configuration.java is not public.");
+                            + "' in Configuration.java is not public or has a setter method.");
                 }
                 if (!Modifier.isStatic(field.getModifiers())) {
                     throw new SinalgoFatalException("Error while parsing the configuration file: The entry '" + fieldName
@@ -1019,7 +1186,12 @@ public class Configuration {
                 // Integer
                 if (field.getType() == int.class) {
                     try {
-                        field.setInt(null, Integer.parseInt(value));
+                        int intValue = Integer.parseInt(value);
+                        if (useSetter) {
+                            setter.invoke(null, intValue);
+                        } else {
+                            field.setInt(null, intValue);
+                        }
                     } catch (NumberFormatException ex) {
                         throw new SinalgoFatalException("Error while parsing the specified parameters: Cannot convert '" + value
                                 + "' to an integer value for the configuration entry '" + fieldName + "'.");
@@ -1030,9 +1202,17 @@ public class Configuration {
                     // Parse boolean manually, as Boolean.parseBoolean(String) converts anything not
                     // 'false' to true.
                     if (value.compareTo("true") == 0) {
-                        field.setBoolean(null, true);
+                        if (useSetter) {
+                            setter.invoke(null, true);
+                        } else {
+                            field.setBoolean(null, true);
+                        }
                     } else if (value.compareTo("false") == 0) {
-                        field.setBoolean(null, false);
+                        if (useSetter) {
+                            setter.invoke(null, false);
+                        } else {
+                            field.setBoolean(null, false);
+                        }
                     } else {
                         throw new SinalgoFatalException("Error while parsing the specified parameters: Cannot convert '" + value
                                 + "' to a boolean value for the configuration entry '" + fieldName + "'.");
@@ -1041,7 +1221,12 @@ public class Configuration {
                 // Long
                 else if (field.getType() == long.class) {
                     try {
-                        field.setLong(null, Long.parseLong(value));
+                        long longValue = Long.parseLong(value);
+                        if (useSetter) {
+                            setter.invoke(null, longValue);
+                        } else {
+                            field.setLong(null, longValue);
+                        }
                     } catch (NumberFormatException ex) {
                         throw new SinalgoFatalException("Error while parsing the specified parameters: Cannot convert '" + value
                                 + "' to a long value for the configuration entry '" + fieldName + "'.");
@@ -1050,31 +1235,42 @@ public class Configuration {
                 // double
                 else if (field.getType() == double.class) {
                     try {
-                        field.setDouble(null, Double.parseDouble(value));
+                        double doubleValue = Double.parseDouble(value);
+                        if (useSetter) {
+                            setter.invoke(null, doubleValue);
+                        } else {
+                            field.setDouble(null, doubleValue);
+                        }
                     } catch (NumberFormatException ex) {
                         throw new SinalgoFatalException("Error while parsing the specified parameters: Cannot convert '" + value
                                 + "' to a double value for the configuration entry '" + fieldName + "'.");
                     }
                 } else {
                     try {
-                        field.set(null, textToObject(field.getType(), value));
+                        Object objectValue = textToObject(field.getType(), value);
+                        if (useSetter) {
+                            setter.invoke(null, objectValue);
+                        } else {
+                            field.set(null, objectValue);
+                        }
                     } catch (Exception e) {
                         throw new SinalgoFatalException("Error while parsing the configuration file: Cannot set the field '" + fieldName
-                                + "' of type '" + field.getType().getName() + "' to '" + value + "'." + "\n\n"
+                                + "' of type '" + type + "' to '" + value + "'." + "\n\n"
                                 + e.getMessage());
                     }
                 }
             } catch (NumberFormatException e) {
                 throw new SinalgoFatalException("Error while parsing the configuration file: Cannot set the field '" + fieldName
-                        + "' of type '" + field.getType().getName() + "' to '" + value
+                        + "' of type '" + type + "' to '" + value
                         + "'. Cannot convert the given value to the desired type:\n" + e);
             } catch (SecurityException | IllegalAccessException | IllegalArgumentException e) {
                 throw new SinalgoFatalException("Error while parsing the configuration file: Cannot set the field '" + fieldName
                         + "' to '" + value + "':\n" + e);
-            } catch (NoSuchFieldException e) {
+            } catch (NoSuchFieldException | InvocationTargetException e) {
                 throw new SinalgoFatalException("Invalid configuration file: " + "The field '" + fieldName
-                        + "' is not a valid framework entry as it is not " + "contained in Configuration.java. "
-                        + "Check the spelling of this field or " + "move it to the custom entries.");
+                        + "' is not a valid framework entry as it is not " + "contained in Configuration.java, "
+                        + "or there isn't a setter method for it. " + "Check the spelling of this field or "
+                        + "move it to the custom entries.");
 
             }
         }
@@ -1148,9 +1344,9 @@ public class Configuration {
         ps.println("------------------------------------------------------\n" + "Seed for Random Number Generators\n"
                 + "------------------------------------------------------");
 
-        if (Configuration.useSameSeedAsInPreviousRun) {
+        if (Configuration.isUseSameSeedAsInPreviousRun()) {
             ps.println(" The same seed as for the previous run: " + Distribution.getSeed());
-        } else if (Configuration.useFixedSeed) {
+        } else if (Configuration.isUseFixedSeed()) {
             ps.println(" Fixed seed: " + Distribution.getSeed());
         } else {
             ps.println(" Randomly selected seed: " + Distribution.getSeed());

@@ -62,11 +62,11 @@ public class Transformation2D extends PositionTransformation {
     @Override
     protected void onChangeZoomToFit(int width, int height) {
         int border = 1; // one pixel s.t. border is drawn in GUI
-        double newZoom = Math.min((double) (width - border) / Configuration.dimX,
-                (double) (height - border) / Configuration.dimY);
+        double newZoom = Math.min((double) (width - border) / Configuration.getDimX(),
+                (double) (height - border) / Configuration.getDimY());
         this.changeZoomFactor(newZoom);
-        this.dx = Math.max(0, (int) ((width - border - Configuration.dimX * newZoom) / 2));
-        this.dy = Math.max(0, (int) ((height - border - Configuration.dimY * newZoom) / 2));
+        this.dx = Math.max(0, (int) ((width - border - Configuration.getDimX() * newZoom) / 2));
+        this.dy = Math.max(0, (int) ((height - border - Configuration.getDimY() * newZoom) / 2));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class Transformation2D extends PositionTransformation {
     private void determineCenter() {
         this.translateToGUIPosition(0, 0, 0);
         int minX = Math.max(this.getGuiX(), 0), minY = Math.max(this.getGuiY(), 0);
-        this.translateToGUIPosition(Configuration.dimX, Configuration.dimY, Configuration.dimZ);
+        this.translateToGUIPosition(Configuration.getDimX(), Configuration.getDimY(), Configuration.getDimZ());
         int maxX = Math.min(this.getGuiX(), this.getWidth()), maxY = Math.min(this.getGuiY(), this.getHeight());
         this.centerX = (minX + maxX) / 2;
         this.centerY = (minY + maxY) / 2;
@@ -135,7 +135,7 @@ public class Transformation2D extends PositionTransformation {
 
     @Override
     public void drawBackground(Graphics g) {
-        this.translateToGUIPosition(Configuration.dimX, Configuration.dimY, Configuration.dimZ);
+        this.translateToGUIPosition(Configuration.getDimX(), Configuration.getDimY(), Configuration.getDimZ());
         g.setColor(Color.WHITE);
         g.fillRect(this.dx, this.dy, this.getGuiX() - this.dx, this.getGuiY() - this.dy);
         g.setColor(Color.BLACK);
@@ -153,7 +153,7 @@ public class Transformation2D extends PositionTransformation {
         // Configuration.dimZ);
         this.translateToGUIPosition(0, 0, 0);
         double x0 = this.getGuiXDouble(), y0 = this.getGuiYDouble();
-        this.translateToGUIPosition(Configuration.dimX, Configuration.dimY, 0);
+        this.translateToGUIPosition(Configuration.getDimX(), Configuration.getDimY(), 0);
         // draw the bounding box (black)
         ps.setColor(0, 0, 0);
         ps.drawLine(x0, y0, this.getGuiXDouble(), y0);
@@ -166,9 +166,9 @@ public class Transformation2D extends PositionTransformation {
 
     @Override
     public void drawZoomPanel(Graphics g, int side, int offsetX, int offsetY, int bgwidth, int bgheight) {
-        double ratio = Math.min((double) (side) / Configuration.dimX, (double) (side) / Configuration.dimY);
-        int offx = (int) (ratio * (Configuration.dimY - Configuration.dimX) / 2);
-        int offy = (int) (ratio * (Configuration.dimX - Configuration.dimY) / 2);
+        double ratio = Math.min((double) (side) / Configuration.getDimX(), (double) (side) / Configuration.getDimY());
+        int offx = (int) (ratio * (Configuration.getDimY() - Configuration.getDimX()) / 2);
+        int offy = (int) (ratio * (Configuration.getDimX() - Configuration.getDimY()) / 2);
         if (offx < 0) {
             offx = 0;
         }
@@ -179,27 +179,27 @@ public class Transformation2D extends PositionTransformation {
         offy += offsetY;
 
         g.setColor(new Color(0.8f, 0.8f, 0.8f));
-        g.fillRect(offx, offy, (int) (Configuration.dimX * ratio), (int) (Configuration.dimY * ratio));
+        g.fillRect(offx, offy, (int) (Configuration.getDimX() * ratio), (int) (Configuration.getDimY() * ratio));
         g.setColor(Color.BLACK);
-        g.drawRect(offx, offy, -1 + (int) (Configuration.dimX * ratio), -1 + (int) (Configuration.dimY * ratio));
+        g.drawRect(offx, offy, -1 + (int) (Configuration.getDimX() * ratio), -1 + (int) (Configuration.getDimY() * ratio));
 
         this.translateToGUIPosition(0, 0, 0);
         int leftX = this.getGuiX();
         int leftY = this.getGuiY();
-        this.translateToGUIPosition(Configuration.dimX, Configuration.dimY, Configuration.dimZ);
+        this.translateToGUIPosition(Configuration.getDimX(), Configuration.getDimY(), Configuration.getDimZ());
         int rightX = this.getGuiX();
         int rightY = this.getGuiY();
 
-        int ax = (int) (ratio * Configuration.dimX * (-leftX) / (rightX - leftX));
-        int ay = (int) (ratio * Configuration.dimY * (-leftY) / (rightY - leftY));
+        int ax = (int) (ratio * Configuration.getDimX() * (-leftX) / (rightX - leftX));
+        int ay = (int) (ratio * Configuration.getDimY() * (-leftY) / (rightY - leftY));
 
-        int bx = (int) (ratio * Configuration.dimX * (this.getWidth() - leftX) / (rightX - leftX));
-        int by = (int) (ratio * Configuration.dimY * (this.getHeight() - leftY) / (rightY - leftY));
+        int bx = (int) (ratio * Configuration.getDimX() * (this.getWidth() - leftX) / (rightX - leftX));
+        int by = (int) (ratio * Configuration.getDimY() * (this.getHeight() - leftY) / (rightY - leftY));
 
         ax = Math.max(0, ax);
         ay = Math.max(0, ay);
-        bx = Math.min((int) (ratio * Configuration.dimX - 1), bx);
-        by = Math.min((int) (ratio * Configuration.dimY - 1), by);
+        bx = Math.min((int) (ratio * Configuration.getDimX() - 1), bx);
+        by = Math.min((int) (ratio * Configuration.getDimY() - 1), by);
 
         g.setColor(Color.WHITE);
         g.fillRect(offx + ax, offy + ay, bx - ax, by - ay);
@@ -207,7 +207,7 @@ public class Transformation2D extends PositionTransformation {
         g.drawRect(offx + ax, offy + ay, bx - ax, by - ay);
 
         g.setColor(Color.BLACK);
-        g.drawRect(offx, offy, -1 + (int) (Configuration.dimX * ratio), -1 + (int) (Configuration.dimY * ratio));
+        g.drawRect(offx, offy, -1 + (int) (Configuration.getDimX() * ratio), -1 + (int) (Configuration.getDimY() * ratio));
 
         // shadeRect(g, offx + ax, offy + ay, bx - ax, by - ay);
         // shadeAllButRect(g, offx + ax, offy + ay, bx - ax, by - ay, bgwidth,

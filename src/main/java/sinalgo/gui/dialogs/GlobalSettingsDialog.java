@@ -88,7 +88,7 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
         JPanel settingsPanel = new JPanel();
         settingsPanel.setLayout(new BorderLayout());
 
-        this.testForUpdatesAtStartup.setSelected(AppConfig.getAppConfig().checkForSinalgoUpdate);
+        this.testForUpdatesAtStartup.setSelected(AppConfig.getAppConfig().isCheckForSinalgoUpdate());
         this.testForUpdatesAtStartup.addActionListener(this);
         settingsPanel.add(BorderLayout.LINE_START, this.testForUpdatesAtStartup);
 
@@ -127,7 +127,7 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
         } else if (event.getSource().equals(this.versionTest)) {
             VersionTester.testVersion(false, true);
         } else if (event.getSource().equals(this.testForUpdatesAtStartup)) {
-            AppConfig.getAppConfig().checkForSinalgoUpdate = this.testForUpdatesAtStartup.isSelected();
+            AppConfig.getAppConfig().setCheckForSinalgoUpdate(this.testForUpdatesAtStartup.isSelected());
             AppConfig.getAppConfig().writeConfig();
         }
     }

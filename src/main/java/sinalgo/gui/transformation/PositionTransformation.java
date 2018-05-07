@@ -439,10 +439,10 @@ public abstract class PositionTransformation {
     public static PositionTransformation loadFieldTransformator() {
         PositionTransformation result;
         String name;
-        if (Configuration.dimensions == 2) {
-            name = Configuration.guiPositionTransformation2D;
-        } else if (Configuration.dimensions == 3) {
-            name = Configuration.guiPositionTransformation3D;
+        if (Configuration.getDimensions() == 2) {
+            name = Configuration.getGuiPositionTransformation2D();
+        } else if (Configuration.getDimensions() == 3) {
+            name = Configuration.getGuiPositionTransformation3D();
         } else {
             throw new SinalgoFatalException(
                     "The 'dimensions' field in the configuration file is invalid. Valid values are either '2' for 2D or '3' for 3D. (Cannot create corresponding position transformation instance.)");

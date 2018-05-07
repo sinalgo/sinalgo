@@ -85,9 +85,9 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     private static AppConfig appConfig = AppConfig.getAppConfig();
 
     static { // static initialization
-        roundsToPerform.setText(String.valueOf(Configuration.defaultRoundNumber));
-        roundsToPerform.setEditable(appConfig.guiRunOperationIsLimited);
-        roundsToPerformLabel.setEnabled(appConfig.guiRunOperationIsLimited);
+        roundsToPerform.setText(String.valueOf(Configuration.getDefaultRoundNumber()));
+        roundsToPerform.setEditable(appConfig.isGuiRunOperationIsLimited());
+        roundsToPerformLabel.setEnabled(appConfig.isGuiRunOperationIsLimited());
     }
 
     /**
@@ -141,7 +141,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     protected JButton createFrameworkIconButton(String actionCommand, String imageName, String toolTip) {
         // To support jar files, we cannot access the file directly
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        String path = IOUtils.getAsPath(Configuration.sinalgoImageDir, imageName);
+        String path = IOUtils.getAsPath(Configuration.getSinalgoImageDir(), imageName);
         try {
             URL url = cldr.getResource(path);
             ImageIcon icon = new ImageIcon(url);
@@ -157,7 +157,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     protected ImageIcon getFrameworkIcon(String imageName) {
         // To support jar files, we cannot access the file directly
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        String path = IOUtils.getAsPath(Configuration.sinalgoImageDir, imageName);
+        String path = IOUtils.getAsPath(Configuration.getSinalgoImageDir(), imageName);
         try {
             URL url = cldr.getResource(path);
             return new ImageIcon(url);
@@ -356,7 +356,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
                         + "' is not a positive integer.\nThe refresh rate has to be a positive integer.");
                 return;
             }
-            Configuration.refreshRate = rr;
+            Configuration.setRefreshRate(rr);
         } catch (java.lang.NumberFormatException nFE) {
             Main.minorError("Invalid input: '" + refreshRate.getText() + "' is not a valid integer.");
             return;
@@ -534,7 +534,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     public void setRunType(boolean isLimited) {
         roundsToPerform.setEditable(isLimited);
         roundsToPerformLabel.setEnabled(isLimited);
-        appConfig.guiRunOperationIsLimited = isLimited;
+        appConfig.setGuiRunOperationIsLimited(isLimited);
         start.setIcon(this.getFrameworkIcon(this.getRunButtonImageName()));
     }
 
@@ -547,14 +547,14 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * current settings.
      */
     public String getRunButtonImageName() {
-        if (Configuration.handleEmptyEventQueue && Configuration.asynchronousMode) {
-            if (appConfig.guiRunOperationIsLimited) {
+        if (Configuration.isHandleEmptyEventQueue() && Configuration.isAsynchronousMode()) {
+            if (appConfig.isGuiRunOperationIsLimited()) {
                 return "refillrun.gif";
             } else {
                 return "refillrunforever.gif";
             }
         } else {
-            if (appConfig.guiRunOperationIsLimited) {
+            if (appConfig.isGuiRunOperationIsLimited()) {
                 return "run.gif";
             } else {
                 return "runforever.gif";
@@ -597,7 +597,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         protected JMenuItem runCount = new JMenuItem(
                 "Run Specified # of " + (Global.isAsynchronousMode ? "Events" : "Rounds"), ControlPanel.this.getFrameworkIcon("run.gif"));
         protected JCheckBoxMenuItem refillEventQueueMenuItem = new JCheckBoxMenuItem("Refill Event Queue",
-                Configuration.handleEmptyEventQueue);
+                Configuration.isHandleEmptyEventQueue());
 
         protected RunPopupMenu() {
             // if(appConfig.guiRunOperationIsLimited) {
@@ -605,7 +605,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
             // } else {
             this.add(this.runCount);
             // }
-            if (Configuration.asynchronousMode) {
+            if (Configuration.isAsynchronousMode()) {
                 this.addSeparator();
                 this.add(this.refillEventQueueMenuItem);
             }
@@ -621,7 +621,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
             } else if (e.getActionCommand().equals(this.runCount.getActionCommand())) {
                 ControlPanel.this.setRunType(true);
             } else if (e.getActionCommand().equals(this.refillEventQueueMenuItem.getActionCommand())) {
-                Configuration.handleEmptyEventQueue = this.refillEventQueueMenuItem.isSelected();
+                Configuration.setHandleEmptyEventQueue(this.refillEventQueueMenuItem.isSelected());
                 start.setIcon(ControlPanel.this.getFrameworkIcon(ControlPanel.this.getRunButtonImageName()));
             }
         }

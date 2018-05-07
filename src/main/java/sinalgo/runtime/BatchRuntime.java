@@ -57,7 +57,7 @@ public class BatchRuntime extends SinalgoRuntime {
             rounds = Long.MAX_VALUE;
         }
 
-        if (Configuration.asynchronousMode) {
+        if (Configuration.isAsynchronousMode()) {
             AsynchronousRuntimeThread arT = new AsynchronousRuntimeThread();
             arT.setNumberOfEvents(rounds);
             Global.isRunning = true;

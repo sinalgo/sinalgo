@@ -40,8 +40,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static BufferedInputStream getProjectTempConfigurationAsStream(String projectName) {
-        Path tempConfigFilePath = Paths.get(getAsPath(Configuration.appTmpFolder, Configuration.userProjectsPackage,
-                projectName, Configuration.configfileFileName + ".run"));
+        Path tempConfigFilePath = Paths.get(getAsPath(Configuration.getAppTmpFolder(), Configuration.getUserProjectsPackage(),
+                projectName, Configuration.getConfigfileFileName() + ".run"));
         if (Files.isReadable(tempConfigFilePath)) {
             try {
                 return new BufferedInputStream(Files.newInputStream(tempConfigFilePath));
@@ -63,8 +63,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static LineNumberReader getProjectTempConfigurationAsReader(String projectName) {
-        Path tempConfigFilePath = Paths.get(getAsPath(Configuration.appTmpFolder, Configuration.userProjectsPackage,
-                projectName, Configuration.configfileFileName + ".run"));
+        Path tempConfigFilePath = Paths.get(getAsPath(Configuration.getAppTmpFolder(), Configuration.getUserProjectsPackage(),
+                projectName, Configuration.getConfigfileFileName() + ".run"));
         if (Files.isReadable(tempConfigFilePath)) {
             try {
                 return new LineNumberReader(new InputStreamReader(Files.newInputStream(tempConfigFilePath)));
@@ -85,8 +85,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static BufferedInputStream getProjectConfigurationAsStream(String projectName) {
-        Path userConfigFilePath = Paths.get(getAsPath(Configuration.appConfigDir, Configuration.userProjectsPackage,
-                projectName, Configuration.configfileFileName));
+        Path userConfigFilePath = Paths.get(getAsPath(Configuration.getAppConfigDir(), Configuration.getUserProjectsPackage(),
+                projectName, Configuration.getConfigfileFileName()));
         if (Files.isReadable(userConfigFilePath)) {
             try {
                 return new BufferedInputStream(Files.newInputStream(userConfigFilePath));
@@ -95,7 +95,7 @@ public class IOUtils {
             }
         }
         try {
-            return getResourceAsStream(getAsPath(Configuration.projectResourceDirPrefix, projectName, Configuration.configfileFileName));
+            return getResourceAsStream(getAsPath(Configuration.getProjectResourceDirPrefix(), projectName, Configuration.getConfigfileFileName()));
         } catch (SinalgoFatalException e) {
             throw new SinalgoFatalException("Failed to read the default configuration file for project '" + projectName + "''");
         }
@@ -111,8 +111,8 @@ public class IOUtils {
      * @throws SinalgoFatalException if the file cannot be read
      */
     public static LineNumberReader getProjectConfigurationAsReader(String projectName) {
-        Path userConfigFilePath = Paths.get(getAsPath(Configuration.appConfigDir, Configuration.userProjectsPackage,
-                projectName, Configuration.configfileFileName));
+        Path userConfigFilePath = Paths.get(getAsPath(Configuration.getAppConfigDir(), Configuration.getUserProjectsPackage(),
+                projectName, Configuration.getConfigfileFileName()));
         if (Files.isReadable(userConfigFilePath)) {
             try {
                 return new LineNumberReader(new InputStreamReader((Files.newInputStream(userConfigFilePath))));
@@ -121,7 +121,7 @@ public class IOUtils {
             }
         }
         try {
-            return getResourceAsReader(getAsPath(Configuration.projectResourceDirPrefix, projectName, Configuration.configfileFileName));
+            return getResourceAsReader(getAsPath(Configuration.getProjectResourceDirPrefix(), projectName, Configuration.getConfigfileFileName()));
         } catch (SinalgoFatalException e) {
             throw new SinalgoFatalException("Failed to read the default configuration file for project '" + projectName + "''");
         }

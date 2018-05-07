@@ -99,14 +99,14 @@ public abstract class Distribution {
     public static Random getRandom() {
         // construct the singleton random object if it does not yet exist
         if (randomGenerator == null) {
-            if (Configuration.useSameSeedAsInPreviousRun) {
-                randomSeed = AppConfig.getAppConfig().seedFromLastRun;
+            if (Configuration.isUseSameSeedAsInPreviousRun()) {
+                randomSeed = AppConfig.getAppConfig().getSeedFromLastRun();
             } else {
-                if (Configuration.useFixedSeed) {
-                    randomSeed = Configuration.fixedSeed;
+                if (Configuration.isUseFixedSeed()) {
+                    randomSeed = Configuration.getFixedSeed();
                 } else {
                     randomSeed = (new java.util.Random()).nextLong();
-                    Configuration.fixedSeed = randomSeed;
+                    Configuration.setFixedSeed(randomSeed);
                 }
             }
             randomGenerator = new Random(randomSeed); // use a random seed

@@ -90,9 +90,9 @@ public class Line2D extends DistributionModel {
             }
         } else { // default horizontal line
             this.dy = 0;
-            this.dx = ((double) Configuration.dimX) / (this.numberOfNodes + 1);
+            this.dx = ((double) Configuration.getDimX()) / (this.numberOfNodes + 1);
             this.previousPositionX = 0;
-            this.previousPositionY = Configuration.dimY / 2;
+            this.previousPositionY = Configuration.getDimY() / 2;
         }
     }
 

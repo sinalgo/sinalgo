@@ -90,8 +90,8 @@ public class Map {
         } catch (IOException e) {
             throw new FileNotFoundException("Background map: Cannot open the image file\n" + e.getMessage());
         }
-        this.xRatio = ((double) this.imgWidth) / Configuration.dimX;
-        this.yRatio = ((double) this.imgHeight) / Configuration.dimY;
+        this.xRatio = ((double) this.imgWidth) / Configuration.getDimX();
+        this.yRatio = ((double) this.imgHeight) / Configuration.getDimY();
     }
 
     /**

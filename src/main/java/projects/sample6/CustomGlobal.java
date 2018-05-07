@@ -132,8 +132,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
         Vector<TreeNode> toProcess2 = new Vector<>();
         Vector<TreeNode> swap;
 
-        double dx = ((double) Configuration.dimX) / (numLeaves + 1); // distance between two leaf-nodes
-        double posY = Configuration.dimY - 30; // y-offset of all leave nodes
+        double dx = ((double) Configuration.getDimX()) / (numLeaves + 1); // distance between two leaf-nodes
+        double posY = Configuration.getDimY() - 30; // y-offset of all leave nodes
 
         // create the leaves (incl. assigning their position)
         for (int i = 0; i < numLeaves; i++) {

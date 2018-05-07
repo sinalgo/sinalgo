@@ -101,7 +101,7 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
             if (p.getArrivingTime() <= Global.currentTime) {
 
                 // only if added
-                if (Configuration.interference) {
+                if (Configuration.isInterference()) {
                     // remove it from the global queue
                     SinalgoRuntime.packetsInTheAir.remove(p);
                 }
@@ -115,7 +115,7 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
                     this.arrivingPackets.add(p);
                 } else {
                     // failed transmission, drop the package
-                    if (Configuration.generateNAckMessages) {
+                    if (Configuration.isGenerateNAckMessages()) {
                         p.getOrigin().addNackPacket(p); // return the packet to the sender
                     } else {
                         Packet.free(p);

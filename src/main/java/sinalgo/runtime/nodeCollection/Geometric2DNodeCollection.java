@@ -109,8 +109,8 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
         }
 
         // the size of the playground
-        this.xDim = (int) Math.ceil(Configuration.dimX / this.rMax);
-        this.yDim = (int) Math.ceil(Configuration.dimY / this.rMax);
+        this.xDim = (int) Math.ceil(Configuration.getDimX() / this.rMax);
+        this.yDim = (int) Math.ceil(Configuration.getDimY() / this.rMax);
 
         this.lists = new DLLNodeList[this.xDim][this.yDim];
         for (int i = 0; i < this.xDim; i++) {

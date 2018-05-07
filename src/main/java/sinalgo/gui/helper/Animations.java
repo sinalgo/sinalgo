@@ -29,8 +29,8 @@ public class Animations {
      * @param scale How much the envelope should be scaled.
      */
     private static void drawEnvelope(Graphics g, int x, int y, double scale, Color color) {
-        int width = (int) (scale * Configuration.messageAnimationEnvelopeWidth);
-        int height = (int) (scale * Configuration.messageAnimationEnvelopeHeight);
+        int width = (int) (scale * Configuration.getMessageAnimationEnvelopeWidth());
+        int height = (int) (scale * Configuration.getMessageAnimationEnvelopeHeight());
         int topX = x - width / 2;
         int topY = y - height / 2;
         g.setColor(color);
@@ -64,7 +64,7 @@ public class Animations {
                 pt.translateToGUIPosition(x, y, z);
                 Color c = p.getMessage().getEnvelopeColor(); // may return null, in which case the default color is chosen
                 if (c == null) {
-                    c = Configuration.messageAnimationEnvelopeColor;
+                    c = Configuration.getMessageAnimationEnvelopeColor();
                 }
                 drawEnvelope(g, pt.getGuiX(), pt.getGuiY(), pt.getZoomFactor(), c);
             }

@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.jdom2.Comment;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -57,6 +60,7 @@ import sinalgo.io.IOUtils;
 import sinalgo.io.xml.XMLParser;
 import sinalgo.runtime.Global;
 import sinalgo.runtime.Main;
+import sinalgo.tools.Tuple;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -72,6 +76,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -83,7 +89,12 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Vector;
 
 /**
@@ -151,18 +162,18 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         this.addComponentListener(new ComponentListener() {
 
-            int oldX = ProjectSelector.this.appConfig.projectSelectorWindowPosX, oldY = ProjectSelector.this.appConfig.projectSelectorWindowPosY;
+            int oldX = ProjectSelector.this.appConfig.getProjectSelectorWindowPosX(), oldY = ProjectSelector.this.appConfig.getProjectSelectorWindowPosY();
 
             @Override
             public void componentResized(ComponentEvent e) {
                 if (ProjectSelector.this.getExtendedState() == Frame.MAXIMIZED_BOTH) {
-                    ProjectSelector.this.appConfig.projectSelectorIsMaximized = true;
-                    ProjectSelector.this.appConfig.projectSelectorWindowPosX = this.oldX;
-                    ProjectSelector.this.appConfig.projectSelectorWindowPosY = this.oldY;
+                    ProjectSelector.this.appConfig.setProjectSelectorIsMaximized(true);
+                    ProjectSelector.this.appConfig.setProjectSelectorWindowPosX(this.oldX);
+                    ProjectSelector.this.appConfig.setProjectSelectorWindowPosY(this.oldY);
                 } else {
-                    ProjectSelector.this.appConfig.projectSelectorIsMaximized = false;
-                    ProjectSelector.this.appConfig.projectSelectorWindowWidth = ProjectSelector.this.getWidth();
-                    ProjectSelector.this.appConfig.projectSelectorWindowHeight = ProjectSelector.this.getHeight();
+                    ProjectSelector.this.appConfig.setProjectSelectorIsMaximized(false);
+                    ProjectSelector.this.appConfig.setProjectSelectorWindowWidth(ProjectSelector.this.getWidth());
+                    ProjectSelector.this.appConfig.setProjectSelectorWindowHeight(ProjectSelector.this.getHeight());
                 }
                 ProjectSelector.this.customParameters.setSize(100, ProjectSelector.this.customParameters.getHeight());
                 // needed to ensure that the text field shrinks as well
@@ -170,10 +181,10 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                this.oldX = ProjectSelector.this.appConfig.projectSelectorWindowPosX;
-                this.oldY = ProjectSelector.this.appConfig.projectSelectorWindowPosY;
-                ProjectSelector.this.appConfig.projectSelectorWindowPosX = ProjectSelector.this.getX();
-                ProjectSelector.this.appConfig.projectSelectorWindowPosY = ProjectSelector.this.getY();
+                this.oldX = ProjectSelector.this.appConfig.getProjectSelectorWindowPosX();
+                this.oldY = ProjectSelector.this.appConfig.getProjectSelectorWindowPosY();
+                ProjectSelector.this.appConfig.setProjectSelectorWindowPosX(ProjectSelector.this.getX());
+                ProjectSelector.this.appConfig.setProjectSelectorWindowPosY(ProjectSelector.this.getY());
             }
 
             @Override
@@ -194,7 +205,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
             @Override
             public void windowClosing(WindowEvent e) {
-                ProjectSelector.this.appConfig.projectSelectorSelectedTab = 1 + ProjectSelector.this.right.getSelectedIndex();
+                ProjectSelector.this.appConfig.setProjectSelectorSelectedTab(1 + ProjectSelector.this.right.getSelectedIndex());
                 ProjectSelector.this.appConfig.writeConfig();
             }
 
@@ -221,17 +232,17 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         this.setLayout(new BorderLayout());
         this.setResizable(true);
-        if (this.appConfig.projectSelectorIsMaximized) {
+        if (this.appConfig.isProjectSelectorIsMaximized()) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         }
-        this.setSize(new Dimension(this.appConfig.projectSelectorWindowWidth, this.appConfig.projectSelectorWindowHeight));
-        this.setLocation(this.appConfig.projectSelectorWindowPosX, this.appConfig.projectSelectorWindowPosY);
+        this.setSize(new Dimension(this.appConfig.getProjectSelectorWindowWidth(), this.appConfig.getProjectSelectorWindowHeight()));
+        this.setLocation(this.appConfig.getProjectSelectorWindowPosX(), this.appConfig.getProjectSelectorWindowPosY());
 
         JPanel left = new JPanel();
         left.setLayout(new BorderLayout());
         // List of all projects
         this.selection.setListData(projects);
-        this.selection.setSelectedValue(this.appConfig.lastChosenProject, true);
+        this.selection.setSelectedValue(this.appConfig.getLastChosenProject(), true);
         if (!this.selection.isSelectionEmpty()) {
             this.selectedProjectName = (String) this.selection.getSelectedValue();
         } else {
@@ -315,7 +326,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         this.right.setMnemonicAt(0, java.awt.event.KeyEvent.VK_D);
         this.right.setMnemonicAt(1, java.awt.event.KeyEvent.VK_F);
         this.right.setMnemonicAt(2, java.awt.event.KeyEvent.VK_P);
-        this.right.setSelectedIndex(this.appConfig.projectSelectorSelectedTab - 1);
+        this.right.setSelectedIndex(this.appConfig.getProjectSelectorSelectedTab() - 1);
 
         if (i == -1) {
             JTextField msg = new JTextField("Please select a project.");
@@ -349,7 +360,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      */
     protected JButton createFrameworkIconButton(String actionCommand, String imageName, String toolTip) {
         // To support jar files, we cannot access the file directly
-        String path = IOUtils.getAsPath(Configuration.sinalgoImageDir, imageName);
+        String path = IOUtils.getAsPath(Configuration.getSinalgoImageDir(), imageName);
         try {
             InputStream is = IOUtils.getResourceAsStream(path);
             ImageIcon icon = new ImageIcon(ImageIO.read(is));
@@ -377,7 +388,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      */
     private void generateGUIDescription(String projectName) {
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        InputStream proj = cldr.getResourceAsStream(IOUtils.getAsPath(Configuration.projectResourceDirPrefix, projectName, Configuration.descriptionFileName));
+        InputStream proj = cldr.getResourceAsStream(IOUtils.getAsPath(Configuration.getProjectResourceDirPrefix(), projectName, Configuration.getDescriptionFileName()));
         try {
             if (proj == null) {
                 this.descriptionText.setText("There is no description-file in the currently selected project.");
@@ -482,18 +493,28 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         this.projectEntries = new Vector<>();
 
-        String sectionName;
-
         Class<?> configClass = Configuration.class;
         // We assume here that the fields are returned in the order they are listed in
         // the java file!
-        Field[] fields = configClass.getDeclaredFields();
-        for (Field field : fields) {
+
+        boolean finalConfigExists = configExists;
+        Element finalFrameworkElement = frameworkElement;
+        Arrays.stream(configClass.getDeclaredFields()).map(f -> {
+            try {
+                return new Tuple<>(f, new PropertyDescriptor(f.getName(), configClass));
+            } catch (IntrospectionException e) {
+                return new Tuple<Field, PropertyDescriptor>(f, null);
+            }
+        }).forEach(pd -> {
             try {
                 // read the annotations for this field
+                Field field = pd.getFirst();
+                Method getter = Optional.ofNullable(pd.getSecond()).map(PropertyDescriptor::getReadMethod).orElse(null);
+                boolean useGetter = !Modifier.isPublic(field.getModifiers()) && getter != null;
                 Configuration.DefaultInConfigFile dan = field.getAnnotation(Configuration.DefaultInConfigFile.class);
                 Configuration.OptionalInConfigFile oan = field.getAnnotation(Configuration.OptionalInConfigFile.class);
                 Configuration.SectionInConfigFile san = field.getAnnotation(Configuration.SectionInConfigFile.class);
+                String sectionName;
                 if (dan != null || oan != null) {
                     if (san != null) { // get the title
                         sectionName = san.value();
@@ -503,16 +524,17 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     String description = dan != null ? dan.value() : oan.value(); // the description text
                     // test whether the XML file contains an entry for this field
                     String value = null;
-                    if (configExists) {
-                        Element e = frameworkElement.getChild(field.getName());
+                    if (finalConfigExists) {
+                        Element e = finalFrameworkElement.getChild(field.getName());
                         if (e != null) {
                             value = e.getAttributeValue("value"); // null if not there
                         }
                     }
                     if (value == null) {
+                        Object fieldValue = useGetter ? getter.invoke(null) : field.get(null);
                         // there was no entry in the config-file. Take the default value.
                         this.projectEntries.add(
-                                new ConfigEntry(field.getName(), Configuration.getConfigurationText(field.get(null)),
+                                new ConfigEntry(field.getName(), Configuration.getConfigurationText(fieldValue),
                                         field.getType(), description, oan != null, field));
                     } else { // there is an entry in the XML file
                         this.projectEntries.add(new ConfigEntry(field.getName(), value, field.getType(), description,
@@ -522,8 +544,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     // NOTE: the edgeType member does not carry any annotations (exception)
                     String comment = "The default type of edges to be used";
                     String value = null;
-                    if (configExists) {
-                        Element e = frameworkElement.getChild(field.getName());
+                    if (finalConfigExists) {
+                        Element e = finalFrameworkElement.getChild(field.getName());
                         if (e != null) {
                             value = e.getAttributeValue("value"); // null if not there
                         }
@@ -533,88 +555,89 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                         this.projectEntries.add(new ConfigEntry(field.getName(), Configuration.getEdgeType(),
                                 field.getType(), comment, oan != null, field));
                     } else {
-                        this.projectEntries.add(
-                                new ConfigEntry(field.getName(), value, field.getType(), comment, oan != null, field));
+                        this.projectEntries.add(new ConfigEntry(field.getName(), value,
+                                field.getType(), comment, oan != null, field));
                     }
                 }
-            } catch (IllegalArgumentException | IllegalAccessException e) {
+            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
                 throw new SinalgoWrappedException(e);
             }
-        }
+        });
+
 
         // for each entry, create the corresponding GUI components
 
         this.asynchronousSimulationCB = null;
         this.mobilityCB = null;
         for (ConfigEntry e : this.projectEntries) {
-            String ttt = e.comment.equals("") ? null : e.comment; // the tool tip text, don't show at all, if no text to
+            String ttt = e.getComment().equals("") ? null : e.getComment(); // the tool tip text, don't show at all, if no text to
             // display
 
             // creating the text field
             UnborderedJTextField label;
-            if (e.entryClass == Configuration.SectionInConfigFile.class) {
-                label = new UnborderedJTextField(e.key, Font.BOLD);
+            if (e.getEntryClass() == Configuration.SectionInConfigFile.class) {
+                label = new UnborderedJTextField(e.getKey(), Font.BOLD);
             } else {
-                label = new UnborderedJTextField("         " + e.key, Font.PLAIN);
+                label = new UnborderedJTextField("         " + e.getKey(), Font.PLAIN);
             }
             label.setToolTipText(ttt);
-            e.textComponent = label;
+            e.setTextComponent(label);
 
-            if (e.entryClass == boolean.class) {
+            if (e.getEntryClass() == boolean.class) {
                 String[] ch = {"true", "false"};
                 MultiLineToolTipJComboBox booleanChoice = new MultiLineToolTipJComboBox(ch);
-                if ((e.value).compareTo("true") != 0) {
+                if ((e.getValue()).compareTo("true") != 0) {
                     booleanChoice.setSelectedItem("false");
                 } else {
                     booleanChoice.setSelectedItem("true");
                 }
                 booleanChoice.addActionListener(this.userInputListener); // ! add this listener AFTER setting the value!
                 booleanChoice.setToolTipText(ttt);
-                e.valueComponent = booleanChoice;
+                e.setValueComponent(booleanChoice);
                 // special case: mobility can only be changed if simulation is in sync mode.
-                if (e.key.equals("asynchronousMode")) {
+                if (e.getKey().equals("asynchronousMode")) {
                     this.asynchronousSimulationCB = booleanChoice;
-                    if (this.mobilityCB != null && (e.value).equals("true")) {
+                    if (this.mobilityCB != null && (e.getValue()).equals("true")) {
                         this.mobilityCB.setSelectedItem("false");
                         this.mobilityCB.setEnabled(false);
                     }
                 }
-                if (e.key.equals("mobility")) {
+                if (e.getKey().equals("mobility")) {
                     this.mobilityCB = booleanChoice;
                     if (this.asynchronousSimulationCB != null && "true".equals(this.asynchronousSimulationCB.getSelectedItem())) {
                         this.mobilityCB.setSelectedItem("false");
                         this.mobilityCB.setEnabled(false);
                     }
                 }
-            } else if (e.entryClass == Configuration.SectionInConfigFile.class) {
-                e.valueComponent = null; // there's no component for the section
+            } else if (e.getEntryClass() == Configuration.SectionInConfigFile.class) {
+                e.setValueComponent(null); // there's no component for the section
             } else {
                 // special case for some text fields that expect the name of an implementation.
                 // They should show the available implementations in a drop down field
-                ImplementationChoiceInConfigFile ian = e.field.getAnnotation(ImplementationChoiceInConfigFile.class);
+                ImplementationChoiceInConfigFile ian = e.getField().getAnnotation(ImplementationChoiceInConfigFile.class);
                 if (ian != null) {
                     Vector<String> ch = Global.getImplementations(ian.value(), true);
                     MultiLineToolTipJComboBox choice = new MultiLineToolTipJComboBox(ch);
                     choice.setEditable(true); // let the user the freedom to enter other stuff (which is likely to be
                     // wrong...)
-                    choice.setSelectedItem(e.value);
+                    choice.setSelectedItem(e.getValue());
                     choice.addActionListener(this.userInputListener); // ! add this listener AFTER setting the value!
                     choice.setToolTipText(ttt);
-                    e.valueComponent = choice;
+                    e.setValueComponent(choice);
                 } else {
-                    if (e.key.equals("javaCmd")) { // special case - this field may contain a lot of text
-                        JTextArea textArea = new MultiLineToolTipJTextArea(e.value);
+                    if (e.getKey().equals("javaCmd")) { // special case - this field may contain a lot of text
+                        JTextArea textArea = new MultiLineToolTipJTextArea(e.getValue());
                         textArea.setToolTipText(ttt);
                         textArea.setBorder((new JTextField()).getBorder()); // copy the border
                         textArea.setLineWrap(true);
                         // textArea.setPreferredSize(new Dimension(50, 30));
                         textArea.addKeyListener(this.userInputListener);
-                        e.valueComponent = textArea;
+                        e.setValueComponent(textArea);
                     } else {
-                        MultiLineToolTipJTextField textField = new MultiLineToolTipJTextField(e.value);
+                        MultiLineToolTipJTextField textField = new MultiLineToolTipJTextField(e.getValue());
                         textField.setToolTipText(ttt);
                         textField.addKeyListener(this.userInputListener);
-                        e.valueComponent = textField;
+                        e.setValueComponent(textField);
                     }
                 }
             }
@@ -682,23 +705,23 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         int numEntryTableLines = 0; // count number of rows added to entryTable
 
         for (ConfigEntry e : this.projectEntries) {
-            if (e.valueComponent == null) { // it's a title
+            if (e.getValueComponent() == null) { // it's a title
                 title = e;
                 continue;
             }
-            if (e.isOptional && !this.showOptionalFields) {
+            if (e.isOptional() && !this.showOptionalFields) {
                 continue;
             }
             if (title != null) { // first print the title
-                entryTable.add(title.textComponent);
-                MultiLineToolTipJTextField textField = new MultiLineToolTipJTextField(e.value);
+                entryTable.add(title.getTextComponent());
+                MultiLineToolTipJTextField textField = new MultiLineToolTipJTextField(e.getValue());
                 textField.setVisible(false); // add a place-holder
                 entryTable.add(textField);
                 title = null;
                 numEntryTableLines++;
             }
-            entryTable.add(e.textComponent);
-            entryTable.add(e.valueComponent);
+            entryTable.add(e.getTextComponent());
+            entryTable.add(e.getValueComponent());
             numEntryTableLines++;
         }
         NonRegularGridLayout nrgl = new NonRegularGridLayout(numEntryTableLines, 2, 5, 2);
@@ -747,19 +770,19 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         custom.addContent(new Element("_xml_custom_")); // this tag will be replaced by the config text in a second step
 
         for (ConfigEntry e : this.projectEntries) {
-            if (e.valueComponent != null) { // there is a value field in the GUI
-                if (!Objects.equals("", e.comment)) { // the comment is not "", add it
-                    framework.addContent(new Comment(e.comment.replace("\n", " "))); // without the newline chars
+            if (e.getValueComponent() != null) { // there is a value field in the GUI
+                if (!Objects.equals("", e.getComment())) { // the comment is not "", add it
+                    framework.addContent(new Comment(e.getComment().replace("\n", " "))); // without the newline chars
                 }
                 // get the value of this entry from the GUI
                 String value = "";
-                if (e.valueComponent instanceof JComboBox) {
-                    value = (String) ((JComboBox) e.valueComponent).getSelectedItem();
-                } else if (e.valueComponent instanceof JTextComponent) {
-                    value = ((JTextComponent) e.valueComponent).getText();
+                if (e.getValueComponent() instanceof JComboBox) {
+                    value = (String) ((JComboBox) e.getValueComponent()).getSelectedItem();
+                } else if (e.getValueComponent() instanceof JTextComponent) {
+                    value = ((JTextComponent) e.getValueComponent()).getText();
                 }
                 // create and add a new entry in the XML file
-                Element elem = new Element(e.key);
+                Element elem = new Element(e.getKey());
                 elem.setAttribute("value", value);
                 framework.addContent(elem);
                 framework.addContent(new Element("_xml_NL_")); // after each entry, we would like a new-line in the
@@ -770,7 +793,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 // - - - - ";
                 String line = "***********************************************************************";
                 framework.addContent(new Comment(line));
-                StringBuilder name = new StringBuilder("  " + e.key);
+                StringBuilder name = new StringBuilder("  " + e.getKey());
                 while (name.length() < line.length()) { // fill the name with spaces s.t. the '-->' are aligned
                     name.append(" ");
                 }
@@ -780,20 +803,20 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         }
 
         String outputPath = IOUtils.getAsPath(
-                (isTemporary ? Configuration.appTmpFolder : Configuration.appConfigDir),
-                Configuration.userProjectsPackage, this.selectedProjectName);
+                (isTemporary ? Configuration.getAppTmpFolder() : Configuration.getAppConfigDir()),
+                Configuration.getUserProjectsPackage(), this.selectedProjectName);
         IOUtils.createDir(outputPath);
-        File outputFile = new File(IOUtils.getAsPath(outputPath, Configuration.configfileFileName + (isTemporary ? ".run" : "")));
+        File outputFile = new File(IOUtils.getAsPath(outputPath, Configuration.getConfigfileFileName() + (isTemporary ? ".run" : "")));
 
         // And write the xml tree to the file
         XMLOutputter outputter = new XMLOutputter();
         Format f = Format.getPrettyFormat();
         f.setIndent("\t");
         outputter.setFormat(f);
-        String tempOutputFolder = IOUtils.getAsPath(Configuration.appTmpFolder,
-                Configuration.userProjectsPackage, this.selectedProjectName);
+        String tempOutputFolder = IOUtils.getAsPath(Configuration.getAppTmpFolder(),
+                Configuration.getUserProjectsPackage(), this.selectedProjectName);
         IOUtils.createDir(tempOutputFolder);
-        File tempOutputFile = new File(IOUtils.getAsPath(tempOutputFolder, Configuration.configfileFileName + ".temp"));
+        File tempOutputFile = new File(IOUtils.getAsPath(tempOutputFolder, Configuration.getConfigfileFileName() + ".temp"));
 
         try (FileWriter fW = new FileWriter(tempOutputFile)) {
             outputter.output(doc, fW);
@@ -837,16 +860,16 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      */
     private void setFrameworkConfig() {
         for (ConfigEntry e : this.projectEntries) {
-            if (e.valueComponent == null) {
+            if (e.getValueComponent() == null) {
                 continue; // this entry does not have a value - its probably a section header
             }
             String value;
-            if (e.valueComponent instanceof JComboBox) {
-                value = (String) ((JComboBox) e.valueComponent).getSelectedItem();
+            if (e.getValueComponent() instanceof JComboBox) {
+                value = (String) ((JComboBox) e.getValueComponent()).getSelectedItem();
             } else {
-                value = ((JTextComponent) e.valueComponent).getText();
+                value = ((JTextComponent) e.getValueComponent()).getText();
             }
-            Configuration.setFrameworkConfigurationEntry(e.key, value);
+            Configuration.setFrameworkConfigurationEntry(e.getKey(), value);
         }
     }
 
@@ -893,7 +916,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 if (!this.selectedProjectName.equals("defaultProject")) {
                     Global.projectName = this.selectedProjectName;
                     Global.useProject = true;
-                    this.appConfig.lastChosenProject = Global.projectName;
+                    this.appConfig.setLastChosenProject(Global.projectName);
                 }
 
                 Element customEle = customDoc.getRootElement().getChild("Custom");
@@ -909,7 +932,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 // reset the tooltip dismiss delay to the default value
                 ToolTipManager.sharedInstance().setDismissDelay(this.defaultTooltipDismissDelay);
 
-                this.appConfig.projectSelectorSelectedTab = 1 + this.right.getSelectedIndex();
+                this.appConfig.setProjectSelectorSelectedTab(1 + this.right.getSelectedIndex());
                 this.appConfig.writeConfig(); // write the config, s.t. when the main application crashes, at least the
                 // project selector config is preserved
                 this.storeConfig(true); // store the config to a file s.t. the simulation process can read it
@@ -937,7 +960,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     return;
                 }
             }
-            this.appConfig.projectSelectorSelectedTab = 1 + this.right.getSelectedIndex();
+            this.appConfig.setProjectSelectorSelectedTab(1 + this.right.getSelectedIndex());
             this.appConfig.writeConfig();
             System.exit(1);
         } else if (e.getSource().equals(this.collapse)) { // --------------------------------------------------------------------
@@ -1035,66 +1058,54 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         }
     }
 
+    @Getter
+    @Setter
+    @RequiredArgsConstructor
     private class ConfigEntry {
 
         /**
          * The key of the Pair.
          */
-        public String key;
+        private final String key;
+
         /**
          * The value of the Pair.
          */
-        public String value;
+        private final String value;
 
         /**
          * The class of the ConfigEntry.
          */
-        public Class<?> entryClass;
+        private final Class<?> entryClass;
 
         /**
          * The comment for the entry.
          */
-        public String comment;
+        private final String comment;
 
         /**
          * True if the entry is only shown in the extended settings
          */
-        public boolean isOptional;
+        private final boolean isOptional;
 
         /**
          * The variable-field of the config file (to access the annotations)
          */
-        public Field field;
+        private final Field field;
 
         /**
          * The GUI component for this entry that holds the value for this entry. This
          * member is set only when the GUI is created, and may remain NULL when this
          * entry does not have a value field (e.g. a comment, or section header)
          */
-        public JComponent valueComponent = null;
+        private JComponent valueComponent = null;
 
         /**
          * The GUI component for this entry that holds the text for this entry. This
          * member is set only when the GUI is created.
          */
-        public JComponent textComponent = null;
+        private JComponent textComponent = null;
 
-        /**
-         * Constructor for the Pair-class.
-         *
-         * @param k       The key to store.
-         * @param v       The value to store.
-         * @param c       The class of the entry.
-         * @param comment The comment for the entry.
-         */
-        private ConfigEntry(String k, String v, Class<?> c, String comment, boolean isOptional, Field field) {
-            this.key = k;
-            this.value = v;
-            this.entryClass = c;
-            this.comment = comment;
-            this.isOptional = isOptional;
-            this.field = field;
-        }
     }
 
     // private class MouseWheelForwarder implements MouseWheelListener{

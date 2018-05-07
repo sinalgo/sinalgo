@@ -10,7 +10,12 @@ import sinalgo.nodes.Position;
 import sinalgo.tools.Tools;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.PrintStream;
 
 /**
  * @author rflury
@@ -37,7 +42,7 @@ public class PositionFileIO {
                 name = fc.getSelectedFile().getAbsolutePath();
                 String p = name;
                 p = p.substring(0, p.length() - fc.getSelectedFile().getName().length()); // remember the selected path
-                AppConfig.getAppConfig().lastSelectedFileDirectory = p;
+                AppConfig.getAppConfig().setLastSelectedFileDirectory(p);
             } else {
                 return false; // (aborted)
             }
@@ -84,7 +89,7 @@ public class PositionFileIO {
             name = fc.getSelectedFile().getPath();
             String p = name;
             p = p.substring(0, p.length() - fc.getSelectedFile().getName().length()); // remember the selected path
-            AppConfig.getAppConfig().lastSelectedFileDirectory = p;
+            AppConfig.getAppConfig().setLastSelectedFileDirectory(p);
         } else {
             name = fileName;
         }

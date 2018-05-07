@@ -12,7 +12,7 @@ public class GuiHelper {
 
     public static ImageIcon getIcon(String fileName) {
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        URL url = cldr.getResource(IOUtils.getAsPath(Configuration.sinalgoImageDir, fileName));
+        URL url = cldr.getResource(IOUtils.getAsPath(Configuration.getSinalgoImageDir(), fileName));
         if (url != null) {
             return new ImageIcon(url);
         }
@@ -27,7 +27,7 @@ public class GuiHelper {
     public static void setWindowIcon(JFrame frame) {
         // set the icon
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        URL url = cldr.getResource(IOUtils.getAsPath(Configuration.sinalgoImageDir, "sinalgo.png"));
+        URL url = cldr.getResource(IOUtils.getAsPath(Configuration.getSinalgoImageDir(), "sinalgo.png"));
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
             try {
@@ -46,7 +46,7 @@ public class GuiHelper {
      */
     public static void setWindowIcon(Window w) {
         ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        URL url = cldr.getResource(IOUtils.getAsPath(Configuration.sinalgoImageDir, "sinalgo.png"));
+        URL url = cldr.getResource(IOUtils.getAsPath(Configuration.getSinalgoImageDir(), "sinalgo.png"));
         if (url != null) {
             ImageIcon ii = new ImageIcon(url);
             if (w instanceof JFrame) {

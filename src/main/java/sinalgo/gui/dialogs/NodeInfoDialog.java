@@ -147,7 +147,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
 
         position.add(this.positionX);
         position.add(this.positionY);
-        if (Configuration.dimensions == 3) {
+        if (Configuration.getDimensions() == 3) {
             position.add(this.positionZ);
         }
 

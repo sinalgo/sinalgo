@@ -69,20 +69,20 @@ public class Transformation3D extends PositionTransformation {
     // double) is stored in these members.
     private double resultX, resultY, resultZ;
 
-    private double maxDim = Math.max(Math.max(Configuration.dimX, Configuration.dimY), Configuration.dimZ);
+    private double maxDim = Math.max(Math.max(Configuration.getDimX(), Configuration.getDimY()), Configuration.getDimZ());
 
     private double[][] zpm = new double[4][4]; // matrix for drawing the zoom panel
     private double zoomPanelZoom = 1; // zoom of the zoom panel
 
     // The boundary points of the simulation area
     private Position pos000 = new Position(0, 0, 0);
-    private Position posx00 = new Position(Configuration.dimX, 0, 0);
-    private Position pos0y0 = new Position(0, Configuration.dimY, 0);
-    private Position pos00z = new Position(0, 0, Configuration.dimZ);
-    private Position posxy0 = new Position(Configuration.dimX, Configuration.dimY, 0);
-    private Position pos0yz = new Position(0, Configuration.dimY, Configuration.dimZ);
-    private Position posx0z = new Position(Configuration.dimX, 0, Configuration.dimZ);
-    private Position posxyz = new Position(Configuration.dimX, Configuration.dimY, Configuration.dimZ);
+    private Position posx00 = new Position(Configuration.getDimX(), 0, 0);
+    private Position pos0y0 = new Position(0, Configuration.getDimY(), 0);
+    private Position pos00z = new Position(0, 0, Configuration.getDimZ());
+    private Position posxy0 = new Position(Configuration.getDimX(), Configuration.getDimY(), 0);
+    private Position pos0yz = new Position(0, Configuration.getDimY(), Configuration.getDimZ());
+    private Position posx0z = new Position(Configuration.getDimX(), 0, Configuration.getDimZ());
+    private Position posxyz = new Position(Configuration.getDimX(), Configuration.getDimY(), Configuration.getDimZ());
 
     private Position[] posList = new Position[8]; // list of all 8 above positions
 
@@ -113,7 +113,7 @@ public class Transformation3D extends PositionTransformation {
      */
     public void rotate(int x, int y, boolean preserveZAxis, boolean isZoomPanel) {
         // rotate around the center of the cube
-        this.multiply(Configuration.dimX / 2, Configuration.dimY / 2, Configuration.dimZ / 2, this.tm);
+        this.multiply(Configuration.getDimX() / 2, Configuration.getDimY() / 2, Configuration.getDimZ() / 2, this.tm);
         double offsetX = this.resultX, offsetY = this.resultY, offsetZ = this.resultZ;
         this.translate(-offsetX, -offsetY, -offsetZ, this.tm);
 
@@ -190,8 +190,8 @@ public class Transformation3D extends PositionTransformation {
     public void drawBackground(Graphics g) {
         // TODO: draw rulers if specified in the config
         this.drawCube(g, this.cubeFaceColor, this.cubeFaceBackColor, this.cubeSeeThroughColor, Color.DARK_GRAY, this.tm,
-                Configuration.usePerspectiveView);
-        this.drawCubeAxeArrows(g, this.tm, Configuration.usePerspectiveView);
+                Configuration.isUsePerspectiveView());
+        this.drawCubeAxeArrows(g, this.tm, Configuration.isUsePerspectiveView());
     }
 
     /**
@@ -519,11 +519,11 @@ public class Transformation3D extends PositionTransformation {
         int originX = this.getGuiX();
         int originY = this.getGuiY();
         g.setFont(new Font("", Font.PLAIN, 10));
-        this.translateToGUIPosition(Configuration.dimX, 0, 0, matrix, usePerspective);
+        this.translateToGUIPosition(Configuration.getDimX(), 0, 0, matrix, usePerspective);
         this.drawAxeName(g, "x", originX, originY, this.getGuiX(), this.getGuiY());
-        this.translateToGUIPosition(0, Configuration.dimY, 0, matrix, usePerspective);
+        this.translateToGUIPosition(0, Configuration.getDimY(), 0, matrix, usePerspective);
         this.drawAxeName(g, "y", originX, originY, this.getGuiX(), this.getGuiY());
-        this.translateToGUIPosition(0, 0, Configuration.dimZ, matrix, usePerspective);
+        this.translateToGUIPosition(0, 0, Configuration.getDimZ(), matrix, usePerspective);
         this.drawAxeName(g, "z", originX, originY, this.getGuiX(), this.getGuiY());
     }
 
@@ -597,7 +597,7 @@ public class Transformation3D extends PositionTransformation {
     public void drawBackgroundToPostScript(EPSOutputPrintStream pw) {
         pw.println("%the background");
 
-        if (!Configuration.epsDrawBackgroundWhite) {
+        if (!Configuration.isEpsDrawBackgroundWhite()) {
             pw.setColor(250, 250, 250);
         } else {
             pw.setColor(255, 255, 255);
@@ -607,7 +607,7 @@ public class Transformation3D extends PositionTransformation {
         this.drawPolygonToPostScript(pw, this.pos0y0, this.posxy0, this.posxyz, this.pos0yz);
         this.drawPolygonToPostScript(pw, this.posx00, this.posxy0, this.posxyz, this.posx0z);
 
-        if (!Configuration.epsDrawBackgroundWhite) {
+        if (!Configuration.isEpsDrawBackgroundWhite()) {
             pw.setColor(240, 240, 240);
         }
 
@@ -617,7 +617,7 @@ public class Transformation3D extends PositionTransformation {
 
         pw.setColor(0, 0, 0);
 
-        this.determineVisibility(this.tm, Configuration.usePerspectiveView);
+        this.determineVisibility(this.tm, Configuration.isUsePerspectiveView());
         this.drawCubeWireFrame(null, null, null, false, pw);
 
         // // .........
@@ -644,11 +644,11 @@ public class Transformation3D extends PositionTransformation {
         this.translateToGUIPosition(this.pos000);
         double originX = this.getGuiXDouble();
         double originY = this.getGuiYDouble();
-        this.translateToGUIPosition(Configuration.dimX, 0, 0);
+        this.translateToGUIPosition(Configuration.getDimX(), 0, 0);
         this.drawAxesToPostScript(pw, "x", originX, originY, this.getGuiXDouble(), this.getGuiYDouble());
-        this.translateToGUIPosition(0, Configuration.dimY, 0);
+        this.translateToGUIPosition(0, Configuration.getDimY(), 0);
         this.drawAxesToPostScript(pw, "y", originX, originY, this.getGuiXDouble(), this.getGuiYDouble());
-        this.translateToGUIPosition(0, 0, Configuration.dimZ);
+        this.translateToGUIPosition(0, 0, Configuration.getDimZ());
         this.drawAxesToPostScript(pw, "z", originX, originY, this.getGuiXDouble(), this.getGuiYDouble());
     }
 
@@ -738,7 +738,7 @@ public class Transformation3D extends PositionTransformation {
      * @param matrix    The transformation matrix
      */
     private void scaleInTheMiddleOfCube(double deltaZoom, double[][] matrix) {
-        this.multiply(Configuration.dimX / 2, Configuration.dimY / 2, Configuration.dimZ / 2, matrix);
+        this.multiply(Configuration.getDimX() / 2, Configuration.getDimY() / 2, Configuration.getDimZ() / 2, matrix);
         double offsetX = this.resultX;
         double offsetY = this.resultY;
         double offsetZ = this.resultZ;
@@ -749,7 +749,7 @@ public class Transformation3D extends PositionTransformation {
 
     @Override
     protected void onChangeZoomToFit(int width, int height) {
-        this.setZoomFactor(this.getZoomFactor() * this.zoomToFit(width, height, this.tm, Configuration.usePerspectiveView));
+        this.setZoomFactor(this.getZoomFactor() * this.zoomToFit(width, height, this.tm, Configuration.isUsePerspectiveView()));
     }
 
     @Override
@@ -809,7 +809,7 @@ public class Transformation3D extends PositionTransformation {
         // set the rotation matrix such that it looks nice.
         this.reset(matrix);
         // rotate around the center of the cube
-        this.multiply(Configuration.dimX / 2, Configuration.dimY / 2, Configuration.dimZ / 2, this.tm);
+        this.multiply(Configuration.getDimX() / 2, Configuration.getDimY() / 2, Configuration.getDimZ() / 2, this.tm);
         double offsetX = this.resultX, offsetY = this.resultY, offsetZ = this.resultZ;
         this.translate(-offsetX, -offsetY, -offsetZ, matrix);
 
@@ -1045,7 +1045,7 @@ public class Transformation3D extends PositionTransformation {
 
     @Override
     public void translateToGUIPosition(double x, double y, double z) {
-        this.translateToGUIPosition(x, y, z, this.tm, Configuration.usePerspectiveView);
+        this.translateToGUIPosition(x, y, z, this.tm, Configuration.isUsePerspectiveView());
     }
 
     /**
@@ -1062,7 +1062,7 @@ public class Transformation3D extends PositionTransformation {
         // we project onto the X/Y field
         // possibly add some perspective
         if (usePerspective) {
-            double perspectiveZ = Configuration.perspectiveViewDistance * this.maxDim * this.getZoomFactor();
+            double perspectiveZ = Configuration.getPerspectiveViewDistance() * this.maxDim * this.getZoomFactor();
             this.resultX = this.getWidth() / 2 + (this.getWidth() / 2 - this.resultX) * perspectiveZ / (this.resultZ - perspectiveZ);
             this.resultY = this.getHeight() / 2 + (this.getHeight() / 2 - this.resultY) * perspectiveZ / (this.resultZ - perspectiveZ);
         }
@@ -1092,13 +1092,13 @@ public class Transformation3D extends PositionTransformation {
      * @return The z-coordinate of
      */
     public double translateToGUIPositionAndGetZOffset(Position pos) {
-        this.translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), this.tm, Configuration.usePerspectiveView);
+        this.translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), this.tm, Configuration.isUsePerspectiveView());
         return this.resultZ;
     }
 
     @Override
     public void translateToGUIPosition(Position pos) {
-        this.translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), this.tm, Configuration.usePerspectiveView);
+        this.translateToGUIPosition(pos.getXCoord(), pos.getYCoord(), pos.getZCoord(), this.tm, Configuration.isUsePerspectiveView());
     }
 
     @Override

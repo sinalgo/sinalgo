@@ -124,7 +124,7 @@ public class GraphInfoDialog extends JDialog implements ActionListener {
             info.add(field);
         }
 
-        if (Configuration.interference) { // this is only know if interference is turned on
+        if (Configuration.isInterference()) { // this is only know if interference is turned on
             UnborderedJTextField label = new UnborderedJTextField("  Number of messages currently being sent:",
                     Font.BOLD);
             JTextField field = new JTextField(6);

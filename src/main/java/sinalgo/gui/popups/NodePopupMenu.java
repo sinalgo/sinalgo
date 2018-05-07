@@ -94,7 +94,7 @@ public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
 
         this.add(this.info);
 
-        if (Configuration.dimensions == 3) {
+        if (Configuration.getDimensions() == 3) {
             if (this.parent.getGraphPanel().containsNodeToDrawCoordinateCube(n)) {
                 this.add(this.hideCoordinateCube);
             } else {

@@ -58,7 +58,7 @@ public class NoInterference extends InterferenceModel {
      */
     public NoInterference() {
         super(false);
-        if (firstTime && Configuration.interference && Configuration.showOptimizationHints) {
+        if (firstTime && Configuration.isInterference() && Configuration.isShowOptimizationHints()) {
             Main.warning("At least some nodes use the 'NoInterference' interfernce model. "
                     + "If you do not consider interference at all in your project, you can "
                     + "considerably improve performance by turning off interference in the "

@@ -67,7 +67,7 @@ public abstract class MobilityModel extends Model {
      * The default constructor tests that mobility is enabled.
      */
     protected MobilityModel() {
-        if (firstTime && !Configuration.mobility) {
+        if (firstTime && !Configuration.isMobility()) {
             Main.warning(
                     "Some nodes are using a mobility model even though mobility is explicitly turned off in the XML Configuration file.");
             firstTime = false; // important to only have one message.
@@ -82,7 +82,7 @@ public abstract class MobilityModel extends Model {
      *              false.
      */
     protected MobilityModel(boolean check) {
-        if (check && firstTime && !Configuration.mobility) {
+        if (check && firstTime && !Configuration.isMobility()) {
             Main.warning(
                     "Some nodes are using an mobility model even though mobility is explicitly turned off in the XML Configuration file.");
             firstTime = false;

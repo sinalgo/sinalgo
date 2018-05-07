@@ -226,7 +226,7 @@ public class Edge implements DoublyLinkedListEntry {
         pw.setColor(c.getRed(), c.getGreen(), c.getBlue());
         pw.setLineWidth(0.5);
 
-        if (Configuration.drawArrows) {
+        if (Configuration.isDrawArrows()) {
             pw.drawArrow(eSX, eSY, pt.getGuiXDouble(), pt.getGuiYDouble());
         } else {
             pw.drawLine(eSX, eSY, pt.getGuiXDouble(), pt.getGuiYDouble());
@@ -460,7 +460,7 @@ public class Edge implements DoublyLinkedListEntry {
      * it calls the cleanUp() method.
      */
     public final void removeEdgeFromGraph() {
-        if (Configuration.asynchronousMode) {
+        if (Configuration.isAsynchronousMode()) {
             // This is quite slow as it iterates over all pending events. However,
             // synchronous simulations are not mobile, therefore this method is not called
             // often.

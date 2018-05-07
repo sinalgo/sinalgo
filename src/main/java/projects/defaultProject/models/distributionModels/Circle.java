@@ -53,10 +53,10 @@ public class Circle extends DistributionModel {
     public void initialize() {
         String parameter = this.getParamString();
         if (parameter.equals("")) {
-            if (Configuration.dimX < Configuration.dimY) {
-                this.radius = Configuration.dimX / 3.0;
+            if (Configuration.getDimX() < Configuration.getDimY()) {
+                this.radius = Configuration.getDimX() / 3.0;
             } else {
-                this.radius = Configuration.dimY / 3.0;
+                this.radius = Configuration.getDimY() / 3.0;
             }
         } else {
             this.radius = Double.parseDouble(parameter);
@@ -68,8 +68,8 @@ public class Circle extends DistributionModel {
     @Override
     public Position getNextPosition() {
         Position pos = new Position();
-        pos.setXCoord((Configuration.dimX / 2.0) + (this.radius * Math.cos(Math.toRadians((this.number * this.oneStep)))));
-        pos.setYCoord((Configuration.dimY / 2.0) + (this.radius * Math.sin(Math.toRadians((this.number * this.oneStep)))));
+        pos.setXCoord((Configuration.getDimX() / 2.0) + (this.radius * Math.cos(Math.toRadians((this.number * this.oneStep)))));
+        pos.setYCoord((Configuration.getDimY() / 2.0) + (this.radius * Math.sin(Math.toRadians((this.number * this.oneStep)))));
 
         this.number++;
 

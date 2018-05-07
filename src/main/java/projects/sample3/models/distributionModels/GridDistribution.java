@@ -70,8 +70,8 @@ public class GridDistribution extends DistributionModel {
         } catch (CorruptConfigurationEntryException e) {
             e.printStackTrace();
         }
-        double horizontalFactor = (Configuration.dimX - 2 * this.radius) / (this.radius * 1.414);
-        double verticalFactor = (Configuration.dimY - 2 * this.radius) / (this.radius * 1.414);
+        double horizontalFactor = (Configuration.getDimX() - 2 * this.radius) / (this.radius * 1.414);
+        double verticalFactor = (Configuration.getDimY() - 2 * this.radius) / (this.radius * 1.414);
 
         int ihF = (int) horizontalFactor;
         int ivF = (int) verticalFactor;
@@ -92,8 +92,8 @@ public class GridDistribution extends DistributionModel {
         if (this.returnNum < this.positions.size()) {
             return this.positions.elementAt(this.returnNum++);
         } else {
-            double randomPosX = this.rand.nextDouble() * Configuration.dimX;
-            double randomPosY = this.rand.nextDouble() * Configuration.dimY;
+            double randomPosX = this.rand.nextDouble() * Configuration.getDimX();
+            double randomPosY = this.rand.nextDouble() * Configuration.getDimY();
             return new Position(randomPosX, randomPosY, 0);
         }
     }

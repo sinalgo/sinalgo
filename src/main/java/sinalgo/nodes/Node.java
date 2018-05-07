@@ -412,7 +412,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         // If there is no edge, the message is marked to not arrive immediately in the
         // sendMessage() method
         Packet sentP = this.sendMessage(m, connection, this, target, intensity);
-        if (Configuration.interference) { // only add the message in the packetsInTheAirBuffer, if interference is
+        if (Configuration.isInterference()) { // only add the message in the packetsInTheAirBuffer, if interference is
             // turned on
             SinalgoRuntime.packetsInTheAir.add(sentP);
         }
@@ -967,7 +967,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
 
         // Handle dropped messages (messages that were sent by this node, but that do
         // not arrive.
-        if (Configuration.generateNAckMessages) {
+        if (Configuration.isGenerateNAckMessages()) {
             PacketCollection pc = Global.isEvenRound ? this.nAckBufferEvenRound : this.nAckBufferOddRound;
             if (this.nackBox == null) {
                 this.nackBox = new NackBox(pc);
@@ -988,7 +988,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         // all the packets in the inbox and nackBox are not used anymore and can be
         // freed.
         this.inbox.freePackets();
-        if (Configuration.generateNAckMessages) {
+        if (Configuration.isGenerateNAckMessages()) {
             this.nackBox.freePackets(); // this resets the nAckBuffer
         }
     }
@@ -1169,18 +1169,18 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
     private void cropPos(Position p) {
         if (p.getXCoord() < 0) {
             p.setXCoord(0);
-        } else if (p.getXCoord() >= Configuration.dimX) {
-            p.setXCoord(Configuration.dimX - Position.epsilonPosition);
+        } else if (p.getXCoord() >= Configuration.getDimX()) {
+            p.setXCoord(Configuration.getDimX() - Position.epsilonPosition);
         }
         if (p.getYCoord() < 0) {
             p.setYCoord(0);
-        } else if (p.getYCoord() >= Configuration.dimY) {
-            p.setYCoord(Configuration.dimY - Position.epsilonPosition);
+        } else if (p.getYCoord() >= Configuration.getDimY()) {
+            p.setYCoord(Configuration.getDimY() - Position.epsilonPosition);
         }
         if (p.getZCoord() < 0) {
             p.setZCoord(0);
-        } else if (p.getZCoord() >= Configuration.dimZ) {
-            p.setZCoord(Configuration.dimZ - Position.epsilonPosition);
+        } else if (p.getZCoord() >= Configuration.getDimZ()) {
+            p.setZCoord(Configuration.getDimZ() - Position.epsilonPosition);
         }
     }
 
@@ -1232,16 +1232,16 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         // set default (empty) models if they're not yet set
         try {
             if (this.connectivityModel == null) {
-                this.setConnectivityModel(Model.getConnectivityModelInstance(Configuration.DefaultConnectivityModel));
+                this.setConnectivityModel(Model.getConnectivityModelInstance(Configuration.getDefaultConnectivityModel()));
             }
             if (this.interferenceModel == null) {
-                this.setInterferenceModel(Model.getInterferenceModelInstance(Configuration.DefaultInterferenceModel));
+                this.setInterferenceModel(Model.getInterferenceModelInstance(Configuration.getDefaultInterferenceModel()));
             }
             if (this.mobilityModel == null) {
-                this.setMobilityModel(Model.getMobilityModelInstance(Configuration.DefaultMobilityModel));
+                this.setMobilityModel(Model.getMobilityModelInstance(Configuration.getDefaultMobilityModel()));
             }
             if (this.reliabilityModel == null) {
-                this.setReliabilityModel(Model.getReliabilityModelInstance(Configuration.DefaultReliabilityModel));
+                this.setReliabilityModel(Model.getReliabilityModelInstance(Configuration.getDefaultReliabilityModel()));
             }
             if (addToRuntime) {
                 this.init();
@@ -1284,7 +1284,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         }
         // only add the message in the packetsInTheAirBuffer, if interference is turned
         // on
-        if (Configuration.interference) {
+        if (Configuration.isInterference()) {
             Packet longestPacket = null; // find the packet that takes longest until delivery
 
             // send the Message to all your neighbors
@@ -1474,10 +1474,10 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         if (!classPath.contains(".")) { // is a relative path
             if (classPath.contains(":")) { // project implementation
                 String[] splitter = classPath.split(":");
-                classPath = Configuration.userProjectsPackage + "." + splitter[0] + ".nodes.nodeImplementations."
+                classPath = Configuration.getUserProjectsPackage() + "." + splitter[0] + ".nodes.nodeImplementations."
                         + splitter[1];
             } else {
-                classPath = Configuration.defaultProjectPackage + ".nodes.nodeImplementations." + classPath;
+                classPath = Configuration.getDefaultProjectPackage() + ".nodes.nodeImplementations." + classPath;
             }
         }
 

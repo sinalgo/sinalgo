@@ -114,7 +114,7 @@ public class AsynchronousRuntimeThread extends Thread {
 
         Event event = null;
 
-        if (!connectivityInitialized && Configuration.initializeConnectionsOnStartup) {
+        if (!connectivityInitialized && Configuration.isInitializeConnectionsOnStartup()) {
             initializeConnectivity();
         }
 
@@ -129,7 +129,7 @@ public class AsynchronousRuntimeThread extends Thread {
             }
             event = SinalgoRuntime.eventQueue.getNextEvent(); // returns null if there is no further event
 
-            if (event == null && Configuration.handleEmptyEventQueue) {
+            if (event == null && Configuration.isHandleEmptyEventQueue()) {
                 Global.customGlobal.handleEmptyEventQueue();
                 // and try again
                 event = SinalgoRuntime.eventQueue.getNextEvent(); // returns null if there is no further event

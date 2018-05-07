@@ -229,18 +229,18 @@ public class RandomDirection extends MobilityModel {
                 this.moveVector.setZCoord(this.moveVector.getZCoord() * -1);
                 reflected = true;
             }
-            if (newx > Configuration.dimX) {
-                newx = 2 * Configuration.dimX - newx;
+            if (newx > Configuration.getDimX()) {
+                newx = 2 * Configuration.getDimX() - newx;
                 this.moveVector.setXCoord(this.moveVector.getXCoord() * -1);
                 reflected = true;
             }
-            if (newy > Configuration.dimY) {
-                newy = 2 * Configuration.dimY - newy;
+            if (newy > Configuration.getDimY()) {
+                newy = 2 * Configuration.getDimY() - newy;
                 this.moveVector.setYCoord(this.moveVector.getYCoord() * -1);
                 reflected = true;
             }
-            if (newz > Configuration.dimZ) {
-                newz = 2 * Configuration.dimZ - newz;
+            if (newz > Configuration.getDimZ()) {
+                newz = 2 * Configuration.getDimZ() - newz;
                 this.moveVector.setZCoord(this.moveVector.getZCoord() * -1);
                 reflected = true;
             }

@@ -183,10 +183,10 @@ public class Logging {
     public static Logging getLogger() {
         if (instance == null) {
             if (activated) {
-                if (Configuration.outputToConsole) {
+                if (Configuration.isOutputToConsole()) {
                     instance = new Logging(System.out);
                 } else {
-                    return getLogger(Configuration.logFileName);
+                    return getLogger(Configuration.getLogFileName());
                 }
             } else {
                 throw new SinalgoFatalException("You tried to instantiate the logging mechanism before you are allowed to."
@@ -279,7 +279,7 @@ public class Logging {
     public void log(boolean logFlag, String txt) {
         if (logFlag) {
             this.out.print(txt);
-            if (Configuration.eagerFlush) {
+            if (Configuration.isEagerFlush()) {
                 this.out.flush();
             }
         }
@@ -292,7 +292,7 @@ public class Logging {
      */
     public void log(String txt) {
         this.out.print(txt);
-        if (Configuration.eagerFlush) {
+        if (Configuration.isEagerFlush()) {
             this.out.flush();
         }
     }
@@ -306,7 +306,7 @@ public class Logging {
     public void logln(boolean logFlag, String txt) {
         if (logFlag) {
             this.out.println(txt);
-            if (Configuration.eagerFlush) {
+            if (Configuration.isEagerFlush()) {
                 this.out.flush();
             }
         }
@@ -319,7 +319,7 @@ public class Logging {
      */
     public void logln(String txt) {
         this.out.println(txt);
-        if (Configuration.eagerFlush) {
+        if (Configuration.isEagerFlush()) {
             this.out.flush();
         }
     }
@@ -329,7 +329,7 @@ public class Logging {
      */
     public void logln() {
         this.out.println();
-        if (Configuration.eagerFlush) {
+        if (Configuration.isEagerFlush()) {
             this.out.flush();
         }
     }
@@ -344,7 +344,7 @@ public class Logging {
         this.out.print(getCodePosition(1));
         this.out.print(" ");
         this.out.print(txt);
-        if (Configuration.eagerFlush) {
+        if (Configuration.isEagerFlush()) {
             this.out.flush();
         }
     }
@@ -361,7 +361,7 @@ public class Logging {
             this.out.print(getCodePosition(1));
             this.out.print(" ");
             this.out.print(txt);
-            if (Configuration.eagerFlush) {
+            if (Configuration.isEagerFlush()) {
                 this.out.flush();
             }
         }
@@ -377,7 +377,7 @@ public class Logging {
         this.out.print(getCodePosition(1));
         this.out.print(" ");
         this.out.println(txt);
-        if (Configuration.eagerFlush) {
+        if (Configuration.isEagerFlush()) {
             this.out.flush();
         }
     }
@@ -394,7 +394,7 @@ public class Logging {
             this.out.print(getCodePosition(1));
             this.out.print(" ");
             this.out.println(txt);
-            if (Configuration.eagerFlush) {
+            if (Configuration.isEagerFlush()) {
                 this.out.flush();
             }
         }
@@ -508,12 +508,12 @@ public class Logging {
      */
     private Logging(String aFileName, boolean append) {
         try {
-            String dir = Configuration.logFileDirectory;
+            String dir = Configuration.getLogFileDirectory();
             IOUtils.createDir(dir);
             dir += "/";
 
             if (!append) {
-                if (Configuration.logToTimeDirectory) {
+                if (Configuration.isLogToTimeDirectory()) {
                     dir = dir + getTimeDirectoryName();
                     IOUtils.createDir(dir);
                     dir = dir + "/";

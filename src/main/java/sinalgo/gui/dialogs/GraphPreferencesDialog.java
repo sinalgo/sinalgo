@@ -93,21 +93,21 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
         visualDetails.setBorder(BorderFactory.createTitledBorder("Visual Details:"));
         visualDetails.setLayout(new BoxLayout(visualDetails, BoxLayout.Y_AXIS));
 
-        this.drawArrowsCB.setSelected(Configuration.drawArrows);
+        this.drawArrowsCB.setSelected(Configuration.isDrawArrows());
         visualDetails.add(this.drawArrowsCB);
 
         // Feature not yet implemented
         // drawRulerCB.setSelected(Configuration.drawRulers);
         // visualDetails.add(drawRulerCB);
 
-        this.drawNodesCB.setSelected(Configuration.drawNodes);
+        this.drawNodesCB.setSelected(Configuration.isDrawNodes());
         visualDetails.add(this.drawNodesCB);
 
-        this.drawEdgesCB.setSelected(Configuration.drawEdges);
+        this.drawEdgesCB.setSelected(Configuration.isDrawEdges());
         visualDetails.add(this.drawEdgesCB);
 
-        this.usePerspectiveCB.setSelected(Configuration.usePerspectiveView);
-        if (Configuration.dimensions == 3) { // only show in 3D
+        this.usePerspectiveCB.setSelected(Configuration.isUsePerspectiveView());
+        if (Configuration.getDimensions() == 3) { // only show in 3D
             visualDetails.add(this.usePerspectiveCB);
         }
 
@@ -133,10 +133,10 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
 
         simulationDetails.add(new JLabel(""));
         this.allModelsCheckBox = new JCheckBox("Show all implementations");
-        this.allModelsCheckBox.setSelected(Configuration.showModelsOfAllProjects);
+        this.allModelsCheckBox.setSelected(Configuration.isShowModelsOfAllProjects());
         this.allModelsCheckBox.addChangeListener(e -> {
-            if (Configuration.showModelsOfAllProjects != this.allModelsCheckBox.isSelected()) {
-                Configuration.showModelsOfAllProjects = this.allModelsCheckBox.isSelected();
+            if (Configuration.isShowModelsOfAllProjects() != this.allModelsCheckBox.isSelected()) {
+                Configuration.setShowModelsOfAllProjects(this.allModelsCheckBox.isSelected());
                 this.fillTypesOfEdges();
                 this.fillTransmissionModel();
             }
@@ -200,14 +200,14 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
         // default project && current
         // project
         Vector<String> names = new Vector<>(Global.getImplementations(MODELS_MESSAGE_TRANSMISSION));
-        if (!names.contains(Configuration.DefaultMessageTransmissionModel)) {
-            names.add(Configuration.DefaultMessageTransmissionModel);
+        if (!names.contains(Configuration.getDefaultMessageTransmissionModel())) {
+            names.add(Configuration.getDefaultMessageTransmissionModel());
         }
         this.selectedTransmissionModel.removeAllItems();
         for (String s : names) {
             this.selectedTransmissionModel.addItem(s);
         }
-        this.selectedTransmissionModel.setSelectedItem(Configuration.DefaultMessageTransmissionModel);
+        this.selectedTransmissionModel.setSelectedItem(Configuration.getDefaultMessageTransmissionModel());
     }
 
     @Override
@@ -218,30 +218,30 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
                 Configuration.setEdgeType(selectedType);
 
                 String selectedTransModel = (String) this.selectedTransmissionModel.getSelectedItem();
-                if (!Configuration.DefaultMessageTransmissionModel.equals(selectedTransModel)) {
-                    Configuration.DefaultMessageTransmissionModel = selectedTransModel;
+                if (!Configuration.getDefaultMessageTransmissionModel().equals(selectedTransModel)) {
+                    Configuration.setDefaultMessageTransmissionModel(selectedTransModel);
                     Global.messageTransmissionModel = Model.getMessageTransmissionModelInstance(
-                            Configuration.DefaultMessageTransmissionModel);
+                            Configuration.getDefaultMessageTransmissionModel());
                 }
 
-                if (this.drawRulerCB.isSelected() != Configuration.drawRulers) {
-                    Configuration.drawRulers = this.drawRulerCB.isSelected();
+                if (this.drawRulerCB.isSelected() != Configuration.isDrawRulers()) {
+                    Configuration.setDrawRulers(this.drawRulerCB.isSelected());
                     this.parent.getGraphPanel().forceDrawInNextPaint();
                 }
-                if (this.drawArrowsCB.isSelected() != Configuration.drawArrows) {
-                    Configuration.drawArrows = this.drawArrowsCB.isSelected();
+                if (this.drawArrowsCB.isSelected() != Configuration.isDrawArrows()) {
+                    Configuration.setDrawArrows(this.drawArrowsCB.isSelected());
                     this.parent.getGraphPanel().forceDrawInNextPaint();
                 }
-                if (this.drawEdgesCB.isSelected() != Configuration.drawEdges) {
-                    Configuration.drawEdges = this.drawEdgesCB.isSelected();
+                if (this.drawEdgesCB.isSelected() != Configuration.isDrawEdges()) {
+                    Configuration.setDrawEdges(this.drawEdgesCB.isSelected());
                     this.parent.getGraphPanel().forceDrawInNextPaint();
                 }
-                if (this.drawNodesCB.isSelected() != Configuration.drawNodes) {
-                    Configuration.drawNodes = this.drawNodesCB.isSelected();
+                if (this.drawNodesCB.isSelected() != Configuration.isDrawNodes()) {
+                    Configuration.setDrawNodes(this.drawNodesCB.isSelected());
                     this.parent.getGraphPanel().forceDrawInNextPaint();
                 }
-                if (this.usePerspectiveCB.isSelected() != Configuration.usePerspectiveView) {
-                    Configuration.usePerspectiveView = !Configuration.usePerspectiveView;
+                if (this.usePerspectiveCB.isSelected() != Configuration.isUsePerspectiveView()) {
+                    Configuration.setUsePerspectiveView(!Configuration.isUsePerspectiveView());
                     this.parent.getGraphPanel().forceDrawInNextPaint();
                 }
 

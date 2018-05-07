@@ -310,7 +310,7 @@ public class GraphPanel extends JPanel {
             g.clearRect(0, 0, this.imageSizeX, this.imageSizeY);
             this.pt.drawBackground(g);
 
-            if (Configuration.useMap) {
+            if (Configuration.isUseMap()) {
                 SinalgoRuntime.map.paintMap(g, this.pt);
             }
 
@@ -320,7 +320,7 @@ public class GraphPanel extends JPanel {
             try {
                 // First draw all edges, only then the nodes
                 Enumeration<Node> nodeEnumer;
-                if (Configuration.drawEdges) {
+                if (Configuration.isDrawEdges()) {
                     nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
                     while (nodeEnumer.hasMoreElements()) {
                         Node node = nodeEnumer.nextElement();
@@ -331,7 +331,7 @@ public class GraphPanel extends JPanel {
                     }
                 }
                 // Draw the nodes in a separate loop
-                if (Configuration.drawNodes) {
+                if (Configuration.isDrawNodes()) {
                     // Draw the nodes in a separate loop
                     nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
                     while (nodeEnumer.hasMoreElements()) {
@@ -352,7 +352,7 @@ public class GraphPanel extends JPanel {
                 // get a correct picture.
             }
 
-            if (Configuration.showMessageAnimations) {
+            if (Configuration.isShowMessageAnimations()) {
                 Animations.drawEnvelopes(g, this.pt);
             }
 
@@ -525,7 +525,7 @@ public class GraphPanel extends JPanel {
         while (nodeEnumer.hasMoreElements()) {
             Node node = nodeEnumer.nextElement();
             if (node.isInside(event.getX(), event.getY(), this.pt)) {
-                if (Configuration.dimensions == 3) {
+                if (Configuration.getDimensions() == 3) {
                     this.toolTipDrawCoordCube = node;
                     this.repaint();
                 }
@@ -1034,7 +1034,7 @@ public class GraphPanel extends JPanel {
             GraphPanel.this.currentCursorPosition.setLocation(e.getX(), e.getY());
             if (GraphPanel.this.pt.supportReverseTranslation()) {
                 GraphPanel.this.pt.translateToLogicPosition(e.getX(), e.getY());
-                if ((GraphPanel.this.pt.getLogicX() < Configuration.dimX) && (GraphPanel.this.pt.getLogicX() > 0) && (GraphPanel.this.pt.getLogicY() < Configuration.dimY)
+                if ((GraphPanel.this.pt.getLogicX() < Configuration.getDimX()) && (GraphPanel.this.pt.getLogicX() > 0) && (GraphPanel.this.pt.getLogicY() < Configuration.getDimY())
                         && (GraphPanel.this.pt.getLogicY() > 0)) {
                     GraphPanel.this.parent.setMousePosition(GraphPanel.this.pt.getLogicPositionString());
                 }
@@ -1151,7 +1151,7 @@ public class GraphPanel extends JPanel {
             GraphPanel.this.currentCursorPosition.setLocation(e.getX(), e.getY());
             if (GraphPanel.this.pt.supportReverseTranslation()) {
                 GraphPanel.this.pt.translateToLogicPosition(e.getX(), e.getY());
-                if ((GraphPanel.this.pt.getLogicX() < Configuration.dimX) && (GraphPanel.this.pt.getLogicX() > 0) && (GraphPanel.this.pt.getLogicY() < Configuration.dimY)
+                if ((GraphPanel.this.pt.getLogicX() < Configuration.getDimX()) && (GraphPanel.this.pt.getLogicX() > 0) && (GraphPanel.this.pt.getLogicY() < Configuration.getDimY())
                         && (GraphPanel.this.pt.getLogicY() > 0)) {
                     GraphPanel.this.parent.setMousePosition(GraphPanel.this.pt.getLogicPositionString());
                 }
@@ -1186,9 +1186,9 @@ public class GraphPanel extends JPanel {
             }
             int clicks = e.getWheelRotation();
             if (clicks < 0) {
-                GraphPanel.this.parent.zoom(Configuration.wheelZoomStep); // zoom In
+                GraphPanel.this.parent.zoom(Configuration.getWheelZoomStep()); // zoom In
             } else {
-                GraphPanel.this.parent.zoom(1.0 / Configuration.wheelZoomStep); // zoom out
+                GraphPanel.this.parent.zoom(1.0 / Configuration.getWheelZoomStep()); // zoom out
             }
         }
     } // END OF CLASS MyMouseListener

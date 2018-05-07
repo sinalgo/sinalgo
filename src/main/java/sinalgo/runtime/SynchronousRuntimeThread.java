@@ -111,7 +111,7 @@ public class SynchronousRuntimeThread extends Thread {
 
             // Mobility is performed in a separate iteration over all nodes to avoid
             // inconsistencies.
-            if (Configuration.mobility) {
+            if (Configuration.isMobility()) {
                 for (Node n : SinalgoRuntime.nodes) {
                     n.setPosition(n.getMobilityModel().getNextPos(n));
                 }
@@ -124,7 +124,7 @@ public class SynchronousRuntimeThread extends Thread {
             }
 
             // Test all messages still being sent for interference
-            if (Configuration.interference) {
+            if (Configuration.isInterference()) {
                 SinalgoRuntime.packetsInTheAir.testForInterference();
             }
 
@@ -156,7 +156,7 @@ public class SynchronousRuntimeThread extends Thread {
 
             // test whether the application should exit
             if (Global.customGlobal.hasTerminated()) {
-                if (Global.isGuiMode && !Configuration.exitOnTerminationInGUI) { // do not quit GUI mode
+                if (Global.isGuiMode && !Configuration.isExitOnTerminationInGUI()) { // do not quit GUI mode
                     this.getRuntime().getGUI().redrawGUINow();
                     this.getRuntime().getGUI().setStartButtonEnabled(true);
 

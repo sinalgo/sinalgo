@@ -83,7 +83,7 @@ public class PacketsInTheAirBuffer implements Iterable<Packet> {
                 return; // nothing changed, the interference did not change
             }
         }
-        if (Configuration.asynchronousMode && !Configuration.interferenceIsAdditive) {
+        if (Configuration.isAsynchronousMode() && !Configuration.isInterferenceIsAdditive()) {
             this.testForInterference();
         }
     }
@@ -137,7 +137,7 @@ public class PacketsInTheAirBuffer implements Iterable<Packet> {
      * every insertion/removal to this list, and this method needs not do anything.
      */
     public void performInterferenceTestBeforeRemove() {
-        if (!Configuration.interferenceIsAdditive) {
+        if (!Configuration.isInterferenceIsAdditive()) {
             return;
         }
         if (this.newAdded) {
@@ -156,7 +156,7 @@ public class PacketsInTheAirBuffer implements Iterable<Packet> {
     public void add(Packet p) {
         this.newAdded = true;
         this.activePackets.append(p);
-        if (Configuration.asynchronousMode && !Configuration.interferenceIsAdditive) {
+        if (Configuration.isAsynchronousMode() && !Configuration.isInterferenceIsAdditive()) {
             this.testForInterference();
         }
     }

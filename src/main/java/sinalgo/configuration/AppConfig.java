@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.configuration;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -59,45 +61,47 @@ import java.util.Objects;
  * A config file that stores application wide settings for the user, such as the
  * size of the windows and the selected project.
  */
+@Getter
+@Setter
 public class AppConfig {
 
     private final String configFileName = "appConfig.xml";
 
-    public int projectSelectorWindowWidth = 600;
-    public int projectSelectorWindowHeight = 400;
-    public int projectSelectorWindowPosX = 50;
-    public int projectSelectorWindowPosY = 50;
-    public boolean projectSelectorIsMaximized = false;
-    public int projectSelectorSelectedTab = 1; // 1 = description, 2 = config
-    public String lastChosenProject = "";
-    public int guiWindowWidth = 800;
-    public int guiWindowHeight = 600;
-    public int guiWindowPosX = 50;
-    public int guiWindowPosY = 50;
-    public boolean guiIsMaximized = false;
-    public long seedFromLastRun = 0;
+    private int projectSelectorWindowWidth = 600;
+    private int projectSelectorWindowHeight = 400;
+    private int projectSelectorWindowPosX = 50;
+    private int projectSelectorWindowPosY = 50;
+    private boolean projectSelectorIsMaximized = false;
+    private int projectSelectorSelectedTab = 1; // 1 = description, 2 = config
+    private String lastChosenProject = "";
+    private int guiWindowWidth = 800;
+    private int guiWindowHeight = 600;
+    private int guiWindowPosX = 50;
+    private int guiWindowPosY = 50;
+    private boolean guiIsMaximized = false;
+    private long seedFromLastRun = 0;
 
-    public int helpWindowWidth = 500;
-    public int helpWindowHeight = 500;
-    public int helpWindowPosX = 200;
-    public int helpWindowPosY = 200;
-    public boolean helpWindowIsMaximized = false;
+    private int helpWindowWidth = 500;
+    private int helpWindowHeight = 500;
+    private int helpWindowPosX = 200;
+    private int helpWindowPosY = 200;
+    private boolean helpWindowIsMaximized = false;
 
-    public boolean guiControlPanelExpandSimulation = true;
-    public boolean guiControlPanelShowFullViewPanel = true;
-    public boolean guiControlPanelShowTextPanel = true;
-    public boolean guiControlPanelShowProjectControl = true;
+    private boolean guiControlPanelExpandSimulation = true;
+    private boolean guiControlPanelShowFullViewPanel = true;
+    private boolean guiControlPanelShowTextPanel = true;
+    private boolean guiControlPanelShowProjectControl = true;
 
-    public boolean guiRunOperationIsLimited = true; // infinite many (rounds/events) or the specified amount?
+    private boolean guiRunOperationIsLimited = true; // infinite many (rounds/events) or the specified amount?
 
-    public String lastSelectedFileDirectory = ""; // where the user pointed last to open a file
+    private String lastSelectedFileDirectory = ""; // where the user pointed last to open a file
 
-    public boolean checkForSinalgoUpdate = true; // check for updates
-    public long timeStampOfLastUpdateCheck = 0; // machine time when Sinalgo checked last for an update
+    private boolean checkForSinalgoUpdate = true; // check for updates
+    private long timeStampOfLastUpdateCheck = 0; // machine time when Sinalgo checked last for an update
 
-    public int generateNodesDlgNumNodes = 100; // # of nodes to generate
+    private int generateNodesDlgNumNodes = 100; // # of nodes to generate
 
-    public String previousRunCmdLineArgs = ""; // cmd line args of the previous call to 'Run'
+    private String previousRunCmdLineArgs = ""; // cmd line args of the previous call to 'Run'
 
     private static AppConfig singletonInstance = null; // the singleton instance
 
@@ -127,14 +131,14 @@ public class AppConfig {
      * Singleton constructor
      */
     private AppConfig() {
-        Path configFilePath = Paths.get(Configuration.appConfigDir, this.configFileName);
+        Path configFilePath = Paths.get(Configuration.getAppConfigDir(), this.configFileName);
         InputStream configInputStream;
         try {
             configInputStream = Files.newInputStream(configFilePath);
         } catch (Exception e) {
             ClassLoader cldr = Thread.currentThread().getContextClassLoader();
             configInputStream = cldr.getResourceAsStream(
-                    IOUtils.getAsPath(Configuration.sinalgoResourceDirPrefix, this.configFileName));
+                    IOUtils.getAsPath(Configuration.getSinalgoResourceDirPrefix(), this.configFileName));
         }
 
         if (configInputStream == null) {
@@ -151,7 +155,7 @@ public class AppConfig {
                 String v = e.getAttributeValue("windowWidth");
                 if (v != null) {
                     try {
-                        this.projectSelectorWindowWidth = Integer.parseInt(v);
+                        this.setProjectSelectorWindowWidth(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
@@ -159,39 +163,39 @@ public class AppConfig {
                 v = e.getAttributeValue("windowHeight");
                 if (v != null) {
                     try {
-                        this.projectSelectorWindowHeight = Integer.parseInt(v);
+                        this.setProjectSelectorWindowHeight(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
                 v = e.getAttributeValue("windowPosX");
                 if (v != null) {
                     try {
-                        this.projectSelectorWindowPosX = Integer.parseInt(v);
+                        this.setProjectSelectorWindowPosX(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
                 v = e.getAttributeValue("windowPosY");
                 if (v != null) {
                     try {
-                        this.projectSelectorWindowPosY = Integer.parseInt(v);
+                        this.setProjectSelectorWindowPosY(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
 
                 v = e.getAttributeValue("lastChosenProject");
                 if (v != null) {
-                    this.lastChosenProject = v;
+                    this.setLastChosenProject(v);
                 }
 
                 v = e.getAttributeValue("isMaximized");
                 if (v != null) {
-                    this.projectSelectorIsMaximized = v.equals("true");
+                    this.setProjectSelectorIsMaximized(v.equals("true"));
                 }
 
                 v = e.getAttributeValue("selectedTab");
                 if (v != null) {
                     try {
-                        this.projectSelectorSelectedTab = Integer.parseInt(v);
+                        this.setProjectSelectorSelectedTab(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
@@ -203,7 +207,7 @@ public class AppConfig {
                 String v = e.getAttributeValue("windowWidth");
                 if (v != null) {
                     try {
-                        this.guiWindowWidth = Integer.parseInt(v);
+                        this.setGuiWindowWidth(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
@@ -211,87 +215,87 @@ public class AppConfig {
                 v = e.getAttributeValue("windowHeight");
                 if (v != null) {
                     try {
-                        this.guiWindowHeight = Integer.parseInt(v);
+                        this.setGuiWindowHeight(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
                 v = e.getAttributeValue("windowPosX");
                 if (v != null) {
                     try {
-                        this.guiWindowPosX = Integer.parseInt(v);
+                        this.setGuiWindowPosX(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
                 v = e.getAttributeValue("windowPosY");
                 if (v != null) {
                     try {
-                        this.guiWindowPosY = Integer.parseInt(v);
+                        this.setGuiWindowPosY(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
 
                 v = e.getAttributeValue("isMaximized");
                 if (v != null) {
-                    this.guiIsMaximized = v.equals("true");
+                    this.setGuiIsMaximized(v.equals("true"));
                 }
 
                 v = e.getAttributeValue("ControlPanelExpandSimulation");
                 if (v != null) {
-                    this.guiControlPanelExpandSimulation = v.equals("true");
+                    this.setGuiControlPanelExpandSimulation(v.equals("true"));
                 }
 
                 v = e.getAttributeValue("ControlPanelShowFullViewPanel");
                 if (v != null) {
-                    this.guiControlPanelShowFullViewPanel = v.equals("true");
+                    this.setGuiControlPanelShowFullViewPanel(v.equals("true"));
                 }
 
                 v = e.getAttributeValue("ControlPanelShowTextPanel");
                 if (v != null) {
-                    this.guiControlPanelShowTextPanel = v.equals("true");
+                    this.setGuiControlPanelShowTextPanel(v.equals("true"));
                 }
 
                 v = e.getAttributeValue("ControlPanelShowProjectControl");
                 if (v != null) {
-                    this.guiControlPanelShowProjectControl = v.equals("true");
+                    this.setGuiControlPanelShowProjectControl(v.equals("true"));
                 }
 
                 v = e.getAttributeValue("RunOperationIsLimited");
                 if (v != null) {
-                    this.guiRunOperationIsLimited = v.equals("true");
+                    this.setGuiRunOperationIsLimited(v.equals("true"));
                 }
 
                 v = e.getAttributeValue("helpWindowWidth");
                 if (v != null) {
                     try {
-                        this.helpWindowWidth = Integer.parseInt(v);
+                        this.setHelpWindowWidth(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
                 v = e.getAttributeValue("helpWindowHeight");
                 if (v != null) {
                     try {
-                        this.helpWindowHeight = Integer.parseInt(v);
+                        this.setHelpWindowHeight(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
                 v = e.getAttributeValue("helpWindowPosX");
                 if (v != null) {
                     try {
-                        this.helpWindowPosX = Integer.parseInt(v);
+                        this.setHelpWindowPosX(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
                 v = e.getAttributeValue("helpWindowPosY");
                 if (v != null) {
                     try {
-                        this.helpWindowPosY = Integer.parseInt(v);
+                        this.setHelpWindowPosY(Integer.parseInt(v));
                     } catch (NumberFormatException ignored) {
                     }
                 }
                 v = e.getAttributeValue("helpWindowIsMaximized");
                 if (v != null) {
                     try {
-                        this.helpWindowIsMaximized = v.equals("true");
+                        this.setHelpWindowIsMaximized(v.equals("true"));
                     } catch (NumberFormatException ignored) {
                     }
                 }
@@ -303,7 +307,7 @@ public class AppConfig {
                 String s = e.getAttributeValue("seedFromPreviousRun");
                 if (s != null) {
                     try {
-                        this.seedFromLastRun = Long.parseLong(s);
+                        this.setSeedFromLastRun(Long.parseLong(s));
                     } catch (NumberFormatException ignored) {
                     }
                 }
@@ -314,25 +318,25 @@ public class AppConfig {
             if (e != null) {
                 String s = e.getAttributeValue("lastSelectedFileDirectory");
                 if (s != null) {
-                    this.lastSelectedFileDirectory = s;
+                    this.setLastSelectedFileDirectory(s);
                 }
 
                 s = e.getAttributeValue("checkForUpdatesAtStartup");
                 if (s != null) {
-                    this.checkForSinalgoUpdate = s.equals("true");
+                    this.setCheckForSinalgoUpdate(s.equals("true"));
                 }
 
                 s = e.getAttributeValue("updateCheckTimeStamp");
                 if (s != null) {
                     try {
-                        this.timeStampOfLastUpdateCheck = Long.parseLong(s);
+                        this.setTimeStampOfLastUpdateCheck(Long.parseLong(s));
                     } catch (NumberFormatException ignored) {
                     }
                 }
 
                 s = e.getAttributeValue("runCmdLineArgs");
                 if (s != null) {
-                    this.previousRunCmdLineArgs = s;
+                    this.setPreviousRunCmdLineArgs(s);
                 }
             }
 
@@ -342,7 +346,7 @@ public class AppConfig {
                 String s = e.getAttributeValue("numNodes");
                 if (s != null) {
                     try {
-                        this.generateNodesDlgNumNodes = Integer.parseInt(s);
+                        this.setGenerateNodesDlgNumNodes(Integer.parseInt(s));
                     } catch (NumberFormatException ignored) {
                     }
                 }
@@ -356,7 +360,7 @@ public class AppConfig {
      * Writes the application wide config
      */
     public void writeConfig() {
-        String dir = Configuration.appConfigDir;
+        String dir = Configuration.getAppConfigDir();
         if (!Objects.equals("", dir)) {
             IOUtils.createDir(dir);
         }
@@ -367,31 +371,31 @@ public class AppConfig {
 
         Element ps = new Element("ProjectSelector");
         root.addContent(ps);
-        ps.setAttribute("windowWidth", Integer.toString(this.projectSelectorWindowWidth));
-        ps.setAttribute("windowHeight", Integer.toString(this.projectSelectorWindowHeight));
-        ps.setAttribute("lastChosenProject", this.lastChosenProject);
-        ps.setAttribute("windowPosX", Integer.toString(this.projectSelectorWindowPosX));
-        ps.setAttribute("windowPosY", Integer.toString(this.projectSelectorWindowPosY));
-        ps.setAttribute("isMaximized", Boolean.toString(this.projectSelectorIsMaximized));
-        ps.setAttribute("selectedTab", Integer.toString(this.projectSelectorSelectedTab));
+        ps.setAttribute("windowWidth", Integer.toString(this.getProjectSelectorWindowWidth()));
+        ps.setAttribute("windowHeight", Integer.toString(this.getProjectSelectorWindowHeight()));
+        ps.setAttribute("lastChosenProject", this.getLastChosenProject());
+        ps.setAttribute("windowPosX", Integer.toString(this.getProjectSelectorWindowPosX()));
+        ps.setAttribute("windowPosY", Integer.toString(this.getProjectSelectorWindowPosY()));
+        ps.setAttribute("isMaximized", Boolean.toString(this.isProjectSelectorIsMaximized()));
+        ps.setAttribute("selectedTab", Integer.toString(this.getProjectSelectorSelectedTab()));
 
         Element gui = new Element("GUI");
         root.addContent(gui);
-        gui.setAttribute("windowWidth", Integer.toString(this.guiWindowWidth));
-        gui.setAttribute("windowHeight", Integer.toString(this.guiWindowHeight));
-        gui.setAttribute("windowPosX", Integer.toString(this.guiWindowPosX));
-        gui.setAttribute("windowPosY", Integer.toString(this.guiWindowPosY));
-        gui.setAttribute("isMaximized", Boolean.toString(this.guiIsMaximized));
-        gui.setAttribute("ControlPanelExpandSimulation", Boolean.toString(this.guiControlPanelExpandSimulation));
-        gui.setAttribute("ControlPanelShowFullViewPanel", Boolean.toString(this.guiControlPanelShowFullViewPanel));
-        gui.setAttribute("ControlPanelShowTextPanel", Boolean.toString(this.guiControlPanelShowTextPanel));
-        gui.setAttribute("ControlPanelShowProjectControl", Boolean.toString(this.guiControlPanelShowProjectControl));
-        gui.setAttribute("RunOperationIsLimited", Boolean.toString(this.guiRunOperationIsLimited));
-        gui.setAttribute("helpWindowWidth", Integer.toString(this.helpWindowWidth));
-        gui.setAttribute("helpWindowHeight", Integer.toString(this.helpWindowHeight));
-        gui.setAttribute("helpWindowPosX", Integer.toString(this.helpWindowPosX));
-        gui.setAttribute("helpWindowPosY", Integer.toString(this.helpWindowPosY));
-        gui.setAttribute("helpWindowIsMaximized", Boolean.toString(this.helpWindowIsMaximized));
+        gui.setAttribute("windowWidth", Integer.toString(this.getGuiWindowWidth()));
+        gui.setAttribute("windowHeight", Integer.toString(this.getGuiWindowHeight()));
+        gui.setAttribute("windowPosX", Integer.toString(this.getGuiWindowPosX()));
+        gui.setAttribute("windowPosY", Integer.toString(this.getGuiWindowPosY()));
+        gui.setAttribute("isMaximized", Boolean.toString(this.isGuiIsMaximized()));
+        gui.setAttribute("ControlPanelExpandSimulation", Boolean.toString(this.isGuiControlPanelExpandSimulation()));
+        gui.setAttribute("ControlPanelShowFullViewPanel", Boolean.toString(this.isGuiControlPanelShowFullViewPanel()));
+        gui.setAttribute("ControlPanelShowTextPanel", Boolean.toString(this.isGuiControlPanelShowTextPanel()));
+        gui.setAttribute("ControlPanelShowProjectControl", Boolean.toString(this.isGuiControlPanelShowProjectControl()));
+        gui.setAttribute("RunOperationIsLimited", Boolean.toString(this.isGuiRunOperationIsLimited()));
+        gui.setAttribute("helpWindowWidth", Integer.toString(this.getHelpWindowWidth()));
+        gui.setAttribute("helpWindowHeight", Integer.toString(this.getHelpWindowHeight()));
+        gui.setAttribute("helpWindowPosX", Integer.toString(this.getHelpWindowPosX()));
+        gui.setAttribute("helpWindowPosY", Integer.toString(this.getHelpWindowPosY()));
+        gui.setAttribute("helpWindowIsMaximized", Boolean.toString(this.isHelpWindowIsMaximized()));
 
         Element seed = new Element("RandomSeed");
         root.addContent(seed);
@@ -400,13 +404,13 @@ public class AppConfig {
         Element app = new Element("App");
         root.addContent(app);
         app.setAttribute("lastSelectedFileDirectory", this.lastSelectedFileDirectory);
-        app.setAttribute("checkForUpdatesAtStartup", Boolean.toString(this.checkForSinalgoUpdate));
-        app.setAttribute("updateCheckTimeStamp", Long.toString(this.timeStampOfLastUpdateCheck));
-        app.setAttribute("runCmdLineArgs", this.previousRunCmdLineArgs);
+        app.setAttribute("checkForUpdatesAtStartup", Boolean.toString(this.isCheckForSinalgoUpdate()));
+        app.setAttribute("updateCheckTimeStamp", Long.toString(this.getTimeStampOfLastUpdateCheck()));
+        app.setAttribute("runCmdLineArgs", this.getPreviousRunCmdLineArgs());
 
         Element genNodes = new Element("GenNodesDlg");
         root.addContent(genNodes);
-        genNodes.setAttribute("numNodes", Integer.toString(this.generateNodesDlgNumNodes));
+        genNodes.setAttribute("numNodes", Integer.toString(this.getGenerateNodesDlgNumNodes()));
 
         // write the xml
         XMLOutputter outputter = new XMLOutputter();
@@ -415,7 +419,7 @@ public class AppConfig {
         outputter.setFormat(f);
 
         try {
-            FileWriter fW = new FileWriter(new File(IOUtils.getAsPath(Configuration.appConfigDir, this.configFileName)));
+            FileWriter fW = new FileWriter(new File(IOUtils.getAsPath(Configuration.getAppConfigDir(), this.configFileName)));
             outputter.output(doc, fW);
         } catch (IOException ignored) {
         }

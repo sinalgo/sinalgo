@@ -45,6 +45,7 @@ import sinalgo.tools.logging.Logging;
 import javax.swing.*;
 import java.awt.*;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.Objects;
 
 /**
  * This class implements a UncoughtExceptionHandler. It is used to catch all the
@@ -55,7 +56,7 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
     @Override
     public void uncaughtException(Thread t, Throwable e) {
         if (e instanceof IllegalComponentStateException
-                && e.getMessage().equals("component must be showing on the screen to determine its location")) {
+                && Objects.equals(e.getMessage(), "component must be showing on the screen to determine its location")) {
             return;
         } else if (e instanceof SinalgoWrappedException) {
             fatalError(e.getCause());

@@ -134,7 +134,7 @@ public class PacketEvent extends Event {
     @Override
     public void handle() {
         // the arrival of a packet in the asynchronous case
-        if (Configuration.interference) {
+        if (Configuration.isInterference()) {
             SinalgoRuntime.packetsInTheAir.performInterferenceTestBeforeRemove();
             SinalgoRuntime.packetsInTheAir.remove(this.packet);
         }
@@ -144,7 +144,7 @@ public class PacketEvent extends Event {
         if (this.getPacket().isPositiveDelivery()) {
             this.getPacket().getDestination().handleMessages(inbox.resetForPacket(this.getPacket()));
         } else {
-            if (Configuration.generateNAckMessages && this.getPacket().getType() == PacketType.UNICAST) {
+            if (Configuration.isGenerateNAckMessages() && this.getPacket().getType() == PacketType.UNICAST) {
                 this.getPacket().getOrigin().handleNAckMessages(nAckBox.resetForPacket(this.packet));
             }
         }
@@ -153,7 +153,7 @@ public class PacketEvent extends Event {
     @Override
     public void drop() {
         // similar to the arrival of a packet in the asynchronous case
-        if (Configuration.interference) {
+        if (Configuration.isInterference()) {
             SinalgoRuntime.packetsInTheAir.remove(this.getPacket());
         }
         if (this.getPacket().getEdge() != null) {

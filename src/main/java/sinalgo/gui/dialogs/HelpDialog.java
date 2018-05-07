@@ -241,19 +241,19 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 
     private void saveWindowState() {
         AppConfig ac = AppConfig.getAppConfig();
-        ac.helpWindowHeight = this.getHeight();
-        ac.helpWindowWidth = this.getWidth();
-        ac.helpWindowPosX = this.getLocation().x;
-        ac.helpWindowPosY = this.getLocation().y;
-        ac.helpWindowIsMaximized = (this.getExtendedState() == Frame.MAXIMIZED_BOTH);
+        ac.setHelpWindowHeight(this.getHeight());
+        ac.setHelpWindowWidth(this.getWidth());
+        ac.setHelpWindowPosX(this.getLocation().x);
+        ac.setHelpWindowPosY(this.getLocation().y);
+        ac.setHelpWindowIsMaximized((this.getExtendedState() == Frame.MAXIMIZED_BOTH));
         ac.writeConfig();
     }
 
     private void restoreWindowState() {
         AppConfig ac = AppConfig.getAppConfig();
-        this.setPreferredSize(new Dimension(ac.helpWindowWidth, ac.helpWindowHeight));
-        this.setLocation(new Point(ac.helpWindowPosX, ac.helpWindowPosY));
-        if (ac.helpWindowIsMaximized) {
+        this.setPreferredSize(new Dimension(ac.getHelpWindowWidth(), ac.getHelpWindowHeight()));
+        this.setLocation(new Point(ac.getHelpWindowPosX(), ac.getHelpWindowPosY()));
+        if (ac.isHelpWindowIsMaximized()) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         }
     }

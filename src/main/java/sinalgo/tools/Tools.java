@@ -37,19 +37,35 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.tools;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.*;
+import sinalgo.exception.NotInBatchModeException;
+import sinalgo.exception.NotInGUIModeException;
+import sinalgo.exception.SinalgoFatalException;
+import sinalgo.exception.SinalgoWrappedException;
+import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.mapIO.Map;
-import sinalgo.models.*;
+import sinalgo.models.ConnectivityModel;
+import sinalgo.models.DistributionModel;
+import sinalgo.models.InterferenceModel;
+import sinalgo.models.MessageTransmissionModel;
+import sinalgo.models.MobilityModel;
+import sinalgo.models.Model;
+import sinalgo.models.ModelType;
+import sinalgo.models.ReliabilityModel;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.edges.EdgePool;
 import sinalgo.nodes.messages.Packet;
-import sinalgo.runtime.*;
+import sinalgo.runtime.AbstractCustomGlobal;
+import sinalgo.runtime.BatchRuntime;
+import sinalgo.runtime.GUIRuntime;
+import sinalgo.runtime.Global;
+import sinalgo.runtime.Main;
+import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.runtime.events.EventQueue;
 import sinalgo.runtime.events.PacketEvent;
 import sinalgo.runtime.events.TimerEvent;
@@ -1009,7 +1025,7 @@ public class Tools {
                 } else {
                     throw new SinalgoFatalException("Cannot find the specified project '" + args[i + 1] + "'.\n"
                             + "In order to create a project '" + args[i + 1] + "', create a package '"
-                            + Configuration.userProjectsPackage + "." + args[i + 1] + "'");
+                            + Configuration.getUserProjectsPackage() + "." + args[i + 1] + "'");
                 }
             }
         }
@@ -1022,11 +1038,11 @@ public class Tools {
      * @return A random position
      */
     public static Position getRandomPosition(Random rand) {
-        double randomPosX = rand.nextDouble() * Configuration.dimX;
-        double randomPosY = rand.nextDouble() * Configuration.dimY;
+        double randomPosX = rand.nextDouble() * Configuration.getDimX();
+        double randomPosY = rand.nextDouble() * Configuration.getDimY();
         double randomPosZ = 0;
         if (Main.getRuntime().getTransformator().getNumberOfDimensions() == 3) {
-            randomPosZ = rand.nextDouble() * Configuration.dimZ;
+            randomPosZ = rand.nextDouble() * Configuration.getDimZ();
         }
         return new Position(randomPosX, randomPosY, randomPosZ);
     }

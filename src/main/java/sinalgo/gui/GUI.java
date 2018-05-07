@@ -123,7 +123,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param r The runtime instance for which the gui was created.
      */
     public GUI(SinalgoRuntime r) {
-        super(Global.useProject ? (Configuration.appName + " - " + Global.projectName) : (Configuration.appName));
+        super(Global.useProject ? (Configuration.getAppName() + " - " + Global.projectName) : (Configuration.getAppName()));
         GuiHelper.setWindowIcon(this);
 
         // load the buttons for the menu - these settings should be done only once
@@ -210,7 +210,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param zoom The new zoom factor.
      */
     public void setZoomFactorNoRepaint(double zoom) {
-        this.zoomFactor = Math.max(zoom, Configuration.minZoomFactor); // we have open-end zooming ;-)
+        this.zoomFactor = Math.max(zoom, Configuration.getMinZoomFactor()); // we have open-end zooming ;-)
 
         this.runtime.getTransformator().changeZoomFactor(this.zoomFactor);
     }
@@ -220,7 +220,7 @@ public class GUI extends JFrame implements ActionListener {
      * redraw the graph.
      */
     public void zoomIn() {
-        double newFactor = this.zoomFactor * Configuration.zoomStep;
+        double newFactor = this.zoomFactor * Configuration.getZoomStep();
         this.setZoomFactor(newFactor);
     }
 
@@ -238,7 +238,7 @@ public class GUI extends JFrame implements ActionListener {
      * redraw the graph.
      */
     public void zoomOut() {
-        double newFactor = Math.max(this.zoomFactor / Configuration.zoomStep, 0.01);
+        double newFactor = Math.max(this.zoomFactor / Configuration.getZoomStep(), 0.01);
         this.setZoomFactor(newFactor);
     }
 
@@ -293,18 +293,18 @@ public class GUI extends JFrame implements ActionListener {
         // react upon resize-events
         this.addComponentListener(new ComponentListener() {
 
-            int oldX = GUI.this.appConfig.guiWindowPosX, oldY = GUI.this.appConfig.guiWindowPosY;
+            int oldX = GUI.this.appConfig.getGuiWindowPosX(), oldY = GUI.this.appConfig.getGuiWindowPosY();
 
             @Override
             public void componentResized(ComponentEvent e) {
                 if (GUI.this.getExtendedState() == Frame.MAXIMIZED_BOTH) {
-                    GUI.this.appConfig.guiIsMaximized = true;
-                    GUI.this.appConfig.guiWindowPosX = this.oldX;
-                    GUI.this.appConfig.guiWindowPosY = this.oldY;
+                    GUI.this.appConfig.setGuiIsMaximized(true);
+                    GUI.this.appConfig.setGuiWindowPosX(this.oldX);
+                    GUI.this.appConfig.setGuiWindowPosY(this.oldY);
                 } else {
-                    GUI.this.appConfig.guiIsMaximized = false;
-                    GUI.this.appConfig.guiWindowWidth = GUI.this.getWidth();
-                    GUI.this.appConfig.guiWindowHeight = GUI.this.getHeight();
+                    GUI.this.appConfig.setGuiIsMaximized(false);
+                    GUI.this.appConfig.setGuiWindowWidth(GUI.this.getWidth());
+                    GUI.this.appConfig.setGuiWindowHeight(GUI.this.getHeight());
                 }
             }
 
@@ -312,10 +312,10 @@ public class GUI extends JFrame implements ActionListener {
             public void componentMoved(ComponentEvent e) {
                 // upon maximizing, first the component is moved, then resized. We only catch
                 // the resize event
-                this.oldX = GUI.this.appConfig.guiWindowPosX;
-                this.oldY = GUI.this.appConfig.guiWindowPosY;
-                GUI.this.appConfig.guiWindowPosX = GUI.this.getX();
-                GUI.this.appConfig.guiWindowPosY = GUI.this.getY();
+                this.oldX = GUI.this.appConfig.getGuiWindowPosX();
+                this.oldY = GUI.this.appConfig.getGuiWindowPosY();
+                GUI.this.appConfig.setGuiWindowPosX(GUI.this.getX());
+                GUI.this.appConfig.setGuiWindowPosY(GUI.this.getY());
             }
 
             @Override
@@ -349,11 +349,11 @@ public class GUI extends JFrame implements ActionListener {
         });
 
         this.setResizable(true);
-        if (this.appConfig.guiIsMaximized) {
+        if (this.appConfig.isGuiIsMaximized()) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         }
-        this.setSize(new Dimension(this.appConfig.guiWindowWidth, this.appConfig.guiWindowHeight));
-        this.setLocation(this.appConfig.guiWindowPosX, this.appConfig.guiWindowPosY);
+        this.setSize(new Dimension(this.appConfig.getGuiWindowWidth(), this.appConfig.getGuiWindowHeight()));
+        this.setLocation(this.appConfig.getGuiWindowPosX(), this.appConfig.getGuiWindowPosY());
 
         JMenuBar menuBar = new JMenuBar();
         this.menuFont = menuBar.getFont().deriveFont(Font.PLAIN);
@@ -581,7 +581,7 @@ public class GUI extends JFrame implements ActionListener {
         this.graphPanel.setToolTipText("Default Tooltip"); // to initialize, must set an arbitrary text
         this.graphPanel.requestDefaultViewOnNextDraw();
 
-        if (Configuration.extendedControl) {
+        if (Configuration.isExtendedControl()) {
             this.contentPane.setLayout(new BoxLayout(this.contentPane, BoxLayout.X_AXIS));
             this.controlPanel = new MaximizedControlPanel(this);
             this.contentPane.add(this.graphPanel);

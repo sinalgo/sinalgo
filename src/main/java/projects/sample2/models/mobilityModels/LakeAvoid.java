@@ -68,7 +68,7 @@ public class LakeAvoid extends RandomWayPoint {
         Position newPos;
 
         boolean inLake = false;
-        if (Configuration.useMap) {
+        if (Configuration.isUseMap()) {
             inLake = !map.isWhite(n.getPosition()); // we are already standing in the lake
         }
 
@@ -79,7 +79,7 @@ public class LakeAvoid extends RandomWayPoint {
         do {
             inLake = false;
             newPos = super.getNextPos(n);
-            if (Configuration.useMap) {
+            if (Configuration.isUseMap()) {
                 if (!map.isWhite(newPos)) {
                     inLake = true;
                     super.setRemaining_hops(0);// this foces the node to search for an other target...

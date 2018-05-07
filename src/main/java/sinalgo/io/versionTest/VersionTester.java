@@ -29,10 +29,10 @@ public class VersionTester extends Thread {
             return;
         }
         if (testIfEnabled) {
-            if (!AppConfig.getAppConfig().checkForSinalgoUpdate) {
+            if (!AppConfig.getAppConfig().isCheckForSinalgoUpdate()) {
                 return;
             }
-            long last = AppConfig.getAppConfig().timeStampOfLastUpdateCheck;
+            long last = AppConfig.getAppConfig().getTimeStampOfLastUpdateCheck();
             if (last + 86400000 > System.currentTimeMillis()) {
                 return;
             }
@@ -92,7 +92,7 @@ public class VersionTester extends Thread {
             Main.warning(msg);
         } finally {
             isRunning = false;
-            AppConfig.getAppConfig().timeStampOfLastUpdateCheck = System.currentTimeMillis();
+            AppConfig.getAppConfig().setTimeStampOfLastUpdateCheck(System.currentTimeMillis());
         }
     }
 }

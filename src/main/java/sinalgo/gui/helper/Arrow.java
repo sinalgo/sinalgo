@@ -48,8 +48,8 @@ import java.io.PrintStream;
  */
 public class Arrow {
 
-    private static int unzoomedArrowLength = Configuration.arrowLength;
-    private static int unzoomedArrowWidth = Configuration.arrowWidth;
+    private static int unzoomedArrowLength = Configuration.getArrowLength();
+    private static int unzoomedArrowWidth = Configuration.getArrowWidth();
 
     /**
      * Method to be used to draw an arrow from (x1,y1) to (x2,y2) with the arrow
@@ -68,7 +68,7 @@ public class Arrow {
         Color tmpCol = g.getColor();
         g.setColor(col);
 
-        if (Configuration.drawArrows) {
+        if (Configuration.isDrawArrows()) {
             drawArrowHead(x1, y1, x2, y2, g, pt, col);
         }
         g.drawLine(x1, y1, x2, y2);
@@ -93,7 +93,7 @@ public class Arrow {
         if (x1 == x2 && y1 == y2) {
             return; // cannot draw an arrow from a point to the same point
         }
-        if (Configuration.drawArrows) {
+        if (Configuration.isDrawArrows()) {
             Color tmpCol = g.getColor();
             g.setColor(col);
 
@@ -148,7 +148,7 @@ public class Arrow {
      * @param c  The color of the Arrow do draw.
      */
     public static void drawArrowToMetaPost(double sX, double sY, double eX, double eY, PrintStream ps, Color c) {
-        if (Configuration.drawArrows) {
+        if (Configuration.isDrawArrows()) {
             ps.print("drawarrow (" + sX + "," + sY + ")--(" + eX + "," + eY + ") "
                     + "withpen pencircle scaled 0.1 withcolor (" + c.getRed() + ", " + c.getGreen() + ", " + c.getBlue()
                     + ");\n");
@@ -173,7 +173,7 @@ public class Arrow {
      * @param c  The color of the Arrow-head do draw.
      */
     public static void drawArrowHeadToMetaPost(double sX, double sY, double eX, double eY, PrintStream ps, Color c) {
-        if (Configuration.drawArrows) {
+        if (Configuration.isDrawArrows()) {
             ps.print("filldraw arrowhead (" + sX + "," + sY + ")--(" + eX + "," + eY + ") "
                     + "withpen pencircle scaled 0.1 withcolor (" + c.getRed() + ", " + c.getGreen() + ", " + c.getBlue()
                     + ");\n");

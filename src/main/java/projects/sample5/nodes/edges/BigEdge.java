@@ -70,7 +70,7 @@ public class BigEdge extends Edge {
             pw.setLineWidth(0.5);
         }
 
-        if (Configuration.drawArrows) {
+        if (Configuration.isDrawArrows()) {
             pw.drawArrow(eSX, eSY, pt.getGuiXDouble(), pt.getGuiYDouble());
         } else {
             pw.drawLine(eSX, eSY, pt.getGuiXDouble(), pt.getGuiYDouble());

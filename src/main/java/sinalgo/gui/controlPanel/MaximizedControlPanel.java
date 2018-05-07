@@ -69,7 +69,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
     private AppConfig appConfig = AppConfig.getAppConfig();
 
-    private EventQueueElement[] queueElements = new EventQueueElement[Configuration.shownEventQueueSize];
+    private EventQueueElement[] queueElements = new EventQueueElement[Configuration.getShownEventQueueSize()];
 
     private int controlPanelWidth = 200;
 
@@ -159,7 +159,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         this.textContent.removeAll();
 
         JButton textPanelMinimizeButton;
-        if (this.appConfig.guiControlPanelShowTextPanel) {
+        if (this.appConfig.isGuiControlPanelShowTextPanel()) {
             textPanelMinimizeButton = this.createFrameworkIconButton("minimizeText", "minimize.gif", "Minimize");
         } else {
             textPanelMinimizeButton = this.createFrameworkIconButton("maximizeText", "maximize.gif", "Maximize");
@@ -174,10 +174,10 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         this.textContent.add(textPanel, JLayeredPane.DEFAULT_LAYER);
 
-        if (this.appConfig.guiControlPanelShowTextPanel) {
+        if (this.appConfig.isGuiControlPanelShowTextPanel()) {
             JScrollPane sp = new JScrollPane(textField, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                     ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            sp.setPreferredSize(new Dimension(this.controlPanelWidth, Configuration.outputTextFieldHeight));
+            sp.setPreferredSize(new Dimension(this.controlPanelWidth, Configuration.getOutputTextFieldHeight()));
             textField.setEditable(false);
             textField.setLineWrap(true);
             textPanel.add(sp);
@@ -199,7 +199,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
     private void createSimulationPanel() {
         this.simulationPane.removeAll(); // restart from scratch
-        boolean isMax = this.appConfig.guiControlPanelExpandSimulation;
+        boolean isMax = this.appConfig.isGuiControlPanelExpandSimulation();
 
         if (Global.isAsynchronousMode) { // the minimization button is only needed in async mode.
             JButton simulationPanelMinimizeButton;
@@ -274,7 +274,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
             this.info.add(roundsToPerform);
         }
 
-        refreshRate.setText(String.valueOf(Configuration.refreshRate));
+        refreshRate.setText(String.valueOf(Configuration.getRefreshRate()));
         JLabel refreshLabel = new JLabel("Refresh rate: ");
         refreshLabel.setFont(labelFont);
         this.info.add(refreshLabel);
@@ -380,7 +380,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
             this.eventList.setFont(this.eventList.getFont().deriveFont(Font.PLAIN));
             JScrollPane scrollableEventList = new JScrollPane(this.eventList);
 
-            int height = Configuration.shownEventQueueSize * fixedCellHeight + 4;
+            int height = Configuration.getShownEventQueueSize() * fixedCellHeight + 4;
             scrollableEventList.setPreferredSize(new Dimension(this.controlPanelWidth, height));
 
             this.events.add(BorderLayout.SOUTH, scrollableEventList);
@@ -407,7 +407,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         this.projectControlContent.removeAll();
 
         JButton minimizeButton;
-        if (this.appConfig.guiControlPanelShowProjectControl) {
+        if (this.appConfig.isGuiControlPanelShowProjectControl()) {
             minimizeButton = this.createFrameworkIconButton("minimizeProjectControl", "minimize.gif", "Minimize");
         } else {
             minimizeButton = this.createFrameworkIconButton("maximizeProjectControl", "maximize.gif", "Maximize");
@@ -420,7 +420,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         JPanel customButtons = new JPanel();
         customButtons.setBorder(BorderFactory.createTitledBorder("Project Control"));
 
-        if (this.appConfig.guiControlPanelShowProjectControl) {
+        if (this.appConfig.isGuiControlPanelShowProjectControl()) {
             customButtons.setPreferredSize(new Dimension(this.controlPanelWidth, 3000));
             customButtons.setLayout(new MultiLineFlowLayout(this.controlPanelWidth, 0, 0));
 
@@ -457,7 +457,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         this.viewContent.add(viewPanel, JLayeredPane.DEFAULT_LAYER);
 
         JButton viewPanelMinimizeButton;
-        if (this.appConfig.guiControlPanelShowFullViewPanel) {
+        if (this.appConfig.isGuiControlPanelShowFullViewPanel()) {
             viewPanelMinimizeButton = this.createFrameworkIconButton("minimizeView", "minimize.gif", "Minimize");
         } else {
             viewPanelMinimizeButton = this.createFrameworkIconButton("maximizeView", "maximize.gif", "Maximize");
@@ -468,7 +468,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         this.addToDisabledButtonList(viewPanelMinimizeButton); // disable while simulating
 
         // .... add zoom view
-        if (this.appConfig.guiControlPanelShowFullViewPanel) {
+        if (this.appConfig.isGuiControlPanelShowFullViewPanel()) {
             if (this.parent.getTransformator().supportReverseTranslation()) {
                 // only show the coordinate if it can be mapped from GUI to logic coordinates
                 JPanel mousePos = new JPanel();
@@ -529,35 +529,35 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "minimizeView":
-                this.appConfig.guiControlPanelShowFullViewPanel = false;
+                this.appConfig.setGuiControlPanelShowFullViewPanel(false);
                 this.createViewPanel();
                 break;
             case "maximizeView":
-                this.appConfig.guiControlPanelShowFullViewPanel = true;
+                this.appConfig.setGuiControlPanelShowFullViewPanel(true);
                 this.createViewPanel();
                 break;
             case "minimizeText":
-                this.appConfig.guiControlPanelShowTextPanel = false;
+                this.appConfig.setGuiControlPanelShowTextPanel(false);
                 this.createTextPanel();
                 break;
             case "maximizeText":
-                this.appConfig.guiControlPanelShowTextPanel = true;
+                this.appConfig.setGuiControlPanelShowTextPanel(true);
                 this.createTextPanel();
                 break;
             case "minimizeProjectControl":
-                this.appConfig.guiControlPanelShowProjectControl = false;
+                this.appConfig.setGuiControlPanelShowProjectControl(false);
                 this.createProjectControlPanel();
                 break;
             case "maximizeProjectControl":
-                this.appConfig.guiControlPanelShowProjectControl = true;
+                this.appConfig.setGuiControlPanelShowProjectControl(true);
                 this.createProjectControlPanel();
                 break;
             case "maximizeSimControl":
-                this.appConfig.guiControlPanelExpandSimulation = true;
+                this.appConfig.setGuiControlPanelExpandSimulation(true);
                 this.createSimulationPanel();
                 break;
             case "minimizeSimControl":
-                this.appConfig.guiControlPanelExpandSimulation = false;
+                this.appConfig.setGuiControlPanelExpandSimulation(false);
                 this.createSimulationPanel();
                 break;
             case "ClearOutputText":

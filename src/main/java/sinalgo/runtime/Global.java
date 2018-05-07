@@ -46,7 +46,13 @@ import sinalgo.runtime.AbstractCustomGlobal.GlobalMethod;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -179,16 +185,16 @@ public class Global {
             return;
         }
         try {
-            Pattern projectPattern = Pattern.compile("^(" + Configuration.userProjectsPackage + "\\.\\w+).*$");
+            Pattern projectPattern = Pattern.compile("^(" + Configuration.getUserProjectsPackage() + "\\.\\w+).*$");
 
-            Map<String, List<String>> allImplementations = new FastClasspathScanner("-sinalgo", Configuration.userProjectsPackage)
+            Map<String, List<String>> allImplementations = new FastClasspathScanner("-sinalgo", Configuration.getUserProjectsPackage())
                     .scan(Math.min(Math.max(Runtime.getRuntime().availableProcessors(), 4), 1))
                     .getNamesOfAllStandardClasses().parallelStream()
                     .map(projectPattern::matcher)
                     .filter(Matcher::matches)
                     .collect(Collectors.groupingBy(m -> m.group(1), Collectors.mapping(Matcher::group, Collectors.toList())));
 
-            Set<String> blackList = Arrays.stream(Configuration.nonUserProjectNames.split(";"))
+            Set<String> blackList = Arrays.stream(Configuration.getNonUserProjectNames().split(";"))
                     .collect(Collectors.toSet());
             projectNames = allImplementations.keySet().parallelStream()
                     .map(Global::getLastName)
@@ -198,16 +204,16 @@ public class Global {
                     .collect(Collectors.toList());
 
             implementationMap = Arrays.stream(ImplementationType.values()).parallel()
-                    .collect(Collectors.toMap(Function.identity(), type -> Stream.concat(Stream.of(Configuration.defaultProjectName), projectNames.stream())
+                    .collect(Collectors.toMap(Function.identity(), type -> Stream.concat(Stream.of(Configuration.getDefaultProjectName()), projectNames.stream())
                             .collect(Collectors.toMap(Function.identity(), pn -> {
-                                String projectPackage = IOUtils.getAsPackage(Configuration.userProjectsPackage, pn);
+                                String projectPackage = IOUtils.getAsPackage(Configuration.getUserProjectsPackage(), pn);
                                 String implPackage = IOUtils.getAsPackage(projectPackage, type.getPkg());
                                 Stream<String> implStream = allImplementations.get(projectPackage).stream()
                                         .filter(impl -> impl.matches("^" + implPackage + "\\.\\w+$"))
                                         .map(Global::getLastName)
                                         .sorted()
                                         .distinct()
-                                        .map(s -> pn.equals(Configuration.defaultProjectName) ? s : pn + ":" + s);
+                                        .map(s -> pn.equals(Configuration.getDefaultProjectName()) ? s : pn + ":" + s);
                                 if (ImplementationType.NODES_EDGES.equals(type)) {
                                     implStream = Stream.concat(Stream.of("Edge", "BidirectionalEdge"), implStream);
                                 }
@@ -243,9 +249,9 @@ public class Global {
      */
     public static String getProjectResourceDir() {
         if (useProject) {
-            return IOUtils.getAsPath(Configuration.projectResourceDirPrefix, projectName);
+            return IOUtils.getAsPath(Configuration.getProjectResourceDirPrefix(), projectName);
         } else {
-            return IOUtils.getAsPath(Configuration.projectResourceDirPrefix, Configuration.defaultProjectName);
+            return IOUtils.getAsPath(Configuration.getProjectResourceDirPrefix(), Configuration.getDefaultProjectName());
         }
     }
 
@@ -253,7 +259,7 @@ public class Global {
      * @return The currently used project.
      */
     public static String getProjecName() {
-        return useProject ? projectName : Configuration.defaultProjectName;
+        return useProject ? projectName : Configuration.getDefaultProjectName();
     }
 
     /**
@@ -261,9 +267,9 @@ public class Global {
      */
     public static String getProjectPackage() {
         if (useProject) {
-            return IOUtils.getAsPackage(Configuration.userProjectsPackage, projectName);
+            return IOUtils.getAsPackage(Configuration.getUserProjectsPackage(), projectName);
         } else {
-            return Configuration.defaultProjectPackage;
+            return Configuration.getDefaultProjectPackage();
         }
     }
 
@@ -286,7 +292,7 @@ public class Global {
      * default folder.
      */
     public static Vector<String> getImplementations(ImplementationType type) {
-        return getImplementations(type, Configuration.showModelsOfAllProjects);
+        return getImplementations(type, Configuration.isShowModelsOfAllProjects());
     }
 
     /**
@@ -300,7 +306,7 @@ public class Global {
             init();
         }
         Map<String, List<String>> implForType = implementationMap.getOrDefault(type, Collections.emptyMap());
-        Stream<String> projectNameStream = Stream.of(Configuration.defaultProjectName);
+        Stream<String> projectNameStream = Stream.of(Configuration.getDefaultProjectName());
         if (allProjects) {
             projectNameStream = Stream.concat(projectNameStream, projectNames.stream());
         } else if (useProject) {

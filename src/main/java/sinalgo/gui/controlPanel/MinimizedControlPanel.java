@@ -111,14 +111,14 @@ public class MinimizedControlPanel extends ControlPanel {
 
         // The two text fields to enter number of rounds and refresh rate
         // roundNumber.setText(String.valueOf(Configuration.defaultRoundNumber));
-        if (Configuration.asynchronousMode) {
+        if (Configuration.isAsynchronousMode()) {
             roundsToPerform.setToolTipText("Number of Events to perform");
         } else {
             roundsToPerform.setToolTipText("Number of Rounds to perform");
         }
         this.buttonPanel.add(roundsToPerform);
 
-        refreshRate.setText(String.valueOf(Configuration.refreshRate));
+        refreshRate.setText(String.valueOf(Configuration.getRefreshRate()));
         refreshRate.setToolTipText("Refresh Rate");
         this.buttonPanel.add(refreshRate);
 

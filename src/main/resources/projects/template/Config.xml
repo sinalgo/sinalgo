@@ -143,26 +143,26 @@
         <!-- Models -->
         <!--*********************************************************************** -->
         <!--The message transmission model used when none is specified -->
-        <DefaultMessageTransmissionModel
+        <defaultMessageTransmissionModel
                 value="ConstantTime"/>
 
         <!--Default connectivity model used when none is specified -->
-        <DefaultConnectivityModel value="UDG"/>
+        <defaultConnectivityModel value="UDG"/>
 
         <!--Default distribution model used when none is specified -->
-        <DefaultDistributionModel value="Random"/>
+        <defaultDistributionModel value="Random"/>
 
         <!--Default interference model used when none is specified -->
-        <DefaultInterferenceModel value="NoInterference"/>
+        <defaultInterferenceModel value="NoInterference"/>
 
         <!--Default mobility model used when none is specified -->
-        <DefaultMobilityModel value="NoMobility"/>
+        <defaultMobilityModel value="NoMobility"/>
 
         <!--Default reliability model used when none is specified -->
-        <DefaultReliabilityModel value="ReliableDelivery"/>
+        <defaultReliabilityModel value="ReliableDelivery"/>
 
         <!--Default node implementation used when none is specified -->
-        <DefaultNodeImplementation value="DummyNode"/>
+        <defaultNodeImplementation value="DummyNode"/>
 
         <!--*********************************************************************** -->
         <!-- Node storage, position transformation -->

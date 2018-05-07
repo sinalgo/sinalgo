@@ -178,26 +178,26 @@
         <!-- Models -->
         <!--*********************************************************************** -->
         <!--The message transmission model used when none is specified -->
-        <DefaultMessageTransmissionModel
+        <defaultMessageTransmissionModel
                 value="ConstantTime"/>
 
         <!--Default connectivity model used when none is specified -->
-        <DefaultConnectivityModel value="sample3:AntennaConnection"/>
+        <defaultConnectivityModel value="sample3:AntennaConnection"/>
 
         <!--Default distribution model used when none is specified -->
-        <DefaultDistributionModel value="Random"/>
+        <defaultDistributionModel value="Random"/>
 
         <!--Default interference model used when none is specified -->
-        <DefaultInterferenceModel value="NoInterference"/>
+        <defaultInterferenceModel value="NoInterference"/>
 
         <!--Default mobility model used when none is specified -->
-        <DefaultMobilityModel value="NoMobility"/>
+        <defaultMobilityModel value="NoMobility"/>
 
         <!--Default reliability model used when none is specified -->
-        <DefaultReliabilityModel value="LossyDelivery"/>
+        <defaultReliabilityModel value="LossyDelivery"/>
 
         <!--Default node implementation used when none is specified -->
-        <DefaultNodeImplementation value="sample3:MobileNode"/>
+        <defaultNodeImplementation value="sample3:MobileNode"/>
 
         <!--Show the models implemented by all projects in the drop down options.
             When set to false, only the models by the selected project and the default

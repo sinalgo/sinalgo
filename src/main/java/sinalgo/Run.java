@@ -74,7 +74,7 @@ public class Run {
         StringBuilder command = new StringBuilder(); // the entire command
         try {
             { // Store the cmd line args s.t. we could restart Sinalgo
-                AppConfig.getAppConfig().previousRunCmdLineArgs = String.join(" ", args);
+                AppConfig.getAppConfig().setPreviousRunCmdLineArgs(String.join(" ", args));
                 AppConfig.getAppConfig().writeConfig();
             }
 
@@ -93,7 +93,7 @@ public class Run {
             // - define the priority of the application, e.g. with nice w/o typing it on the
             // cmd line each time
             // add the command string as specified in the config file
-            Vector<String> cmds = new Vector<>(Arrays.asList(Configuration.javaCmd.split(" ")));
+            Vector<String> cmds = new Vector<>(Arrays.asList(Configuration.getJavaCmd().split(" ")));
 
             /*
              * Workaround for enabling the debugger when running this from
@@ -133,7 +133,7 @@ public class Run {
                     .forEachOrdered(cmds::add);
 
             String cp = System.getProperty("user.dir");
-            cmds.add("-Xmx" + Configuration.javaVMmaxMem + "m");
+            cmds.add("-Xmx" + Configuration.getJavaVMmaxMem() + "m");
             cmds.add("-cp");
             // Uses the old Class Path as its set by Gradle
             cmds.add(System.getProperty("java.class.path"));

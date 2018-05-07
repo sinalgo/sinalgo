@@ -101,11 +101,11 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
                     + "is not valid. The value of rMax must be positive.");
         }
         // determine cardinality of matrix in each dimension
-        int dimX = Configuration.dimX;
+        int dimX = Configuration.getDimX();
         this.numX = (int) Math.ceil(dimX / this.rMax);
-        int dimY = Configuration.dimY;
+        int dimY = Configuration.getDimY();
         this.numY = (int) Math.ceil(dimY / this.rMax);
-        int dimZ = Configuration.dimZ;
+        int dimZ = Configuration.getDimZ();
         this.numZ = (int) Math.ceil(dimZ / this.rMax);
         // create and initialize the matrix
         this.list = new DLLNodeList[this.numX][this.numY][this.numZ];
@@ -130,7 +130,7 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
 
     @Override
     public Enumeration<Node> getSortedNodeEnumeration(boolean backToFront) {
-        if (!Configuration.draw3DGraphNodesInProperOrder) {
+        if (!Configuration.isDraw3DGraphNodesInProperOrder()) {
             return this.flatList.elements();
         }
         PositionTransformation t3d = Main.getRuntime().getTransformator();

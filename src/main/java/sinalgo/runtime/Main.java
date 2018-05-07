@@ -125,16 +125,16 @@ public class Main {
         Logging.activate();
 
         // sets the Async/Sync flag
-        Global.isAsynchronousMode = Configuration.asynchronousMode;
+        Global.isAsynchronousMode = Configuration.isAsynchronousMode();
 
         // initialize the chosen runtime system
         if (guiBatch <= 1) { // GUI MODE
             Global.isGuiMode = true;
-            Global.log.logln(LogL.ALWAYS, "> Starting " + Configuration.appName + " in GUI-Mode"
+            Global.log.logln(LogL.ALWAYS, "> Starting " + Configuration.getAppName() + " in GUI-Mode"
                     + (Global.useProject ? " for project " + Global.projectName + "." : "."));
             runtime = new GUIRuntime();
         } else { // BATCH MODE
-            Global.log.log(LogL.ALWAYS, "> Starting " + Configuration.appName + " in BATCH-Mode"
+            Global.log.log(LogL.ALWAYS, "> Starting " + Configuration.getAppName() + " in BATCH-Mode"
                     + (Global.useProject ? " for project " + Global.projectName + "." : "."));
             runtime = new BatchRuntime();
         }
@@ -142,7 +142,7 @@ public class Main {
         // initialize the DefaultMessageTransmissionModel (only after the runtime
         // exists, s.t. we can output error messages, if needed
         Global.messageTransmissionModel = Model
-                .getMessageTransmissionModelInstance(Configuration.DefaultMessageTransmissionModel);
+                .getMessageTransmissionModelInstance(Configuration.getDefaultMessageTransmissionModel());
 
         if (Global.useProject) {
             // Try to initalize the gustomGlobal. This is done after the parsing of the
@@ -180,7 +180,7 @@ public class Main {
             runtime.initializeRuntimeSystem(args);
 
             Global.log.logln(LogL.ALWAYS, "> Initialisation terminated.");
-            if (Configuration.logConfiguration) {
+            if (Configuration.isLogConfiguration()) {
                 Configuration.printConfiguration(Global.log.getOutputStream());
             } else {
                 Global.log.logln(LogL.ALWAYS,

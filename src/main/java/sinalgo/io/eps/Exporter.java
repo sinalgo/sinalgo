@@ -126,14 +126,14 @@ public class Exporter {
             }
             String p = file.getPath();
             p = p.substring(0, p.length() - file.getName().length()); // remember the selected path
-            AppConfig.getAppConfig().lastSelectedFileDirectory = p;
+            AppConfig.getAppConfig().setLastSelectedFileDirectory(p);
 
             if (file.getName().endsWith(posFf.getExtension())) {
                 PositionFileIO.printPos(file.getPath());
             } else if (file.getName().endsWith(psFf.getExtension())) {
                 this.graphToPS(file, boundingBox, pt);
             } else if (file.getName().endsWith(pdfFf.getExtension())) {
-                File tmpFile = new File(getEmptyTempFile(Configuration.appTmpFolder));
+                File tmpFile = new File(getEmptyTempFile(Configuration.getAppTmpFolder()));
                 this.graphToPS(tmpFile, boundingBox, pt);
                 this.psToPdf(tmpFile, file);
                 tmpFile.delete();
@@ -158,17 +158,17 @@ public class Exporter {
 
             // print the map prior to the background (such that the border is on top of the
             // map
-            if (Configuration.useMap) {
+            if (Configuration.isUseMap()) {
                 SinalgoRuntime.map.drawToPostScript(pw, pt);
             }
 
             // draw the background
-            if (Configuration.epsDrawDeploymentAreaBoundingBox) {
+            if (Configuration.isEpsDrawDeploymentAreaBoundingBox()) {
                 pt.drawBackgroundToPostScript(pw);
             }
 
             // draw the edges
-            if (Configuration.drawEdges) {
+            if (Configuration.isDrawEdges()) {
                 Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
                 while (nodeEnumer.hasMoreElements()) {
                     Node n = nodeEnumer.nextElement();
@@ -178,7 +178,7 @@ public class Exporter {
                 }
             }
 
-            if (Configuration.drawNodes) {
+            if (Configuration.isDrawNodes()) {
                 // draw the nodes
                 for (Node n : SinalgoRuntime.nodes) {
                     n.drawToPostScript(pw, pt);
@@ -198,7 +198,7 @@ public class Exporter {
             if (tmpPdfFile.exists()) {
                 tmpPdfFile.delete();
             }
-            String command = Configuration.epsToPdfCommand;
+            String command = Configuration.getEpsToPdfCommand();
             // replace all the %s and %t with the psFileName and the pdfFileName
             while (command.contains("%s")) {
                 int index = command.indexOf("%s");

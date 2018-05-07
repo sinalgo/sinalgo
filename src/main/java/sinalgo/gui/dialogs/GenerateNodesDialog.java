@@ -82,7 +82,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 
     // static: keep the value for subsequent calls
     static {
-        number.setText(Integer.toString(AppConfig.getAppConfig().generateNodesDlgNumNodes));
+        number.setText(Integer.toString(AppConfig.getAppConfig().getGenerateNodesDlgNumNodes()));
     }
 
     private int numberOfNodes; // 'number' field translated to an int, set after a call to readSelection()
@@ -90,31 +90,31 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
     private JButton cancel = new JButton("Cancel");
 
     private JComboBox distributionModelComboBox = new JComboBox();
-    private String distributionSel = Configuration.DefaultDistributionModel;
+    private String distributionSel = Configuration.getDefaultDistributionModel();
     private JTextField distributionParam = new JTextField(20);
     private String distributionParamDefString = "";
 
     private JComboBox nodeTypeComboBox = new JComboBox();
-    private String nodeTypeSel = Configuration.DefaultNodeImplementation;
+    private String nodeTypeSel = Configuration.getDefaultNodeImplementation();
     private JTextField nodeTypeParam = new JTextField(20);
 
     private JComboBox connectivityModelComboBox = new JComboBox();
-    private String connectivitySel = Configuration.DefaultConnectivityModel;
+    private String connectivitySel = Configuration.getDefaultConnectivityModel();
     private JTextField connectivityParam = new JTextField(20);
     private String connectivityDefString = "";
 
     private JComboBox interferenceModelComboBox = new JComboBox();
-    private String interferenceSel = Configuration.DefaultInterferenceModel;
+    private String interferenceSel = Configuration.getDefaultInterferenceModel();
     private String interferenceDefString = "";
     private JTextField interferenceParam = new JTextField(20);
 
     private JComboBox mobilityModelComboBox = new JComboBox();
-    private String mobilitySel = Configuration.DefaultMobilityModel;
+    private String mobilitySel = Configuration.getDefaultMobilityModel();
     private String mobilityDefString = "";
     private JTextField mobilityParam = new JTextField(20);
 
     private JComboBox reliabilityModelComboBox = new JComboBox();
-    private String reliabilitySel = Configuration.DefaultReliabilityModel;
+    private String reliabilitySel = Configuration.getDefaultReliabilityModel();
     private String reliabilityDefString = "";
     private JTextField reliabilityParam = new JTextField(20);
 
@@ -262,10 +262,10 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         JPanel allModelsPanel = new JPanel();
         allModelsPanel.setLayout(new BorderLayout());
         this.allModelsCheckBox = new JCheckBox("Show all implementations");
-        this.allModelsCheckBox.setSelected(Configuration.showModelsOfAllProjects);
+        this.allModelsCheckBox.setSelected(Configuration.isShowModelsOfAllProjects());
         this.allModelsCheckBox.addChangeListener(e -> {
-            if (Configuration.showModelsOfAllProjects != this.allModelsCheckBox.isSelected()) {
-                Configuration.showModelsOfAllProjects = this.allModelsCheckBox.isSelected();
+            if (Configuration.isShowModelsOfAllProjects() != this.allModelsCheckBox.isSelected()) {
+                Configuration.setShowModelsOfAllProjects(this.allModelsCheckBox.isSelected());
                 // reload the contents of the drop down fields
                 this.fillChoice(this.distributionModelComboBox, MODELS_DISTRIBUTION, this.distributionSel);
                 this.fillChoice(this.nodeTypeComboBox, NODES_IMPLEMENTATIONS, this.nodeTypeSel);
@@ -319,7 +319,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
                     if (num <= 0) {
                         throw new NumberFormatException();
                     }
-                    AppConfig.getAppConfig().generateNodesDlgNumNodes = num;
+                    AppConfig.getAppConfig().setGenerateNodesDlgNumNodes(num);
                     this.pf = new PercentualProgressDialog(this, this, "Creating new Nodes...");
                     this.canceled = false;
                     this.pf.init();

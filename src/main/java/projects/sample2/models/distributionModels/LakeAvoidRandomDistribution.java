@@ -51,7 +51,7 @@ public class LakeAvoidRandomDistribution extends Random {
     @Override
     public Position getNextPosition() {
         Position pos = super.getNextPosition();
-        if (Configuration.useMap) {
+        if (Configuration.isUseMap()) {
             // anything else than white is considered an obstacle
             while (!Tools.getBackgroundMap().isWhite(pos)) {
                 pos = super.getNextPosition();

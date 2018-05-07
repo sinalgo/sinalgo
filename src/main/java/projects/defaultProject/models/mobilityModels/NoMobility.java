@@ -59,7 +59,7 @@ public class NoMobility extends MobilityModel {
      */
     public NoMobility() {
         super(false);
-        if (firstTime && Configuration.mobility && Configuration.showOptimizationHints) {
+        if (firstTime && Configuration.isMobility() && Configuration.isShowOptimizationHints()) {
             Main.warning("At least some nodes use the '" + this.getClass().getSimpleName() + "' mobility model. "
                     + "If you do not consider mobility at all in your project, you can "
                     + "considerably improve performance by turning off mobility in the " + "XML configuration file.");

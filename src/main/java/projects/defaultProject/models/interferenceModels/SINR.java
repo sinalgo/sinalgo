@@ -106,14 +106,14 @@ public class SINR extends InterferenceModel {
             }
             if (pack.getOrigin().getID() == p.getDestination().getID()) {
                 // the receiver node of p is sending a packet itself
-                if (!Configuration.canReceiveWhileSending) {
+                if (!Configuration.isCanReceiveWhileSending()) {
                     return true;
                 }
                 continue; // the interference created from this sender is not considered
             }
             // Detect multiple packets that want to arrive in parallel at the same
             // destination.
-            if (!Configuration.canReceiveMultiplePacketsInParallel && pack.getDestination().getID() == p.getDestination().getID()) {
+            if (!Configuration.isCanReceiveMultiplePacketsInParallel() && pack.getDestination().getID() == p.getDestination().getID()) {
                 return true;
             }
 
