@@ -78,10 +78,11 @@ public class DelayTimer extends Timer {
         if (!S1Node.isSending) {
             return;
         }
-        if (sender.next != null) {
-            node.send(msg, sender.next);
-            ((S1Node) node).msgSentInThisRound++;
+        if (sender.getNext() != null) {
+            this.getTargetNode().send(msg, sender.getNext());
+            S1Node targetedNode = ((S1Node) this.getTargetNode());
+            targetedNode.setMsgSentInThisRound(targetedNode.getMsgSentInThisRound() + 1);
         }
-        this.startRelative(interval, node); // recursive restart of the timer
+        this.startRelative(interval, this.getTargetNode()); // recursive restart of the timer
     }
 }

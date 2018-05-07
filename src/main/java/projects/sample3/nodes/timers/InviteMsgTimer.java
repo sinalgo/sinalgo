@@ -6,7 +6,6 @@ import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.nodes.timers.Timer;
-import sinalgo.tools.Tools;
 import sinalgo.tools.statistics.Distribution;
 
 /**
@@ -37,16 +36,16 @@ public class InviteMsgTimer extends Timer {
         InviteMessage msg = new InviteMessage();
         refreshCounter--;
         if (refreshCounter <= 0) {
-            ((Antenna) this.node).resetNeighborhood();
+            ((Antenna) this.getTargetNode()).resetNeighborhood();
             msg.requireSubscription = true;
             refreshCounter = refreshRate; // reset the counter
         }
 
-        this.node.broadcast(msg);
+        this.getTargetNode().broadcast(msg);
         double time = dist.nextSample();
         if (time <= 0) {
             throw new SinalgoFatalException("Invalid offset time for inviteInterval: " + time + " is <= 0.");
         }
-        this.startRelative(time, this.node);
+        this.startRelative(time, this.getTargetNode());
     }
 }

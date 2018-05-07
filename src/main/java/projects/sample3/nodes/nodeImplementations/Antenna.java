@@ -44,8 +44,8 @@ public class Antenna extends Node {
             // -----------------------------------------------------------------------------
             else if (msg instanceof SmsMessage) {
                 SmsMessage sms = (SmsMessage) msg;
-                if (isNeighbor(sms.receiver)) {
-                    this.send(sms, sms.receiver); // forward the message to the destination
+                if (isNeighbor(sms.getReceiver())) {
+                    this.send(sms, sms.getReceiver()); // forward the message to the destination
                 } else if (inbox.getSender() instanceof MobileNode) {
                     for (Antenna a : antennaList) {
                         if (!a.equals(this)) {
@@ -160,7 +160,7 @@ public class Antenna extends Node {
 
         @Override
         public int compare(Node n1, Node n2) {
-            return n1.getID() < n2.getID() ? -1 : n1.getID() == n2.getID() ? 0 : 1;
+            return Integer.compare(n1.getID(), n2.getID());
         }
     }
 

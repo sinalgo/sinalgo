@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.NotInGUIModeException;
@@ -95,23 +98,27 @@ public abstract class SinalgoRuntime {
      */
     public static Map map = null;
 
-    protected static AppConfig appConfig = AppConfig.getAppConfig();
+    static AppConfig appConfig = AppConfig.getAppConfig();
 
     // some information on the rounds
 
-    // the number of rounds the simulation makes. It is used to store the number of
-    // rounds it makes
-    // at the start of the simulation when a -rounds parameter is provided.
-    protected int numberOfRounds = 0;
+    /**
+     * The number of rounds the simulation makes.
+     * It is used to store the number of rounds it makes
+     * at the start of the simulation when a -rounds parameter is provided.
+     */
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private int numberOfRounds = 0;
 
-    public int getNumberOfRounds() {
-        return numberOfRounds;
-    }
-
-    // true if a running simulation should be stopped at the end of the current
-    // round, otherwise false
-    // set by the abort button in the gui
-    protected boolean abort = false;
+    /**
+     * true if a running simulation should be stopped at the e
+     * nd of the current round, otherwise false
+     * set by the abort button in the gui
+     */
+    @Getter
+    @Setter(AccessLevel.PACKAGE)
+    private boolean abort = false;
 
     // these are local variables to ensure the 'communication' between the parsing
     // -gen parameters (where these variables are written
@@ -124,7 +131,9 @@ public abstract class SinalgoRuntime {
     private String[] modelParams = new String[4];
     private String[] modelNames;
 
-    protected boolean nodeCreationFinished = true;
+    @Getter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PRIVATE)
+    private boolean nodeCreationFinished = true;
 
     /**
      * The constructor for the SinalgoRuntime class. It initializes some basic variables.
@@ -160,27 +169,21 @@ public abstract class SinalgoRuntime {
         Global.customGlobal.preRun();
     }
 
-    // The transformation instance that knows how to translate between the
-    // logic coordinate system used by the simulation and the corresponding
-    // coordinates on the GUI.
-    private PositionTransformation transformator = PositionTransformation.loadFieldTransformator();
-
     /**
-     * Returns the transformation instance that knows how to translate between the
+     * The transformation instance that knows how to translate between the
      * logic coordinate system used by the simulation and the corresponding
      * coordinates on the GUI.
      *
      * @return The transformation instance.
      */
-    public PositionTransformation getTransformator() {
-        return transformator;
-    }
+    @Getter
+    private PositionTransformation transformator = PositionTransformation.loadFieldTransformator();
 
     /**
      * This method aborts the simulation after the current round has terminated
      */
     public void abort() {
-        abort = true;
+        this.setAbort(true);
     }
 
     /**
@@ -207,7 +210,7 @@ public abstract class SinalgoRuntime {
                             + "be followed by the number of rounds to execute.");
                 }
                 try {
-                    numberOfRounds = Integer.parseInt(args[i + 1]);
+                    setNumberOfRounds(Integer.parseInt(args[i + 1]));
                     i++; // don't have to look at args[i+1] anymore
                 } catch (NumberFormatException e) {
                     throw new SinalgoFatalException("Cannot convert the number of rounds to execute (" + args[i + 1] + ") "
@@ -226,7 +229,7 @@ public abstract class SinalgoRuntime {
                             + "to an integer: The '-refreshRate' flag must be followed by an integer value.\n " + e);
                 }
             } else if (args[i].equals("-gen")) {
-                nodeCreationFinished = false;
+                setNodeCreationFinished(false);
 
                 // format: #nodes nodeType DistModel [(params)] [{M [(params)]}*]
                 if (args.length <= i + 3) {
@@ -298,7 +301,7 @@ public abstract class SinalgoRuntime {
 
                 try {
                     synchronized (this) {
-                        if (!nodeCreationFinished) {
+                        if (!isNodeCreationFinished()) {
                             // wait for the end of the initialisazion progress
                             wait();
                         }
@@ -464,8 +467,8 @@ public abstract class SinalgoRuntime {
      */
     private static AbstractNodeCollection createNewNodeCollection() {
         // load the node collection specified in the config file
-        AbstractNodeCollection result = null;
-        String name = null;
+        AbstractNodeCollection result;
+        String name;
         if (Configuration.dimensions == 2) {
             name = Configuration.nodeCollection2D;
         } else if (Configuration.dimensions == 3) {
@@ -554,7 +557,7 @@ public abstract class SinalgoRuntime {
 
             this.setProgress(100.0d * j / numNodes);
 
-            Node node = null;
+            Node node;
             try {
                 node = Node.createNodeByClassname(nodeTypeName);
             } catch (WrongConfigurationException e) {
@@ -569,7 +572,7 @@ public abstract class SinalgoRuntime {
         }
         // the system nodes are initialized and thus the waiting thread (the
         // main-Thread) can be invoked again. (If it is still waiting
-        nodeCreationFinished = true;
+        setNodeCreationFinished(true);
 
         this.notifyAll();
     }

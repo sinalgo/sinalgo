@@ -25,14 +25,14 @@ public class SmsTimer extends Timer {
     @Override
     public void fire() {
         if (enabled) {
-            MobileNode mn = (MobileNode) this.node;
+            MobileNode mn = (MobileNode) this.getTargetNode();
             // Assemble an SMS and send it to the current anteanna
-            SmsMessage msg = new SmsMessage(mn.getNextSeqID(), destination, this.node, text, this);
+            SmsMessage msg = new SmsMessage(mn.getNextSeqID(), destination, this.getTargetNode(), text, this);
             Antenna a = mn.getCurrentAntenna();
             if (a != null) {
-                this.node.send(msg, a);
+                this.getTargetNode().send(msg, a);
             }
-            this.startRelative(8, this.node); // TODO: time?
+            this.startRelative(8, this.getTargetNode()); // TODO: time?
         }
     }
 

@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.events.Event;
@@ -53,21 +56,26 @@ public class AsynchronousRuntimeThread extends Thread {
      * The number of events to be executed in this run. Has to be set before the
      * thread is started.
      */
-    public long numberOfEvents = 0;
+    @Getter
+    @Setter
+    private long numberOfEvents = 0;
 
     /**
      * Indicates whether the connectivity is initialized or not. In Asynchronous
      * mode the connectivity is generated once at startup and then it does not
      * change anymore.
      */
-    public static boolean connectivityInitialized = false;
+    private static boolean connectivityInitialized = false;
 
     /**
      * The number events the gui will be redrawn after.
      */
-    public long refreshRate = 0;
+    @Getter
+    @Setter
+    private long refreshRate = 0;
 
-    private GUIRuntime runtime = null;
+    @Getter(AccessLevel.PRIVATE)
+    private GUIRuntime runtime;
 
     private static Node lastEventNode = null;
 
@@ -77,7 +85,7 @@ public class AsynchronousRuntimeThread extends Thread {
      *
      * @param runtime The GUIRuntime instance this thread is created for.
      */
-    public AsynchronousRuntimeThread(GUIRuntime runtime) {
+    AsynchronousRuntimeThread(GUIRuntime runtime) {
         this.runtime = runtime;
     }
 
@@ -86,14 +94,14 @@ public class AsynchronousRuntimeThread extends Thread {
      * without a given runtime. This call is absolutely the same as calling
      * AsynchronousRuntimeThread(null)
      */
-    public AsynchronousRuntimeThread() {
+    AsynchronousRuntimeThread() {
         runtime = null;
     }
 
     /**
      * Determines which nodes are connected according to the connectivity model.
      */
-    public static void initializeConnectivity() {
+    static void initializeConnectivity() {
         connectivityInitialized = true;
         for (Node n : SinalgoRuntime.nodes) {
             n.getConnectivityModel().updateConnections(n);
@@ -110,10 +118,10 @@ public class AsynchronousRuntimeThread extends Thread {
             initializeConnectivity();
         }
 
-        for (long i = 0; i < numberOfEvents; i++) {
+        for (long i = 0; i < getNumberOfEvents(); i++) {
             // In GUI-mode, check whether ABORT was pressed.
-            if (runtime != null && runtime.abort) {
-                runtime.abort = false;
+            if (this.getRuntime() != null && this.getRuntime().isAbort()) {
+                this.getRuntime().setAbort(false);
                 break;
             }
             if (event != null) {
@@ -129,16 +137,15 @@ public class AsynchronousRuntimeThread extends Thread {
             if (event == null) {
                 Global.log.logln(LogL.EVENT_QUEUE_DETAILS,
                         "There is no event to be executed. Generate an event manually.");
-                if (Global.isGuiMode) {
-                    break;
-                } else {
+                if (!Global.isGuiMode) {
                     Main.exitApplication(); // we're in batch mode and there are no more events -> exit
                 }
             }
 
-            Global.currentTime = event.time;
-
-            event.handle(); // does not yet free the event
+            if (event != null) {
+                Global.currentTime = event.time;
+                event.handle(); // does not yet free the event
+            }
 
             if (Global.isGuiMode) {
                 if (i % refreshRate == refreshRate - 1 && i + 1 < numberOfEvents) { // only perform if we continue with
@@ -146,21 +153,23 @@ public class AsynchronousRuntimeThread extends Thread {
                     if (lastEventNode != null) {
                         lastEventNode.highlight(false);
                     }
-                    if (event.isNodeEvent()) {
-                        event.getEventNode().highlight(true);
+                    if (event != null) {
+                        if (event.isNodeEvent()) {
+                            event.getEventNode().highlight(true);
+                        }
+                        lastEventNode = event.getEventNode(); // may be null, if the event does not execute on a node
                     }
-                    lastEventNode = event.getEventNode();// may be null, if the event does not execute on a node
-                    runtime.getGUI().setRoundsPerformed((Global.currentTime), EventQueue.eventNumber);
-                    runtime.getGUI().setCurrentlyProcessedEvent(event); // does not store the event
-                    runtime.getGUI().redrawGUINow();
+                    this.getRuntime().getGUI().setRoundsPerformed((Global.currentTime), EventQueue.eventNumber);
+                    this.getRuntime().getGUI().setCurrentlyProcessedEvent(event); // does not store the event
+                    this.getRuntime().getGUI().redrawGUINow();
                 }
             }
         }
 
         if (Global.isGuiMode) {
-            runtime.getGUI().setRoundsPerformed((Global.currentTime), EventQueue.eventNumber);
+            this.getRuntime().getGUI().setRoundsPerformed((Global.currentTime), EventQueue.eventNumber);
             if (event != null) {
-                runtime.getGUI().setCurrentlyProcessedEvent(event);
+                this.getRuntime().getGUI().setCurrentlyProcessedEvent(event);
 
                 if (lastEventNode != null) {
                     lastEventNode.highlight(false);
@@ -170,16 +179,16 @@ public class AsynchronousRuntimeThread extends Thread {
                 }
                 lastEventNode = event.getEventNode();// may be null, if the event does not execute on a node
             } else {
-                runtime.getGUI().setCurrentlyProcessedEvent(null);
+                this.getRuntime().getGUI().setCurrentlyProcessedEvent(null);
                 if (lastEventNode != null) {
                     lastEventNode.highlight(false);
                 }
             }
-            runtime.getGUI().redrawGUINow();
-            runtime.getGUI().setStartButtonEnabled(true);
+            this.getRuntime().getGUI().redrawGUINow();
+            this.getRuntime().getGUI().setStartButtonEnabled(true);
         } else { // Batch mode
-            Main.exitApplication(); // we're in batch mode and the required number of events have been handled ->
-            // exit
+            // we're in batch mode and the required number of events have been handled -> exit
+            Main.exitApplication();
         }
         if (event != null) {
             event.free();

@@ -76,7 +76,7 @@ import java.util.Iterator;
  * The base class for all node implementations.
  */
 @EqualsAndHashCode(of = "ID")
-public abstract class Node implements DoublyLinkedListEntry {
+public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
 
     /**
      * This annotation is used to mark methods that should be accessible through a
@@ -316,8 +316,6 @@ public abstract class Node implements DoublyLinkedListEntry {
 
     /**
      * Sets the position of this node.
-     *
-     * @param p The new position.
      */
     public final void setPosition(Position p) {
         setPosition(p.getXCoord(), p.getYCoord(), p.getZCoord());
@@ -331,13 +329,11 @@ public abstract class Node implements DoublyLinkedListEntry {
      * @param z The new z-coordinate of this node
      */
     public final void setPosition(double x, double y, double z) {
-        position.setXCoord(x);
-        position.setYCoord(y);
-        position.setZCoord(z);
+        getPosition().assign(x, y, z);
         cropPos(position);
         SinalgoRuntime.nodes.updateNodeCollection(this); // note that this method tests whether the node is already added to
         // the node collection
-        nodePositionUpdated();
+        onChangePosition();
     }
 
     /**
@@ -345,16 +341,7 @@ public abstract class Node implements DoublyLinkedListEntry {
      * position. Overwrite this method in the subclass to immediately react to
      * position changes.
      */
-    protected void nodePositionUpdated() {
-    }
-
-    /**
-     * Returns the position of the node.
-     *
-     * @return The position of the node.
-     */
-    public final Position getPosition() {
-        return position;
+    protected void onChangePosition() {
     }
 
     // -----------------------------------------------------------------------------------
@@ -462,14 +449,14 @@ public abstract class Node implements DoublyLinkedListEntry {
         double transmissionTime = Global.messageTransmissionModel.timeToReach(this, target, msg);
 
         // fill in the data of the header
-        packet.arrivingTime = Global.currentTime + transmissionTime;
-        packet.sendingTime = Global.currentTime;
-        packet.origin = this;
-        packet.destination = target;
-        packet.edge = null;
-        packet.intensity = intensity;
-        packet.positiveDelivery = true; // no disturbtion
-        packet.type = PacketType.UNICAST;
+        packet.setArrivingTime(Global.currentTime + transmissionTime);
+        packet.setSendingTime(Global.currentTime);
+        packet.setOrigin(this);
+        packet.setDestination(target);
+        packet.setEdge(null);
+        packet.setIntensity(intensity);
+        packet.setPositiveDelivery(true); // no disturbtion
+        packet.setType(PacketType.UNICAST);
 
         Global.numberOfMessagesInThisRound++; // statistics
 
@@ -646,33 +633,6 @@ public abstract class Node implements DoublyLinkedListEntry {
             // the simulation is not in gui mode and thus the node is not set highlighted
             // do nothing
         }
-    }
-
-    /**
-     * Set the default color member 'nodeColor' of this node. This node uses this
-     * color by defaut if the method 'getColor()' is not overwritten in your node
-     * subclass. Overwrite getColor() in your subclass to implement more advanced
-     * coloring schemes.
-     *
-     * @param c The new color.
-     */
-    public void setColor(Color c) {
-        nodeColor = c;
-    }
-
-    /**
-     * Determines the color in which this node is painted.
-     * <p>
-     * Either use setColor() to change the color of this node, or overwrite this
-     * method in your node subclass to further customize the color of this node.
-     * <p>
-     * Note that the framework always uses this method to determine the color of
-     * this node.
-     *
-     * @return The color of this node.
-     */
-    public Color getColor() {
-        return nodeColor;
     }
 
     /**
@@ -1117,11 +1077,30 @@ public abstract class Node implements DoublyLinkedListEntry {
      */
     private PacketCollection nAckBufferOddRound = new PacketCollection();
 
-    // the color of the node, used in the default getColor() implementation
-    protected Color nodeColor = new Color(0, 0, 0);
+    /**
+     * Determines the color in which this node is painted.
+     * <p>
+     * Either use setColor() to change the color of this node, or overwrite this
+     * method in your node subclass to further customize the color of this node.
+     * <p>
+     * Note that the framework always uses this method to determine the color of
+     * this node.
+     *
+     * @param c The new color.
+     * @return The color of this node.
+     */
+    @Getter
+    @Setter
+    private Color color = new Color(0, 0, 0);
 
-    // the position of the node
-    private Position position = new Position(0, 0, 0);
+    /**
+     * This node's position.
+     *
+     * @return The position of the node.
+     * @param position The new position.
+     */
+    @Getter
+    private final Position position = new Position(0, 0, 0);
 
     /**
      * Default constructor to construct a node. Initializes the ID of this node.
@@ -1163,7 +1142,7 @@ public abstract class Node implements DoublyLinkedListEntry {
      *          but did not arrive.
      */
     public void addNackPacket(Packet p) {
-        if (p.type != PacketType.UNICAST) {
+        if (p.getType() != PacketType.UNICAST) {
             return; // only nacknowledge unicast messages
         }
         if (Global.isEvenRound) { // add to the buffer of the next round
@@ -1305,9 +1284,10 @@ public abstract class Node implements DoublyLinkedListEntry {
             while (edgeIteratorInstance.hasNext()) {
                 Edge e = edgeIteratorInstance.next();
                 Packet sentP = sendMessage(m, e, e.getStartNode(), e.getEndNode(), intensity);
-                sentP.type = PacketType.MULTICAST;
+                sentP.setType(PacketType.MULTICAST);
                 SinalgoRuntime.packetsInTheAir.addPassivePacket(sentP);
-                if (longestPacket == null || longestPacket.arrivingTime < sentP.arrivingTime) { // NOTE that the second
+                if (longestPacket == null || longestPacket.compareTo(sentP) < 0) {
+                    // NOTE that the second
                     // statement is not
                     // esecuted if the first
                     // one is true
@@ -1320,7 +1300,7 @@ public abstract class Node implements DoublyLinkedListEntry {
                 // For the interference, we need to send a packet anyways. Send it to this
                 // node itself.
                 Packet sentP = sendMessage(m, null, this, this, intensity);
-                sentP.type = PacketType.MULTICAST;
+                sentP.setType(PacketType.MULTICAST);
                 sentP.denyDelivery(); // ensure that the packet never arrives at this node
                 SinalgoRuntime.packetsInTheAir.add(sentP);
             }
@@ -1329,7 +1309,7 @@ public abstract class Node implements DoublyLinkedListEntry {
             while (edgeIteratorInstance.hasNext()) {
                 Edge e = edgeIteratorInstance.next();
                 Packet sentP = sendMessage(m, e, e.getStartNode(), e.getEndNode(), intensity);
-                sentP.type = PacketType.DUMMY;
+                sentP.setType(PacketType.DUMMY);
             }
         }
     }
@@ -1380,19 +1360,19 @@ public abstract class Node implements DoublyLinkedListEntry {
         double transmissionTime = Global.messageTransmissionModel.timeToReach(sender, target, msg);
 
         // fill in the data of the header
-        packet.arrivingTime = Global.currentTime + transmissionTime;
-        packet.sendingTime = Global.currentTime;
-        packet.origin = sender;
-        packet.destination = target;
-        packet.edge = edge;
-        packet.intensity = intensity;
-        packet.type = PacketType.UNICAST;
+        packet.setArrivingTime(Global.currentTime + transmissionTime);
+        packet.setSendingTime(Global.currentTime);
+        packet.setOrigin(sender);
+        packet.setDestination(target);
+        packet.setEdge(edge);
+        packet.setIntensity(intensity);
+        packet.setType(PacketType.UNICAST);
         // this property must be checked when the entire packet was assembled
         if (edge != null) {
-            packet.positiveDelivery = reliabilityModel.reachesDestination(packet);
-            edge.addMessageForThisEdge(packet.message);
+            packet.setPositiveDelivery(reliabilityModel.reachesDestination(packet));
+            edge.addMessageForThisEdge(packet.getMessage());
         } else {
-            packet.positiveDelivery = false; // when there is no edge, the packet is immediately dropped
+            packet.setPositiveDelivery(false); // when there is no edge, the packet is immediately dropped
         }
 
         Global.numberOfMessagesOverAll++; // statistics (don't increment the counter that counts the number of sent
@@ -1436,19 +1416,19 @@ public abstract class Node implements DoublyLinkedListEntry {
             double transmissionTime = Global.messageTransmissionModel.timeToReach(sender, target, msg);
 
             // fill in the data of the header
-            packet.arrivingTime = Global.currentTime + transmissionTime;
-            packet.sendingTime = Global.currentTime;
-            packet.origin = sender;
-            packet.destination = target;
-            packet.edge = edge;
-            packet.intensity = intensity;
-            packet.type = PacketType.UNICAST;
+            packet.setArrivingTime(Global.currentTime + transmissionTime);
+            packet.setSendingTime(Global.currentTime);
+            packet.setOrigin(sender);
+            packet.setDestination(target);
+            packet.setEdge(edge);
+            packet.setIntensity(intensity);
+            packet.setType(PacketType.UNICAST);
             // this property must be checked when the entire packet was assembled
             if (edge != null) {
-                packet.positiveDelivery = reliabilityModel.reachesDestination(packet);
-                edge.addMessageForThisEdge(packet.message);
+                packet.setPositiveDelivery(reliabilityModel.reachesDestination(packet));
+                edge.addMessageForThisEdge(packet.getMessage());
             } else {
-                packet.positiveDelivery = false; // when there is no edge, the packet is immediately dropped
+                packet.setPositiveDelivery(false); // when there is no edge, the packet is immediately dropped
             }
 
             target.packetBuffer.addPacket(packet); // place the packet in the targets receive buffer
@@ -1518,19 +1498,18 @@ public abstract class Node implements DoublyLinkedListEntry {
         return node;
     }
 
-    // the DLLE entry for the DoublyLinkedList
-    private DLLFingerList dllFingerList = new DLLFingerList();
-
     /**
      * <b>This member is framework internal and should not be used by the project
      * developer.</b>
      *
      * @see sinalgo.tools.storage.DoublyLinkedListEntry#getDoublyLinkedListFinger()
      */
+    @Getter
+    private DLLFingerList doublyLinkedListFinger = new DLLFingerList();
+
     @Override
-    public DLLFingerList getDoublyLinkedListFinger() {
-        // <b>This method is framework internal and should not be used by the project
-        // developer.</b>
-        return dllFingerList;
+    public int compareTo(Node n) {
+        return Long.compare(this.getID(), n.getID());
     }
+
 }

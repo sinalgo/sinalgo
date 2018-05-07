@@ -54,7 +54,7 @@ import sinalgo.tools.statistics.Distribution;
 public class LossyDelivery extends ReliabilityModel {
 
     private java.util.Random rand = Distribution.getRandom();
-    private double dropRate = 0;
+    private double dropRate; // default is 0
 
     @Override
     public boolean reachesDestination(Packet p) {

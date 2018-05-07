@@ -68,7 +68,7 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
         // Each entry is allowed only once in the collection
         if (!this.containsAndSetVisited(startNode, endNode, valid)) {
             Edge e = Edge.fabricateEdge(startNode, endNode);
-            e.valid = valid;
+            e.setValid(valid);
             this.append(e);
             return false;
         } else {
@@ -125,7 +125,7 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
         edgeIterator.reset();
         while (edgeIterator.hasNext()) {
             Edge edge = edgeIterator.next();
-            if (!edge.valid) {
+            if (!edge.isValid()) {
                 edgeIterator.remove(); // remove the edge from the list of outgoing connections from this node
                 edge.removeEdgeFromGraph();
                 edge.free(); // return this edge to the edge factory s.t. it can be reused
@@ -134,7 +134,7 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
                 // sets the valid flag of each 'surviving' edge to false, such that in the next
                 // round, this edge
                 // needs to be confirmed again by the connectivity model
-                edge.valid = false;
+                edge.setValid(false);
             }
         }
         return rval;
@@ -168,7 +168,7 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
         while (edgeIterator.hasNext()) {
             Edge e = edgeIterator.next();
             if ((e.getStartNode().getID() == edge.getStartNode().getID()) && (e.getEndNode().getID() == edge.getEndNode().getID())) {
-                e.valid = valid;
+                e.setValid(valid);
                 return true;
             }
         }
@@ -194,7 +194,7 @@ public class NodeOutgoingConnectionsList extends DoublyLinkedList<Edge> implemen
         while (edgeIterator.hasNext()) {
             Edge e = edgeIterator.next();
             if ((e.getStartNode().getID() == startNode.getID()) && (e.getEndNode().getID() == endNode.getID())) {
-                e.valid = valid;
+                e.setValid(valid);
                 return true;
             }
         }

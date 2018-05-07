@@ -52,7 +52,7 @@ import java.util.TreeSet;
 /**
  * The class to simulate the sample2-project.
  */
-public class S2Node extends Node implements Comparable<S2Node> {
+public class S2Node extends Node {
 
     private static int maxNeighbors = 0; // global field containing the max number of neighbors any node ever had
 
@@ -169,10 +169,4 @@ public class S2Node extends Node implements Comparable<S2Node> {
         // the size and color should still be set from the GUI draw method
         drawToPostScriptAsDisk(pw, pt, drawingSizeInPixels / 2, getColor());
     }
-
-    @Override
-    public int compareTo(S2Node tmp) {
-        return Integer.compare(this.getID(), tmp.getID());
-    }
-
 }

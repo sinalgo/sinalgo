@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.sample1.nodes.nodeImplementations;
 
+import lombok.Getter;
+import lombok.Setter;
 import projects.defaultProject.nodes.timers.MessageTimer;
 import projects.sample1.nodes.messages.S1Message;
 import projects.sample1.nodes.timers.DelayTimer;
@@ -56,25 +58,30 @@ import java.awt.*;
 /**
  * The Node of the sample project.
  */
+@Getter
+@Setter
 public class S1Node extends Node {
 
     /**
      * the neighbor with the smallest ID
      */
-    public S1Node next;
+    private S1Node next;
+
     /**
      * number of messages sent by this node in the current round
      */
-    public int msgSentInThisRound = 0;
+    private int msgSentInThisRound = 0;
+
     /**
      * total number of messages sent by this node
      */
-    public int msgSent = 0;
+    private int msgSent = 0;
+
     /**
      * The amount to increment the data of the message each time it goes throug a
      * node.
      */
-    public int increment = 0;
+    private int increment = 0;
 
     Logging log = Logging.getLogger("s1_log");
 
@@ -90,10 +97,10 @@ public class S1Node extends Node {
             Message msg = inbox.next();
             if (msg instanceof S1Message) {
                 S1Message m = (S1Message) msg;
-                if (next != null) {
-                    m.data += increment;
-                    DelayTimer dt = new DelayTimer(m, this, m.data);
-                    dt.startRelative(m.data, this);
+                if (this.getNext() != null) {
+                    m.incrementData();
+                    DelayTimer dt = new DelayTimer(m, this, m.getData());
+                    dt.startRelative(m.getData(), this);
                 }
             }
         }
@@ -128,13 +135,13 @@ public class S1Node extends Node {
 
     @Override
     public void neighborhoodChange() {
-        next = null;
+        this.setNext(null);
         for (Edge e : this.getOutgoingConnections()) {
-            if (next == null) {
-                next = (S1Node) e.getEndNode();
+            if (getNext() == null) {
+                this.setNext((S1Node) e.getEndNode());
             } else {
-                if (e.getEndNode().getID() < next.getID()) {
-                    next = (S1Node) e.getEndNode();
+                if (e.getEndNode().compareTo(this.getNext()) < 0) {
+                    this.setNext((S1Node) e.getEndNode());
                 }
             }
         }

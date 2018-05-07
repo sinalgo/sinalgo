@@ -110,20 +110,20 @@ public class PacketsInTheAirBuffer implements Iterable<Packet> {
         activePacketsIterator.reset();
         while (activePacketsIterator.hasNext()) {
             Packet pack = activePacketsIterator.next();
-            if (pack.positiveDelivery) {
+            if (pack.isPositiveDelivery()) {
                 // test if the packet is disturbed according to the destinations interference
                 // model.
-                pack.positiveDelivery = !pack.destination.getInterferenceModel().isDisturbed(pack);
+                pack.setPositiveDelivery(!pack.getDestination().getInterferenceModel().isDisturbed(pack));
             }
         }
         // and the same for the passive packets
         passivePacketsIterator.reset();
         while (passivePacketsIterator.hasNext()) {
             Packet pack = passivePacketsIterator.next();
-            if (pack.positiveDelivery) {
+            if (pack.isPositiveDelivery()) {
                 // test if the packet is disturbed according to the destinations interference
                 // model.
-                pack.positiveDelivery = !pack.destination.getInterferenceModel().isDisturbed(pack);
+                pack.setPositiveDelivery(!pack.getDestination().getInterferenceModel().isDisturbed(pack));
             }
         }
     }

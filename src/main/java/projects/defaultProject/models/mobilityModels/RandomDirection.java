@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.mobilityModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.models.MobilityModel;
@@ -97,6 +100,8 @@ import java.util.Random;
  * <li>This mobility model works for 2D as well as for 3D.</li>
  * </ul>
  */
+@Getter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PROTECTED)
 public class RandomDirection extends MobilityModel {
 
     // we assume that these distributions are the same for all nodes
@@ -104,14 +109,20 @@ public class RandomDirection extends MobilityModel {
     private static Distribution waitingTimeDistribution; // how long nodes wait before starting the next mobility phase
     private static Distribution moveTimeDistribution; // for how long the node moves when it moves
 
-    protected static boolean initialized = false; // a flag set to true after initialization of the static vars of this
-    // class has been done.
+    // a flag set to true after initialization of the static vars of this class has been done.
+    protected static boolean initialized = false;
+
     protected static Random random = Distribution.getRandom(); // a random generator of the framework
 
-    private Position moveVector; // The vector that is added in each step to the current position of this node
-    protected Position currentPosition = null; // the current position, to detect if the node has been moved by other
-    // means than this mobility model between successive calls to
-    // getNextPos()
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    // The vector that is added in each step to the current position of this node
+    private Position moveVector;
+
+    // the current position, to detect if the node has been moved
+    // by other means than this mobility model between successive calls to getNextPos()
+    private Position currentPosition = null;
+
     private int remaining_hops = 0; // the remaining hops until a new path has to be determined
     private int remaining_waitingTime = 0;
 
@@ -123,11 +134,10 @@ public class RandomDirection extends MobilityModel {
      * the vector along which the nodes move in each step and the number of rounds
      * that the move will take.
      *
-     * @param node      The node for which the new destination is determined.
      * @param moveSpeed The speed at which the node will move.
      * @param moveTime  The time during which the node is supposed to move
      */
-    private void initializeNextMove(Node node, double moveSpeed, double moveTime) {
+    private void initializeNextMove(double moveSpeed, double moveTime) {
         double angleXY = 2 * Math.PI * random.nextDouble(); // 0 .. 360
         double angleZ = Math.PI * (0.5 - random.nextDouble()); // -90 .. 90
         if (Main.getRuntime().getTransformator().getNumberOfDimensions() == 2) {
@@ -141,10 +151,10 @@ public class RandomDirection extends MobilityModel {
         double dz = distance * Math.sin(angleZ);
 
         // determine the number of rounds needed to reach the target
-        remaining_hops = (int) Math.ceil(moveTime);
+        setRemaining_hops((int) Math.ceil(moveTime));
         // determine the moveVector which is added in each round to the position of this
         // node
-        moveVector = new Position(dx / moveTime, dy / moveTime, dz / moveTime);
+        setMoveVector(new Position(dx / moveTime, dy / moveTime, dz / moveTime));
     }
 
     @Override
@@ -158,31 +168,31 @@ public class RandomDirection extends MobilityModel {
             if (fraction < wt) {
                 // the node starts waiting, but depending on fraction, may already have waited
                 // some time
-                remaining_waitingTime = (int) Math.ceil(wt - fraction); // the remaining rounds to wait
-                remaining_hops = 0;
+                setRemaining_waitingTime((int) Math.ceil(wt - fraction)); // the remaining rounds to wait
+                setRemaining_hops(0);
             } else {
                 // the node starts moving
                 double speed = Math.abs(speedDistribution.nextSample()); // units per round
-                initializeNextMove(n, speed, mt + wt - fraction);
+                initializeNextMove(speed, mt + wt - fraction);
             }
-            currentPosition = n.getPosition(); // initially, currentPos is null
-            initialize = false;
+            setCurrentPosition(n.getPosition()); // initially, currentPos is null
+            setInitialize(false);
         }
 
         // restart a new move to a new destination if the node was moved by another
         // means than this mobility model
-        if (currentPosition != null) {
-            if (!currentPosition.equals(n.getPosition())) {
-                remaining_waitingTime = 0;
-                remaining_hops = 0;
+        if (getCurrentPosition() != null) {
+            if (!getCurrentPosition().equals(n.getPosition())) {
+                setRemaining_waitingTime(0);
+                setRemaining_hops(0);
             }
         } else {
-            currentPosition = new Position(0, 0, 0);
+            setCurrentPosition(new Position(0, 0, 0));
         }
 
         // execute the waiting loop
-        if (remaining_waitingTime > 0) {
-            remaining_waitingTime--;
+        if (getRemaining_waitingTime() > 0) {
+            setRemaining_waitingTime(getRemaining_hops() - 1);
             return n.getPosition();
         }
         // move
@@ -190,7 +200,7 @@ public class RandomDirection extends MobilityModel {
             // determine the next point to which this node moves to
             double speed = Math.abs(speedDistribution.nextSample()); // units per round
             double time = Math.abs(moveTimeDistribution.nextSample()); // rounds
-            initializeNextMove(n, speed, time);
+            initializeNextMove(speed, time);
         }
         double newx = n.getPosition().getXCoord() + moveVector.getXCoord();
         double newy = n.getPosition().getYCoord() + moveVector.getYCoord();

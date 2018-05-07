@@ -52,17 +52,17 @@ public class Animations {
         double time = Tools.getGlobalTime();
         synchronized (Packet.ISSUED_PACKETS) {
             for (Packet p : Packet.ISSUED_PACKETS) {
-                if (p.arrivingTime < time || p.sendingTime > time || p.origin == null || p.destination == null) {
+                if (p.getArrivingTime() < time || p.getSendingTime() > time || p.getOrigin() == null || p.getDestination() == null) {
                     continue;
                 }
-                double fraction = (time - p.sendingTime) / (p.arrivingTime - p.sendingTime);
-                Position startPos = p.origin.getPosition();
-                Position endPos = p.destination.getPosition();
+                double fraction = (time - p.getSendingTime()) / (p.getArrivingTime() - p.getSendingTime());
+                Position startPos = p.getOrigin().getPosition();
+                Position endPos = p.getDestination().getPosition();
                 double x = startPos.getXCoord() + (endPos.getXCoord() - startPos.getXCoord()) * fraction;
                 double y = startPos.getYCoord() + (endPos.getYCoord() - startPos.getYCoord()) * fraction;
                 double z = startPos.getZCoord() + (endPos.getZCoord() - startPos.getZCoord()) * fraction;
                 pt.translateToGUIPosition(x, y, z);
-                Color c = p.message.getEnvelopeColor(); // may return null, in which case the default color is chosen
+                Color c = p.getMessage().getEnvelopeColor(); // may return null, in which case the default color is chosen
                 if (c == null) {
                     c = Configuration.messageAnimationEnvelopeColor;
                 }

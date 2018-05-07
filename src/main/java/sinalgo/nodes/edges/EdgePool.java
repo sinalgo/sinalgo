@@ -83,7 +83,7 @@ public class EdgePool {
      */
     public void add(Edge e) {
         String typename = e.getClass().getName();
-        Stack<Edge> st = null;
+        Stack<Edge> st;
         if (typename.equals(lastStackTypeName)) {
             st = lastStack;
         } else {

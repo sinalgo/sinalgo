@@ -132,7 +132,7 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
         if (activePacket == null) {
             throw new IllegalStateException("Call to 'Inbox.next', even though hasNext() returned false.");
         }
-        return activePacket.message;
+        return activePacket.getMessage();
     }
 
     /**
@@ -203,7 +203,7 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      */
     public Node getSender() {
         if (activePacket != null) {
-            return activePacket.origin;
+            return activePacket.getOrigin();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getSender', but there is no active packet.");
         }
@@ -222,7 +222,7 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      */
     public Node getReceiver() {
         if (activePacket != null) {
-            return activePacket.destination;
+            return activePacket.getDestination();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getReceiver', but there is no active packet.");
         }
@@ -241,7 +241,7 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      */
     public double getArrivingTime() {
         if (activePacket != null) {
-            return activePacket.arrivingTime;
+            return activePacket.getArrivingTime();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getArrivingTime', but there is no active packet.");
         }
@@ -259,7 +259,7 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      */
     public double getIntensity() {
         if (activePacket != null) {
-            return activePacket.intensity;
+            return activePacket.getIntensity();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getIntensitiy', but there is no active packet.");
         }
@@ -277,7 +277,7 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      */
     public double getSendingTime() {
         if (activePacket != null) {
-            return activePacket.sendingTime;
+            return activePacket.getSendingTime();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getSendingTime', but there is no active packet.");
         }
@@ -289,7 +289,7 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
      */
     public Edge getIncomingEdge() {
         if (activePacket != null) {
-            return activePacket.edge;
+            return activePacket.getEdge();
         } else {
             throw new IllegalStateException("Call to 'Inbox.getSendingTime', but there is no active packet.");
         }

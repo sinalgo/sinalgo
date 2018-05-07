@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.mobilityModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.models.MobilityModel;
 import sinalgo.nodes.Node;
@@ -93,36 +96,45 @@ import java.util.Random;
  * random waypoint mobility model which ensures that the simulation only
  * performs in the stationary regime, starting from the first round.
  */
+@Getter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PROTECTED)
 public class RandomWayPoint extends MobilityModel {
 
     // we assume that these distributions are the same for all nodes
     protected static Distribution speedDistribution;
     protected static Distribution waitingTimeDistribution;
 
-    private static boolean initialized = false; // a flag set to true after initialization of the static vars of this
-    // class has been done.
-    protected static Random random = Distribution.getRandom(); // a random generator of the framework
+    // a flag set to true after initialization of the static vars of this class has been done.
+    private static boolean initialized = false;
 
-    protected Position nextDestination = new Position(); // The point where this node is moving to
-    protected Position moveVector = new Position(); // The vector that is added in each step to the current position of
-    // this node
-    protected Position currentPosition = null; // the current position, to detect if the node has been moved by other
-    // means than this mobility model between successive calls to
-    // getNextPos()
-    protected int remaining_hops = 0; // the remaining hops until a new path has to be determined
-    protected int remaining_waitingTime = 0;
+    // a random generator of the framework
+    protected static Random random = Distribution.getRandom();
+
+    // The point where this node is moving to
+    private Position nextDestination = new Position();
+
+    // The vector that is added in each step to the current position of this node
+    private Position moveVector = new Position();
+
+    // the current position, to detect if the node has been moved by other means than this mobility model between successive calls to getNextPos()
+    private Position currentPosition = null;
+
+    // the remaining hops until a new path has to be determined
+    private int remaining_hops = 0;
+
+    private int remaining_waitingTime = 0;
 
     @Override
     public Position getNextPos(Node n) {
         // restart a new move to a new destination if the node was moved by another
         // means than this mobility model
-        if (currentPosition != null) {
-            if (!currentPosition.equals(n.getPosition())) {
-                remaining_waitingTime = 0;
-                remaining_hops = 0;
+        if (getCurrentPosition() != null) {
+            if (!getCurrentPosition().equals(n.getPosition())) {
+                setRemaining_waitingTime(0);
+                setRemaining_hops(0);
             }
         } else {
-            currentPosition = new Position(0, 0, 0);
+            setCurrentPosition(new Position(0, 0, 0));
         }
 
         Position nextPosition = new Position();

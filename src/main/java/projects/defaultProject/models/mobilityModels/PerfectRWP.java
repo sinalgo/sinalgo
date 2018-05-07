@@ -84,15 +84,15 @@ public class PerfectRWP extends RandomWayPoint {
             double speed = Math.abs(speedDistribution.nextSample()); // units per round
             double wt = Math.ceil(waitingTimeDistribution.nextSample()); // potential waiting time
             Position startPos = getNextWayPoint();
-            nextDestination = getNextWayPoint();
-            double mt = startPos.distanceTo(nextDestination) / speed; // time of the move
+            setNextDestination(getNextWayPoint());
+            double mt = startPos.distanceTo(getNextDestination()) / speed; // time of the move
             double fraction = (wt + mt) * random.nextDouble();
-            double dx = nextDestination.getXCoord() - startPos.getXCoord();
-            double dy = nextDestination.getYCoord() - startPos.getYCoord();
+            double dx = getNextDestination().getXCoord() - startPos.getXCoord();
+            double dy = getNextDestination().getYCoord() - startPos.getYCoord();
             if (fraction < wt) {
                 // start waiting
-                remaining_waitingTime = (int) Math.ceil(wt - fraction);
-                remaining_hops = 0;
+                setRemaining_waitingTime((int) Math.ceil(wt - fraction));
+                setRemaining_hops(0);
 
                 double movedFraction = random.nextDouble();
                 startPos.setXCoord(startPos.getXCoord() + dx * movedFraction);
@@ -109,13 +109,13 @@ public class PerfectRWP extends RandomWayPoint {
                 dy *= (1 - movedFraction);
 
                 // determine the number of rounds needed to reach the target
-                double dist = nextDestination.distanceTo(startPos);
+                double dist = getNextDestination().distanceTo(startPos);
                 double rounds = dist / speed;
-                remaining_hops = (int) Math.ceil(rounds);
+                setRemaining_hops((int) Math.ceil(rounds));
                 // determine the moveVector which is added in each round to the position of this
                 // node
-                moveVector = new Position(dx / rounds, dy / rounds, 0);
-                remaining_waitingTime = 0;
+                setMoveVector(new Position(dx / rounds, dy / rounds, 0));
+                setRemaining_waitingTime(0);
                 return startPos;
             }
         }

@@ -51,7 +51,7 @@ public class S4SendDirectTimer extends sinalgo.nodes.timers.Timer {
 
     @Override
     public void fire() {
-        this.node.sendDirect(msg, dest);
+        this.getTargetNode().sendDirect(msg, dest);
     }
 
 }

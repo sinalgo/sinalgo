@@ -42,6 +42,7 @@ import sinalgo.models.DistributionModel;
 import sinalgo.nodes.Position;
 import sinalgo.tools.statistics.Distribution;
 
+import java.util.Random;
 import java.util.Vector;
 
 /**
@@ -55,7 +56,7 @@ import java.util.Vector;
  */
 public class GridDistribution extends DistributionModel {
 
-    private java.util.Random rand = Distribution.getRandom();
+    private Random rand = Distribution.getRandom();
 
     private double radius = 0;
 

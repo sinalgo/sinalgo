@@ -30,7 +30,7 @@ public class RetryPayloadMessageTimer extends Timer {
     @Override
     public void fire() {
         if (isActive) {
-            FNode n = (FNode) this.node;
+            FNode n = (FNode) this.getTargetNode();
             n.sendPayloadMessage(message);
             // we could also invalidate the routing entry, and search again
         }

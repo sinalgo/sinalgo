@@ -59,12 +59,12 @@ public class BatchRuntime extends SinalgoRuntime {
 
         if (Configuration.asynchronousMode) {
             AsynchronousRuntimeThread arT = new AsynchronousRuntimeThread();
-            arT.numberOfEvents = rounds;
+            arT.setNumberOfEvents(rounds);
             Global.isRunning = true;
             arT.start();
         } else {
             SynchronousRuntimeThread bRT = new SynchronousRuntimeThread();
-            bRT.numberOfRounds = rounds;
+            bRT.setNumberOfRounds(rounds);
             Global.isRunning = true;
             bRT.start();
         }

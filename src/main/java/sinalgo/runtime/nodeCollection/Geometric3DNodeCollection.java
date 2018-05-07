@@ -219,7 +219,7 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
     public void _removeNode(Node n) {
         n.holdInNodeCollection = false;
         CubePos pos = (CubePos) n.nodeCollectionInfo;
-        if (!list[pos.x][pos.y][pos.z].removeNode(n)) {
+        if (!list[pos.getX()][pos.getY()][pos.getZ()].removeNode(n)) {
             // the node was not located where it said! ERROR!
             throw new SinalgoFatalException("Geometric3DNodeCollection.removeNode(Node):\n" + "A node is being removed, but it is not "
                     + "located in the matrix cell " + "in which it claims to be.");
@@ -244,19 +244,19 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
         int x = mapCoord(pos.getXCoord());
         int y = mapCoord(pos.getYCoord());
         int z = mapCoord(pos.getZCoord());
-        if (oldPos.x != x || oldPos.y != y || oldPos.z != z) {
+        if (oldPos.getX() != x || oldPos.getY() != y || oldPos.getZ() != z) {
             // the node needs to be stored in a different cell of the matrix
             // remove it from the old matrix cell...
-            if (!list[oldPos.x][oldPos.y][oldPos.z].removeNode(n)) {
+            if (!list[oldPos.getX()][oldPos.getY()][oldPos.getZ()].removeNode(n)) {
                 throw new SinalgoFatalException(
                         "Geometric3DNodeCollection.updateNodeCollection(Node):\nA node is being removed from the matrix, but it is not located in the matrix cell in which it claims to be.");
             }
             // ... and add it to the new matrix cell
             list[x][y][z].addNode(n);
             // update the matrix-cell info stored at the node
-            oldPos.x = x;
-            oldPos.y = y;
-            oldPos.z = z;
+            oldPos.setX(x);
+            oldPos.setY(y);
+            oldPos.setZ(z);
         }
     }
 

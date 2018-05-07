@@ -36,26 +36,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.sample1.nodes.messages;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.nodes.messages.Message;
 
 /**
  * The Messages that are sent by the S1Nodes in the Sample1 projects. They
  * contain one int as payload.
  */
+@Getter
+@Setter
+@AllArgsConstructor
 public class S1Message extends Message {
 
     /**
      * The payload of the S1Message.
      */
-    public int data;
+    private int data;
 
     /**
-     * Constructs a new Message of type S1Message.
-     *
-     * @param data
+     * Increments the value of the data by one.
      */
-    public S1Message(int data) {
-        this.data = data;
+    public final void incrementData() {
+        data++;
     }
 
     @Override

@@ -82,7 +82,7 @@ public class LakeAvoid extends RandomWayPoint {
             if (Configuration.useMap) {
                 if (!map.isWhite(newPos)) {
                     inLake = true;
-                    super.remaining_hops = 0;// this foces the node to search for an other target...
+                    super.setRemaining_hops(0);// this foces the node to search for an other target...
                 }
             }
         } while (inLake);

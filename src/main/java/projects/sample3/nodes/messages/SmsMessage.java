@@ -1,24 +1,22 @@
 package projects.sample3.nodes.messages;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import projects.sample3.nodes.timers.SmsTimer;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Message;
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class SmsMessage extends Message {
 
-    public int seqID; // sequence ID of the sender
-    public Node receiver;
-    public Node sender;
-    public String text;
-    public SmsTimer smsTimer;
-
-    public SmsMessage(int aSeqID, Node aReceiver, Node aSender, String aText, SmsTimer aTimer) {
-        this.seqID = aSeqID;
-        this.receiver = aReceiver;
-        this.sender = aSender;
-        this.text = aText;
-        this.smsTimer = aTimer;
-    }
+    private int seqID; // sequence ID of the sender
+    private Node receiver;
+    private Node sender;
+    private String text;
+    private SmsTimer smsTimer;
 
     @Override
     public Message clone() {

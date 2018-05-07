@@ -159,7 +159,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             if (max == null) {
                 max = s1Node;
             } else {
-                if (max.msgSent < s1Node.msgSent) {
+                if (max.getMsgSent() < s1Node.getMsgSent()) {
                     max = s1Node;
                 }
             }
@@ -168,7 +168,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             if (max != null) {
                 JOptionPane.showMessageDialog(((GUIRuntime) Main.getRuntime()).getGUI(),
                         "The node with the maximum sent number of messages is the node with id " + max.getID()
-                                + ". \nIt sent " + max.msgSent + " messages until now.");
+                                + ". \nIt sent " + max.getMsgSent() + " messages until now.");
             } else {
                 JOptionPane.showMessageDialog(((GUIRuntime) Main.getRuntime()).getGUI(), "There is no node.");
             }

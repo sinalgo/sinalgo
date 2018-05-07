@@ -119,8 +119,8 @@ public class EventQueue extends TreeSet<Event> {
                 // test whether it's a msg event sent by this node, then invalidate
                 if (e instanceof PacketEvent) {
                     PacketEvent pe = (PacketEvent) e;
-                    if (pe.packet.origin.equals(n)) {
-                        pe.packet.denyDelivery();
+                    if (pe.getPacket().getOrigin().equals(n)) {
+                        pe.getPacket().denyDelivery();
                     }
                 }
             }
@@ -144,9 +144,9 @@ public class EventQueue extends TreeSet<Event> {
         for (Event eventInQueue : this) {
             if (eventInQueue instanceof PacketEvent) {
                 PacketEvent pe = (PacketEvent) eventInQueue;
-                if (pe.packet.edge != null && toDelFor.getID() == pe.packet.edge.getID()) {
-                    pe.packet.positiveDelivery = false;
-                    pe.packet.edge = null; // the edge may not exist anymore
+                if (pe.getPacket().getEdge() != null && toDelFor.getID() == pe.getPacket().getEdge().getID()) {
+                    pe.getPacket().setPositiveDelivery(false);
+                    pe.getPacket().setEdge(null); // the edge may not exist anymore
                     changed = true;
                 }
             }

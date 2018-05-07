@@ -65,9 +65,9 @@ import sinalgo.tools.logging.LogL;
  */
 public class SINR extends InterferenceModel {
 
-    private int alpha = 2; // the path-loss exponent
-    private double beta = 0.5; // the threshold
-    private double ambientNoise = 0; // the ambient noise
+    private int alpha;// the path-loss exponent, good fefault value would be 2
+    private double beta;// the threshold, good default value would be 0.5
+    private double ambientNoise; // the ambient noise, good default value would be 0
 
     /**
      * The constructor for the SignalToInterference class.
@@ -92,11 +92,11 @@ public class SINR extends InterferenceModel {
 
     @Override
     public boolean isDisturbed(Packet p) {
-        Position receiverPos = p.destination.getPosition();
-        double distanceFromSource = p.origin.getPosition().distanceTo(receiverPos);
+        Position receiverPos = p.getDestination().getPosition();
+        double distanceFromSource = p.getOrigin().getPosition().distanceTo(receiverPos);
         double poweredDistanceFromSource = Math.pow(distanceFromSource, alpha);
 
-        double signal = p.intensity / poweredDistanceFromSource;
+        double signal = p.getIntensity() / poweredDistanceFromSource;
 
         double noise = ambientNoise;
 
@@ -104,7 +104,7 @@ public class SINR extends InterferenceModel {
             if (pack == p) {
                 continue; // that's the packet we want
             }
-            if (pack.origin.getID() == p.destination.getID()) {
+            if (pack.getOrigin().getID() == p.getDestination().getID()) {
                 // the receiver node of p is sending a packet itself
                 if (!Configuration.canReceiveWhileSending) {
                     return true;
@@ -113,20 +113,20 @@ public class SINR extends InterferenceModel {
             }
             // Detect multiple packets that want to arrive in parallel at the same
             // destination.
-            if (!Configuration.canReceiveMultiplePacketsInParallel && pack.destination.getID() == p.destination.getID()) {
+            if (!Configuration.canReceiveMultiplePacketsInParallel && pack.getDestination().getID() == p.getDestination().getID()) {
                 return true;
             }
 
-            Position pos = pack.origin.getPosition();
+            Position pos = pack.getOrigin().getPosition();
             double distance = pos.distanceTo(receiverPos);
             double poweredDistance = Math.pow(distance, alpha);
-            noise += pack.intensity / poweredDistance;
+            noise += pack.getIntensity() / poweredDistance;
         }
 
         boolean disturbed = signal < beta * noise;
 
         if (LogL.INTERFERENCE_DETAIL) {
-            Global.log.logln("Node " + p.destination.getID() + " is checking a packet from " + p.origin.getID());
+            Global.log.logln("Node " + p.getDestination().getID() + " is checking a packet from " + p.getOrigin().getID());
             if (disturbed) {
                 Global.log.logln("Dropped the message due to too much interference.");
             }

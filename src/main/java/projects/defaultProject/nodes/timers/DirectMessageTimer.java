@@ -29,6 +29,6 @@ public class DirectMessageTimer extends Timer {
 
     @Override
     public void fire() {
-        this.node.sendDirect(msg, target);
+        this.getTargetNode().sendDirect(msg, target);
     }
 }

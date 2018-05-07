@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes.timers;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.Global;
@@ -58,9 +61,21 @@ public abstract class Timer implements Comparable<Timer> {
 
     /**
      * The node that started the timer, null if the timer executes globally
+     *
+     * @return The node on which this timer executes, null if the timer is set for
+     * the framework.
      */
-    protected Node node = null;
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private Node targetNode = null;
 
+    /**
+     * The time this timer goes off.
+     *
+     * @return The time this timer goes off.
+     */
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
     private double fireTime = 0; // The time when this timer fires.
 
     /**
@@ -77,8 +92,8 @@ public abstract class Timer implements Comparable<Timer> {
         if (relativeTime <= 0) {
             throw new SinalgoFatalException("A relative time indicating when a timer should start must be strictly positive.");
         }
-        node = null;
-        fireTime = Global.currentTime + relativeTime;
+        setTargetNode(null);
+        setFireTime(Global.currentTime + relativeTime);
         if (Global.isAsynchronousMode) {
             SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
         } else {
@@ -102,12 +117,12 @@ public abstract class Timer implements Comparable<Timer> {
         if (relativeTime <= 0) {
             throw new SinalgoFatalException("A relative time indicating when a timer should start must be strictly positive.");
         }
-        node = n;
-        fireTime = Global.currentTime + relativeTime;
+        setTargetNode(n);
+        setFireTime(Global.currentTime + relativeTime);
         if (Global.isAsynchronousMode) {
             SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
         } else {
-            node.getTimers().add(this);
+            getTargetNode().getTimers().add(this);
         }
     }
 
@@ -124,12 +139,12 @@ public abstract class Timer implements Comparable<Timer> {
         if (absoluteTime <= Global.currentTime) {
             throw new SinalgoFatalException("The absolute time when a timer goes off must be strictly larger than the current time.");
         }
-        node = n;
-        fireTime = absoluteTime;
+        setTargetNode(n);
+        setFireTime(absoluteTime);
         if (Global.isAsynchronousMode) {
             SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, fireTime));
         } else {
-            node.getTimers().add(this);
+            getTargetNode().getTimers().add(this);
         }
     }
 
@@ -139,28 +154,11 @@ public abstract class Timer implements Comparable<Timer> {
     }
 
     /**
-     * Returns the time this timer goes off.
-     *
-     * @return The time this timer goes off.
-     */
-    public final double getFireTime() {
-        return fireTime;
-    }
-
-    /**
      * @return True if the timer is set for a node, false if this timer is for the
      * framework.
      */
     public final boolean isNodeTimer() {
-        return node != null;
-    }
-
-    /**
-     * @return The node on which this timer executes, null if the timer is set for
-     * the framework.
-     */
-    public final Node getTargetNode() {
-        return node;
+        return getTargetNode() != null;
     }
 
     /**

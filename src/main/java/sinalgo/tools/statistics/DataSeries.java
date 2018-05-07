@@ -36,6 +36,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.statistics;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -49,13 +53,29 @@ import java.io.ObjectOutput;
  * object of this class and add the samples using the <code>addSample</code>
  * method.
  */
+@Getter
+@Setter(AccessLevel.PRIVATE)
 public class DataSeries implements Externalizable {
 
     private static final long serialVersionUID = 2822762510760348852L;
 
+    /**
+     * The sum of all samples added to this data series.
+     *
+     * @return The sum of all samples added to this data series.
+     */
     private double sum = 0; // The sum of all samples
-    private double squared_sum = 0; // the sum of the square of all samples
-    private int num_samples = 0; // The number of samples added so far
+
+    private double squaredSum = 0; // the sum of the square of all samples
+
+    /**
+     * The number of samples added to this data series.
+     *
+     * @return the number of samples added to this data series.
+     */
+    private int numberOfSamples = 0;
+
+    @Getter(AccessLevel.PRIVATE)
     private double min = Double.MAX_VALUE, max = Double.MIN_VALUE; // the min. and max. values added
 
     /**
@@ -69,11 +89,11 @@ public class DataSeries implements Externalizable {
      * this method, the object is as when it was newly allocated.
      */
     public void reset() {
-        sum = 0;
-        squared_sum = 0;
-        num_samples = 0;
-        min = Double.MAX_VALUE;
-        max = Double.MIN_VALUE;
+        this.setSum(0);
+        this.setSquaredSum(0);
+        this.setNumberOfSamples(0);
+        this.setMin(Double.MAX_VALUE);
+        this.setMax(Double.MIN_VALUE);
     }
 
     /**
@@ -82,15 +102,11 @@ public class DataSeries implements Externalizable {
      * @param value The new value to be added to this series.
      */
     public void addSample(double value) {
-        if (value < min) {
-            min = value;
-        }
-        if (value > max) {
-            max = value;
-        }
-        sum += value;
-        squared_sum += value * value;
-        num_samples++;
+        this.setMin(Math.min(this.getMin(), value));
+        this.setMax(Math.max(this.getMax(), value));
+        this.setSum(this.getSum() + value);
+        this.setSquaredSum(this.getSquaredSum() + value * value);
+        this.setNumberOfSamples(this.getNumberOfSamples() + 1);
     }
 
     /**
@@ -99,11 +115,11 @@ public class DataSeries implements Externalizable {
      * @param ds DataSeries to which the samples will be added
      */
     public void addSamples(DataSeries ds) {
-        sum += ds.sum;
-        squared_sum += ds.squared_sum;
-        num_samples += ds.num_samples;
-        min = Math.min(min, ds.min);
-        max = Math.max(max, ds.max);
+        this.setSum(this.getSum() + ds.getSum());
+        this.setSquaredSum(this.getSquaredSum() + ds.getSquaredSum());
+        this.setNumberOfSamples(this.getNumberOfSamples() + ds.getNumberOfSamples());
+        this.setMin(Math.min(this.getMin(), ds.getMin()));
+        this.setMax(Math.max(this.getMax(), ds.getMax()));
     }
 
     /**
@@ -114,8 +130,8 @@ public class DataSeries implements Externalizable {
      */
     public double getMean() {
         // The mean of n samples is \sum{samples} / n
-        if (num_samples > 0) {
-            return sum / num_samples;
+        if (this.getNumberOfSamples() > 0) {
+            return this.getSum() / this.getNumberOfSamples();
         } else {
             return 0;
         }
@@ -129,8 +145,9 @@ public class DataSeries implements Externalizable {
      */
     public double getVariance() {
         // The variance of n samples equals to E( (X - E(X))^2) = E(X^2) - (E(X))^2
-        if (num_samples > 0) {
-            return squared_sum / num_samples - (getMean() * getMean());
+        if (this.getNumberOfSamples() > 0) {
+            double currentMean = this.getMean();
+            return this.getSquaredSum() / this.getNumberOfSamples() - (currentMean * currentMean);
         } else {
             return 0;
         }
@@ -142,55 +159,37 @@ public class DataSeries implements Externalizable {
      * @return The standard deviation of the values added so far to this series.
      */
     public double getStandardDeviation() {
-        return Math.sqrt(getVariance());
-    }
-
-    /**
-     * Returns the number of samples added to this data series.
-     *
-     * @return the number of samples added to this data series.
-     */
-    public int getNumberOfSamples() {
-        return num_samples;
-    }
-
-    /**
-     * Returns the sum of all samples added to this data series.
-     *
-     * @return The sum of all samples added to this data series.
-     */
-    public double getSum() {
-        return sum;
+        return Math.sqrt(this.getVariance());
     }
 
     /**
      * @return The value of the smallest sample, 0 if no sample was added.
      */
     public double getMinimum() {
-        return num_samples == 0 ? 0 : min;
+        return this.getNumberOfSamples() == 0 ? 0 : this.getMin();
     }
 
     /**
      * @return The value of the largest sample, 0 if no sample was added.
      */
     public double getMaximum() {
-        return num_samples == 0 ? 0 : max;
+        return this.getNumberOfSamples() == 0 ? 0 : this.getMax();
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException {
-        sum = in.readDouble();
-        squared_sum = in.readDouble();
-        num_samples = in.readInt();
-        min = in.readDouble();
-        max = in.readDouble();
+        this.setSum(in.readDouble());
+        this.setSquaredSum(in.readDouble());
+        this.setNumberOfSamples(in.readInt());
+        this.setMin(in.readDouble());
+        this.setMax(in.readDouble());
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeDouble(sum);
-        out.writeDouble(squared_sum);
-        out.writeInt(num_samples);
+        out.writeDouble(squaredSum);
+        out.writeInt(numberOfSamples);
         out.writeDouble(min);
         out.writeDouble(max);
     }

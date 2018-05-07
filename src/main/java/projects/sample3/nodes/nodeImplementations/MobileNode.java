@@ -71,35 +71,35 @@ public class MobileNode extends Node {
             // -----------------------------------------------------------------------------
             else if (msg instanceof SmsAckMessage) {
                 SmsAckMessage ack = (SmsAckMessage) msg;
-                if (ack.receiver.equals(this)) {
-                    ack.smsTimer.disable(); // stop the timer - the message arrived
-                    log.logln("Message <" + this.getID() + "," + ack.sender.getID() + "> acknowledged. Message: " + ack.text);
+                if (ack.getReceiver().equals(this)) {
+                    ack.getSmsTimer().disable(); // stop the timer - the message arrived
+                    log.logln("Message <" + this.getID() + "," + ack.getSender().getID() + "> acknowledged. Message: " + ack.getText());
                     this.setColor(Color.YELLOW);
                 } else {
-                    log.logln("Message <" + ack.receiver.getID() + "," + ack.sender.getID() + "> ACK arrived at wrong node ("
-                            + this.getID() + ") Message: " + ack.text);
+                    log.logln("Message <" + ack.getReceiver().getID() + "," + ack.getSender().getID() + "> ACK arrived at wrong node ("
+                            + this.getID() + ") Message: " + ack.getText());
                 }
             }
             // -----------------------------------------------------------------------------
             else if (msg instanceof SmsMessage) {
                 SmsMessage sms = (SmsMessage) msg;
-                if (sms.receiver.equals(this)) {
-                    log.logln("Message <" + sms.sender.getID() + "," + sms.receiver.getID() + "> arrived. Message: " + sms.text);
+                if (sms.getReceiver().equals(this)) {
+                    log.logln("Message <" + sms.getSender().getID() + "," + sms.getReceiver().getID() + "> arrived. Message: " + sms.getText());
                     this.setColor(Color.GREEN);
                     // send ACK
                     if (currentAntenna != null) {
-                        SmsAckMessage ack = new SmsAckMessage(this.getNextSeqID(), sms.sender, this, sms.text,
-                                sms.smsTimer);
+                        SmsAckMessage ack = new SmsAckMessage(this.getNextSeqID(), sms.getSender(), this, sms.getText(),
+                                sms.getSmsTimer());
                         this.send(ack, currentAntenna);
                     }
                 } else {
-                    log.logln("Message <" + sms.sender.getID() + "," + sms.receiver.getID() + "> arrived at wrong node ("
-                            + this.getID() + ") Message: " + sms.text);
+                    log.logln("Message <" + sms.getSender().getID() + "," + sms.getReceiver().getID() + "> arrived at wrong node ("
+                            + this.getID() + ") Message: " + sms.getText());
                 }
             }
         }
 
-        if (oldAntenna != null && !currentAntenna.equals(oldAntenna)) { // we switch to a different antenna
+        if (oldAntenna != null && !oldAntenna.equals(currentAntenna)) { // we switch to a different antenna
             // detach from current antenna
             ByeBye bye = new ByeBye();
             this.send(bye, oldAntenna);

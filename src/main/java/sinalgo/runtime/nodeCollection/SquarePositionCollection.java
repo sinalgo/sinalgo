@@ -79,8 +79,8 @@ public class SquarePositionCollection {
                     "You tried to add more than the possible elements to the SquarePositionCollection");
         }
         used[nextUnused] = true;
-        squares[nextUnused].x = x;
-        squares[nextUnused].y = y;
+        squares[nextUnused].setX(x);
+        squares[nextUnused].setY(y);
         nextUnused++;
     }
 

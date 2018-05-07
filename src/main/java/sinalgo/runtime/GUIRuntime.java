@@ -68,7 +68,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
         // be finished.
         synchronized (this) {
             try {
-                if (!nodeCreationFinished) {
+                if (!isNodeCreationFinished()) {
                     this.wait();
                 }
             } catch (InterruptedException e) {
@@ -91,7 +91,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
         // init the gui
         gui.init();
 
-        if (this.numberOfRounds != 0) {
+        if (this.getNumberOfRounds() != 0) {
             gui.setStartButtonEnabled(false);
         }
 
@@ -122,16 +122,16 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
         }
         if (Configuration.asynchronousMode) {
             AsynchronousRuntimeThread arT = new AsynchronousRuntimeThread(this);
-            arT.numberOfEvents = rounds;
-            arT.refreshRate = Configuration.refreshRate;
+            arT.setNumberOfEvents(rounds);
+            arT.setRefreshRate(Configuration.refreshRate);
 
             Global.isRunning = true;
             // start the thread
             arT.start();
         } else {
             SynchronousRuntimeThread gRT = new SynchronousRuntimeThread(this);
-            gRT.numberOfRounds = rounds;
-            gRT.refreshRate = Configuration.refreshRate;
+            gRT.setNumberOfRounds(rounds);
+            gRT.setRefreshRate(Configuration.refreshRate);
 
             Global.isRunning = true;
             // start the thread

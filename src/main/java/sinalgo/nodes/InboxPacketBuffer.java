@@ -98,7 +98,7 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
         while (bufferIterator.hasNext()) {
             Packet p = bufferIterator.next();
 
-            if (p.arrivingTime <= Global.currentTime) {
+            if (p.getArrivingTime() <= Global.currentTime) {
 
                 // only if added
                 if (Configuration.interference) {
@@ -107,16 +107,16 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
                 }
 
                 bufferIterator.remove();
-                if (p.edge != null) {
-                    p.edge.removeMessageForThisEdge(p.message);
+                if (p.getEdge() != null) {
+                    p.getEdge().removeMessageForThisEdge(p.getMessage());
                 }
-                if (p.positiveDelivery) {
+                if (p.isPositiveDelivery()) {
                     // successful transmission
                     arrivingPackets.add(p);
                 } else {
                     // failed transmission, drop the package
                     if (Configuration.generateNAckMessages) {
-                        p.origin.addNackPacket(p); // return the packet to the sender
+                        p.getOrigin().addNackPacket(p); // return the packet to the sender
                     } else {
                         Packet.free(p);
                     }
@@ -133,9 +133,9 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
     @Override
     public void invalidatePacketsSentOverThisEdge(Edge e) {
         for (Packet p : this) {
-            if (p.edge != null && p.edge.getID() == e.getID()) {
-                p.positiveDelivery = false;
-                p.edge = null; // the edge may have been removed and should not be refered to anymore
+            if (p.getEdge() != null && p.getEdge().getID() == e.getID()) {
+                p.setPositiveDelivery(false);
+                p.setEdge(null); // the edge may have been removed and should not be refered to anymore
             }
         }
     }

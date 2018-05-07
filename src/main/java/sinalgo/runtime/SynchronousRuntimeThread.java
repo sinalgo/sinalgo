@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.nodes.Node;
@@ -51,15 +54,20 @@ public class SynchronousRuntimeThread extends Thread {
     /**
      * The number of rounds the thread has to perform.
      */
-    public long numberOfRounds = 0;
+    @Getter
+    @Setter
+    private long numberOfRounds = 0;
 
-    private GUIRuntime runtime = null; // If in GUI-MODE, this member holds the the GUIRuntime
+    @Getter(AccessLevel.PRIVATE)
+    private GUIRuntime runtime; // If in GUI-MODE, this member holds the the GUIRuntime
 
     /**
      * The rate to refresh the graph. This means all how many steps the gui has to
      * be redrawn.
      */
-    public long refreshRate = 1;
+    @Getter
+    @Setter
+    private long refreshRate = 1;
 
     /**
      * The constructor for the RuntimeThread class. This constructor is used to
@@ -67,14 +75,14 @@ public class SynchronousRuntimeThread extends Thread {
      *
      * @param r The instance of the GuiRuntime that has started this thread.
      */
-    public SynchronousRuntimeThread(GUIRuntime r) {
+    SynchronousRuntimeThread(GUIRuntime r) {
         runtime = r;
     }
 
     /**
      * Default constructor for the batch-mode.
      */
-    public SynchronousRuntimeThread() {
+    SynchronousRuntimeThread() {
         runtime = null;
     }
 
@@ -84,10 +92,10 @@ public class SynchronousRuntimeThread extends Thread {
 
         Global.startTime = new Date();
 
-        for (long i = 0; i < numberOfRounds; i++) {
+        for (long i = 0; i < this.getNumberOfRounds(); i++) {
             // In GUI-mode, check whether ABORT was pressed.
-            if (runtime != null && runtime.abort) {
-                runtime.abort = false;
+            if (this.getRuntime() != null && this.getRuntime().isAbort()) {
+                this.getRuntime().setAbort(false);
                 break;
             }
 
@@ -128,8 +136,8 @@ public class SynchronousRuntimeThread extends Thread {
             } catch (WrongConfigurationException wCE) {
                 Main.minorError(wCE); // in gui, a popup is shown. in batch, exits.
                 if (Global.isGuiMode) {
-                    runtime.getGUI().redrawGUINow();
-                    runtime.getGUI().setStartButtonEnabled(true);
+                    this.getRuntime().getGUI().redrawGUINow();
+                    this.getRuntime().getGUI().setStartButtonEnabled(true);
                 }
                 Global.isRunning = false;
                 return;
@@ -138,19 +146,19 @@ public class SynchronousRuntimeThread extends Thread {
             Global.customGlobal.postRound();
 
             if (Global.isGuiMode) { // redraw the graph all 'refreshRate' Steps except the last
-                if ((i % refreshRate) == (refreshRate - 1)) {
-                    if (i != numberOfRounds - 1) {
-                        runtime.getGUI().redrawGUINow(); // this is a SYNCHRONOUS call to redraw the graph!
+                if ((i % this.getRefreshRate()) == (this.getRefreshRate() - 1)) {
+                    if (i != this.getNumberOfRounds() - 1) {
+                        this.getRuntime().getGUI().redrawGUINow(); // this is a SYNCHRONOUS call to redraw the graph!
                     }
                 }
-                runtime.getGUI().setRoundsPerformed((int) (Global.currentTime));
+                this.getRuntime().getGUI().setRoundsPerformed((int) (Global.currentTime));
             }
 
             // test whether the application should exit
             if (Global.customGlobal.hasTerminated()) {
                 if (Global.isGuiMode && !Configuration.exitOnTerminationInGUI) { // do not quit GUI mode
-                    runtime.getGUI().redrawGUINow();
-                    runtime.getGUI().setStartButtonEnabled(true);
+                    this.getRuntime().getGUI().redrawGUINow();
+                    this.getRuntime().getGUI().setStartButtonEnabled(true);
 
                     Global.isRunning = false;
                     return;
@@ -176,8 +184,8 @@ public class SynchronousRuntimeThread extends Thread {
         }
 
         if (Global.isGuiMode) {
-            runtime.getGUI().redrawGUINow();
-            runtime.getGUI().setStartButtonEnabled(true);
+            this.getRuntime().getGUI().redrawGUINow();
+            this.getRuntime().getGUI().setStartButtonEnabled(true);
         } else { // we reached the end of a synchronous simulation in batch mode
             if (LogL.HINTS) {
                 Date tem = new Date();

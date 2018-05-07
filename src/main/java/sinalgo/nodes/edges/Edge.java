@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes.edges;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,13 +68,6 @@ import java.lang.reflect.InvocationTargetException;
  */
 @EqualsAndHashCode(of = {"startNode", "endNode"})
 public class Edge implements DoublyLinkedListEntry {
-
-    /**
-     * @return The unique ID of this edge.
-     */
-    public long getID() {
-        return ID;
-    }
 
     /**
      * The start node of the edge. Edges in this simulation are directed.
@@ -165,12 +159,16 @@ public class Edge implements DoublyLinkedListEntry {
      * The default color of the edge, to be used when no message is sent over this
      * edge.
      */
+    @Getter
+    @Setter
     private Color defaultColor = defaultEdgeColorPassive;
 
     /**
      * The color of this edge to be used when at least one message is sent over this
      * edge.
      */
+    @Getter
+    @Setter
     private Color sendingColor = defaultEdgeColorActive;
 
     /**
@@ -242,7 +240,11 @@ public class Edge implements DoublyLinkedListEntry {
     // methods
     // -----------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
-
+    /**
+     * The unique ID of this edge.
+     */
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
     private long ID = 0; // The (unique) id of this edge.
 
     /**
@@ -305,7 +307,9 @@ public class Edge implements DoublyLinkedListEntry {
      * in this round. so after having validated all the edges all dead links remain
      * false.
      */
-    public boolean valid = false;
+    @Getter
+    @Setter
+    private boolean valid = false;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -317,12 +321,12 @@ public class Edge implements DoublyLinkedListEntry {
     protected final void findOppositeEdge() {
         for (Edge e : endNode.getOutgoingConnections()) {
             if ((e.getStartNode().getID() == endNode.getID()) && (e.getEndNode().getID() == startNode.getID())) {
-                this.oppositeEdge = e;
-                e.oppositeEdge = this;
+                this.setOppositeEdge(e);
+                e.setOppositeEdge(this);
                 return;
             }
         }
-        this.oppositeEdge = null; // no other edge found
+        this.setOppositeEdge(null); // no other edge found
     }
 
     /**
@@ -369,7 +373,7 @@ public class Edge implements DoublyLinkedListEntry {
     private static Constructor<?> constructor = null;
     private static String nameOfSearchedEdge = "";
 
-    public static int numEdgesOnTheFly = 0;
+    public static long numEdgesOnTheFly = 0;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -431,16 +435,16 @@ public class Edge implements DoublyLinkedListEntry {
         }
 
         // initialize the edge
-        edge.startNode = from;
-        edge.endNode = to;
-        edge.oppositeEdge = null;
+        edge.setStartNode(from);
+        edge.setEndNode(to);
+        edge.setOppositeEdge(null);
 
-        edge.sendingColor = defaultEdgeColorActive;
-        edge.defaultColor = defaultEdgeColorPassive;
-        edge.valid = false;
+        edge.setSendingColor(defaultEdgeColorActive);
+        edge.setDefaultColor(defaultEdgeColorPassive);
+        edge.setValid(false);
 
-        edge.numberOfMessagesOnThisEdge = 0;
-        edge.ID = getNextFreeID();
+        edge.setNumberOfMessagesOnThisEdge(0);
+        edge.setID(getNextFreeID());
 
         edge.findOppositeEdge(); // if there is an edge in the opposite direction, set the oppositeEdge field
         edge.initializeEdge(); // Finally, call a custom initialization method
@@ -483,22 +487,19 @@ public class Edge implements DoublyLinkedListEntry {
     public final void free() {
         // reset the linkage between this edge and the edge in the other direction, if
         // it exists
-        if (this.oppositeEdge != null) {
-            if (oppositeEdge.oppositeEdge == this) {
-                oppositeEdge.oppositeEdge = null;
+        if (this.getOppositeEdge() != null) {
+            if (this.getOppositeEdge().getOppositeEdge() == this) {
+                this.getOppositeEdge().setOppositeEdge(null);
             }
-            this.oppositeEdge = null;
+            this.setOppositeEdge(null);
         }
-        this.startNode = null;
-        this.endNode = null;
-        this.defaultColor = null;
-        this.sendingColor = null;
+        this.setStartNode(null);
+        this.setEndNode(null);
+        this.setDefaultColor(null);
+        this.setSendingColor(null);
         numEdgesOnTheFly--;
         freeEdges.add(this);
     }
-
-    // the DLLE entry for the DoublyLinkedList
-    private DLLFingerList dllFingerList = new DLLFingerList();
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -506,10 +507,8 @@ public class Edge implements DoublyLinkedListEntry {
      *
      * @see sinalgo.tools.storage.DoublyLinkedListEntry#getDoublyLinkedListFinger()
      */
-    @Override
-    public DLLFingerList getDoublyLinkedListFinger() {
-        return dllFingerList;
-    }
+    @Getter
+    private DLLFingerList doublyLinkedListFinger = new DLLFingerList();
 
     /**
      * <b>This member is framework internal and should not be used by the project

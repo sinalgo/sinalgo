@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime.nodeCollection;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * A two dimensional integer point with (x,y)-coordinates.
  * <p>
@@ -46,26 +49,18 @@ package sinalgo.runtime.nodeCollection;
  * This class is used to indicate in which square of the GeometricNodeCollection
  * a node is contained.
  */
+@Data
+@AllArgsConstructor
 public class SquarePos implements NodeCollectionInfoInterface {
 
     /**
      * The x coordinate of the square in the whole datastructure.
      */
-    public int x;
+    private int x;
 
     /**
      * The y coordinate of the square in the whole datastructure.
      */
-    public int y;
+    private int y;
 
-    /**
-     * The constructor for the SquarePos class.
-     *
-     * @param x The x coordinate of this object in the datastructure.
-     * @param y The y coordinate of this object in the datastructure.
-     */
-    public SquarePos(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
 }

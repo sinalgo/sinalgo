@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes.messages;
 
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
@@ -67,40 +69,42 @@ import java.util.Stack;
  * This class is final. The user of the framework should only subclass the
  * message class to add user specific behavior.
  */
+@Getter
+@Setter
 public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
 
     /**
      * The time the message arrives its destination.
      */
-    public double arrivingTime;
+    private double arrivingTime;
 
     /**
      * The time of the round when this message was sent.
      */
-    public double sendingTime;
+    private double sendingTime;
 
     /**
      * The edge over which this message is sent, may be null if the message is sent
      * independent of an edge or if the edge was deleted while the message is being
      * sent.
      */
-    public Edge edge;
+    private Edge edge;
 
     /**
      * The intensity of the message. I.e. interference can depend on the intensity
      * of the message.
      */
-    public double intensity;
+    private double intensity;
 
     /**
      * The destination of this packet.
      */
-    public Node destination;
+    private Node destination;
 
     /**
      * The origin of this packet.
      */
-    public Node origin;
+    private Node origin;
 
     /**
      * True if the message will be received by the receiver, otherwise false.
@@ -110,7 +114,7 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
      * delivered, it must remain around until it arrives at the destination to cause
      * interference with auther packets.
      */
-    public boolean positiveDelivery;
+    private boolean positiveDelivery;
 
     public enum PacketType {
         UNICAST, MULTICAST, DUMMY // packets sent for other reasons, e.g. to simulate interference
@@ -119,7 +123,7 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
     /**
      * The type of this message (unicast, multicast or dummy)
      */
-    public PacketType type;
+    private PacketType type;
 
     /**
      * Sets the positiveDelivery flag of this packet to false such that this packet
@@ -132,7 +136,7 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
     /**
      * The message to send.
      */
-    public Message message;
+    private Message message;
 
     // -----------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
@@ -161,12 +165,12 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
             return p;
         } else {
             Packet rP = freePackets.pop();
-            if (rP.message != null) {
+            if (rP.getMessage() != null) {
                 throw new SinalgoFatalException(Logging.getCodePosition()
                         + " Packet factory failed! About to return a packet that was already returned. (Probably, free() was called > 1 on this packet.)");
             }
-            rP.ID = getNextFreeID();
-            rP.message = msg;
+            rP.setID(getNextFreeID());
+            rP.setMessage(msg);
             synchronized (ISSUED_PACKETS) {
                 ISSUED_PACKETS.append(rP);
             }
@@ -198,7 +202,7 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
     /**
      * The internal id of this packet.
      */
-    public long ID;
+    private long ID;
 
     // the next id to give to a packet
     private static long nextID = 1;
@@ -255,17 +259,12 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
      * @param msg The message to create a packet for.
      */
     private Packet(Message msg) {
-        message = msg;
-        ID = getNextFreeID();
-    }
-
-    @Override
-    public DLLFingerList getDoublyLinkedListFinger() {
-        return dllFingerList;
+        setMessage(msg);
+        setID(getNextFreeID());
     }
 
     // the DLLE entry for the DoublyLinkedList
-    private DLLFingerList dllFingerList = new DLLFingerList();
+    private DLLFingerList doublyLinkedListFinger = new DLLFingerList();
 
     /**
      * Compare method to sort lists of packets according to their arriving time.
@@ -274,6 +273,6 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
      */
     @Override
     public int compareTo(Packet p) {
-        return Double.compare(arrivingTime, p.arrivingTime);
+        return Double.compare(this.getArrivingTime(), p.getArrivingTime());
     }
 }

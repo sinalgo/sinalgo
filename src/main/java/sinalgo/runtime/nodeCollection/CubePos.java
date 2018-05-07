@@ -36,37 +36,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime.nodeCollection;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * A helper class to store in which cell of the matrix a node is stored in the
  * node collection.
  */
+@Data
+@AllArgsConstructor
 public class CubePos implements NodeCollectionInfoInterface {
 
     /**
      * x-Position in the 3D matrix of the geometric 3D node collection.
      */
-    public int x;
+    private int x;
 
     /**
      * y-Position in the 3D matrix of the geometric 3D node collection.
      */
-    public int y;
+    private int y;
 
     /**
      * z-Position in the 3D matrix of the geometric 3D node collection.
      */
-    public int z;
+    private int z;
 
-    /**
-     * Default constructor
-     *
-     * @param x X offset
-     * @param y Y offset
-     * @param z Z offset
-     */
-    public CubePos(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
 }

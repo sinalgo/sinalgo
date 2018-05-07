@@ -140,9 +140,9 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
         // the node stores its position in the datastructure itself. This is ugly, but
         // it makes
         // searching faster
-        n.nodeCollectionInfo = new SquarePos(location.x, location.y);
+        n.nodeCollectionInfo = new SquarePos(location.getX(), location.getY());
 
-        lists[location.x][location.y].addNode(n);
+        lists[location.getX()][location.getY()].addNode(n);
 
         localNodes.add(n);
     }
@@ -156,17 +156,17 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
 
         SquarePos newPosition = getPosOfNode(n);
         SquarePos oldPosition = (SquarePos) n.nodeCollectionInfo;
-        if ((oldPosition.x != newPosition.x) || oldPosition.y != newPosition.y) {
+        if ((oldPosition.getX() != newPosition.getX()) || oldPosition.getY() != newPosition.getY()) {
 
             // do not call this.remove. Already calculated the new position and thus we can
             // save time to directly call the remove on the list and on the localNodes.
-            NodeListInterface list = lists[oldPosition.x][oldPosition.y];
+            NodeListInterface list = lists[oldPosition.getX()][oldPosition.getY()];
             list.removeNode(n);
 
-            oldPosition.x = newPosition.x;
-            oldPosition.y = newPosition.y;
+            oldPosition.setX(newPosition.getX());
+            oldPosition.setY(newPosition.getY());
 
-            lists[newPosition.x][newPosition.y].addNode(n);
+            lists[newPosition.getX()][newPosition.getY()].addNode(n);
         }
 
     }
@@ -175,7 +175,7 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
     public void _removeNode(Node n) {
         n.holdInNodeCollection = false;
         SquarePos pos = getPosOfNode(n);
-        NodeListInterface nList = lists[pos.x][pos.y];
+        NodeListInterface nList = lists[pos.getX()][pos.getY()];
         if (!nList.removeNode(n)) {
             // the node was not located where it said! ERROR!
             throw new SinalgoFatalException("Geometric2DNodeCollection.removeNode(Node):\n" + "A node is being removed, but it is not"
@@ -186,8 +186,8 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
 
     private SquarePos getPosOfNode(Node n) {
         Position p = n.getPosition();
-        oneSquarePos.x = (int) Math.floor(p.getXCoord() / rMax);
-        oneSquarePos.y = (int) Math.floor(p.getYCoord() / rMax);
+        oneSquarePos.setX((int) Math.floor(p.getXCoord() / rMax));
+        oneSquarePos.setY((int) Math.floor(p.getYCoord() / rMax));
         return oneSquarePos;
     }
 
@@ -307,22 +307,22 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
             location = getPosOfNode(n);
 
             // fill the vector with the addresses of the neighborhood squares
-            if (location.x == 0) {
+            if (location.getX() == 0) {
                 mask[0][0] = 0;
                 mask[0][1] = 0;
                 mask[0][2] = 0;
             }
-            if (location.x + 1 == xDim) {
+            if (location.getX() + 1 == xDim) {
                 mask[2][0] = 0;
                 mask[2][1] = 0;
                 mask[2][2] = 0;
             }
-            if (location.y == 0) {
+            if (location.getY() == 0) {
                 mask[0][0] = 0;
                 mask[1][0] = 0;
                 mask[2][0] = 0;
             }
-            if (location.y + 1 == yDim) {
+            if (location.getY() + 1 == yDim) {
                 mask[0][2] = 0;
                 mask[1][2] = 0;
                 mask[2][2] = 0;
@@ -331,7 +331,7 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     if (mask[j][i] != 0) {
-                        squares.add(location.x + (j - 1), location.y + (i - 1));
+                        squares.add(location.getX() + (j - 1), location.getY() + (i - 1));
                     }
                 }
             }
@@ -361,22 +361,22 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
             location = getPosOfNode(n);
 
             // fill the vector with the addresses of the neighborhood squares
-            if (location.x == 0) {
+            if (location.getX() == 0) {
                 mask[0][0] = 0;
                 mask[0][1] = 0;
                 mask[0][2] = 0;
             }
-            if (location.x + 1 == xDim) {
+            if (location.getX() + 1 == xDim) {
                 mask[2][0] = 0;
                 mask[2][1] = 0;
                 mask[2][2] = 0;
             }
-            if (location.y == 0) {
+            if (location.getY() == 0) {
                 mask[0][0] = 0;
                 mask[1][0] = 0;
                 mask[2][0] = 0;
             }
-            if (location.y + 1 == yDim) {
+            if (location.getY() + 1 == yDim) {
                 mask[0][2] = 0;
                 mask[1][2] = 0;
                 mask[2][2] = 0;
@@ -385,7 +385,7 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     if (mask[j][i] != 0) {
-                        squares.add(location.x + (j - 1), location.y + (i - 1));
+                        squares.add(location.getX() + (j - 1), location.getY() + (i - 1));
                     }
                 }
             }
@@ -401,7 +401,7 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
         @Override
         public NodeListInterface nextElement() {
             SquarePos sp = listEnumeration.nextElement();
-            return lists[sp.x][sp.y];
+            return lists[sp.getX()][sp.getY()];
         }
     }
 

@@ -21,7 +21,7 @@ public class PayloadMessageTimer extends Timer {
 
     @Override
     public void fire() {
-        ((FNode) node).sendPayloadMessage(msg);
+        ((FNode) getTargetNode()).sendPayloadMessage(msg);
     }
 
 }
