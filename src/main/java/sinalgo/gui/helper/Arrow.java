@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.helper;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 
@@ -48,7 +51,12 @@ import java.io.PrintStream;
  */
 public class Arrow {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static int unzoomedArrowLength = Configuration.getArrowLength();
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static int unzoomedArrowWidth = Configuration.getArrowWidth();
 
     /**
@@ -98,8 +106,8 @@ public class Arrow {
             g.setColor(col);
 
             // the size of the arrow
-            double arrowLength = unzoomedArrowLength * pt.getZoomFactor();
-            double arrowWidth = unzoomedArrowWidth * pt.getZoomFactor();
+            double arrowLength = getUnzoomedArrowLength() * pt.getZoomFactor();
+            double arrowWidth = getUnzoomedArrowWidth() * pt.getZoomFactor();
             double lineLength = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 
             // shorten the arrow if the two nodes are very close
@@ -119,21 +127,26 @@ public class Arrow {
 
             // one end-point of the triangle is (x2,y2), the second end-point (ex1, ey1) and
             // the third (ex2, ey2)
-            arrowX[0] = x2;
-            arrowY[0] = y2;
-            arrowX[1] = (int) (ix + arrowWidth * uy);
-            arrowY[1] = (int) (iy - arrowWidth * ux);
-            arrowX[2] = (int) (ix - arrowWidth * uy);
-            arrowY[2] = (int) (iy + arrowWidth * ux);
+            getArrowX()[0] = x2;
+            getArrowY()[0] = y2;
+            getArrowX()[1] = (int) (ix + arrowWidth * uy);
+            getArrowY()[1] = (int) (iy - arrowWidth * ux);
+            getArrowX()[2] = (int) (ix - arrowWidth * uy);
+            getArrowY()[2] = (int) (iy + arrowWidth * ux);
 
-            g.fillPolygon(arrowX, arrowY, 3);
+            g.fillPolygon(getArrowX(), getArrowY(), 3);
 
             g.setColor(tmpCol);
         }
     }
 
-    private static int arrowX[] = new int[3];
-    private static int arrowY[] = new int[3];
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static int[] arrowX = new int[3];
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static int[] arrowY = new int[3];
 
     /**
      * This method writes an arrow (Edge) as metapost into the given printstream. It

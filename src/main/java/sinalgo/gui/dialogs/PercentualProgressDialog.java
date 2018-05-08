@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.dialogs;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.gui.GuiHelper;
 
 import javax.swing.*;
@@ -44,6 +47,8 @@ import java.awt.*;
 /**
  * This is a JDialog that shows the percentual progress of a action.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class PercentualProgressDialog extends JDialog {
 
     private static final long serialVersionUID = 1320076393340365149L;
@@ -118,17 +123,17 @@ public class PercentualProgressDialog extends JDialog {
      */
     public void create(ProgressBarUser pbu) {
         GuiHelper.setWindowIcon(this);
-        this.pBU = pbu;
+        this.setPBU(pbu);
 
-        this.jPB.setStringPainted(true);
-        this.jp.add(this.jPB);
+        this.getJPB().setStringPainted(true);
+        this.getJp().add(this.getJPB());
 
-        this.buttonPanel.add(this.cancel);
+        this.getButtonPanel().add(this.getCancel());
 
         this.setLayout(new BorderLayout());
 
-        this.add(BorderLayout.NORTH, this.jp);
-        this.add(BorderLayout.SOUTH, this.buttonPanel);
+        this.add(BorderLayout.NORTH, this.getJp());
+        this.add(BorderLayout.SOUTH, this.getButtonPanel());
 
         this.setResizable(false);
         this.setLocationRelativeTo(null);
@@ -136,10 +141,10 @@ public class PercentualProgressDialog extends JDialog {
 
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        this.cancel.addActionListener(e -> {
-            this.pBU.cancelClicked();
+        this.getCancel().addActionListener(e -> {
+            this.getPBU().cancelClicked();
             this.setTitle("Undoing...");
-            this.cancel.setEnabled(false);
+            this.getCancel().setEnabled(false);
         });
     }
 
@@ -165,14 +170,14 @@ public class PercentualProgressDialog extends JDialog {
      * @param percent The percentage of the progress.
      */
     public void setPercentage(double percent) {
-        this.jPB.setValue((int) (percent));
+        this.getJPB().setValue((int) (percent));
     }
 
     private class UpdateThread extends Thread {
 
         @Override
         public void run() {
-            PercentualProgressDialog.this.pBU.performMethod();
+            PercentualProgressDialog.this.getPBU().performMethod();
         }
     }
 }

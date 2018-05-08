@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.dialogs;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.gui.GUI;
@@ -62,10 +65,13 @@ import java.util.Enumeration;
 /**
  * The class for the dialog displaying information about a node.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class NodeInfoDialog extends JDialog implements ActionListener, PropertyChangeListener {
 
     private static final long serialVersionUID = 5403782066445725367L;
 
+    @Getter
     private GUI parent;
     private Node node;
 
@@ -95,10 +101,10 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
     public NodeInfoDialog(GUI p, Node n) {
         super(p, "Edit Node " + n.getID(), true);
         GuiHelper.setWindowIcon(this);
-        this.parent = p;
-        this.node = n;
+        this.setParent(p);
+        this.setNode(n);
 
-        this.node.highlight(true);
+        this.getNode().highlight(true);
 
         this.setLayout(new BorderLayout());
 
@@ -116,39 +122,39 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
             Node nd = nodesEnumer.nextElement();
             if (nd.getID() == n.getID()) {
                 if (!nodesEnumer.hasMoreElements()) {
-                    this.nextNode.setEnabled(false);
+                    this.getNextNode().setEnabled(false);
                 }
-                this.prevNode.setEnabled(hasPrev);
+                this.getPrevNode().setEnabled(hasPrev);
                 break;
             }
             hasPrev = true;
         }
 
-        this.prevNode.addActionListener(this);
-        this.nodeNumber.setColumns(6);
-        this.nodeNumber.setValue(this.node.getID());
-        this.nodeNumber.addPropertyChangeListener("value", this);
-        this.nextNode.addActionListener(this);
-        nodeSel.add(this.prevNode);
-        nodeSel.add(this.nodeNumber);
-        nodeSel.add(this.nextNode);
+        this.getPrevNode().addActionListener(this);
+        this.getNodeNumber().setColumns(6);
+        this.getNodeNumber().setValue(this.getNode().getID());
+        this.getNodeNumber().addPropertyChangeListener("value", this);
+        this.getNextNode().addActionListener(this);
+        nodeSel.add(this.getPrevNode());
+        nodeSel.add(this.getNodeNumber());
+        nodeSel.add(this.getNextNode());
         this.add(nodeSel);
 
-        Position pos = this.node.getPosition();
+        Position pos = this.getNode().getPosition();
 
-        this.positionX.setText(String.valueOf(pos.getXCoord()));
-        this.positionY.setText(String.valueOf(pos.getYCoord()));
-        this.positionZ.setText(String.valueOf(pos.getZCoord()));
+        this.getPositionX().setText(String.valueOf(pos.getXCoord()));
+        this.getPositionY().setText(String.valueOf(pos.getYCoord()));
+        this.getPositionZ().setText(String.valueOf(pos.getZCoord()));
 
         JPanel position = new JPanel();
         position.setBorder(BorderFactory.createTitledBorder("Position"));
         position.setLayout(new BoxLayout(position, BoxLayout.Y_AXIS));
         position.setPreferredSize(new Dimension(80, 80));
 
-        position.add(this.positionX);
-        position.add(this.positionY);
+        position.add(this.getPositionX());
+        position.add(this.getPositionY());
         if (Configuration.getDimensions() == 3) {
-            position.add(this.positionZ);
+            position.add(this.getPositionZ());
         }
 
         nodeSelAndPosition.add(BorderLayout.NORTH, nodeSel);
@@ -168,41 +174,41 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         info.add(infoPanel);
 
         UnborderedJTextField typeLabel = new UnborderedJTextField("Node Implementation:", Font.BOLD);
-        this.implementationText.setText(Global.toShortName(this.node.getClass().getName()));
-        this.implementationText.setEditable(false);
+        this.getImplementationText().setText(Global.toShortName(this.getNode().getClass().getName()));
+        this.getImplementationText().setEditable(false);
         infoPanel.add(typeLabel);
-        infoPanel.add(this.implementationText);
+        infoPanel.add(this.getImplementationText());
 
         UnborderedJTextField connectivityLabel = new UnborderedJTextField("Node Connectivity:", Font.BOLD);
-        this.connectivityText.setText(Global.toShortName(this.node.getConnectivityModel().getClass().getName()));
-        this.connectivityText.setEditable(false);
+        this.getConnectivityText().setText(Global.toShortName(this.getNode().getConnectivityModel().getClass().getName()));
+        this.getConnectivityText().setEditable(false);
         infoPanel.add(connectivityLabel);
-        infoPanel.add(this.connectivityText);
+        infoPanel.add(this.getConnectivityText());
 
         UnborderedJTextField interferenceLabel = new UnborderedJTextField("Node Interference:", Font.BOLD);
-        this.interferenceText.setText(Global.toShortName(this.node.getInterferenceModel().getClass().getName()));
-        this.interferenceText.setEditable(false);
+        this.getInterferenceText().setText(Global.toShortName(this.getNode().getInterferenceModel().getClass().getName()));
+        this.getInterferenceText().setEditable(false);
         infoPanel.add(interferenceLabel);
-        infoPanel.add(this.interferenceText);
+        infoPanel.add(this.getInterferenceText());
 
         UnborderedJTextField mobilityLabel = new UnborderedJTextField("Node Mobility:", Font.BOLD);
-        this.mobilityText.setText(Global.toShortName(this.node.getMobilityModel().getClass().getName()));
-        this.mobilityText.setEditable(false);
+        this.getMobilityText().setText(Global.toShortName(this.getNode().getMobilityModel().getClass().getName()));
+        this.getMobilityText().setEditable(false);
         infoPanel.add(mobilityLabel);
-        infoPanel.add(this.mobilityText);
+        infoPanel.add(this.getMobilityText());
 
         UnborderedJTextField reliabilityLabel = new UnborderedJTextField("Node Reliability:", Font.BOLD);
-        this.reliabilityText.setText(Global.toShortName(this.node.getReliabilityModel().getClass().getName()));
-        this.reliabilityText.setEditable(false);
+        this.getReliabilityText().setText(Global.toShortName(this.getNode().getReliabilityModel().getClass().getName()));
+        this.getReliabilityText().setEditable(false);
         infoPanel.add(reliabilityLabel);
-        infoPanel.add(this.reliabilityText);
+        infoPanel.add(this.getReliabilityText());
 
-        this.infoText.setText(this.node.toString());
+        this.getInfoText().setText(this.getNode().toString());
         JLabel infoTextLabel = new JLabel("Info Text:");
-        this.infoText.setEditable(false);
-        this.infoText.setBackground(infoTextLabel.getBackground());
+        this.getInfoText().setEditable(false);
+        this.getInfoText().setBackground(infoTextLabel.getBackground());
         infoPanel.add(infoTextLabel);
-        infoPanel.add(this.infoText);
+        infoPanel.add(this.getInfoText());
 
         JPanel buttons = new JPanel();
 
@@ -220,8 +226,8 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
 
             @Override
             public void windowClosing(WindowEvent event) {
-                NodeInfoDialog.this.node.highlight(false);
-                NodeInfoDialog.this.parent.redrawGUI();
+                NodeInfoDialog.this.getNode().highlight(false);
+                NodeInfoDialog.this.getParent().redrawGUI();
             }
         };
         this.addWindowListener(listener);
@@ -233,15 +239,15 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         focusManager.addKeyEventPostProcessor(e -> {
             if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                this.node.highlight(false);
+                this.getNode().highlight(false);
                 NodeInfoDialog.this.setVisible(false);
-                this.parent.redrawGUINow(); // needs blocking redrawing
+                this.getParent().redrawGUINow(); // needs blocking redrawing
             }
             return false;
         });
 
         // Redraw the graph to have the selected node painted in the right color.
-        this.parent.redrawGUI();
+        this.getParent().redrawGUI();
         this.pack();
         this.setLocationRelativeTo(p);
         this.setVisible(true);
@@ -250,57 +256,57 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
     private void revalidate(Node n, boolean hasPrev, boolean hasNext) {
         this.setTitle("Edit Node " + n.getID());
 
-        this.node.highlight(false);
+        this.getNode().highlight(false);
 
-        this.node = n;
+        this.setNode(n);
 
-        this.node.highlight(true);
+        this.getNode().highlight(true);
 
-        this.prevNode.setEnabled(hasPrev);
-        this.nextNode.setEnabled(hasNext);
+        this.getPrevNode().setEnabled(hasPrev);
+        this.getNextNode().setEnabled(hasNext);
 
-        Position pos = this.node.getPosition();
+        Position pos = this.getNode().getPosition();
 
-        this.positionX.setText(String.valueOf(pos.getXCoord()));
-        this.positionY.setText(String.valueOf(pos.getYCoord()));
-        this.positionZ.setText(String.valueOf(pos.getZCoord()));
+        this.getPositionX().setText(String.valueOf(pos.getXCoord()));
+        this.getPositionY().setText(String.valueOf(pos.getYCoord()));
+        this.getPositionZ().setText(String.valueOf(pos.getZCoord()));
 
-        this.implementationText.setText(Global.toShortName(this.node.getClass().getName()));
+        this.getImplementationText().setText(Global.toShortName(this.getNode().getClass().getName()));
 
-        this.connectivityText.setText(Global.toShortName(this.node.getConnectivityModel().getClass().getName()));
-        this.interferenceText.setText(Global.toShortName(this.node.getInterferenceModel().getClass().getName()));
-        this.mobilityText.setText(Global.toShortName(this.node.getMobilityModel().getClass().getName()));
-        this.reliabilityText.setText(Global.toShortName(this.node.getReliabilityModel().getClass().getName()));
+        this.getConnectivityText().setText(Global.toShortName(this.getNode().getConnectivityModel().getClass().getName()));
+        this.getInterferenceText().setText(Global.toShortName(this.getNode().getInterferenceModel().getClass().getName()));
+        this.getMobilityText().setText(Global.toShortName(this.getNode().getMobilityModel().getClass().getName()));
+        this.getReliabilityText().setText(Global.toShortName(this.getNode().getReliabilityModel().getClass().getName()));
 
-        this.infoText.setText(this.node.toString());
-        this.parent.redrawGUI();
+        this.getInfoText().setText(this.getNode().toString());
+        this.getParent().redrawGUI();
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
         switch (event.getActionCommand()) {
             case "Cancel":
-                this.node.highlight(false);
+                this.getNode().highlight(false);
                 this.setVisible(false);
-                this.parent.redrawGUINow(); // needs blocking redrawing
+                this.getParent().redrawGUINow(); // needs blocking redrawing
                 break;
             case "OK":
                 try {
-                    this.node.setPosition(new Position(Double.parseDouble(this.positionX.getText()),
-                            Double.parseDouble(this.positionY.getText()), Double.parseDouble(this.positionZ.getText())));
+                    this.getNode().setPosition(new Position(Double.parseDouble(this.getPositionX().getText()),
+                            Double.parseDouble(this.getPositionY().getText()), Double.parseDouble(this.getPositionZ().getText())));
                 } catch (NumberFormatException nFE) {
                     throw new SinalgoWrappedException(nFE);
                 }
-                this.node.highlight(false);
+                this.getNode().highlight(false);
                 this.setVisible(false);
-                this.parent.redrawGUINow(); // needs blocking redrawing
+                this.getParent().redrawGUINow(); // needs blocking redrawing
                 break;
             case "Next Node": {
                 Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
                 while (nodesEnumer.hasMoreElements()) {
                     Node nd = nodesEnumer.nextElement();
-                    if (nd.getID() == this.node.getID() + 1) {
-                        this.nodeNumber.setValue(nd.getID());
+                    if (nd.getID() == this.getNode().getID() + 1) {
+                        this.getNodeNumber().setValue(nd.getID());
                         // this triggers a property change event.
                         break;
                     }
@@ -311,8 +317,8 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
                 Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
                 while (nodesEnumer.hasMoreElements()) {
                     Node nd = nodesEnumer.nextElement();
-                    if (nd.getID() == this.node.getID() - 1) {
-                        this.nodeNumber.setValue(nd.getID());
+                    if (nd.getID() == this.getNode().getID() - 1) {
+                        this.getNodeNumber().setValue(nd.getID());
                         // this triggers a property change event.
                         break;
                     }

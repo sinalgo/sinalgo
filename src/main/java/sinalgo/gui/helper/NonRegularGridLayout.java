@@ -36,6 +36,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.helper;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.*;
 
 /**
@@ -77,17 +81,15 @@ public class NonRegularGridLayout extends GridLayout {
         super(rows, cols, hgap, vgap);
     }
 
-    private boolean alignToLeft = false;
-
     /**
-     * Sets whether all components of the grid should be left-aligned and the
+     * Determines whether all components of the grid should be left-aligned and the
      * remaining space given to the right-most cells.
      *
-     * @param alignLeft Whether to align left or not
+     * @param alignToLeft Whether to align left or not
      */
-    public void setAlignToLeft(boolean alignLeft) {
-        this.alignToLeft = alignLeft;
-    }
+    @Getter(AccessLevel.PRIVATE)
+    @Setter
+    private boolean alignToLeft = false;
 
     @Override
     public Dimension preferredLayoutSize(Container parent) {
@@ -179,7 +181,7 @@ public class NonRegularGridLayout extends GridLayout {
             // scaling factors
             Dimension pd = this.preferredLayoutSize(parent);
 
-            if (this.alignToLeft) {
+            if (this.isAlignToLeft()) {
                 int[] w = new int[ncols]; // maximal width
                 int[] h = new int[nrows]; // maximal height
                 this.calculateSize(parent, ncomponents, ncols, w, h);

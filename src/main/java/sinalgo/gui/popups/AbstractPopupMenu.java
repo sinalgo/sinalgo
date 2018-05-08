@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.popups;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.gui.GUI;
 
 import javax.swing.*;
@@ -45,18 +48,21 @@ import java.awt.event.ActionListener;
 /**
  * Common items for popup menus
  */
+@Getter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PROTECTED)
 public abstract class AbstractPopupMenu extends JPopupMenu {
 
     private static final long serialVersionUID = 6108642977345194041L;
 
-    protected GUI parent = null;
+    @Getter
+    private GUI parent = null;
 
-    protected JMenuItem zoomIn = new JMenuItem("Zoom In");
-    protected JMenuItem zoomOut = new JMenuItem("Zoom Out");
+    private JMenuItem zoomIn = new JMenuItem("Zoom In");
+    private JMenuItem zoomOut = new JMenuItem("Zoom Out");
 
     protected AbstractPopupMenu() {
-        this.zoomIn.addActionListener(new ZoomListener());
-        this.zoomOut.addActionListener(new ZoomListener());
+        this.getZoomIn().addActionListener(new ZoomListener());
+        this.getZoomOut().addActionListener(new ZoomListener());
     }
 
     // Listening to the zoom in and zoom out action events
@@ -64,10 +70,10 @@ public abstract class AbstractPopupMenu extends JPopupMenu {
 
         @Override
         public void actionPerformed(ActionEvent event) {
-            if (event.getActionCommand().equals(AbstractPopupMenu.this.zoomIn.getActionCommand())) {
-                AbstractPopupMenu.this.parent.zoomIn();
-            } else if (event.getActionCommand().equals(AbstractPopupMenu.this.zoomOut.getActionCommand())) {
-                AbstractPopupMenu.this.parent.zoomOut();
+            if (event.getActionCommand().equals(AbstractPopupMenu.this.getZoomIn().getActionCommand())) {
+                AbstractPopupMenu.this.getParent().zoomIn();
+            } else if (event.getActionCommand().equals(AbstractPopupMenu.this.getZoomOut().getActionCommand())) {
+                AbstractPopupMenu.this.getParent().zoomOut();
             }
         }
     }

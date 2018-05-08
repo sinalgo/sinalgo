@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.popups;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.gui.GUI;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Position;
@@ -50,12 +53,13 @@ import java.awt.event.ActionListener;
  * presses the right mouse button over a place, where there is no node and no
  * edge.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener {
 
     private static final long serialVersionUID = 8356598949303688723L;
 
     private Point pos = null;
-
     private JMenuItem add = new JMenuItem("Add Node");
 
     /**
@@ -64,8 +68,8 @@ public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener 
      * @param p The Frame to add the AddNodeDialog to if the user clicked AddNode.
      */
     public SpacePopupMenu(GUI p) {
-        this.parent = p;
-        this.add.addActionListener(this);
+        this.setParent(p);
+        this.getAdd().addActionListener(this);
     }
 
     /**
@@ -74,26 +78,26 @@ public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener 
      * @param p The position the user clicked to.
      */
     public void compose(Point p) {
-        this.pos = p;
+        this.setPos(p);
 
         this.removeAll();
 
-        if (this.parent.getTransformator().supportReverseTranslation()) {
-            this.add(this.add);
+        if (this.getParent().getTransformator().supportReverseTranslation()) {
+            this.add(this.getAdd());
             this.addSeparator();
         }
 
-        this.add(this.zoomIn);
-        this.add(this.zoomOut);
+        this.add(this.getZoomIn());
+        this.add(this.getZoomOut());
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(this.add.getActionCommand())) {
-            PositionTransformation pt = this.parent.getTransformator();
+        if (e.getActionCommand().equals(this.getAdd().getActionCommand())) {
+            PositionTransformation pt = this.getParent().getTransformator();
             if (pt.supportReverseTranslation()) {
-                pt.translateToLogicPosition(this.pos.x, this.pos.y);
-                this.parent.addSingleNode(new Position(pt.getLogicX(), pt.getLogicY(), pt.getLogicZ()));
+                pt.translateToLogicPosition(this.getPos().x, this.getPos().y);
+                this.getParent().addSingleNode(new Position(pt.getLogicX(), pt.getLogicY(), pt.getLogicZ()));
             }
         }
     }

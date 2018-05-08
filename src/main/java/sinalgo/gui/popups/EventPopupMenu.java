@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.popups;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.runtime.events.Event;
 
@@ -48,6 +51,8 @@ import java.awt.event.ComponentListener;
 /**
  * @author rflury
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class EventPopupMenu extends JPopupMenu implements ActionListener {
 
     private static final long serialVersionUID = 315706472796346139L;
@@ -60,24 +65,24 @@ public class EventPopupMenu extends JPopupMenu implements ActionListener {
     private JMenuItem deleteAll = new JMenuItem("Delete All Events");
 
     public EventPopupMenu(Event e, JList l, ListCellRenderer lcr) {
-        this.event = e;
-        this.list = l;
-        this.renderer = lcr;
-        this.info.addActionListener(this);
-        this.delete.addActionListener(this);
-        this.deleteAll.addActionListener(this);
+        this.setEvent(e);
+        this.setList(l);
+        this.setRenderer(lcr);
+        this.getInfo().addActionListener(this);
+        this.getDelete().addActionListener(this);
+        this.getDeleteAll().addActionListener(this);
 
-        this.add(this.info);
+        this.add(this.getInfo());
         this.addSeparator();
-        this.add(this.delete);
-        this.add(this.deleteAll);
+        this.add(this.getDelete());
+        this.add(this.getDeleteAll());
 
         this.addComponentListener(new ComponentListener() {
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                EventPopupMenu.this.list.setCellRenderer(EventPopupMenu.this.renderer);
-                EventPopupMenu.this.list.repaint();
+                EventPopupMenu.this.getList().setCellRenderer(EventPopupMenu.this.getRenderer());
+                EventPopupMenu.this.getList().repaint();
             }
 
             @Override
@@ -97,17 +102,16 @@ public class EventPopupMenu extends JPopupMenu implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(this.info.getActionCommand())) {
+        if (e.getActionCommand().equals(this.getInfo().getActionCommand())) {
             JOptionPane.showMessageDialog(null,
-                    this.event.getEventListText(false) + "\n" + this.event.getEventListToolTipText(false),
+                    this.getEvent().getEventListText(false) + "\n" + this.getEvent().getEventListToolTipText(false),
                     "Information about an Event", JOptionPane.INFORMATION_MESSAGE);
-        } else if (e.getActionCommand().equals(this.delete.getActionCommand())) {
-            SinalgoRuntime.removeEvent(this.event);
-        } else if (e.getActionCommand().equals(this.deleteAll.getActionCommand())) {
+        } else if (e.getActionCommand().equals(this.getDelete().getActionCommand())) {
+            SinalgoRuntime.removeEvent(this.getEvent());
+        } else if (e.getActionCommand().equals(this.getDeleteAll().getActionCommand())) {
             SinalgoRuntime.removeAllAsynchronousEvents();
         }
-        this.list.setCellRenderer(this.renderer);
-        this.list.repaint();
+        this.getList().setCellRenderer(this.getRenderer());
+        this.getList().repaint();
     }
-
 }

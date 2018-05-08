@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.dialogs;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType;
@@ -74,15 +77,19 @@ import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFi
 /**
  * The Dialog to generate a number of new Nodes.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class GenerateNodesDialog extends JDialog implements ActionListener, ProgressBarUser {
 
     private static final long serialVersionUID = -8080111497886244380L;
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static JTextField number = new JTextField(6);
 
     // static: keep the value for subsequent calls
     static {
-        number.setText(Integer.toString(AppConfig.getAppConfig().getGenerateNodesDlgNumNodes()));
+        getNumber().setText(Integer.toString(AppConfig.getAppConfig().getGenerateNodesDlgNumNodes()));
     }
 
     private int numberOfNodes; // 'number' field translated to an int, set after a call to readSelection()
@@ -123,6 +130,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
     private PercentualProgressDialog pf = null;
     private boolean canceled = false;
 
+    @Getter
     private GUI parent;
 
     private Position singleNodePosition; // null if the dialgo was created for several nodes
@@ -135,16 +143,16 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
     public GenerateNodesDialog(GUI p) {
         super(p, "Create new Nodes", true);
         GuiHelper.setWindowIcon(this);
-        this.cancel.addActionListener(this);
-        this.ok.addActionListener(this);
+        this.getCancel().addActionListener(this);
+        this.getOk().addActionListener(this);
 
-        Font f = this.distributionModelComboBox.getFont().deriveFont(Font.PLAIN);
-        this.distributionModelComboBox.setFont(f);
-        this.nodeTypeComboBox.setFont(f);
-        this.connectivityModelComboBox.setFont(f);
-        this.interferenceModelComboBox.setFont(f);
-        this.mobilityModelComboBox.setFont(f);
-        this.reliabilityModelComboBox.setFont(f);
+        Font f = this.getDistributionModelComboBox().getFont().deriveFont(Font.PLAIN);
+        this.getDistributionModelComboBox().setFont(f);
+        this.getNodeTypeComboBox().setFont(f);
+        this.getConnectivityModelComboBox().setFont(f);
+        this.getInterferenceModelComboBox().setFont(f);
+        this.getMobilityModelComboBox().setFont(f);
+        this.getReliabilityModelComboBox().setFont(f);
 
         // Detect ESCAPE button
         KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
@@ -156,7 +164,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         });
 
         this.setLocationRelativeTo(p);
-        this.parent = p;
+        this.setParent(p);
     }
 
     /**
@@ -167,7 +175,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
      *                      dialog for several nodes, set this parameter to null.
      */
     public void compose(Position singleNodePos) {
-        this.singleNodePosition = singleNodePos;
+        this.setSingleNodePosition(singleNodePos);
         JPanel cp = new JPanel();
 
         cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
@@ -187,7 +195,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         // ----------------------------
         UnborderedJTextField numSelLabel = new UnborderedJTextField("Number of Nodes:", Font.BOLD);
         distSel.add(numSelLabel);
-        distSel.add(number);
+        distSel.add(getNumber());
         JTextField dummy = new JTextField();
         dummy.setVisible(false);
         distSel.add(dummy);
@@ -196,10 +204,10 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         // ----------------------------
         UnborderedJTextField distSelLabel = new UnborderedJTextField("Distribution Model:", Font.BOLD);
         distSel.add(distSelLabel);
-        this.fillChoice(this.distributionModelComboBox, MODELS_DISTRIBUTION, this.distributionSel);
-        distSel.add(this.distributionModelComboBox);
-        this.distributionParam.setText(this.distributionParamDefString);
-        distSel.add(this.distributionParam);
+        this.fillChoice(this.getDistributionModelComboBox(), MODELS_DISTRIBUTION, this.getDistributionSel());
+        distSel.add(this.getDistributionModelComboBox());
+        this.getDistributionParam().setText(this.getDistributionParamDefString());
+        distSel.add(this.getDistributionParam());
         dist.add(distSel);
 
         JPanel propertyPanel = new JPanel();
@@ -215,86 +223,86 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         // ----------------------------
         UnborderedJTextField propSelLabel = new UnborderedJTextField("Node Implementation:", Font.BOLD);
         props.add(propSelLabel);
-        this.fillChoice(this.nodeTypeComboBox, NODES_IMPLEMENTATIONS, this.nodeTypeSel);
-        props.add(this.nodeTypeComboBox);
-        this.nodeTypeParam.setEditable(false);
-        this.nodeTypeParam.setVisible(false);
-        props.add(this.nodeTypeParam);
+        this.fillChoice(this.getNodeTypeComboBox(), NODES_IMPLEMENTATIONS, this.getNodeTypeSel());
+        props.add(this.getNodeTypeComboBox());
+        this.getNodeTypeParam().setEditable(false);
+        this.getNodeTypeParam().setVisible(false);
+        props.add(this.getNodeTypeParam());
 
         // the available connectivities
         // ----------------------------
         UnborderedJTextField connSelLabel = new UnborderedJTextField("Connectivity Model:", Font.BOLD);
         props.add(connSelLabel);
-        this.fillChoice(this.connectivityModelComboBox, MODELS_CONNECTIVITY, this.connectivitySel);
-        props.add(this.connectivityModelComboBox);
-        this.connectivityParam.setText(this.connectivityDefString);
-        props.add(this.connectivityParam);
+        this.fillChoice(this.getConnectivityModelComboBox(), MODELS_CONNECTIVITY, this.getConnectivitySel());
+        props.add(this.getConnectivityModelComboBox());
+        this.getConnectivityParam().setText(this.getConnectivityDefString());
+        props.add(this.getConnectivityParam());
 
         // the available interferences
         // ----------------------------
         UnborderedJTextField interSelLabel = new UnborderedJTextField("Interference Model:", Font.BOLD);
         props.add(interSelLabel);
-        this.fillChoice(this.interferenceModelComboBox, MODELS_INTERFERENCE, this.interferenceSel);
-        props.add(this.interferenceModelComboBox);
-        this.interferenceParam.setText(this.interferenceDefString);
-        props.add(this.interferenceParam);
+        this.fillChoice(this.getInterferenceModelComboBox(), MODELS_INTERFERENCE, this.getInterferenceSel());
+        props.add(this.getInterferenceModelComboBox());
+        this.getInterferenceParam().setText(this.getInterferenceDefString());
+        props.add(this.getInterferenceParam());
 
         // the available mobility
         // ----------------------------
         UnborderedJTextField mobSelLabel = new UnborderedJTextField("Mobility Model:", Font.BOLD);
         props.add(mobSelLabel);
-        this.fillChoice(this.mobilityModelComboBox, MODELS_MOBILITY, this.mobilitySel);
-        props.add(this.mobilityModelComboBox);
-        this.mobilityParam.setText(this.mobilityDefString);
-        props.add(this.mobilityParam);
+        this.fillChoice(this.getMobilityModelComboBox(), MODELS_MOBILITY, this.getMobilitySel());
+        props.add(this.getMobilityModelComboBox());
+        this.getMobilityParam().setText(this.getMobilityDefString());
+        props.add(this.getMobilityParam());
 
         // the available reliability models
         // ----------------------------
         UnborderedJTextField reliSelLabel = new UnborderedJTextField("Reliability Model:", Font.BOLD);
         props.add(reliSelLabel);
-        this.fillChoice(this.reliabilityModelComboBox, MODELS_RELIABILITY, this.reliabilitySel);
-        props.add(this.reliabilityModelComboBox);
-        this.reliabilityParam.setText(this.reliabilityDefString);
-        props.add(this.reliabilityParam);
+        this.fillChoice(this.getReliabilityModelComboBox(), MODELS_RELIABILITY, this.getReliabilitySel());
+        props.add(this.getReliabilityModelComboBox());
+        this.getReliabilityParam().setText(this.getReliabilityDefString());
+        props.add(this.getReliabilityParam());
 
         // add a button to change whether all implementations are contained in the drop
         // down fields
         JPanel allModelsPanel = new JPanel();
         allModelsPanel.setLayout(new BorderLayout());
-        this.allModelsCheckBox = new JCheckBox("Show all implementations");
-        this.allModelsCheckBox.setSelected(Configuration.isShowModelsOfAllProjects());
-        this.allModelsCheckBox.addChangeListener(e -> {
-            if (Configuration.isShowModelsOfAllProjects() != this.allModelsCheckBox.isSelected()) {
-                Configuration.setShowModelsOfAllProjects(this.allModelsCheckBox.isSelected());
+        this.setAllModelsCheckBox(new JCheckBox("Show all implementations"));
+        this.getAllModelsCheckBox().setSelected(Configuration.isShowModelsOfAllProjects());
+        this.getAllModelsCheckBox().addChangeListener(e -> {
+            if (Configuration.isShowModelsOfAllProjects() != this.getAllModelsCheckBox().isSelected()) {
+                Configuration.setShowModelsOfAllProjects(this.getAllModelsCheckBox().isSelected());
                 // reload the contents of the drop down fields
-                this.fillChoice(this.distributionModelComboBox, MODELS_DISTRIBUTION, this.distributionSel);
-                this.fillChoice(this.nodeTypeComboBox, NODES_IMPLEMENTATIONS, this.nodeTypeSel);
-                this.fillChoice(this.connectivityModelComboBox, MODELS_CONNECTIVITY, this.connectivitySel);
-                this.fillChoice(this.interferenceModelComboBox, MODELS_INTERFERENCE, this.interferenceSel);
-                this.fillChoice(this.mobilityModelComboBox, MODELS_MOBILITY, this.mobilitySel);
-                this.fillChoice(this.reliabilityModelComboBox, MODELS_RELIABILITY, this.reliabilitySel);
+                this.fillChoice(this.getDistributionModelComboBox(), MODELS_DISTRIBUTION, this.getDistributionSel());
+                this.fillChoice(this.getNodeTypeComboBox(), NODES_IMPLEMENTATIONS, this.getNodeTypeSel());
+                this.fillChoice(this.getConnectivityModelComboBox(), MODELS_CONNECTIVITY, this.getConnectivitySel());
+                this.fillChoice(this.getInterferenceModelComboBox(), MODELS_INTERFERENCE, this.getInterferenceSel());
+                this.fillChoice(this.getMobilityModelComboBox(), MODELS_MOBILITY, this.getMobilitySel());
+                this.fillChoice(this.getReliabilityModelComboBox(), MODELS_RELIABILITY, this.getReliabilitySel());
                 GenerateNodesDialog.this.pack();
             }
         });
-        allModelsPanel.add(this.allModelsCheckBox);
+        allModelsPanel.add(this.getAllModelsCheckBox());
         cp.add(allModelsPanel);
 
         // the buttons OK / CANCEL
         JPanel buttons = new JPanel();
-        this.ok.setMnemonic(KeyEvent.VK_O);
-        buttons.add(this.ok);
-        this.cancel.setMnemonic(KeyEvent.VK_C);
-        buttons.add(this.cancel);
+        this.getOk().setMnemonic(KeyEvent.VK_O);
+        buttons.add(this.getOk());
+        this.getCancel().setMnemonic(KeyEvent.VK_C);
+        buttons.add(this.getCancel());
 
         cp.add(buttons);
 
         this.setContentPane(cp);
 
         // this.setResizable(false);
-        this.getRootPane().setDefaultButton(this.ok);
+        this.getRootPane().setDefaultButton(this.getOk());
         this.pack();
-        this.setLocationRelativeTo(this.parent);
-        number.grabFocus();
+        this.setLocationRelativeTo(this.getParent());
+        getNumber().grabFocus();
         this.setVisible(true);
     }
 
@@ -312,77 +320,77 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getActionCommand().equals(this.ok.getActionCommand())) {
-            if (this.singleNodePosition == null) {
+        if (event.getActionCommand().equals(this.getOk().getActionCommand())) {
+            if (this.getSingleNodePosition() == null) {
                 try {
-                    int num = Integer.parseInt(number.getText());
+                    int num = Integer.parseInt(getNumber().getText());
                     if (num <= 0) {
                         throw new NumberFormatException();
                     }
                     AppConfig.getAppConfig().setGenerateNodesDlgNumNodes(num);
-                    this.pf = new PercentualProgressDialog(this, this, "Creating new Nodes...");
-                    this.canceled = false;
-                    this.pf.init();
+                    this.setPf(new PercentualProgressDialog(this, this, "Creating new Nodes..."));
+                    this.setCanceled(false);
+                    this.getPf().init();
                 } catch (NumberFormatException nfE) {
                     Main.minorError(
                             "Please specify a correct number of nodes to generate. This number has to be an integer greater than zero.");
                 }
             } else { // only for a single node
                 this.readSelection();
-                Node n = this.generateNode(this.singleNodePosition);
+                Node n = this.generateNode(this.getSingleNodePosition());
                 n.finishInitializationWithDefaultModels(true);
                 // redraw
                 Tools.getGraphPanel().forceDrawInNextPaint();
                 Tools.getGraphPanel().repaint();
                 this.setVisible(false);
             }
-        } else if (event.getActionCommand().equals(this.cancel.getActionCommand())) {
+        } else if (event.getActionCommand().equals(this.getCancel().getActionCommand())) {
             this.setVisible(false);
         }
     }
 
     @Override
     public void cancelClicked() {
-        this.canceled = true;
+        this.setCanceled(true);
     }
 
     /**
      * Reads and stores the selction the user made
      */
     private void readSelection() {
-        this.numberOfNodes = Integer.parseInt(number.getText());
-        this.distributionSel = this.distributionModelComboBox.getSelectedItem().toString();
-        this.nodeTypeSel = this.nodeTypeComboBox.getSelectedItem().toString();
-        this.interferenceSel = this.interferenceModelComboBox.getSelectedItem().toString();
-        this.mobilitySel = this.mobilityModelComboBox.getSelectedItem().toString();
-        this.reliabilitySel = this.reliabilityModelComboBox.getSelectedItem().toString();
-        this.connectivitySel = this.connectivityModelComboBox.getSelectedItem().toString();
+        this.setNumberOfNodes(Integer.parseInt(getNumber().getText()));
+        this.setDistributionSel(this.getDistributionModelComboBox().getSelectedItem().toString());
+        this.setNodeTypeSel(this.getNodeTypeComboBox().getSelectedItem().toString());
+        this.setInterferenceSel(this.getInterferenceModelComboBox().getSelectedItem().toString());
+        this.setMobilitySel(this.getMobilityModelComboBox().getSelectedItem().toString());
+        this.setReliabilitySel(this.getReliabilityModelComboBox().getSelectedItem().toString());
+        this.setConnectivitySel(this.getConnectivityModelComboBox().getSelectedItem().toString());
 
-        this.distributionParamDefString = this.distributionParam.getText();
-        this.interferenceDefString = this.interferenceParam.getText();
-        this.mobilityDefString = this.mobilityParam.getText();
-        this.reliabilityDefString = this.reliabilityParam.getText();
-        this.connectivityDefString = this.connectivityParam.getText();
+        this.setDistributionParamDefString(this.getDistributionParam().getText());
+        this.setInterferenceDefString(this.getInterferenceParam().getText());
+        this.setMobilityDefString(this.getMobilityParam().getText());
+        this.setReliabilityDefString(this.getReliabilityParam().getText());
+        this.setConnectivityDefString(this.getConnectivityParam().getText());
     }
 
     private Node generateNode(Position pos) {
-        Node node = Node.createNodeByClassname(this.nodeTypeSel);
+        Node node = Node.createNodeByClassname(this.getNodeTypeSel());
         node.setPosition(pos);
 
-        InterferenceModel im = Model.getInterferenceModelInstance(this.interferenceSel);
-        im.setParamString(this.interferenceDefString);
+        InterferenceModel im = Model.getInterferenceModelInstance(this.getInterferenceSel());
+        im.setParamString(this.getInterferenceDefString());
         node.setInterferenceModel(im);
 
-        MobilityModel mm = Model.getMobilityModelInstance(this.mobilitySel);
-        mm.setParamString(this.mobilityDefString);
+        MobilityModel mm = Model.getMobilityModelInstance(this.getMobilitySel());
+        mm.setParamString(this.getMobilityDefString());
         node.setMobilityModel(mm);
 
-        ReliabilityModel rm = Model.getReliabilityModelInstance(this.reliabilitySel);
-        rm.setParamString(this.reliabilityDefString);
+        ReliabilityModel rm = Model.getReliabilityModelInstance(this.getReliabilitySel());
+        rm.setParamString(this.getReliabilityDefString());
         node.setReliabilityModel(rm);
 
-        ConnectivityModel cm = Model.getConnectivityModelInstance(this.connectivitySel);
-        cm.setParamString(this.connectivityDefString);
+        ConnectivityModel cm = Model.getConnectivityModelInstance(this.getConnectivitySel());
+        cm.setParamString(this.getConnectivityDefString());
         node.setConnectivityModel(cm);
         return node;
     }
@@ -403,25 +411,25 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
     public void performMethod() {
         this.readSelection();
         try {
-            DistributionModel distribution = Model.getDistributionModelInstance(this.distributionSel);
-            distribution.setParamString(this.distributionParamDefString);
-            distribution.setNumberOfNodes(this.numberOfNodes);
+            DistributionModel distribution = Model.getDistributionModelInstance(this.getDistributionSel());
+            distribution.setParamString(this.getDistributionParamDefString());
+            distribution.setNumberOfNodes(this.getNumberOfNodes());
             distribution.initialize();
 
             Vector<Node> addedNodes = new Vector<>();
 
-            for (int i = 0; i < this.numberOfNodes; i++) {
-                this.pf.setPercentage(100.0d * ((double) i / (double) this.numberOfNodes));
+            for (int i = 0; i < this.getNumberOfNodes(); i++) {
+                this.getPf().setPercentage(100.0d * ((double) i / (double) this.getNumberOfNodes()));
 
                 Node node = this.generateNode(distribution.getNextPosition());
 
-                if (this.canceled) {
+                if (this.isCanceled()) {
                     for (Node n : addedNodes) {
                         SinalgoRuntime.nodes.removeNode(n);
                         i--;
-                        this.pf.setPercentage(100.0d * ((double) i / (double) this.numberOfNodes));
+                        this.getPf().setPercentage(100.0d * ((double) i / (double) this.getNumberOfNodes()));
                     }
-                    this.pf.finish();
+                    this.getPf().finish();
                     addedNodes.clear();
                     return;
                 }
@@ -432,10 +440,9 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
         } catch (WrongConfigurationException e) {
             Main.minorError("There was an error while generating the nodes.\n" + e.getMessage());
         }
-        this.pf.finish();
+        this.getPf().finish();
         Tools.getGraphPanel().forceDrawInNextPaint();
         Tools.getGraphPanel().repaint();
         this.setVisible(false);
     }
-
 }

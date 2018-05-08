@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.popups;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.gui.GUI;
 import sinalgo.gui.dialogs.EdgeInfoDialog;
 import sinalgo.nodes.edges.Edge;
@@ -48,6 +51,8 @@ import java.awt.event.ActionListener;
 /**
  * The PopupMenu which pops up upon a right-click on an Edge
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
 
     private static final long serialVersionUID = 1879611828353447896L;
@@ -62,9 +67,9 @@ public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
      * @param p The parent GUI used to trigger the zooming.
      */
     public EdgePopupMenu(GUI p) {
-        this.parent = p;
-        this.info.addActionListener(this);
-        this.delete.addActionListener(this);
+        this.setParent(p);
+        this.getInfo().addActionListener(this);
+        this.getDelete().addActionListener(this);
     }
 
     /**
@@ -73,25 +78,25 @@ public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
      * @param e The edge the information is about.
      */
     public void compose(Edge e) {
-        this.edge = e;
+        this.setEdge(e);
 
         this.removeAll();
 
-        this.add(this.info);
-        this.add(this.delete);
+        this.add(this.getInfo());
+        this.add(this.getDelete());
         this.addSeparator();
 
-        this.add(this.zoomIn);
-        this.add(this.zoomOut);
+        this.add(this.getZoomIn());
+        this.add(this.getZoomOut());
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(this.info.getActionCommand())) {
-            new EdgeInfoDialog(this.parent, this.edge);
-        } else if (e.getActionCommand().equals(this.delete.getActionCommand())) {
-            SinalgoRuntime.removeEdge(this.edge);
-            this.parent.redrawGUINow();
+        if (e.getActionCommand().equals(this.getInfo().getActionCommand())) {
+            new EdgeInfoDialog(this.getParent(), this.getEdge());
+        } else if (e.getActionCommand().equals(this.getDelete().getActionCommand())) {
+            SinalgoRuntime.removeEdge(this.getEdge());
+            this.getParent().redrawGUINow();
         }
     }
 }

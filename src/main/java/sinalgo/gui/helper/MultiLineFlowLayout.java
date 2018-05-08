@@ -36,12 +36,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.helper;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.*;
 
 /**
  * Similar to FlowLayout, but allows to set max width and then starts a new
  * line.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class MultiLineFlowLayout implements LayoutManager {
 
     private int maxWidth;
@@ -54,9 +60,9 @@ public class MultiLineFlowLayout implements LayoutManager {
      * @param vGap     the vertical gap between two elements
      */
     public MultiLineFlowLayout(int maxWidth, int hGap, int vGap) {
-        this.maxWidth = maxWidth;
-        this.hGap = hGap;
-        this.vGap = vGap;
+        this.setMaxWidth(maxWidth);
+        this.setHGap(hGap);
+        this.setVGap(vGap);
     }
 
     private int exactLineHeight = -1;
@@ -67,7 +73,7 @@ public class MultiLineFlowLayout implements LayoutManager {
      * @param height The exact height of the line.
      */
     public void setExactLineHight(int height) {
-        this.exactLineHeight = height; // set to <= 0 to disable
+        this.setExactLineHeight(height); // set to <= 0 to disable
     }
 
     @Override
@@ -75,7 +81,7 @@ public class MultiLineFlowLayout implements LayoutManager {
         synchronized (parent.getTreeLock()) {
             Insets insets = parent.getInsets();
 
-            int totalWidth = this.maxWidth - insets.left - insets.right;
+            int totalWidth = this.getMaxWidth() - insets.left - insets.right;
             int height = 0;
             int width = 0;
             int maxHeightOfThisLine = 0;
@@ -85,19 +91,19 @@ public class MultiLineFlowLayout implements LayoutManager {
                 Component c = parent.getComponent(i);
                 Dimension d = c.getPreferredSize();
                 if (width + d.width < totalWidth || width == 0) { // also accept any first component on this line
-                    width += d.width + this.hGap;
+                    width += d.width + this.getHGap();
                     maxHeightOfThisLine = Math.max(maxHeightOfThisLine, d.height);
                 } else { // this component must go onto the next line
-                    if (this.exactLineHeight > 0) {
-                        maxHeightOfThisLine = this.exactLineHeight;
+                    if (this.getExactLineHeight() > 0) {
+                        maxHeightOfThisLine = this.getExactLineHeight();
                     }
-                    height += maxHeightOfThisLine + this.vGap;
+                    height += maxHeightOfThisLine + this.getVGap();
                     maxHeightOfThisLine = d.height;
-                    width = d.width + this.hGap;
+                    width = d.width + this.getHGap();
                 }
             }
             height += maxHeightOfThisLine;
-            return new Dimension(this.maxWidth, insets.top + insets.bottom + height);
+            return new Dimension(this.getMaxWidth(), insets.top + insets.bottom + height);
         }
     }
 
@@ -111,7 +117,7 @@ public class MultiLineFlowLayout implements LayoutManager {
         synchronized (parent.getTreeLock()) {
             Insets insets = parent.getInsets();
 
-            int totalWidth = this.maxWidth - insets.left - insets.right;
+            int totalWidth = this.getMaxWidth() - insets.left - insets.right;
             int height = 0;
             int width = 0;
             int maxHeightOfThisLine = 0;
@@ -123,16 +129,16 @@ public class MultiLineFlowLayout implements LayoutManager {
                 c.setSize(d); // we need to set the size of the components
                 if (width + d.width < totalWidth || width == 0) { // also accept any first component on this line
                     c.setLocation(insets.left + width, insets.top + height);
-                    width += d.width + this.hGap;
+                    width += d.width + this.getHGap();
                     maxHeightOfThisLine = Math.max(maxHeightOfThisLine, d.height);
                 } else { // this component must go onto the next line
-                    if (this.exactLineHeight > 0) {
-                        maxHeightOfThisLine = this.exactLineHeight;
+                    if (this.getExactLineHeight() > 0) {
+                        maxHeightOfThisLine = this.getExactLineHeight();
                     }
-                    height += maxHeightOfThisLine + this.vGap;
+                    height += maxHeightOfThisLine + this.getVGap();
                     c.setLocation(insets.left, insets.top + height); // width is 0
                     maxHeightOfThisLine = d.height;
-                    width = d.width + this.hGap;
+                    width = d.width + this.getHGap();
                 }
             }
         }
@@ -147,5 +153,4 @@ public class MultiLineFlowLayout implements LayoutManager {
     public void removeLayoutComponent(Component comp) {
         // not used by this class
     }
-
 }

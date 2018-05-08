@@ -98,7 +98,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
         // wait until the the GUI has been painted at least once
         // this ensures that the the entire GUI has been drawn nicely
         // before any simulation starts
-        while (!GraphPanel.firstTimePainted) {
+        while (!GraphPanel.isFirstTimePainted()) {
             try {
                 synchronized (this) {
                     this.wait(100);

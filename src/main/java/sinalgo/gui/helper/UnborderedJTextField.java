@@ -50,8 +50,8 @@ public class UnborderedJTextField extends MultiLineToolTipJTextField {
 
     private static final long serialVersionUID = 3756769692591270883L;
 
-    private static Font boldHelvetica12 = new Font("Helvetica", Font.BOLD, 12);
-    private static Font plainHelvetica12 = new Font("Helvetica", Font.PLAIN, 12);
+    private static final Font BOLD_HELVETICA_12 = new Font("Helvetica", Font.BOLD, 12);
+    private static final Font PLAIN_HELVETICA_12 = new Font("Helvetica", Font.PLAIN, 12);
 
     /**
      * Creates a Text field having no border that is not editable and that has a
@@ -66,10 +66,10 @@ public class UnborderedJTextField extends MultiLineToolTipJTextField {
         this.setBorder(BorderFactory.createEmptyBorder());
         switch (type) {
             case Font.BOLD:
-                this.setFont(boldHelvetica12);
+                this.setFont(BOLD_HELVETICA_12);
                 break;
             case Font.PLAIN:
-                this.setFont(plainHelvetica12);
+                this.setFont(PLAIN_HELVETICA_12);
                 break;
             default:
                 throw new NotYetImplementedException("There this Font-Style is not supported.");

@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.dialogs;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.GuiHelper;
@@ -52,6 +55,8 @@ import java.io.PrintStream;
 /**
  * Dialog that shows the global settings of the current simulation.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class GlobalSettingsDialog extends JDialog implements ActionListener {
 
     private static final long serialVersionUID = -9208723898830546097L;
@@ -88,18 +93,18 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
         JPanel settingsPanel = new JPanel();
         settingsPanel.setLayout(new BorderLayout());
 
-        this.testForUpdatesAtStartup.setSelected(AppConfig.getAppConfig().isCheckForSinalgoUpdate());
-        this.testForUpdatesAtStartup.addActionListener(this);
-        settingsPanel.add(BorderLayout.LINE_START, this.testForUpdatesAtStartup);
+        this.getTestForUpdatesAtStartup().setSelected(AppConfig.getAppConfig().isCheckForSinalgoUpdate());
+        this.getTestForUpdatesAtStartup().addActionListener(this);
+        settingsPanel.add(BorderLayout.LINE_START, this.getTestForUpdatesAtStartup());
 
-        this.versionTest.addActionListener(this);
-        settingsPanel.add(BorderLayout.EAST, this.versionTest);
+        this.getVersionTest().addActionListener(this);
+        settingsPanel.add(BorderLayout.EAST, this.getVersionTest());
 
         buttonPanel.add(settingsPanel);
 
-        this.close.addActionListener(this);
+        this.getClose().addActionListener(this);
         JPanel closePanel = new JPanel();
-        closePanel.add(this.close);
+        closePanel.add(this.getClose());
         buttonPanel.add(BorderLayout.SOUTH, closePanel);
 
         this.add(BorderLayout.SOUTH, buttonPanel);
@@ -113,7 +118,7 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
             return false;
         });
 
-        this.getRootPane().setDefaultButton(this.close);
+        this.getRootPane().setDefaultButton(this.getClose());
 
         this.pack();
         this.setLocationRelativeTo(parent);
@@ -122,13 +127,14 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource().equals(this.close)) {
+        if (event.getSource().equals(this.getClose())) {
             this.setVisible(false);
-        } else if (event.getSource().equals(this.versionTest)) {
+        } else if (event.getSource().equals(this.getVersionTest())) {
             VersionTester.testVersion(false, true);
-        } else if (event.getSource().equals(this.testForUpdatesAtStartup)) {
-            AppConfig.getAppConfig().setCheckForSinalgoUpdate(this.testForUpdatesAtStartup.isSelected());
+        } else if (event.getSource().equals(this.getTestForUpdatesAtStartup())) {
+            AppConfig.getAppConfig().setCheckForSinalgoUpdate(this.getTestForUpdatesAtStartup().isSelected());
             AppConfig.getAppConfig().writeConfig();
         }
     }
+
 }
