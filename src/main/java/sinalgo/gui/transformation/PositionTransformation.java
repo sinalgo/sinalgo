@@ -329,8 +329,8 @@ public abstract class PositionTransformation {
      * this method is called, but the transformation implementation does not support
      * reverse translation, this method terminates the execution with a fatal error.
      *
-     * @param x
-     * @param y
+     * @param x The x-axis coordinate to translate to.
+     * @param y The y-axis coordinate to translate to.
      */
     public abstract void translateToLogicPosition(int x, int y);
 

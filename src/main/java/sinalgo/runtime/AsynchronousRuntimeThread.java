@@ -110,7 +110,7 @@ public class AsynchronousRuntimeThread extends Thread {
 
     @Override
     public void run() {
-        Global.isRunning = true;
+        Global.setRunning(true);
 
         Event event = null;
 
@@ -130,24 +130,24 @@ public class AsynchronousRuntimeThread extends Thread {
             event = SinalgoRuntime.eventQueue.getNextEvent(); // returns null if there is no further event
 
             if (event == null && Configuration.isHandleEmptyEventQueue()) {
-                Global.customGlobal.handleEmptyEventQueue();
+                Global.getCustomGlobal().handleEmptyEventQueue();
                 // and try again
                 event = SinalgoRuntime.eventQueue.getNextEvent(); // returns null if there is no further event
             }
             if (event == null) {
-                Global.log.logln(LogL.EVENT_QUEUE_DETAILS,
+                Global.getLog().logln(LogL.EVENT_QUEUE_DETAILS,
                         "There is no event to be executed. Generate an event manually.");
-                if (!Global.isGuiMode) {
+                if (!Global.isGuiMode()) {
                     Main.exitApplication(); // we're in batch mode and there are no more events -> exit
                 }
             }
 
             if (event != null) {
-                Global.currentTime = event.time;
+                Global.setCurrentTime(event.getTime());
                 event.handle(); // does not yet free the event
             }
 
-            if (Global.isGuiMode) {
+            if (Global.isGuiMode()) {
                 if (i % this.refreshRate == this.refreshRate - 1 && i + 1 < this.numberOfEvents) { // only perform if we continue with
                     // more events
                     if (lastEventNode != null) {
@@ -159,15 +159,15 @@ public class AsynchronousRuntimeThread extends Thread {
                         }
                         lastEventNode = event.getEventNode(); // may be null, if the event does not execute on a node
                     }
-                    this.getRuntime().getGUI().setRoundsPerformed((Global.currentTime), EventQueue.eventNumber);
+                    this.getRuntime().getGUI().setRoundsPerformed((Global.getCurrentTime()), EventQueue.getEventNumber());
                     this.getRuntime().getGUI().setCurrentlyProcessedEvent(event); // does not store the event
                     this.getRuntime().getGUI().redrawGUINow();
                 }
             }
         }
 
-        if (Global.isGuiMode) {
-            this.getRuntime().getGUI().setRoundsPerformed((Global.currentTime), EventQueue.eventNumber);
+        if (Global.isGuiMode()) {
+            this.getRuntime().getGUI().setRoundsPerformed((Global.getCurrentTime()), EventQueue.getEventNumber());
             if (event != null) {
                 this.getRuntime().getGUI().setCurrentlyProcessedEvent(event);
 
@@ -193,6 +193,6 @@ public class AsynchronousRuntimeThread extends Thread {
         if (event != null) {
             event.free();
         }
-        Global.isRunning = false;
+        Global.setRunning(false);
     }
 }

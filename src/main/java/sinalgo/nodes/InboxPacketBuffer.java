@@ -98,7 +98,7 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
         while (this.bufferIterator.hasNext()) {
             Packet p = this.bufferIterator.next();
 
-            if (p.getArrivingTime() <= Global.currentTime) {
+            if (p.getArrivingTime() <= Global.getCurrentTime()) {
 
                 // only if added
                 if (Configuration.isInterference()) {

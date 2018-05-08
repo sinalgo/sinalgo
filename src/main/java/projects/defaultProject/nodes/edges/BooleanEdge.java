@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.nodes.edges;
 
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
 import sinalgo.nodes.edges.Edge;
@@ -51,19 +53,23 @@ public class BooleanEdge extends Edge {
     /**
      * The flag of this edge, per default set to true.
      */
-    public boolean flag = true;
+    @Getter
+    @Setter
+    private boolean flag = true;
 
     /**
      * Set this memeber to true to draw only the boolean edges whose flag is set to
      * true.
      */
-    public static boolean onlyUseFlagedEdges = false;
+    @Getter
+    @Setter
+    private static boolean onlyUseFlagedEdges = false;
 
     /**
      * @return Whether this edge is drawn on the GUI or to PostScript.
      */
     public boolean isDrawn() {
-        return !onlyUseFlagedEdges || this.flag;
+        return !isOnlyUseFlagedEdges() || this.isFlag();
     }
 
     @Override
@@ -79,4 +85,5 @@ public class BooleanEdge extends Edge {
             super.drawToPostScript(pw, pt);
         }
     }
+
 }

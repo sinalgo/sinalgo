@@ -80,7 +80,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
 
         // In async mode, the user may specify to evaluate the connections immediately
         // at startup
-        if (Global.isAsynchronousMode && Configuration.isInitializeConnectionsOnStartup()) {
+        if (Global.isAsynchronousMode() && Configuration.isInitializeConnectionsOnStartup()) {
             if (SinalgoRuntime.nodes.size() > 0) {
                 // when there are no nodes created yet, perform the initialization
                 // only during the first step.
@@ -111,7 +111,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
 
     @Override
     public void run(long rounds, boolean considerInfiniteRunFlag) {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return; // a simulation thread is still running - don't start a second one!
         }
         if (rounds <= 0) {
@@ -125,7 +125,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
             arT.setNumberOfEvents(rounds);
             arT.setRefreshRate(Configuration.getRefreshRate());
 
-            Global.isRunning = true;
+            Global.setRunning(true);
             // start the thread
             arT.start();
         } else {
@@ -133,7 +133,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
             gRT.setNumberOfRounds(rounds);
             gRT.setRefreshRate(Configuration.getRefreshRate());
 
-            Global.isRunning = true;
+            Global.setRunning(true);
             // start the thread
             gRT.start();
         }

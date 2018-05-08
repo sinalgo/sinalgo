@@ -49,7 +49,7 @@ public class BatchRuntime extends SinalgoRuntime {
 
     @Override
     public void run(long rounds, boolean considerInfiniteRunFlag) {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return; // a simulation thread is still running - don't start a second one!
         }
         // if the -rounds flag is not set or negative, run as long as possible
@@ -60,12 +60,12 @@ public class BatchRuntime extends SinalgoRuntime {
         if (Configuration.isAsynchronousMode()) {
             AsynchronousRuntimeThread arT = new AsynchronousRuntimeThread();
             arT.setNumberOfEvents(rounds);
-            Global.isRunning = true;
+            Global.setRunning(true);
             arT.start();
         } else {
             SynchronousRuntimeThread bRT = new SynchronousRuntimeThread();
             bRT.setNumberOfRounds(rounds);
-            Global.isRunning = true;
+            Global.setRunning(true);
             bRT.start();
         }
     }

@@ -111,7 +111,7 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return;
         } // block mouse input while simulating
         // on double click, zoom to fit or default view
@@ -131,7 +131,7 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return;
         } // block mouse input while simulating
         if (e.getButton() == MouseEvent.BUTTON1) { // translate the view
@@ -147,7 +147,7 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return;
         } // block mouse input while simulating
         if (this.shiftStartPoint != null || this.rotateStartPoint != null) {
@@ -160,21 +160,20 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        if (Global.isRunning) {
-            return;
+        if (Global.isRunning()) {
         } // block mouse input while simulating
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return;
         } // block mouse input while simulating
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return;
         } // block mouse input while simulating
         if (this.shiftStartPoint != null) {
@@ -202,14 +201,14 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return;
         } // block mouse input while simulating
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return;
         } // block mouse input while simulating
         int clicks = e.getWheelRotation();

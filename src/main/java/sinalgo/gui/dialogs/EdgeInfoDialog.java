@@ -80,13 +80,13 @@ public class EdgeInfoDialog extends JDialog implements ActionListener {
 
         UnborderedJTextField startLabel = new UnborderedJTextField("Start Node:", Font.BOLD);
         infoGrid.add(startLabel);
-        UnborderedJTextField startNode = new UnborderedJTextField(Integer.toString(e.getStartNode().getID()), Font.PLAIN);
+        UnborderedJTextField startNode = new UnborderedJTextField(Long.toString(e.getStartNode().getID()), Font.PLAIN);
         startNode.setEditable(false);
         infoGrid.add(startNode);
 
         UnborderedJTextField endLabel = new UnborderedJTextField("End Node:", Font.BOLD);
         infoGrid.add(endLabel);
-        UnborderedJTextField endNode = new UnborderedJTextField(Integer.toString(e.getEndNode().getID()), Font.PLAIN);
+        UnborderedJTextField endNode = new UnborderedJTextField(Long.toString(e.getEndNode().getID()), Font.PLAIN);
         endNode.setEditable(false);
         infoGrid.add(endNode);
 

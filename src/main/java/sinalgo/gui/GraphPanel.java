@@ -61,13 +61,7 @@ import sinalgo.tools.logging.Logging;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.Stack;
@@ -235,7 +229,7 @@ public class GraphPanel extends JPanel {
 
     @Override
     public void paint(Graphics g) {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             // if possible, draw the previous image, but without updating it!
             if (this.offscreen != null) {
                 g.drawImage(this.offscreen, 0, 0, this);
@@ -361,7 +355,7 @@ public class GraphPanel extends JPanel {
             // entire graph was painted. This ensures that there should be no conflict due
             // to any
             // concurrent data accesses
-            Global.customGlobal.customPaint(g, this.pt);
+            Global.getCustomGlobal().customPaint(g, this.pt);
         }
     }
 
@@ -515,7 +509,7 @@ public class GraphPanel extends JPanel {
         // simulation from getting inconsistencies from multiple threads drawing into
         // the same
         // buffer
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return null;
         }
 
@@ -556,7 +550,7 @@ public class GraphPanel extends JPanel {
      * @param text    Text to display to the user
      */
     public void getNodeSelectedByUser(NodeSelectionHandler handler, String text) {
-        if (!Global.isGuiMode) {
+        if (!Global.isGuiMode()) {
             throw new SinalgoFatalException(
                     "Invalid call to 'GUI.getNodeSelectedByUser()'. This method is not supported in batch mode.");
         }
@@ -780,11 +774,11 @@ public class GraphPanel extends JPanel {
         @Override
         public void mouseClicked(MouseEvent event) {
             // block this during a runing simulation.
-            if (Global.isRunning) {
+            if (Global.isRunning()) {
                 return;
             }
 
-            Global.log.logln(LogL.GUI_DETAIL, "Mouse Clicked");
+            Global.getLog().logln(LogL.GUI_DETAIL, "Mouse Clicked");
 
             if (GraphPanel.this.userSelectsNodeMode && event.getClickCount() == 1 && event.getButton() == MouseEvent.BUTTON1) {
                 if (event.getX() >= GraphPanel.this.cancelAreaOffsetX && event.getX() <= GraphPanel.this.cancelAreaOffsetX + GraphPanel.this.cancelAreaWidth
@@ -806,6 +800,8 @@ public class GraphPanel extends JPanel {
 
             if ((event.getClickCount() == 2) && (event.getButton() == MouseEvent.BUTTON1)) {
                 // Left mouse has been clicked - create a default node at this position
+                // else cannot create a new node clicki-bunti if the gui coord cannot be
+                // translated to logic coordinates.
                 if (GraphPanel.this.pt.supportReverseTranslation()) {
                     GraphPanel.this.pt.translateToLogicPosition(event.getX(), event.getY());
                     try {
@@ -815,9 +811,6 @@ public class GraphPanel extends JPanel {
                         Main.minorError(e1);
                     }
                     GraphPanel.this.repaint();
-                } else {
-                    // Cannot create a new node clicki-bunti if the gui coord cannot be translated
-                    // to logic coordinates.
                 }
             } else if (event.getButton() == MouseEvent.BUTTON3) {
                 // Right mouse button has been clicked - show menu
@@ -838,15 +831,15 @@ public class GraphPanel extends JPanel {
                     }
                 }
                 if (clickedNode != null) {
-                    Global.log.logln(LogL.GUI_DETAIL, "User clicked on node " + clickedNode.getID());
+                    Global.getLog().logln(LogL.GUI_DETAIL, "User clicked on node " + clickedNode.getID());
                     GraphPanel.this.nodePopupMenu.compose(clickedNode);
                     GraphPanel.this.nodePopupMenu.show(event.getComponent(), event.getX(), event.getY());
                 } else if (clickedEdge != null) {
-                    Global.log.logln(LogL.GUI_DETAIL, "right click on a edge");
+                    Global.getLog().logln(LogL.GUI_DETAIL, "right click on a edge");
                     GraphPanel.this.edgePopupMenu.compose(clickedEdge);
                     GraphPanel.this.edgePopupMenu.show(event.getComponent(), event.getX(), event.getY());
                 } else {
-                    Global.log.logln(LogL.GUI_DETAIL, "User clicked in the free space");
+                    Global.getLog().logln(LogL.GUI_DETAIL, "User clicked in the free space");
                     GraphPanel.this.spacePopupMenu.compose(event.getPoint());
                     GraphPanel.this.spacePopupMenu.show(event.getComponent(), event.getX(), event.getY());
                 }
@@ -866,16 +859,16 @@ public class GraphPanel extends JPanel {
                 }
             }
 
-            Global.log.logln(LogL.GUI_ULTRA_DETAIL, "Mouse Clicked finished");
+            Global.getLog().logln(LogL.GUI_ULTRA_DETAIL, "Mouse Clicked finished");
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
             // block any mouse events while a simulation round is being performed
-            if (Global.isRunning) {
+            if (Global.isRunning()) {
                 return;
             }
-            Global.log.logln(LogL.GUI_DETAIL, "Mouse Pressed");
+            Global.getLog().logln(LogL.GUI_DETAIL, "Mouse Pressed");
 
             if (e.getButton() == MouseEvent.BUTTON3) {
                 // The right mouse button is pressed : move a node
@@ -921,18 +914,18 @@ public class GraphPanel extends JPanel {
                     }
                 }
             }
-            Global.log.logln(LogL.GUI_ULTRA_DETAIL, "Mouse Pressed finished");
+            Global.getLog().logln(LogL.GUI_ULTRA_DETAIL, "Mouse Pressed finished");
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
 
             // block this during a runing simulation.
-            if (Global.isRunning) {
+            if (Global.isRunning()) {
                 return;
             }
 
-            Global.log.logln(LogL.GUI_DETAIL, "Mouse Released");
+            Global.getLog().logln(LogL.GUI_DETAIL, "Mouse Released");
 
             GraphPanel.this.shiftStartPoint = null;
             GraphPanel.this.rotateStartPoint = null;
@@ -989,7 +982,7 @@ public class GraphPanel extends JPanel {
                 GraphPanel.this.nodeToDrag = null;
                 GraphPanel.this.parent.redrawGUI();
             }
-            Global.log.logln(LogL.GUI_ULTRA_DETAIL, "Mouse Released finished");
+            Global.getLog().logln(LogL.GUI_ULTRA_DETAIL, "Mouse Released finished");
         }
 
         /**
@@ -1027,7 +1020,7 @@ public class GraphPanel extends JPanel {
         @Override
         public void mouseDragged(MouseEvent e) {
             // block this during a runing simulation.
-            if (Global.isRunning) {
+            if (Global.isRunning()) {
                 return;
             }
 
@@ -1040,7 +1033,7 @@ public class GraphPanel extends JPanel {
                 }
             }
 
-            Global.log.logln(LogL.GUI_DETAIL, "Mouse Dragged");
+            Global.getLog().logln(LogL.GUI_DETAIL, "Mouse Dragged");
             if (GraphPanel.this.nodeToDrag != null) {
                 if (GraphPanel.this.pt.supportReverseTranslation()) {
                     // cannot support node movement by the mouse if the gui coordinate cannot be
@@ -1143,7 +1136,7 @@ public class GraphPanel extends JPanel {
                     GraphPanel.this.parent.redrawGUI(); // need to redraw the graph - the view has changed
                 }
             }
-            Global.log.logln(LogL.GUI_ULTRA_DETAIL, "Mouse Dragged finished");
+            Global.getLog().logln(LogL.GUI_ULTRA_DETAIL, "Mouse Dragged finished");
         }
 
         @Override
@@ -1181,7 +1174,7 @@ public class GraphPanel extends JPanel {
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
             // block zooming while a simulation is running
-            if (Global.isRunning) {
+            if (Global.isRunning()) {
                 return;
             }
             int clicks = e.getWheelRotation();

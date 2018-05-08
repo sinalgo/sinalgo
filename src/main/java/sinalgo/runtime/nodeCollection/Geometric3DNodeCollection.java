@@ -45,11 +45,7 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * This 3D node collection implementation stores nodes placed in a 3 dimensional
@@ -76,7 +72,7 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
     private DepthComparator myDepthComparator = null;
 
     // the maximal distance between any two connected nodes
-    private double rMax = 0;
+    private double rMax;
 
     // Flag indicating whether some nodes have changed the matrix cell
     // private boolean sensitiveInformationChanged = false;
@@ -204,14 +200,14 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
     }
 
     @Override
-    public void _addNode(Node n) {
-        n.holdInNodeCollection = true;
+    protected void _addNode(Node n) {
+        n.setHoldInNodeCollection(true);
 
         Position pos = n.getPosition();
         int x = this.mapCoord(pos.getXCoord());
         int y = this.mapCoord(pos.getYCoord());
         int z = this.mapCoord(pos.getZCoord());
-        n.nodeCollectionInfo = new CubePos(x, y, z);
+        n.setNodeCollectionInfo(new CubePos(x, y, z));
 
         this.list[x][y][z].addNode(n);
         this.flatList.add(n);
@@ -220,9 +216,9 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
     }
 
     @Override
-    public void _removeNode(Node n) {
-        n.holdInNodeCollection = false;
-        CubePos pos = (CubePos) n.nodeCollectionInfo;
+    protected void _removeNode(Node n) {
+        n.setHoldInNodeCollection(false);
+        CubePos pos = (CubePos) n.getNodeCollectionInfo();
         if (!this.list[pos.getX()][pos.getY()][pos.getZ()].removeNode(n)) {
             // the node was not located where it said! ERROR!
             throw new SinalgoFatalException("Geometric3DNodeCollection.removeNode(Node):\n" + "A node is being removed, but it is not "
@@ -230,19 +226,19 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
         }
         this.flatList.remove(n);
         this.flatListChanged = true;
-        n.nodeCollectionInfo = null;
+        n.setNodeCollectionInfo(null);
     }
 
     @Override
-    public void _updateNodeCollection(Node n) {
-        if (!n.holdInNodeCollection) {
+    protected void _updateNodeCollection(Node n) {
+        if (!n.isHoldInNodeCollection()) {
             return; // the node is not yet hold by this node collection
         }
         // sensitiveInformationChanged = true;
         // test whether the node has changed the cell of the matrix
 
         // the old position in the matrix
-        CubePos oldPos = (CubePos) n.nodeCollectionInfo;
+        CubePos oldPos = (CubePos) n.getNodeCollectionInfo();
         // the new position in the matrix
         Position pos = n.getPosition();
         int x = this.mapCoord(pos.getXCoord());

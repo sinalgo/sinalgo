@@ -68,26 +68,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.StringReader;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -850,9 +834,9 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         this.userInputListener.reset(); // finally reset the 'modified' flag
     }
 
-    /************************************************************************************/
+    /*-**********************************************************************************/
     /* WRITING BACK */
-    /************************************************************************************/
+    /*-**********************************************************************************/
 
     /**
      * This method overwrites the values in the config file by the ones set in the
@@ -914,9 +898,9 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 }
 
                 if (!this.selectedProjectName.equals("defaultProject")) {
-                    Global.projectName = this.selectedProjectName;
-                    Global.useProject = true;
-                    this.appConfig.setLastChosenProject(Global.projectName);
+                    Global.setProjectName(this.selectedProjectName);
+                    Global.setUseProject(true);
+                    this.appConfig.setLastChosenProject(Global.getProjectName());
                 }
 
                 Element customEle = customDoc.getRootElement().getChild("Custom");
@@ -1048,11 +1032,13 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         private void test(ActionEvent e) {
             if (e.getSource() == ProjectSelector.this.asynchronousSimulationCB) {
-                if (ProjectSelector.this.mobilityCB != null && ProjectSelector.this.asynchronousSimulationCB.getSelectedItem().equals("true")) {
-                    ProjectSelector.this.mobilityCB.setSelectedItem("false");
-                    ProjectSelector.this.mobilityCB.setEnabled(false);
-                } else {
-                    ProjectSelector.this.mobilityCB.setEnabled(true);
+                if (ProjectSelector.this.mobilityCB != null) {
+                    if ("true".equals(ProjectSelector.this.asynchronousSimulationCB.getSelectedItem())) {
+                        ProjectSelector.this.mobilityCB.setSelectedItem("false");
+                        ProjectSelector.this.mobilityCB.setEnabled(false);
+                    } else {
+                        ProjectSelector.this.mobilityCB.setEnabled(true);
+                    }
                 }
             }
         }

@@ -121,7 +121,7 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
      * @param message The message containing the error description.
      */
     private static void fatalError(String message, Throwable cause) {
-        if (Global.isGuiMode) {
+        if (Global.isGuiMode()) {
             if (Main.runtime != null) {
                 JOptionPane.showMessageDialog(((GUIRuntime) Main.runtime).getGUI(),
                         Tools.wrapAndCutToLines(message, 30), "Fatal Error", JOptionPane.ERROR_MESSAGE);
@@ -131,7 +131,7 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
             }
         }
         if (Logging.isActivated()) {
-            Global.log.logln(LogL.ALWAYS, "\n" + message + "\n\n" + getStackTrace(cause));
+            Global.getLog().logln(LogL.ALWAYS, "\n" + message + "\n\n" + getStackTrace(cause));
         } else {
             System.err.println("\n" + "-------------------------------------------------------\n"
                     + "Fatal Error\n"
@@ -147,7 +147,7 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
         try {
             // The main thread has an exception handler installed, that would again call
             // fatalError, and possibly cause an infinite loop
-            Global.customGlobal.onFatalErrorExit();
+            Global.getCustomGlobal().onFatalErrorExit();
         } catch (Throwable t) {
             System.err.println(
                     "\n\n Furthermore, an exception was thrown "

@@ -88,9 +88,9 @@ public class SynchronousRuntimeThread extends Thread {
 
     @Override
     public void run() {
-        Global.isRunning = true;
+        Global.setRunning(true);
 
-        Global.startTime = new Date();
+        Global.setStartTime(new Date());
 
         for (long i = 0; i < this.getNumberOfRounds(); i++) {
             // In GUI-mode, check whether ABORT was pressed.
@@ -100,14 +100,14 @@ public class SynchronousRuntimeThread extends Thread {
             }
 
             // INCREMENT THE GLOBAL TIME by 1
-            ++Global.currentTime;
-            Global.isEvenRound = !Global.isEvenRound; // flip the bit
+            Global.setCurrentTime(Global.getCurrentTime() + 1);
+            Global.setEvenRound(!Global.isEvenRound()); // flip the bit
 
-            Global.startTimeOfRound = new Date();
-            Global.numberOfMessagesInThisRound = 0;
+            Global.setStartTimeOfRound(new Date());
+            Global.setNumberOfMessagesInThisRound(0);
 
-            Global.customGlobal.preRound();
-            Global.customGlobal.handleGlobalTimers();
+            Global.getCustomGlobal().preRound();
+            Global.getCustomGlobal().handleGlobalTimers();
 
             // Mobility is performed in a separate iteration over all nodes to avoid
             // inconsistencies.
@@ -135,67 +135,67 @@ public class SynchronousRuntimeThread extends Thread {
                 }
             } catch (WrongConfigurationException wCE) {
                 Main.minorError(wCE); // in gui, a popup is shown. in batch, exits.
-                if (Global.isGuiMode) {
+                if (Global.isGuiMode()) {
                     this.getRuntime().getGUI().redrawGUINow();
                     this.getRuntime().getGUI().setStartButtonEnabled(true);
                 }
-                Global.isRunning = false;
+                Global.setRunning(false);
                 return;
             }
 
-            Global.customGlobal.postRound();
+            Global.getCustomGlobal().postRound();
 
-            if (Global.isGuiMode) { // redraw the graph all 'refreshRate' Steps except the last
+            if (Global.isGuiMode()) { // redraw the graph all 'refreshRate' Steps except the last
                 if ((i % this.getRefreshRate()) == (this.getRefreshRate() - 1)) {
                     if (i != this.getNumberOfRounds() - 1) {
                         this.getRuntime().getGUI().redrawGUINow(); // this is a SYNCHRONOUS call to redraw the graph!
                     }
                 }
-                this.getRuntime().getGUI().setRoundsPerformed((int) (Global.currentTime));
+                this.getRuntime().getGUI().setRoundsPerformed((int) (Global.getCurrentTime()));
             }
 
             // test whether the application should exit
-            if (Global.customGlobal.hasTerminated()) {
-                if (Global.isGuiMode && !Configuration.isExitOnTerminationInGUI()) { // do not quit GUI mode
+            if (Global.getCustomGlobal().hasTerminated()) {
+                if (Global.isGuiMode() && !Configuration.isExitOnTerminationInGUI()) { // do not quit GUI mode
                     this.getRuntime().getGUI().redrawGUINow();
                     this.getRuntime().getGUI().setStartButtonEnabled(true);
 
-                    Global.isRunning = false;
+                    Global.setRunning(false);
                     return;
                 }
                 if (LogL.HINTS) {
                     Date tem = new Date();
-                    long time = tem.getTime() - Global.startTime.getTime();
-                    Global.log.logln(
-                            "Termination criteria fulfilled at round " + Global.currentTime + " after " + time + " ms");
-                    Global.log.logln(
+                    long time = tem.getTime() - Global.getStartTime().getTime();
+                    Global.getLog().logln(
+                            "Termination criteria fulfilled at round " + Global.getCurrentTime() + " after " + time + " ms");
+                    Global.getLog().logln(
                             "Hint: Sinalgo terminated because the function 'hasTerminated()' in CustomGlobal returned true.\n");
                 }
                 Main.exitApplication(); // exit the application
             }
 
-            Global.numberOfMessagesOverAll += Global.numberOfMessagesInThisRound;
+            Global.setNumberOfMessagesOverAll(Global.getNumberOfMessagesOverAll() + Global.getNumberOfMessagesInThisRound());
 
             if (LogL.ROUND_DETAIL) {
-                Global.log.logln("Round " + (Global.currentTime) + " finished");
-                Global.log.logln("In this round " + Global.numberOfMessagesInThisRound + " Messages were sent");
-                Global.log.logln("Overall " + Global.numberOfMessagesOverAll + " Messages were sent\n");
+                Global.getLog().logln("Round " + (Global.getCurrentTime()) + " finished");
+                Global.getLog().logln("In this round " + Global.getNumberOfMessagesInThisRound() + " Messages were sent");
+                Global.getLog().logln("Overall " + Global.getNumberOfMessagesOverAll() + " Messages were sent\n");
             }
         }
 
-        if (Global.isGuiMode) {
+        if (Global.isGuiMode()) {
             this.getRuntime().getGUI().redrawGUINow();
             this.getRuntime().getGUI().setStartButtonEnabled(true);
         } else { // we reached the end of a synchronous simulation in batch mode
             if (LogL.HINTS) {
                 Date tem = new Date();
-                long time = tem.getTime() - Global.startTime.getTime();
-                Global.log.logln(
-                        "Simulation stopped regularly after " + Global.currentTime + " rounds during " + time + " ms");
-                Global.log.logln("Which makes " + (time / Global.currentTime) + " ms per round.\n");
+                long time = tem.getTime() - Global.getStartTime().getTime();
+                Global.getLog().logln(
+                        "Simulation stopped regularly after " + Global.getCurrentTime() + " rounds during " + time + " ms");
+                Global.getLog().logln("Which makes " + (time / Global.getCurrentTime()) + " ms per round.\n");
             }
             Main.exitApplication(); // exit explicitely, s.t. CustomGlobal.onExit() is called
         }
-        Global.isRunning = false;
+        Global.setRunning(false);
     }
 }

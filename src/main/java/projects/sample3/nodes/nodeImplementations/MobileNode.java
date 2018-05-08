@@ -1,10 +1,6 @@
 package projects.sample3.nodes.nodeImplementations;
 
-import projects.sample3.nodes.messages.ByeBye;
-import projects.sample3.nodes.messages.InviteMessage;
-import projects.sample3.nodes.messages.SmsAckMessage;
-import projects.sample3.nodes.messages.SmsMessage;
-import projects.sample3.nodes.messages.SubscirbeMessage;
+import projects.sample3.nodes.messages.*;
 import projects.sample3.nodes.timers.SmsTimer;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
@@ -118,7 +114,7 @@ public class MobileNode extends Node {
 
     public MobileNode() {
         try {
-            this.defaultDrawingSizeInPixels = Configuration.getIntegerParameter("MobileNode/Size");
+            this.setDefaultDrawingSizeInPixels(Configuration.getIntegerParameter("MobileNode/Size"));
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException(e.getMessage());
         }

@@ -126,9 +126,9 @@ public class SINR extends InterferenceModel {
         boolean disturbed = signal < this.beta * noise;
 
         if (LogL.INTERFERENCE_DETAIL) {
-            Global.log.logln("Node " + p.getDestination().getID() + " is checking a packet from " + p.getOrigin().getID());
+            Global.getLog().logln("Node " + p.getDestination().getID() + " is checking a packet from " + p.getOrigin().getID());
             if (disturbed) {
-                Global.log.logln("Dropped the message due to too much interference.");
+                Global.getLog().logln("Dropped the message due to too much interference.");
             }
         }
 

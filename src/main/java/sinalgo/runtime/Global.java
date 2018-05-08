@@ -37,6 +37,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.runtime;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType;
 import sinalgo.exception.SinalgoFatalException;
@@ -46,13 +48,7 @@ import sinalgo.runtime.AbstractCustomGlobal.GlobalMethod;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -90,20 +86,26 @@ public class Global {
      * is used to block mouse input (like tooltip...) and zooming during the
      * simulation.
      */
-    public static boolean isRunning = false;
+    @Getter
+    @Setter
+    private static boolean isRunning = false;
 
     /**
      * This is the date of the last start of a simulation. This means this is the
      * time the user started the last number of rounds. This time is particularly
      * interesting in the batchmode where the user just starts one serie of rounds.
      */
-    public static Date startTime = null;
+    @Getter
+    @Setter
+    private static Date startTime = null;
 
     /**
      * This is the date of the start of the last round started. Only really
      * significant in the synchronous mode.
      */
-    public static Date startTimeOfRound = null;
+    @Getter
+    @Setter
+    private static Date startTimeOfRound = null;
 
     /**
      * The default log file generated for each run. You may add your own log output,
@@ -113,9 +115,11 @@ public class Global {
      * config file of the proejct. Otherwise, the text written to this logger is
      * printed to the console.
      */
-    public static Logging log = null; // only install after logging has been activated.
+    @Getter
+    @Setter
+    private static Logging log = null; // only install after logging has been activated.
 
-    /**
+    /*
      * Some Information about the global state of the simulation. You can add other
      * variables here to collect the information
      */
@@ -123,12 +127,16 @@ public class Global {
     /**
      * Global information about the number of messages sent in this round.
      */
-    public static int numberOfMessagesInThisRound = 0;
+    @Getter
+    @Setter
+    private static int numberOfMessagesInThisRound = 0;
 
     /**
      * Global information about the number of messages sent in all previous rounds.
      */
-    public static int numberOfMessagesOverAll = 0;
+    @Getter
+    @Setter
+    private static int numberOfMessagesOverAll = 0;
 
     /**
      * The current time of the simulation.
@@ -137,14 +145,18 @@ public class Global {
      * round, in asynchronous mode, this time is set to be the time of the current
      * event.
      */
-    public static double currentTime = 0;
+    @Getter
+    @Setter
+    private static double currentTime = 0;
 
     /**
      * A boolean whose value changes in every round s.t. in every second round, this
      * value is the same. This member may only be used in synchronous simulation
      * mode.
      */
-    public static boolean isEvenRound = true;
+    @Getter
+    @Setter
+    private static boolean isEvenRound = true;
 
     /**
      * The Message Transmission Model. This Model indicates how long it takes for a
@@ -152,25 +164,33 @@ public class Global {
      *
      * @see MessageTransmissionModel
      */
-    public static MessageTransmissionModel messageTransmissionModel = null;
+    @Getter
+    @Setter
+    private static MessageTransmissionModel messageTransmissionModel = null;
 
     /**
      * This is the instance of the custom global class. It is initialized by default
      * with defaultCustomGlobal and if the user uses a project and has a custom
      * global, it sets the customGlobal to an instance of the appropriate class.
      */
-    public static AbstractCustomGlobal customGlobal = new DefaultCustomGlobal();
+    @Getter
+    @Setter
+    private static AbstractCustomGlobal customGlobal = new DefaultCustomGlobal();
 
     /**
      * A boolean to indicate whether the user wanted to use a specific project or
      * not.
      */
-    public static boolean useProject = false;
+    @Getter
+    @Setter
+    private static boolean useProject = false;
 
     /**
      * The name of the actual Project. It is specified by the command line.
      */
-    public static String projectName = "";
+    @Getter
+    @Setter
+    private static String projectName = "";
 
     /**
      * An atomic boolean used to indicate whether or not the framework has been initialized.
@@ -248,8 +268,8 @@ public class Global {
      * @return The base-directory of the resource-files of the currently used project.
      */
     public static String getProjectResourceDir() {
-        if (useProject) {
-            return IOUtils.getAsPath(Configuration.getProjectResourceDirPrefix(), projectName);
+        if (isUseProject()) {
+            return IOUtils.getAsPath(Configuration.getProjectResourceDirPrefix(), getProjectName());
         } else {
             return IOUtils.getAsPath(Configuration.getProjectResourceDirPrefix(), Configuration.getDefaultProjectName());
         }
@@ -259,15 +279,15 @@ public class Global {
      * @return The currently used project.
      */
     public static String getProjecName() {
-        return useProject ? projectName : Configuration.getDefaultProjectName();
+        return isUseProject() ? getProjectName() : Configuration.getDefaultProjectName();
     }
 
     /**
      * @return The base-package of the currently used project.
      */
     public static String getProjectPackage() {
-        if (useProject) {
-            return IOUtils.getAsPackage(Configuration.getUserProjectsPackage(), projectName);
+        if (isUseProject()) {
+            return IOUtils.getAsPackage(Configuration.getUserProjectsPackage(), getProjectName());
         } else {
             return Configuration.getDefaultProjectPackage();
         }
@@ -276,12 +296,16 @@ public class Global {
     /**
      * True if started in GUI mode, otherwise false.
      */
-    public static boolean isGuiMode = false;
+    @Getter
+    @Setter
+    private static boolean isGuiMode = false;
 
     /**
      * True if runing in asynchronousMode, false otherwise.
      */
-    public static boolean isAsynchronousMode = true;
+    @Getter
+    @Setter
+    private static boolean isAsynchronousMode = true;
 
     /**
      * Gathers all implementations contained in the project-folder and the default
@@ -309,8 +333,8 @@ public class Global {
         Stream<String> projectNameStream = Stream.of(Configuration.getDefaultProjectName());
         if (allProjects) {
             projectNameStream = Stream.concat(projectNameStream, projectNames.stream());
-        } else if (useProject) {
-            projectNameStream = Stream.concat(Stream.of(projectName), projectNameStream);
+        } else if (isUseProject()) {
+            projectNameStream = Stream.concat(Stream.of(getProjectName()), projectNameStream);
         }
         return projectNameStream
                 .map(implForType::get)

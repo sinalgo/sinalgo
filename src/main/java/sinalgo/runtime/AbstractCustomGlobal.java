@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.timers.Timer;
@@ -252,7 +254,7 @@ public abstract class AbstractCustomGlobal {
      * framework. (The method is called after removal.) The method is NOT called
      * when all nodes are removed from the framework using the 'Clear Graph' method.
      *
-     * @param n
+     * @param n The node which was removed.
      */
     public void nodeRemovedEvent(Node n) {
         // No implementation here! Add your code to the CustomGlobal.java
@@ -263,7 +265,9 @@ public abstract class AbstractCustomGlobal {
      * List of all global timers for a synchronous simulation. (In asynchronous
      * mode, the global timers are also handled as events.)
      */
-    public TreeSet<Timer> globalTimers = new TreeSet<>();
+    @Getter
+    @Setter
+    private TreeSet<Timer> globalTimers = new TreeSet<>();
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -276,17 +280,17 @@ public abstract class AbstractCustomGlobal {
      * incrementing the global time, and after calling {@link #preRound()}.
      */
     public void handleGlobalTimers() {
-        if (this.globalTimers.isEmpty()) {
+        if (this.getGlobalTimers().isEmpty()) {
             return;
         }
-        Timer t = this.globalTimers.first();
-        while (t.getFireTime() <= Global.currentTime) {
-            this.globalTimers.remove(t);
+        Timer t = this.getGlobalTimers().first();
+        while (t.getFireTime() <= Global.getCurrentTime()) {
+            this.getGlobalTimers().remove(t);
             t.fire();
-            if (this.globalTimers.isEmpty()) {
+            if (this.getGlobalTimers().isEmpty()) {
                 break;
             }
-            t = this.globalTimers.first(); // go to the next timer
+            t = this.getGlobalTimers().first(); // go to the next timer
         }
     }
 

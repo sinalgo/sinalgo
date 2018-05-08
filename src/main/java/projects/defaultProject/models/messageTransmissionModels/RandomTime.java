@@ -63,7 +63,7 @@ public class RandomTime extends sinalgo.models.MessageTransmissionModel {
      * Creates a new RandomTime transmission model instance and reads the config for
      * this object from the config file.
      *
-     * @throws CorruptConfigurationEntryException
+     * @throws CorruptConfigurationEntryException if the configuration is corrupt.
      */
     public RandomTime() throws CorruptConfigurationEntryException {
         this.dist = Distribution.getDistributionFromConfigFile("RandomMessageTransmission");

@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime.events;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.nodes.Node;
 import sinalgo.tools.storage.DoublyLinkedListEntry;
 
@@ -47,12 +50,31 @@ public abstract class Event implements DoublyLinkedListEntry {
     /**
      * the time this event happens.
      */
-    public double time;
+    @Getter
+    @Setter
+    private double time;
 
-    // the id of this event (this id is just used interanally for ordering the
+    // the ID of this event (this ID is just used interanally for ordering the
     // events)
-    long id = 0;
-    protected static long nextId = 1;
+    @Getter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PACKAGE)
+    private long ID;
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static long nextID = 1;
+
+    /**
+     * Gets the next usable ID for Event creation.
+     * This acts as a post-increment operation.
+     *
+     * @return The next usable ID.
+     */
+    public static long getNextFreeID() {
+        long curId = getNextID();
+        setNextID(curId + 1);
+        return curId;
+    }
 
     /**
      * Returns a string representation of the time when this event executes,
@@ -64,10 +86,10 @@ public abstract class Event implements DoublyLinkedListEntry {
      */
     public String getExecutionTimeString(int digits) {
         if (digits > 10) {
-            return Double.toString(this.time);
+            return Double.toString(this.getTime());
         }
         double factor = Math.pow(10, digits);
-        double temp = Math.round(this.time * factor) / factor;
+        double temp = Math.round(this.getTime() * factor) / factor;
         return Double.toString(temp);
     }
 
@@ -77,8 +99,8 @@ public abstract class Event implements DoublyLinkedListEntry {
      * @param time The time the event will pappen.
      */
     protected Event(double time) {
-        this.time = time;
-        this.id = nextId++;// impicit increment
+        this.setTime(time);
+        this.setID(getNextFreeID());
     }
 
     /**
@@ -132,4 +154,5 @@ public abstract class Event implements DoublyLinkedListEntry {
     public DLLFingerList getDoublyLinkedListFinger() {
         return this.dllFingerList;
     }
+
 }

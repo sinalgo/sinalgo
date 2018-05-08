@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime.events;
 
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.timers.Timer;
@@ -64,7 +66,9 @@ public class TimerEvent extends Event {
      * The timer this event is generated for. This timer fires when the event is
      * scheduled.
      */
-    public Timer timer;
+    @Getter
+    @Setter
+    private Timer timer;
 
     /**
      * Creates a TimerEvent for the given timer, a given time and a node. This event
@@ -75,7 +79,7 @@ public class TimerEvent extends Event {
      */
     private TimerEvent(Timer timer, double time) {
         super(time);
-        this.timer = timer;
+        this.setTimer(timer);
     }
 
     /**
@@ -90,13 +94,13 @@ public class TimerEvent extends Event {
         TimerEvent te;
         if (unusedTimerEvents.size() > 0) {
             te = unusedTimerEvents.pop();
-            if (te.timer != null) { // sanity check
+            if (te.getTimer() != null) { // sanity check
                 throw new SinalgoFatalException(Logging.getCodePosition()
                         + " TimerEvent factory failed! About to return a timer-event that was already returned. (Probably, free() was called > 1 on this timer event.)");
             }
-            te.timer = timer;
-            te.time = time;
-            te.id = nextId++;// implicit increment
+            te.setTimer(timer);
+            te.setTime(time);
+            te.setID(getNextFreeID());
         } else {
             te = new TimerEvent(timer, time);
         }
@@ -109,7 +113,7 @@ public class TimerEvent extends Event {
      */
     @Override
     public void free() {
-        this.timer = null;
+        this.setTimer(null);
         unusedTimerEvents.push(this);
         numTimerEventsOnTheFly--;
     }
@@ -117,7 +121,7 @@ public class TimerEvent extends Event {
     @Override
     public void handle() {
         // a timer fires in the asynchronous case
-        this.timer.fire();
+        this.getTimer().fire();
     }
 
     @Override
@@ -132,11 +136,11 @@ public class TimerEvent extends Event {
 
     @Override
     public String getEventListText(boolean hasExecuted) {
-        if (this.timer.isNodeTimer()) {
+        if (this.getTimer().isNodeTimer()) {
             if (hasExecuted) {
-                return "Timer at node " + this.timer.getTargetNode().getID();
+                return "Timer at node " + this.getTimer().getTargetNode().getID();
             } else {
-                return "TE (Node:" + this.timer.getTargetNode().getID() + ", Time:" + this.getExecutionTimeString(4) + ")";
+                return "TE (Node:" + this.getTimer().getTargetNode().getID() + ", Time:" + this.getExecutionTimeString(4) + ")";
             }
         } else {
             if (hasExecuted) {
@@ -149,32 +153,32 @@ public class TimerEvent extends Event {
 
     @Override
     public String getEventListToolTipText(boolean hasExecuted) {
-        if (this.timer.isNodeTimer()) {
+        if (this.getTimer().isNodeTimer()) {
             if (hasExecuted) {
-                return "The timer fired at node " + this.timer.getTargetNode().getID() + "\nThe type of the timer was "
-                        + Global.toShortName(this.timer.getClass().getName());
+                return "The timer fired at node " + this.getTimer().getTargetNode().getID() + "\nThe type of the timer was "
+                        + Global.toShortName(this.getTimer().getClass().getName());
             } else {
-                return "At time " + this.time + " a timer fires at node " + this.timer.getTargetNode().getID()
-                        + "\nThe type of the timer is " + Global.toShortName(this.timer.getClass().getName());
+                return "At time " + this.getTime() + " a timer fires at node " + this.getTimer().getTargetNode().getID()
+                        + "\nThe type of the timer is " + Global.toShortName(this.getTimer().getClass().getName());
             }
         } else { // a global timer
             if (hasExecuted) {
-                return "A global timer fired. Its type was " + Global.toShortName(this.timer.getClass().getName());
+                return "A global timer fired. Its type was " + Global.toShortName(this.getTimer().getClass().getName());
             } else {
-                return "At time " + this.time + " a global timer fires.\nThe type of the timer is "
-                        + Global.toShortName(this.timer.getClass().getName());
+                return "At time " + this.getTime() + " a global timer fires.\nThe type of the timer is "
+                        + Global.toShortName(this.getTimer().getClass().getName());
             }
         }
     }
 
     @Override
     public Node getEventNode() {
-        return this.timer.getTargetNode();
+        return this.getTimer().getTargetNode();
     }
 
     @Override
     public boolean isNodeEvent() {
-        return this.timer.isNodeTimer();
+        return this.getTimer().isNodeTimer();
     }
 
 }

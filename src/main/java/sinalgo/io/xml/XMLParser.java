@@ -150,7 +150,7 @@ public class XMLParser {
             } catch (JDOMException e) {
                 throw new SinalgoFatalException("Currupt XML configuration file (" + reader + ").", e);
             } catch (IOException e) {
-                if (Global.useProject) {
+                if (Global.isUseProject()) {
                     throw new SinalgoFatalException("Cannot find the XML-configuration file (" + reader + ").", e);
                 }
             }

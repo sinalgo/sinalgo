@@ -418,7 +418,7 @@ public class Logging {
     }
 
     public static String getTimeDirectoryName() {
-        return Global.projectName + "_" + timePrefix;
+        return Global.getProjectName() + "_" + timePrefix;
     }
 
     /**
@@ -558,7 +558,7 @@ public class Logging {
             timePrefix = df.format(new Date());
         }
         activated = true;
-        Global.log = Logging.getLogger(); // the default logger
+        Global.setLog(Logging.getLogger()); // the default logger
     }
 
     /**

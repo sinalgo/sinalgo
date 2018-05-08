@@ -118,7 +118,7 @@ public class UDG extends ConnectivityModelHelper {
             try {
                 rMaxSquare = Configuration.getDoubleParameter("UDG/rMax");
             } catch (CorruptConfigurationEntryException e) {
-                Global.log.logln(
+                Global.getLog().logln(
                         "\nWARNING: There is no entry 'UDG/rMax' in the XML configuration file. This entry specifies the max. transmission range for the UDG connectivity model.\nThe simulation now uses GeometricNodeCollection/rMax instead.\n");
                 rMaxSquare = geomNodeRMax;
             }

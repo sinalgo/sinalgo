@@ -55,8 +55,7 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
     // the dimension of the array. This means how many squares with sidelength rMax
     // are needed to
     // cover the whole playground..
-    private int xDim;
-    private int yDim;
+    private int xDim, yDim;
 
     // private boolean sensitiveInformationChanged = false;
 
@@ -131,8 +130,8 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
     }
 
     @Override
-    public void _addNode(Node n) {
-        n.holdInNodeCollection = true;
+    protected void _addNode(Node n) {
+        n.setHoldInNodeCollection(true);
 
         // sensitiveInformationChanged = true;
 
@@ -140,7 +139,7 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
         // the node stores its position in the datastructure itself. This is ugly, but
         // it makes
         // searching faster
-        n.nodeCollectionInfo = new SquarePos(location.getX(), location.getY());
+        n.setNodeCollectionInfo(new SquarePos(location.getX(), location.getY()));
 
         this.lists[location.getX()][location.getY()].addNode(n);
 
@@ -148,14 +147,14 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
     }
 
     @Override
-    public void _updateNodeCollection(Node n) {
-        if (!n.holdInNodeCollection) {
+    protected void _updateNodeCollection(Node n) {
+        if (!n.isHoldInNodeCollection()) {
             return; // the node is not yet hold by this node collection
         }
         // sensitiveInformationChanged = true;
 
         SquarePos newPosition = this.getPosOfNode(n);
-        SquarePos oldPosition = (SquarePos) n.nodeCollectionInfo;
+        SquarePos oldPosition = (SquarePos) n.getNodeCollectionInfo();
         if ((oldPosition.getX() != newPosition.getX()) || oldPosition.getY() != newPosition.getY()) {
 
             // do not call this.remove. Already calculated the new position and thus we can
@@ -172,8 +171,8 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
     }
 
     @Override
-    public void _removeNode(Node n) {
-        n.holdInNodeCollection = false;
+    protected void _removeNode(Node n) {
+        n.setHoldInNodeCollection(false);
         SquarePos pos = this.getPosOfNode(n);
         NodeListInterface nList = this.lists[pos.getX()][pos.getY()];
         if (!nList.removeNode(n)) {

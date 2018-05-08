@@ -220,8 +220,8 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
                 String selectedTransModel = (String) this.selectedTransmissionModel.getSelectedItem();
                 if (!Configuration.getDefaultMessageTransmissionModel().equals(selectedTransModel)) {
                     Configuration.setDefaultMessageTransmissionModel(selectedTransModel);
-                    Global.messageTransmissionModel = Model.getMessageTransmissionModelInstance(
-                            Configuration.getDefaultMessageTransmissionModel());
+                    Global.setMessageTransmissionModel(Model.getMessageTransmissionModelInstance(
+                            Configuration.getDefaultMessageTransmissionModel()));
                 }
 
                 if (this.drawRulerCB.isSelected() != Configuration.isDrawRulers()) {

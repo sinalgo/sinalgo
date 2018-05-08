@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes.messages;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import sinalgo.exception.SinalgoFatalException;
@@ -48,7 +49,7 @@ import sinalgo.tools.storage.DoublyLinkedListEntry;
 
 import java.util.Stack;
 
-/* TODO: base packet delivery on edge id
+/* TODO: base packet delivery on edge ID
  *  2) While a packet is being sent, there needs to be a check in every round that the edge it uses is
  *     still in use. If this is not the case, it must not be delivered. But as noted in point 1), it must
  *     remain there until the time it would have been delivered.
@@ -146,7 +147,9 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
     // -----------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
 
-    public static int numPacketsOnTheFly = 0; // number of packets in the system, not yet freed
+    @Getter
+    @Setter
+    private static int numPacketsOnTheFly = 0; // number of packets in the system, not yet freed
 
     /**
      * Constructor to create new Packet objects. If possible, this method returns a
@@ -156,7 +159,7 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
      * @return A Packet instance, either a new one or a recycled one.
      */
     public static Packet fabricatePacket(Message msg) {
-        numPacketsOnTheFly++;
+        setNumPacketsOnTheFly(getNumPacketsOnTheFly() + 1);
         if (freePackets.empty()) {
             Packet p = new Packet(msg);
             synchronized (ISSUED_PACKETS) {
@@ -191,31 +194,37 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
                         + " Bug in packet factory. Please report this error if you see this line.\n\n\n");
             }
         }
-        numPacketsOnTheFly--;
-        pack.destination = null;
-        pack.origin = null;
-        pack.edge = null;
-        pack.message = null;
+        setNumPacketsOnTheFly(getNumPacketsOnTheFly() - 1);
+        pack.setDestination(null);
+        pack.setOrigin(null);
+        pack.setEdge(null);
+        pack.setMessage(null);
         freePackets.push(pack);
     }
 
     /**
-     * The internal id of this packet.
+     * The internal ID of this packet.
      */
     private long ID;
 
-    // the next id to give to a packet
+    // the next ID to give to a packet
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static long nextID = 1;
 
     /**
      * @return The next Free ID to be used.
      */
     private static long getNextFreeID() {
-        if (nextID == 0) {
+        if (getNextID() == 0) {
             Main.minorError(
-                    "The Packet ID counter overflowed. It is likely that the simulation continues correctly despite of this overlow.");
+                    "The Packet ID counter overflowed. "
+                            + "It is likely that the simulation continues correctly "
+                            + "despite of this overlow.");
         }
-        return nextID++;// implicit post-increment
+        long curID = getNextID();
+        setNextID(curID + 1);
+        return curID;
     }
 
     /**

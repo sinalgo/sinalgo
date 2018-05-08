@@ -13,34 +13,12 @@
     <script type="text/javascript" language="JavaScript"><!--
     function setup() {
         if (!document.all) {
-            //document.getElementById("ethLogo").style.top = window.pageYOffset + getWindowHeight() - 50;
-            //if(window.pageYOffset > 500) {
-            document.getElementById("menu").style.top = window.pageYOffset;
-            //} else {
-            //document.getElementById("menu").style.top = 0;
-            //}
+            document.getElementById("menu").style.top = window.pageYOffset.toString();
         }
         if (document.all) {
-            //document.all["ethLogo"].style.top = document.body.scrollTop + getWindowHeight() - 50;
-            //if(document.body.scrollTop > 500) {
-            document.all["menu"].style.top = document.body.scrollTop;
-            //} else {
-            //document.all["menu"].style.top = 0;
-            //}
+            document.all["menu"].style.top = document.body.scrollTop.toString();
         }
         window.setTimeout("setup()", 10);
-    }
-
-    function getWindowHeight() {
-        if (typeof(window.innerWidth) === 'number') { //Non-IE
-            return window.innerHeight;
-        } else if (document.documentElement && document.documentElement.clientHeight) { //IE 6+ in 'standards compliant mode'
-            return document.documentElement.clientHeight;
-        } else if (document.body && document.body.clientHeight) { //IE 4 compatible
-            return document.body.clientHeight;
-        } else {
-            return 0;
-        }
     }
 
     //-->

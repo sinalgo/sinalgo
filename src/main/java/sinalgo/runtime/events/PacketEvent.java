@@ -99,13 +99,13 @@ public class PacketEvent extends Event {
         PacketEvent pe;
         if (unusedPacketEvents.size() > 0) {
             pe = unusedPacketEvents.pop();
-            if (pe.packet != null) { // sanity check
+            if (pe.getPacket() != null) { // sanity check
                 throw new SinalgoFatalException(Logging.getCodePosition()
                         + " PacketEvent factory failed! About to return a packet-event that was already returned. (Probably, free() was called > 1 on this packet event.)");
             }
-            pe.packet = packet;
-            pe.time = time;
-            pe.id = nextId++; // implicit increment
+            pe.setPacket(packet);
+            pe.setTime(time);
+            pe.setID(getNextFreeID());
         } else {
             pe = new PacketEvent(packet, time);
         }
@@ -182,7 +182,7 @@ public class PacketEvent extends Event {
             return "The type of the message is: " + Global.toShortName(this.getPacket().getMessage().getClass().getName()) + "\n"
                     + (this.getPacket().isPositiveDelivery() ? "The message was delivered" : "The message was dropped.");
         } else {
-            return "At time " + this.time + " a message reaches node " + this.getPacket().getDestination().getID() + "\n"
+            return "At time " + this.getTime() + " a message reaches node " + this.getPacket().getDestination().getID() + "\n"
                     + "The type of the message is: " + Global.toShortName(this.getPacket().getMessage().getClass().getName()) + "\n"
                     + (this.getPacket().isPositiveDelivery() ? "Until now it seems that the message will reach its destination."
                     : "The message has already been disturbed and will not reach its destination.");

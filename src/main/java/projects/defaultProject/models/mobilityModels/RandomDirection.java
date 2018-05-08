@@ -263,7 +263,7 @@ public class RandomDirection extends MobilityModel {
     /**
      * The default constructor
      *
-     * @throws CorruptConfigurationEntryException
+     * @throws CorruptConfigurationEntryException if the configuratin is corrupt.
      * @see RandomWayPoint
      */
     public RandomDirection() throws CorruptConfigurationEntryException {

@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.configuration;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import sinalgo.exception.CorruptConfigurationEntryException;
@@ -68,14 +69,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_CONNECTIVITY;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_DISTRIBUTION;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_INTERFERENCE;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_MESSAGE_TRANSMISSION;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_MOBILITY;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_RELIABILITY;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.NODES_EDGES;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.NODES_IMPLEMENTATIONS;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.*;
 
 /**
  * This class provides globally visible constants and access to the custom
@@ -723,13 +717,13 @@ public class Configuration {
     @OptionalInConfigFile("The dsfault value of the rounds field.")
     private static int defaultRoundNumber = 1;
 
-    /**
-     * Indicates whether the three plotted frame lines are also exported to the eps
-     * as a dotted line.
-     */
+    ///**
+    // * Indicates whether the three plotted frame lines are also exported to the eps
+    // * as a dotted line.
+    // */
     // public static final boolean DRAW_FRAME_DOTTED = false;
 
-    /*************************************************************************************************************
+    /*-***********************************************************************************************************
      * END of FRAMEWORK-BLOCK
      *************************************************************************************************************/
 
@@ -738,35 +732,29 @@ public class Configuration {
     // -------------------------------------------------------------------------
 
     /**
-     * A boolean indicating whether the type of the edges has changed. This is used
+     * A boolean indicating whether the type of the edges has changed, but
+     * the edge factory has not yet reacted to the change.. This is used
      * that we can get rid of the reflection, if the same type of edges has to be
      * created again.
      * <p>
+     * <p>
      * Note that this member MUST NOT have any annotations!
+     *
+     * @param changed True if the edge type changed.
+     * @return Whether the edge type has changed.
      */
+    @Getter
+    @Setter
     private static boolean edgeTypeChanged = true;
 
     /**
      * The short name of the edge (e.g. Edge, myProject:MyEdge)
-     */
-    private static String edgeTypeShortName = "";
-
-    /**
-     * @return Whether the edge type has changed.
-     */
-    public static boolean hasEdgeTypeChanged() {
-        return edgeTypeChanged;
-    }
-
-    /**
-     * Sets the member edgeTypeChanged, which indicates whether the edge type has
-     * been changed, but the edge factory has not yet reacted to the change.
      *
-     * @param changed
+     * @return The short name for the current edge type.
      */
-    public static void setEdgeTypeChanged(boolean changed) {
-        edgeTypeChanged = changed;
-    }
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private static String edgeTypeShortName = "";
 
     /**
      * This method sets the type of the edge to create. It also sets the
@@ -775,7 +763,7 @@ public class Configuration {
      * @param selectedType The name of the type to set the type to.
      */
     public static void setEdgeType(String selectedType) {
-        edgeTypeShortName = selectedType;
+        setEdgeTypeShortName(selectedType);
         if (selectedType.compareTo("Edge") == 0) { // the default edge from the framework
             edgeType = "sinalgo.nodes.edges.Edge";
         } else if (selectedType.compareTo("BidirectionalEdge") == 0) { // the bidirectional edge from the framework
@@ -787,16 +775,9 @@ public class Configuration {
             edgeType = Configuration.getDefaultProjectPackage() + ".nodes.edges." + selectedType;
         } else { // the edge is given already in explicit form
             edgeType = selectedType;
-            edgeTypeShortName = Global.toShortName(edgeType);
+            setEdgeTypeShortName(Global.toShortName(edgeType));
         }
-        edgeTypeChanged = true;
-    }
-
-    /**
-     * @return The short name for the current edge type.
-     */
-    public static String getEdgeTypeShortName() {
-        return edgeTypeShortName;
+        setEdgeTypeChanged(true);
     }
 
     // -------------------------------------------------------------------------
@@ -817,7 +798,7 @@ public class Configuration {
             } catch (Throwable ignored) {
             }
             // otherwise, assume that its of the form r=RR,g=GG,b=BB
-            String[] list = text.split("[^0123456789]");
+            String[] list = text.split("[^0-9]");
             String[] colors = new String[3];
             // move the non-empty entries to the beginning of the list
             int offset = 0;
@@ -861,12 +842,12 @@ public class Configuration {
     /**
      * This method may also be called with the primitive types
      *
-     * @param o
+     * @param o The object to be converted
      * @return A textual representation for the given object
      */
     public static String getConfigurationText(Object o) {
         if (o instanceof String) {
-            return o.toString();
+            return (String) o;
         }
         if (o instanceof Color) {
             Color c = (Color) o;
@@ -919,7 +900,7 @@ public class Configuration {
         } else {
             throw new CorruptConfigurationEntryException(
                     "Missing entry in the configuration file: An entry for the key '" + key
-                            + "' is missing in the config file of project '" + Global.projectName + "'.");
+                            + "' is missing in the config file of project '" + Global.getProjectName() + "'.");
         }
     }
 
@@ -1037,7 +1018,7 @@ public class Configuration {
         }
     }
 
-    /************************************************************************************************
+    /*-**********************************************************************************************
      * BEGIN of ADDITIONAL SETTINGS
      *
      * These settings affect the behavior of the simulation framework and are not

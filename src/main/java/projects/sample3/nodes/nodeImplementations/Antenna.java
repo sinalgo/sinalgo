@@ -136,8 +136,8 @@ public class Antenna extends Node {
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         Color bckup = g.getColor();
         g.setColor(Color.BLACK);
-        this.drawingSizeInPixels = (int) (this.defaultDrawingSizeInPixels * pt.getZoomFactor());
-        super.drawAsDisk(g, pt, highlight, this.drawingSizeInPixels);
+        this.setDrawingSizeInPixels((int) (this.getDefaultDrawingSizeInPixels() * pt.getZoomFactor()));
+        super.drawAsDisk(g, pt, highlight, this.getDrawingSizeInPixels());
         g.setColor(Color.LIGHT_GRAY);
         pt.translateToGUIPosition(this.getPosition());
         int r = (int) (radius * pt.getZoomFactor());
@@ -147,7 +147,7 @@ public class Antenna extends Node {
 
     public Antenna() {
         try {
-            this.defaultDrawingSizeInPixels = Configuration.getIntegerParameter("Antenna/Size");
+            this.setDefaultDrawingSizeInPixels(Configuration.getIntegerParameter("Antenna/Size"));
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException(e.getMessage());
         }
@@ -160,7 +160,7 @@ public class Antenna extends Node {
 
         @Override
         public int compare(Node n1, Node n2) {
-            return Integer.compare(n1.getID(), n2.getID());
+            return Long.compare(n1.getID(), n2.getID());
         }
     }
 

@@ -38,11 +38,7 @@ package sinalgo.runtime;
 
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.NotInBatchModeException;
-import sinalgo.exception.NotInGUIModeException;
-import sinalgo.exception.SinalgoFatalException;
-import sinalgo.exception.SinalgoWrappedException;
-import sinalgo.exception.WrongConfigurationException;
+import sinalgo.exception.*;
 import sinalgo.gui.GUI;
 import sinalgo.gui.ProjectSelector;
 import sinalgo.io.IOUtils;
@@ -96,9 +92,9 @@ public class Main {
 
         Tools.parseProject(args);
 
-        if (!Global.useProject) {
+        if (!Global.isUseProject()) {
             if (guiBatch <= 1) {
-                Global.isGuiMode = true;
+                Global.setGuiMode(true);
                 // we are in gui mode, but no project was selected
                 ProjectSelector pane = new ProjectSelector(this);
                 pane.populate();
@@ -125,26 +121,26 @@ public class Main {
         Logging.activate();
 
         // sets the Async/Sync flag
-        Global.isAsynchronousMode = Configuration.isAsynchronousMode();
+        Global.setAsynchronousMode(Configuration.isAsynchronousMode());
 
         // initialize the chosen runtime system
         if (guiBatch <= 1) { // GUI MODE
-            Global.isGuiMode = true;
-            Global.log.logln(LogL.ALWAYS, "> Starting " + Configuration.getAppName() + " in GUI-Mode"
-                    + (Global.useProject ? " for project " + Global.projectName + "." : "."));
+            Global.setGuiMode(true);
+            Global.getLog().logln(LogL.ALWAYS, "> Starting " + Configuration.getAppName() + " in GUI-Mode"
+                    + (Global.isUseProject() ? " for project " + Global.getProjectName() + "." : "."));
             runtime = new GUIRuntime();
         } else { // BATCH MODE
-            Global.log.log(LogL.ALWAYS, "> Starting " + Configuration.getAppName() + " in BATCH-Mode"
-                    + (Global.useProject ? " for project " + Global.projectName + "." : "."));
+            Global.getLog().log(LogL.ALWAYS, "> Starting " + Configuration.getAppName() + " in BATCH-Mode"
+                    + (Global.isUseProject() ? " for project " + Global.getProjectName() + "." : "."));
             runtime = new BatchRuntime();
         }
 
         // initialize the DefaultMessageTransmissionModel (only after the runtime
         // exists, s.t. we can output error messages, if needed
-        Global.messageTransmissionModel = Model
-                .getMessageTransmissionModelInstance(Configuration.getDefaultMessageTransmissionModel());
+        Global.setMessageTransmissionModel(Model
+                .getMessageTransmissionModelInstance(Configuration.getDefaultMessageTransmissionModel()));
 
-        if (Global.useProject) {
+        if (Global.isUseProject()) {
             // Try to initalize the gustomGlobal. This is done after the parsing of the
             // override parameter to not disturb the initialisazion with
             // the static initialisazion of the Global class (initializes the Logger...)
@@ -154,22 +150,22 @@ public class Main {
                 // exceptions that may be thrown in the constructor.
                 Class<?> custGlob = Thread.currentThread().getContextClassLoader().loadClass(Global.getProjectPackage() + ".CustomGlobal");
                 Constructor<?> constructor = custGlob.getConstructor();
-                Global.customGlobal = (AbstractCustomGlobal) constructor.newInstance();
+                Global.setCustomGlobal((AbstractCustomGlobal) constructor.newInstance());
             } catch (ClassNotFoundException e) {
-                Global.log.logln(LogL.WARNING, "There is no CustomGlobal in the project '" + Global.projectName
+                Global.getLog().logln(LogL.WARNING, "There is no CustomGlobal in the project '" + Global.getProjectName()
                         + "'. Using the DefaultCustomGlobal.");
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
                     | SecurityException | InvocationTargetException | IllegalArgumentException e) {
                 throw new SinalgoFatalException("Cannot instanciate the project specific CustomGlobal object:\n" + e);
             }
         } else {
-            Global.log.logln(LogL.WARNING,
+            Global.getLog().logln(LogL.WARNING,
                     "WARNING: You did not specify a project and thus are using the default project.\n"
                             + "         Select a project with \"-project Projectname\".");
         }
 
         // Check the projects requirements
-        Global.customGlobal.checkProjectRequirements(); // note that the runtime is not yet initialized at this point of
+        Global.getCustomGlobal().checkProjectRequirements(); // note that the runtime is not yet initialized at this point of
         // time!
 
         // Test whether this is the latest version
@@ -179,14 +175,14 @@ public class Main {
             // initialize the appropriate runtime environment
             runtime.initializeRuntimeSystem(args);
 
-            Global.log.logln(LogL.ALWAYS, "> Initialisation terminated.");
+            Global.getLog().logln(LogL.ALWAYS, "> Initialisation terminated.");
             if (Configuration.isLogConfiguration()) {
-                Configuration.printConfiguration(Global.log.getOutputStream());
+                Configuration.printConfiguration(Global.getLog().getOutputStream());
             } else {
-                Global.log.logln(LogL.ALWAYS,
+                Global.getLog().logln(LogL.ALWAYS,
                         "> The seed for the random number generator is " + Distribution.getSeed());
             }
-            Global.log.logln(LogL.ALWAYS, "> Starting the Simulation.\n");
+            Global.getLog().logln(LogL.ALWAYS, "> Starting the Simulation.\n");
 
             runtime.preRun();
 
@@ -250,12 +246,12 @@ public class Main {
      * @param message The message containing the error description.
      */
     public static void minorError(String message) {
-        if (Global.isGuiMode) {
+        if (Global.isGuiMode()) {
             JOptionPane.showMessageDialog(null, Tools.wrapAndCutToLines(message, 30), "Minor Error",
                     JOptionPane.ERROR_MESSAGE);
         }
         if (Logging.isActivated()) {
-            Global.log.logln(LogL.ALWAYS, "\nMinor Error: " + message);
+            Global.getLog().logln(LogL.ALWAYS, "\nMinor Error: " + message);
         } else {
             System.err.println("\nMinor Error: " + message + "\n");
         }
@@ -276,7 +272,7 @@ public class Main {
                     JOptionPane.WARNING_MESSAGE);
         }
         if (Logging.isActivated()) {
-            Global.log.logln(LogL.WARNING, "Warning: " + message);
+            Global.getLog().logln(LogL.WARNING, "Warning: " + message);
         } else {
             System.err.println("Warning: " + message);
         }
@@ -297,7 +293,7 @@ public class Main {
                     JOptionPane.INFORMATION_MESSAGE);
         }
         if (Logging.isActivated()) {
-            Global.log.logln(LogL.INFO, "INFO: " + message);
+            Global.getLog().logln(LogL.INFO, "INFO: " + message);
         } else {
             System.err.println("INFO: " + message);
         }
@@ -440,7 +436,7 @@ public class Main {
      */
     public static void exitApplication() {
         cleanup();
-        Global.customGlobal.onExit(); // may perform some cleanup ops
+        Global.getCustomGlobal().onExit(); // may perform some cleanup ops
         System.exit(0);
     }
 

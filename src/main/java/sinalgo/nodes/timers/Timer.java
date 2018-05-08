@@ -93,11 +93,11 @@ public abstract class Timer implements Comparable<Timer> {
             throw new SinalgoFatalException("A relative time indicating when a timer should start must be strictly positive.");
         }
         this.setTargetNode(null);
-        this.setFireTime(Global.currentTime + relativeTime);
-        if (Global.isAsynchronousMode) {
+        this.setFireTime(Global.getCurrentTime() + relativeTime);
+        if (Global.isAsynchronousMode()) {
             SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
         } else {
-            Global.customGlobal.globalTimers.add(this);
+            Global.getCustomGlobal().getGlobalTimers().add(this);
         }
     }
 
@@ -118,8 +118,8 @@ public abstract class Timer implements Comparable<Timer> {
             throw new SinalgoFatalException("A relative time indicating when a timer should start must be strictly positive.");
         }
         this.setTargetNode(n);
-        this.setFireTime(Global.currentTime + relativeTime);
-        if (Global.isAsynchronousMode) {
+        this.setFireTime(Global.getCurrentTime() + relativeTime);
+        if (Global.isAsynchronousMode()) {
             SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
         } else {
             this.getTargetNode().getTimers().add(this);
@@ -136,12 +136,12 @@ public abstract class Timer implements Comparable<Timer> {
      *                     fired.
      */
     public final void startAbsolute(double absoluteTime, Node n) {
-        if (absoluteTime <= Global.currentTime) {
+        if (absoluteTime <= Global.getCurrentTime()) {
             throw new SinalgoFatalException("The absolute time when a timer goes off must be strictly larger than the current time.");
         }
         this.setTargetNode(n);
         this.setFireTime(absoluteTime);
-        if (Global.isAsynchronousMode) {
+        if (Global.isAsynchronousMode()) {
             SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
         } else {
             this.getTargetNode().getTimers().add(this);
@@ -150,7 +150,7 @@ public abstract class Timer implements Comparable<Timer> {
 
     @Override
     public int compareTo(Timer t) {
-        return Double.compare(this.fireTime, t.fireTime);
+        return Double.compare(this.getFireTime(), t.getFireTime());
     }
 
     /**

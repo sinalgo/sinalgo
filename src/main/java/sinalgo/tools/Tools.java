@@ -37,35 +37,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.tools;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.NotInBatchModeException;
-import sinalgo.exception.NotInGUIModeException;
-import sinalgo.exception.SinalgoFatalException;
-import sinalgo.exception.SinalgoWrappedException;
-import sinalgo.exception.WrongConfigurationException;
+import sinalgo.exception.*;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.mapIO.Map;
-import sinalgo.models.ConnectivityModel;
-import sinalgo.models.DistributionModel;
-import sinalgo.models.InterferenceModel;
-import sinalgo.models.MessageTransmissionModel;
-import sinalgo.models.MobilityModel;
-import sinalgo.models.Model;
-import sinalgo.models.ModelType;
-import sinalgo.models.ReliabilityModel;
+import sinalgo.models.*;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.edges.EdgePool;
 import sinalgo.nodes.messages.Packet;
-import sinalgo.runtime.AbstractCustomGlobal;
-import sinalgo.runtime.BatchRuntime;
-import sinalgo.runtime.GUIRuntime;
-import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
-import sinalgo.runtime.SinalgoRuntime;
+import sinalgo.runtime.*;
 import sinalgo.runtime.events.EventQueue;
 import sinalgo.runtime.events.PacketEvent;
 import sinalgo.runtime.events.TimerEvent;
@@ -130,7 +114,7 @@ public class Tools {
      * @return The global time of the simulation.
      */
     public static double getGlobalTime() {
-        return Global.currentTime;
+        return Global.getCurrentTime();
     }
 
     /**
@@ -138,8 +122,8 @@ public class Tools {
      * will exit with a fatal error when called in asynchronous mode.
      */
     public static Date getStartTimeOfRound() {
-        if (!Global.isAsynchronousMode) {
-            return Global.startTime;
+        if (!Global.isAsynchronousMode()) {
+            return Global.getStartTime();
         } else {
             throw new SinalgoFatalException("Cannot get the startTime of the round in asynchronous mode");
         }
@@ -151,8 +135,8 @@ public class Tools {
      * mode.
      */
     public static int getNumberOfMessagesSentInThisRound() {
-        if (!Global.isAsynchronousMode) {
-            return Global.numberOfMessagesInThisRound;
+        if (!Global.isAsynchronousMode()) {
+            return Global.getNumberOfMessagesInThisRound();
         } else {
             throw new SinalgoFatalException("Cannot get the startTime of the round in asynchronous mode");
         }
@@ -163,7 +147,7 @@ public class Tools {
      * the framework.
      */
     public static int getNumberOfSentMessages() {
-        return Global.numberOfMessagesOverAll;
+        return Global.getNumberOfMessagesOverAll();
     }
 
     // **************************************************************************************
@@ -175,21 +159,21 @@ public class Tools {
      * in batch mode.
      */
     public static boolean isSimulationInGuiMode() {
-        return Global.isGuiMode;
+        return Global.isGuiMode();
     }
 
     /**
      * @return true if the simulation runs in asynchronous mode, otherwise false.
      */
     public static boolean isSimulationInAsynchroneMode() {
-        return Global.isAsynchronousMode;
+        return Global.isAsynchronousMode();
     }
 
     /**
      * @return true if the simulation runs in synchronous mode, otherwise false.
      */
     public static boolean isSimulationInSynchroneMode() {
-        return !Global.isAsynchronousMode;
+        return !Global.isAsynchronousMode();
     }
 
     /**
@@ -197,7 +181,7 @@ public class Tools {
      * running in GUI mode.
      */
     public static boolean isSimulationInBatchMode() {
-        return !Global.isGuiMode;
+        return !Global.isGuiMode();
     }
 
     /**
@@ -206,7 +190,7 @@ public class Tools {
      * events).
      */
     public static boolean isSimulationRunning() {
-        return Global.isRunning;
+        return Global.isRunning();
     }
 
     // **************************************************************************************
@@ -259,7 +243,7 @@ public class Tools {
      * continue by pressing again the run button.
      */
     public static void stopSimulation() {
-        if (Global.isGuiMode) {
+        if (Global.isGuiMode()) {
             Main.getRuntime().abort();
         } else {
             Main.exitApplication();
@@ -277,14 +261,14 @@ public class Tools {
      * @return The default logger instance.
      */
     public static Logging getDefaultLogger() {
-        return Global.log;
+        return Global.getLog();
     }
 
     /**
      * @return The name of the currently selected project.
      */
     public static String getProjectName() {
-        return Global.projectName;
+        return Global.getProjectName();
     }
 
     /**
@@ -305,14 +289,14 @@ public class Tools {
      * its destination.
      */
     public static MessageTransmissionModel getMessageTransmissionModel() {
-        return Global.messageTransmissionModel;
+        return Global.getMessageTransmissionModel();
     }
 
     /**
      * @return The CustomGlobal instance of the currently selected project.
      */
     public static AbstractCustomGlobal getCustomGlobal() {
-        return Global.customGlobal;
+        return Global.getCustomGlobal();
     }
 
     /**
@@ -483,7 +467,7 @@ public class Tools {
 
         // Create the nodes
         for (int j = 0; j < numNodes; j++) {
-            Node node = null;
+            Node node;
             try {
                 node = Node.createNodeByClassname(nodeTypeName);
             } catch (WrongConfigurationException e) {
@@ -714,7 +698,7 @@ public class Tools {
      * @param text The text to append.
      */
     public static void appendToOutput(String text) {
-        if (!Global.isGuiMode) {
+        if (!Global.isGuiMode()) {
             return;
         }
         try {
@@ -733,7 +717,7 @@ public class Tools {
      * only updated for these methods.
      */
     public static PrintStream getTextOutputPrintStream() {
-        if (!Global.isGuiMode) {
+        if (!Global.isGuiMode()) {
             return Logging.getLogger().getOutputStream();
         }
         try {
@@ -749,7 +733,7 @@ public class Tools {
      * mode.
      */
     public static void clearOutput() {
-        if (!Global.isGuiMode) {
+        if (!Global.isGuiMode()) {
             return;
         }
         try {
@@ -884,8 +868,8 @@ public class Tools {
      */
     public static void printSinalgoMemoryStats(PrintStream ps) {
         ps.print("\nSinalgo Memory Stats:\nRecycling:  (used / recycled)\n");
-        ps.print("  Packets \t(" + Packet.numPacketsOnTheFly + " / " + Packet.getNumFreedPackets() + ")\n");
-        if (Global.isAsynchronousMode) {
+        ps.print("  Packets \t(" + Packet.getNumPacketsOnTheFly() + " / " + Packet.getNumFreedPackets() + ")\n");
+        if (Global.isAsynchronousMode()) {
             ps.print("  PacketEvents \t(" + PacketEvent.numPacketEventsOnTheFly + " / "
                     + PacketEvent.getNumFreedPacketEvents() + ")\n");
             ps.print("  TimerEvents \t(" + TimerEvent.numTimerEventsOnTheFly + " / "
@@ -996,13 +980,13 @@ public class Tools {
                     throw new SinalgoFatalException("You may only specify the '-gui' xor the '-batch' flag.");
                 }
                 guiBatch = 2;
-                Global.isGuiMode = false;
+                Global.setGuiMode(false);
             } else if (s.toLowerCase().equals("-gui")) {
                 if (guiBatch == 2) { // conflict
                     throw new SinalgoFatalException("You may only specify the '-gui' xor the '-batch' flag.");
                 }
                 guiBatch = 1;
-                Global.isGuiMode = true;
+                Global.setGuiMode(true);
             }
         }
         return guiBatch;
@@ -1020,8 +1004,8 @@ public class Tools {
                     throw new SinalgoFatalException("The flag '-project' must preceed the name of a project");
                 }
                 if (Global.getProjectNames().contains(args[i + 1])) {
-                    Global.useProject = true;
-                    Global.projectName = args[i + 1];
+                    Global.setUseProject(true);
+                    Global.setProjectName(args[i + 1]);
                 } else {
                     throw new SinalgoFatalException("Cannot find the specified project '" + args[i + 1] + "'.\n"
                             + "In order to create a project '" + args[i + 1] + "', create a package '"

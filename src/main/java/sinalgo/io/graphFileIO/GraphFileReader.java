@@ -95,8 +95,8 @@ public class GraphFileReader {
     // Node oneNode = Node.createNodeByClassname(type); // assumes fully qualified
     // type-name.
     //
-    // int id = Integer.parseInt(params[1].split("=")[1]);
-    // oneNode.getID() = id;
+    // int ID = Integer.parseInt(params[1].split("=")[1]);
+    // oneNode.getID() = ID;
     //
     // double posX = Double.parseDouble(params[2].substring(5,
     // params[2].length()-1).split(",")[0]);

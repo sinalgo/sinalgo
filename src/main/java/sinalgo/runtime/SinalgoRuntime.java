@@ -65,6 +65,7 @@ import sinalgo.tools.Tuple;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -142,7 +143,7 @@ public abstract class SinalgoRuntime {
     public SinalgoRuntime() {
         if (Configuration.isUseMap()) {
             try {
-                map = new Map(IOUtils.getAsPath(Configuration.getUserProjectsPackage(), Global.projectName, Configuration.getMap()));
+                map = new Map(IOUtils.getAsPath(Configuration.getUserProjectsPackage(), Global.getProjectName(), Configuration.getMap()));
             } catch (FileNotFoundException e) {
                 throw new SinalgoWrappedException(e);
             }
@@ -166,7 +167,7 @@ public abstract class SinalgoRuntime {
     public void preRun() {
         // call the preRun() method of the CustomGlobal, if there was a project
         // specified.
-        Global.customGlobal.preRun();
+        Global.getCustomGlobal().preRun();
     }
 
     /**
@@ -311,16 +312,12 @@ public abstract class SinalgoRuntime {
                 }
 
                 i--; // point to last processed entry, for-loop increments i afterwards
-
-            } else if (args[i].equals("-project")) {
+            } else if (!Arrays.asList("-project", "-gui", "-batch", "-overwrite").contains(args[i])
+                    && args[i].startsWith("-")) {
                 // omitting -project as is was already used in the main class.
-            } else if (args[i].equals("-gui")) {
                 // omitting -gui as is was already used in the main class.
-            } else if (args[i].equals("-batch")) {
                 // omitting -batch as is was already used in the main class.
-            } else if (args[i].equals("-overwrite")) {
                 // omitting -overwrite as is was already used in the main class.
-            } else if (args[i].startsWith("-")) {
                 throw new SinalgoFatalException("Unknown modifier " + args[i]);
             }
         }
@@ -381,8 +378,8 @@ public abstract class SinalgoRuntime {
      */
     public static void addNode(Node n) {
         nodes.addNode(n);
-        Global.customGlobal.nodeAddedEvent(n);
-        if (Global.isGuiMode) {
+        Global.getCustomGlobal().nodeAddedEvent(n);
+        if (Global.isGuiMode()) {
             try {
                 GraphPanel gp = Main.getGuiRuntime().getGUI().getGraphPanel();
                 if (gp != null) {
@@ -421,11 +418,11 @@ public abstract class SinalgoRuntime {
 
         nodes.removeNode(n);
         eventQueue.removeAllEventsForThisNode(n);
-        if (Global.isGuiMode) {
+        if (Global.isGuiMode()) {
             // un highlight this node
             Tools.getGUI().getGraphPanel().setNodeHighlighted(n, false);
         }
-        Global.customGlobal.nodeRemovedEvent(n);
+        Global.getCustomGlobal().nodeRemovedEvent(n);
     }
 
     /**
@@ -527,7 +524,7 @@ public abstract class SinalgoRuntime {
         }
         nodes = createNewNodeCollection();
         Node.resetIDCounter(); // new nodes restart their ID with 1
-        if (Global.isGuiMode) {
+        if (Global.isGuiMode()) {
             GUI gui = Tools.getGUI();
             gui.allNodesAreRemoved();
             gui.redrawGUINow();

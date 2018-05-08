@@ -169,12 +169,12 @@ public class MinimizedControlPanel extends ControlPanel {
         this.addSpacer(this.buttonPanel, 5);
 
         JLabel doneRoundsLabel;
-        if (Global.isAsynchronousMode) {
+        if (Global.isAsynchronousMode()) {
             doneRoundsLabel = new JLabel("Time: ");
-            this.roundsPerformed.setText(String.valueOf(this.round(sinalgo.runtime.Global.currentTime, 2)));
+            this.roundsPerformed.setText(String.valueOf(this.round(Global.getCurrentTime(), 2)));
         } else {
             doneRoundsLabel = new JLabel("Round: ");
-            this.roundsPerformed.setText(String.valueOf((int) this.round(sinalgo.runtime.Global.currentTime, 2)));
+            this.roundsPerformed.setText(String.valueOf((int) this.round(Global.getCurrentTime(), 2)));
         }
         this.buttonPanel.add(doneRoundsLabel);
         this.roundsPerformed.setEditable(false);
@@ -206,13 +206,13 @@ public class MinimizedControlPanel extends ControlPanel {
     }
 
     @Override
-    public void setRoundsPerformed(double time, int eventNumber) {
+    public void setRoundsPerformed(double time, long eventNumber) {
         this.roundsPerformed.setText(String.valueOf(this.round(time, 2)));
         this.buttonPanel.doLayout();
     }
 
     @Override
-    public void setRoundsPerformed(int i) {
+    public void setRoundsPerformed(long i) {
         this.roundsPerformed.setText(String.valueOf(i));
         this.buttonPanel.doLayout();
     }

@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.sample2.nodes.nodeImplementations;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
@@ -52,9 +55,17 @@ import java.util.TreeSet;
 /**
  * The class to simulate the sample2-project.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class S2Node extends Node {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static int maxNeighbors = 0; // global field containing the max number of neighbors any node ever had
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static boolean isColored = false;
 
     private boolean isMaxNode = false; // flag set to true when this node has most neighbors
     private boolean drawAsNeighbor = false; // flag set by a neighbor to color specially
@@ -66,7 +77,7 @@ public class S2Node extends Node {
      * Reset the list of neighbors of this node.
      */
     public void reset() {
-        this.neighbors.clear();
+        this.getNeighbors().clear();
     }
 
     @Override
@@ -84,18 +95,18 @@ public class S2Node extends Node {
     @Override
     public void neighborhoodChange() {
         for (Edge e : this.getOutgoingConnections()) {
-            this.neighbors.add((S2Node) e.getEndNode()); // only adds really new neighbors
+            this.getNeighbors().add((S2Node) e.getEndNode()); // only adds really new neighbors
         }
     }
 
     @Override
     public void preStep() {
         // color this node specially when it has most neighbors
-        if (this.neighbors.size() >= S2Node.maxNeighbors) {
-            S2Node.maxNeighbors = this.neighbors.size();
-            this.isMaxNode = true;
+        if (this.getNeighbors().size() >= S2Node.getMaxNeighbors()) {
+            S2Node.setMaxNeighbors(this.getNeighbors().size());
+            this.setMaxNode(true);
         } else {
-            this.isMaxNode = false;
+            this.setMaxNode(false);
         }
     }
 
@@ -103,17 +114,15 @@ public class S2Node extends Node {
     public void postStep() {
     }
 
-    private static boolean isColored = false;
-
     /**
      * Colors all the nodes that this node has seen once.
      */
     @NodePopupMethod(menuText = "Color Neighbors")
     public void ColorNeighbors() {
-        for (S2Node n : this.neighbors) {
-            n.drawAsNeighbor = true;
+        for (S2Node n : this.getNeighbors()) {
+            n.setDrawAsNeighbor(true);
         }
-        isColored = true;
+        setColored(true);
         // redraw the GUI to show the neighborhood immediately
         if (Tools.isSimulationInGuiMode()) {
             Tools.repaintGUI();
@@ -127,9 +136,9 @@ public class S2Node extends Node {
     public void UndoColoring() { // NOTE: Do not change method name!
         // undo the coloring for all nodes
         for (Node n : SinalgoRuntime.nodes) {
-            ((S2Node) n).drawAsNeighbor = false;
+            ((S2Node) n).setDrawAsNeighbor(false);
         }
-        isColored = false;
+        setColored(false);
         // redraw the GUI to show the neighborhood immediately
         if (Tools.isSimulationInGuiMode()) {
             Tools.repaintGUI();
@@ -138,7 +147,7 @@ public class S2Node extends Node {
 
     @Override
     public String includeMethodInPopupMenu(Method m, String defaultText) {
-        if (!isColored && m.getName().equals("UndoColoring")) {
+        if (!isColored() && m.getName().equals("UndoColoring")) {
             return null; // there's nothing to be undone
         }
         return defaultText;
@@ -146,27 +155,28 @@ public class S2Node extends Node {
 
     @Override
     public String toString() {
-        return "This node has seen " + this.neighbors.size() + " neighbors during its life.";
+        return "This node has seen " + this.getNeighbors().size() + " neighbors during its life.";
     }
 
     @Override
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         // Set the color of this node depending on its state
-        if (this.isMaxNode) {
+        if (this.isMaxNode()) {
             this.setColor(Color.RED);
-        } else if (this.drawAsNeighbor) {
+        } else if (this.isDrawAsNeighbor()) {
             this.setColor(Color.BLUE);
         } else {
             this.setColor(Color.BLACK);
         }
-        double fraction = Math.max(0.1, ((double) this.neighbors.size()) / Tools.getNodeList().size());
-        this.drawingSizeInPixels = (int) (fraction * pt.getZoomFactor() * this.defaultDrawingSizeInPixels);
-        this.drawAsDisk(g, pt, highlight, this.drawingSizeInPixels);
+        double fraction = Math.max(0.1, ((double) this.getNeighbors().size()) / Tools.getNodeList().size());
+        this.setDrawingSizeInPixels((int) (fraction * pt.getZoomFactor() * this.getDefaultDrawingSizeInPixels()));
+        this.drawAsDisk(g, pt, highlight, this.getDrawingSizeInPixels());
     }
 
     @Override
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
         // the size and color should still be set from the GUI draw method
-        this.drawToPostScriptAsDisk(pw, pt, this.drawingSizeInPixels / 2, this.getColor());
+        this.drawToPostScriptAsDisk(pw, pt, this.getDrawingSizeInPixels() / 2, this.getColor());
     }
+
 }

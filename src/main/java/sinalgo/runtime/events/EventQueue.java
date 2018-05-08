@@ -36,15 +36,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime.events;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.runtime.SinalgoRuntime;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.TreeSet;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * The queue that stores the events of the asynchronous mode. The entries
@@ -55,13 +54,17 @@ public class EventQueue extends TreeSet<Event> {
 
     private static final long serialVersionUID = 4680928451751153953L;
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private Vector<EventQueueListener> listeners = new Vector<>(5);
 
     /**
      * The number of events that have been taken out of the eventQueue. Gets
      * automatically reset with every getNextEvent call.
      */
-    public static int eventNumber = 0;
+    @Getter
+    @Setter
+    private static long eventNumber = 0;
 
     /**
      * The constructor for the EventQueue. Constructs a TreeSet with the correct
@@ -80,7 +83,7 @@ public class EventQueue extends TreeSet<Event> {
         try {
             Event e = this.first();
             this.remove(e);
-            eventNumber++;
+            setEventNumber(getEventNumber() + 1);
             this.notifyListeners();
             return e;
         } catch (NoSuchElementException nSEE) {
@@ -166,7 +169,7 @@ public class EventQueue extends TreeSet<Event> {
      */
     public void pruneAllNodeEvents() {
         EventQueue eq = new EventQueue();
-        eq.listeners = this.listeners; // inherit the listeners
+        eq.setListeners(this.getListeners()); // inherit the listeners
 
         for (Event e : this) {
             if (e.isNodeEvent()) {
@@ -211,8 +214,8 @@ public class EventQueue extends TreeSet<Event> {
      * and the queue does not notify it (interference)
      */
     public void notifyListeners() {
-        for (int i = 0; i < this.listeners.size(); i++) {
-            this.listeners.elementAt(i).eventQueueChanged();
+        for (int i = 0; i < this.getListeners().size(); i++) {
+            this.getListeners().elementAt(i).eventQueueChanged();
         }
     }
 
@@ -222,7 +225,7 @@ public class EventQueue extends TreeSet<Event> {
      * @param eqList The eventqueuelistener to add
      */
     public void addEventQueueListener(EventQueueListener eqList) {
-        this.listeners.add(eqList);
+        this.getListeners().add(eqList);
     }
 
     /**
@@ -231,7 +234,7 @@ public class EventQueue extends TreeSet<Event> {
      * @param eqList The eventqueuelistener to remove
      */
     public void removeEventQueueListener(EventQueueListener eqList) {
-        this.listeners.remove(eqList);
+        this.getListeners().remove(eqList);
     }
 
     @Override
@@ -278,9 +281,9 @@ public class EventQueue extends TreeSet<Event> {
             // if the time is equal for two events, the event that was created earlier is
             // defined
             // to be smaller. (This approach guarantees a consistent ordering).
-            if (arg0.time == arg1.time) {
-                return Long.compare(arg0.id, arg1.id);
-            } else if (arg0.time - arg1.time < 0) {
+            if (arg0.getTime() == arg1.getTime()) {
+                return Long.compare(arg0.getID(), arg1.getID());
+            } else if (arg0.getTime() - arg1.getTime() < 0) {
                 return -1;
             } else {
                 return 1;

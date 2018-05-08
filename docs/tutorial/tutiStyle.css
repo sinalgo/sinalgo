@@ -111,11 +111,11 @@ tr.height60 {
 }
 
 td.verticalLine {
-    background-image: url("pics/black_vert_line.gif");
+    background-image: url("../pics/black_vert_line.gif");
 }
 
 td.horizontalLine {
-    background-image: url("pics/black_hor_line.gif");
+    background-image: url("../pics/black_hor_line.gif");
 }
 
 /* for unordered lists, add some space around each item: <ul class="unstyled extra-space">... */

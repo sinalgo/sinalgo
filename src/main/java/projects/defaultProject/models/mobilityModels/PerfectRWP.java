@@ -127,7 +127,7 @@ public class PerfectRWP extends RandomWayPoint {
      * distribution and waiting time distribution configuration from the XML config
      * file.
      *
-     * @throws CorruptConfigurationEntryException
+     * @throws CorruptConfigurationEntryException if the configuration is corrupt.
      */
     public PerfectRWP() throws CorruptConfigurationEntryException {
         super();

@@ -15,7 +15,7 @@ import sinalgo.tools.statistics.Distribution;
 public class InviteMsgTimer extends Timer {
 
     private Distribution dist = null;
-    private int refreshRate = 0;
+    private int refreshRate;
     private int refreshCounter = 0;
 
     // If set to true, the antenna requires the nodes to register again

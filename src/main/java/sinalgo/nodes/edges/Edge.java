@@ -112,9 +112,9 @@ public class Edge implements DoublyLinkedListEntry {
     protected void defaultCleanUp() {
         if (this.oppositeEdge != null) {
             // there is a related edge to this one.
-            Edge oe = this.oppositeEdge;
-            this.oppositeEdge = null;
-            oe.oppositeEdge = null; // set unlink oppositeEdges to avoid loops
+            Edge oe = this.getOppositeEdge();
+            this.setOppositeEdge(null);
+            oe.setOppositeEdge(null); // set unlink oppositeEdges to avoid loops
             this.getEndNode().getOutgoingConnections().remove(this.getEndNode(), this.getStartNode()); // remove the opposite edge
             oe.free();
         }
@@ -201,8 +201,8 @@ public class Edge implements DoublyLinkedListEntry {
         Position p2 = this.endNode.getPosition();
         pt.translateToGUIPosition(p2);
 
-        if ((this.numberOfMessagesOnThisEdge == 0) && (this.oppositeEdge != null)
-                && (this.oppositeEdge.numberOfMessagesOnThisEdge > 0)) {
+        if ((this.getNumberOfMessagesOnThisEdge() == 0) && (this.getOppositeEdge() != null)
+                && (this.oppositeEdge.getNumberOfMessagesOnThisEdge() > 0)) {
             // only draws the arrowHead (if drawArrows is true)
             Arrow.drawArrowHead(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, this.getColor());
         } else {
@@ -245,7 +245,7 @@ public class Edge implements DoublyLinkedListEntry {
      */
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    private long ID = 0; // The (unique) id of this edge.
+    private long ID = 0; // The (unique) ID of this edge.
 
     /**
      * A reference to the edge connecting the two end-nodes of this edge in the
@@ -366,7 +366,7 @@ public class Edge implements DoublyLinkedListEntry {
 
     /**
      * The ID that is given to the next edge that is returned by the
-     * fabricateEdge-method. Is increased so that no two edges have the same id.
+     * fabricateEdge-method. Is increased so that no two edges have the same ID.
      */
     private static long nextId = 1;
 
@@ -398,7 +398,7 @@ public class Edge implements DoublyLinkedListEntry {
             }
         } else {
             try { // need to construct a new edge
-                if (Configuration.hasEdgeTypeChanged() || constructor == null) { //
+                if (Configuration.isEdgeTypeChanged() || constructor == null) { //
                     constructor = null;
                     nameOfSearchedEdge = Configuration.getEdgeType();
                     Class<?> edgeClass = Thread.currentThread().getContextClassLoader().loadClass(nameOfSearchedEdge);

@@ -104,7 +104,7 @@ public class EdgePool {
      * reuse.
      */
     public Edge get() {
-        if (lastStack == null || Configuration.hasEdgeTypeChanged()) {
+        if (lastStack == null || Configuration.isEdgeTypeChanged()) {
             lastStackTypeName = Configuration.getEdgeType();
             lastStack = stacks.get(lastStackTypeName);
             if (lastStack == null) {

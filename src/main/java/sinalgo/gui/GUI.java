@@ -44,12 +44,7 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.controlPanel.ControlPanel;
 import sinalgo.gui.controlPanel.MaximizedControlPanel;
 import sinalgo.gui.controlPanel.MinimizedControlPanel;
-import sinalgo.gui.dialogs.AboutDialog;
-import sinalgo.gui.dialogs.GenerateNodesDialog;
-import sinalgo.gui.dialogs.GlobalSettingsDialog;
-import sinalgo.gui.dialogs.GraphInfoDialog;
-import sinalgo.gui.dialogs.GraphPreferencesDialog;
-import sinalgo.gui.dialogs.HelpDialog;
+import sinalgo.gui.dialogs.*;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.Exporter;
 import sinalgo.nodes.Position;
@@ -65,13 +60,7 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -123,7 +112,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param r The runtime instance for which the gui was created.
      */
     public GUI(SinalgoRuntime r) {
-        super(Global.useProject ? (Configuration.getAppName() + " - " + Global.projectName) : (Configuration.getAppName()));
+        super(Global.isUseProject() ? (Configuration.getAppName() + " - " + Global.getProjectName()) : (Configuration.getAppName()));
         GuiHelper.setWindowIcon(this);
 
         // load the buttons for the menu - these settings should be done only once
@@ -246,7 +235,7 @@ public class GUI extends JFrame implements ActionListener {
      * Toggle between full screen and normal view.
      */
     synchronized public void toggleFullScreen() {
-        if (Global.isRunning) {
+        if (Global.isRunning()) {
             return;
         }
         boolean full = !this.isUndecorated();
@@ -338,7 +327,7 @@ public class GUI extends JFrame implements ActionListener {
             if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ENTER) {
                 // Note: the event should not be marked consumed. A consumed Enter may
                 // have been used elsewhere, e.g. to select a menu.
-                if (Global.isRunning) {
+                if (Global.isRunning()) {
                     this.controlPanel.stopSimulation();
                 } else {
                     this.controlPanel.startSimulation();
@@ -480,7 +469,7 @@ public class GUI extends JFrame implements ActionListener {
                             continue;
                         }
                         String text = isProjectSpecific
-                                ? Global.customGlobal.includeGlobalMethodInMenu(method, info.menuText())
+                                ? Global.getCustomGlobal().includeGlobalMethodInMenu(method, info.menuText())
                                 : info.menuText();
                         if (text == null) {
                             continue; // the method was dropped by the project
@@ -518,7 +507,7 @@ public class GUI extends JFrame implements ActionListener {
                 GUI.this.globalMenu.removeAll();
 
                 // add the project specific methods
-                Method[] methods = Global.customGlobal.getClass().getMethods();
+                Method[] methods = Global.getCustomGlobal().getClass().getMethods();
                 if (this.testMethods(methods, true)) {
                     GUI.this.globalMenu.addSeparator();
                 }
@@ -767,7 +756,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param time        The time that passed by until the actual moment.
      * @param eventNumber The number of events that have been executed until now.
      */
-    public void setRoundsPerformed(double time, int eventNumber) {
+    public void setRoundsPerformed(double time, long eventNumber) {
         this.controlPanel.setRoundsPerformed(time, eventNumber);
     }
 
@@ -777,7 +766,7 @@ public class GUI extends JFrame implements ActionListener {
      *
      * @param i The number to be displayed in the control panel.
      */
-    public void setRoundsPerformed(int i) {
+    public void setRoundsPerformed(long i) {
         this.controlPanel.setRoundsPerformed(i);
     }
 
@@ -894,7 +883,7 @@ public class GUI extends JFrame implements ActionListener {
                     // synchronize it on the transformator to grant not to be concurrent with
                     // any drawing or modifying action
                     try {
-                        method.invoke(Global.customGlobal, (Object[]) null);
+                        method.invoke(Global.getCustomGlobal(), (Object[]) null);
                     } catch (IllegalArgumentException e) {
                         method.invoke(null, (Object[]) null);
                     }

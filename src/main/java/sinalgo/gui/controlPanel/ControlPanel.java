@@ -285,7 +285,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     /**
      * Appends some text to the output text field.
      *
-     * @param s
+     * @param s The text to append.
      */
     public void appendTextToOutput(String s) {
         textField.append(s);
@@ -318,7 +318,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * @param time        The current time.
      * @param eventNumber The number of events that have been executed until now.
      */
-    public abstract void setRoundsPerformed(double time, int eventNumber);
+    public abstract void setRoundsPerformed(double time, long eventNumber);
 
     /**
      * This Method changes the number of rounds already performed. This number is
@@ -326,7 +326,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      *
      * @param i The new Number of Steps already Performed.
      */
-    public abstract void setRoundsPerformed(int i);
+    public abstract void setRoundsPerformed(long i);
 
     /**
      * Sets the event that was executed last.
@@ -426,7 +426,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
                         synchronized (this.parent.getTransformator()) {
                             // synchronize it on the transformator to grant not to be concurrent with
                             // any drawing or modifying action
-                            t.getSecond().invoke(Global.customGlobal);
+                            t.getSecond().invoke(Global.getCustomGlobal());
                         }
                     } catch (IllegalArgumentException | IllegalAccessException e1) {
                         throw new SinalgoFatalException("Error while invoking custom method, triggered through button:\n"
@@ -453,7 +453,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      */
     protected Vector<JButton> createCustomButtons() {
         Vector<JButton> buttons = new Vector<>();
-        Method[] f = Global.customGlobal.getClass().getMethods();
+        Method[] f = Global.getCustomGlobal().getClass().getMethods();
         for (Method aF : f) {
             AbstractCustomGlobal.CustomButton info = aF.getAnnotation(AbstractCustomGlobal.CustomButton.class);
             if (info != null) {
@@ -595,7 +595,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
 
         protected JMenuItem runForever = new JMenuItem("Run Forever", ControlPanel.this.getFrameworkIcon("runforever.gif"));
         protected JMenuItem runCount = new JMenuItem(
-                "Run Specified # of " + (Global.isAsynchronousMode ? "Events" : "Rounds"), ControlPanel.this.getFrameworkIcon("run.gif"));
+                "Run Specified # of " + (Global.isAsynchronousMode() ? "Events" : "Rounds"), ControlPanel.this.getFrameworkIcon("run.gif"));
         protected JCheckBoxMenuItem refillEventQueueMenuItem = new JCheckBoxMenuItem("Refill Event Queue",
                 Configuration.isHandleEmptyEventQueue());
 
@@ -627,5 +627,6 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
         }
 
     }
+
 
 }

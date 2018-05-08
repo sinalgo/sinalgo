@@ -72,6 +72,7 @@ public class SortableVector<T> extends Vector<T> {
      * <p>
      * Note: T needs to extend Comparable<T>
      */
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
     public void sort() {
         Arrays.sort(super.elementData, 0, this.size());
     }
@@ -83,7 +84,7 @@ public class SortableVector<T> extends Vector<T> {
      * @param c The comparator to compare any two elements in the vector.
      */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "AccessingNonPublicFieldOfAnotherObject"})
     public void sort(Comparator<? super T> c) {
         Arrays.sort((T[]) super.elementData, 0, this.size(), c);
     }

@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,18 +47,10 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
-import sinalgo.models.ConnectivityModel;
-import sinalgo.models.InterferenceModel;
-import sinalgo.models.MobilityModel;
-import sinalgo.models.Model;
-import sinalgo.models.ReliabilityModel;
+import sinalgo.models.*;
 import sinalgo.nodes.edges.Edge;
-import sinalgo.nodes.messages.Inbox;
-import sinalgo.nodes.messages.Message;
-import sinalgo.nodes.messages.NackBox;
-import sinalgo.nodes.messages.Packet;
+import sinalgo.nodes.messages.*;
 import sinalgo.nodes.messages.Packet.PacketType;
-import sinalgo.nodes.messages.PacketCollection;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.runtime.GUIRuntime;
 import sinalgo.runtime.Global;
@@ -84,6 +77,8 @@ import java.util.Iterator;
  * The base class for all node implementations.
  */
 @EqualsAndHashCode(of = "ID")
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
 
     /**
@@ -254,7 +249,9 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * This inbox instance lets you iterate (several times) over all messages
      * received in this round and retrive information about each message.
      */
-    protected Inbox inbox = null;
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private Inbox inbox = null;
 
     /**
      * The nackBox that contains the packets that did not arrive in the previous
@@ -269,7 +266,9 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * informed about dropped messages, you should turn off this feature to save
      * computing power.
      */
-    protected NackBox nackBox = null;
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private NackBox nackBox = null;
 
     /**
      * The ID of the node. The system requires two nodes not to have the same ID.
@@ -280,7 +279,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     @Getter
     @Setter
-    private int ID;
+    private long ID;
 
     /**
      * The collection of all outgoing Links.
@@ -454,11 +453,11 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
                     + "instead of a copy of the message.");
         }
         Packet packet = Packet.fabricatePacket(clonedMsg);
-        double transmissionTime = Global.messageTransmissionModel.timeToReach(this, target, msg);
+        double transmissionTime = Global.getMessageTransmissionModel().timeToReach(this, target, msg);
 
         // fill in the data of the header
-        packet.setArrivingTime(Global.currentTime + transmissionTime);
-        packet.setSendingTime(Global.currentTime);
+        packet.setArrivingTime(Global.getCurrentTime() + transmissionTime);
+        packet.setSendingTime(Global.getCurrentTime());
         packet.setOrigin(this);
         packet.setDestination(target);
         packet.setEdge(null);
@@ -466,14 +465,14 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         packet.setPositiveDelivery(true); // no disturbtion
         packet.setType(PacketType.UNICAST);
 
-        Global.numberOfMessagesInThisRound++; // statistics
+        Global.setNumberOfMessagesInThisRound(Global.getNumberOfMessagesInThisRound() + 1); // statistics
 
-        if (Global.isAsynchronousMode) {
+        if (Global.isAsynchronousMode()) {
             // add a packet event to the event list
-            SinalgoRuntime.eventQueue.insert(PacketEvent.getNewPacketEvent(packet, Global.currentTime + transmissionTime));
+            SinalgoRuntime.eventQueue.insert(PacketEvent.getNewPacketEvent(packet, Global.getCurrentTime() + transmissionTime));
         } else { // Synchronous
             // check whether the simulation is currently running or not.
-            if (!Global.isRunning) {
+            if (!Global.isRunning()) {
                 // The simulation is not running and the send is called. The node is not allowed
                 // to
                 // send messages outside of their simulation cycle due to synchronisazion
@@ -487,7 +486,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
                 // this will never happen because the fatal error will kill the application.
             }
             // place the packet in the destination's receive buffer
-            target.packetBuffer.addPacket(packet); // place the packet in the targets receive buffer
+            target.getPacketBuffer().addPacket(packet); // place the packet in the targets receive buffer
         }
         // There is no interference created by this message - never add it to the list
         // of 'packetsInTheAir'
@@ -649,33 +648,31 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * member should not be assigned a value. To change the size of a node, change
      * the 'defaultDrwaingSizeInPixels' member.
      */
-    protected int drawingSizeInPixels;
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private int drawingSizeInPixels;
 
     /**
      * The default size of this node (in pixels) when the zoom factor equals 1.
+     * The size is specified in pixels and denotes the size of this node when
+     * the zoom factor equals one. When the GUI shows a zoomed view of the
+     * network graph, the nodes are scaled accordingly.
+     * <p>
+     *
+     * @param defaultDrawingSizeInPixels The size in pixels of this node, when the zoom factor equals 1.
+     * @return The actual size (in pixels) at which this node was drawn during the last draw method.
      */
-    protected int defaultDrawingSizeInPixels;
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private int defaultDrawingSizeInPixels;
 
     /**
      * Polygon instance used to draw a node as a route. This instance is used by all
      * nodes - it's static to save memory
      */
-    protected static Polygon routePolygon = null;
-
-    /**
-     * Sets the size at which this node is drawn. The size is specified in pixels
-     * and denotes the size of this node when the zoom factor equals one. When the
-     * GUI shows a zoomed view of the network graph, the nodes are scaled
-     * accordingly.
-     * <p>
-     * To obtain the actual size (in pixels) at which this node was drawn during the
-     * last draw method, use the member 'drawingSizeInPixels'.
-     *
-     * @param size The size in pixels of this node, when the zoom factor equals 1.
-     */
-    public void setDefaultDrawingSizeInPixels(int size) {
-        this.defaultDrawingSizeInPixels = size;
-    }
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private static Polygon routePolygon = null;
 
     /**
      * This method draws this node to the specified Graphics. Each node is
@@ -691,19 +688,19 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         Color backupColor = g.getColor();
-        this.drawingSizeInPixels = (int) (this.defaultDrawingSizeInPixels * pt.getZoomFactor()); // half the side-length in pixels
+        this.setDrawingSizeInPixels((int) (this.getDefaultDrawingSizeInPixels() * pt.getZoomFactor())); // half the side-length in pixels
         // of the square
         pt.translateToGUIPosition(this.position);
-        int x = pt.getGuiX() - (this.drawingSizeInPixels >> 1);
-        int y = pt.getGuiY() - (this.drawingSizeInPixels >> 1);
+        int x = pt.getGuiX() - (this.getDrawingSizeInPixels() >> 1);
+        int y = pt.getGuiY() - (this.getDrawingSizeInPixels() >> 1);
         Color color = this.getColor();
         if (highlight) {
             // a highlighted node is surrounded by a red square
             g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
-            g.fillRect(x - 2, y - 2, this.drawingSizeInPixels + 4, this.drawingSizeInPixels + 4);
+            g.fillRect(x - 2, y - 2, this.getDrawingSizeInPixels() + 4, this.getDrawingSizeInPixels() + 4);
         }
         g.setColor(color);
-        g.fillRect(x, y, this.drawingSizeInPixels, this.drawingSizeInPixels);
+        g.fillRect(x, y, this.getDrawingSizeInPixels(), this.getDrawingSizeInPixels());
         g.setColor(backupColor);
     }
 
@@ -718,18 +715,18 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     protected void drawAsDisk(Graphics g, PositionTransformation pt, boolean highlight, int sizeInPixels) {
         Color backupColor = g.getColor();
-        this.drawingSizeInPixels = sizeInPixels;
+        this.setDrawingSizeInPixels(sizeInPixels);
         pt.translateToGUIPosition(this.position);
-        int x = pt.getGuiX() - (this.drawingSizeInPixels >> 1);
-        int y = pt.getGuiY() - (this.drawingSizeInPixels >> 1);
+        int x = pt.getGuiX() - (this.getDrawingSizeInPixels() >> 1);
+        int y = pt.getGuiY() - (this.getDrawingSizeInPixels() >> 1);
         Color color = this.getColor();
         if (highlight) {
             // a highlighted node is surrounded by a red square
             g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
-            g.fillOval(x - 2, y - 2, this.drawingSizeInPixels + 4, this.drawingSizeInPixels + 4);
+            g.fillOval(x - 2, y - 2, this.getDrawingSizeInPixels() + 4, this.getDrawingSizeInPixels() + 4);
         }
         g.setColor(color);
-        g.fillOval(x, y, this.drawingSizeInPixels, this.drawingSizeInPixels);
+        g.fillOval(x, y, this.getDrawingSizeInPixels(), this.getDrawingSizeInPixels());
         g.setColor(backupColor);
     }
 
@@ -756,7 +753,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         int w = (int) Math.ceil(fm.stringWidth(text));
 
         // reset the cover-area of this node s.t. mouse events are recognized correctly
-        this.drawingSizeInPixels = Math.max(h, w);
+        this.setDrawingSizeInPixels(Math.max(h, w));
         pt.translateToGUIPosition(this.getPosition());
 
         // Draw the node
@@ -797,7 +794,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         int w = (int) Math.ceil(fm.stringWidth(text));
 
         // reset the cover-area of this node s.t. mouse events are recognized correctly
-        this.drawingSizeInPixels = Math.max(h, w);
+        this.setDrawingSizeInPixels(Math.max(h, w));
         pt.translateToGUIPosition(this.getPosition());
 
         // Draw the node
@@ -824,12 +821,12 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @param sizeInPixels The diameter of the route in pixels
      */
     public void drawAsRoute(Graphics g, PositionTransformation pt, boolean highlight, int sizeInPixels) {
-        if (routePolygon == null) {
-            routePolygon = new Polygon();
+        if (getRoutePolygon() == null) {
+            setRoutePolygon(new Polygon());
         }
 
         Color backupColor = g.getColor();
-        this.drawingSizeInPixels = sizeInPixels;
+        this.setDrawingSizeInPixels(sizeInPixels);
         sizeInPixels >>= 1; // div by 2
         pt.translateToGUIPosition(this.getPosition());
         int x = pt.getGuiX();
@@ -838,20 +835,20 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         if (highlight) {
             // a highlighted node is surrounded by a red square
             g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
-            routePolygon.reset();
-            routePolygon.addPoint(x, y + sizeInPixels + 2);
-            routePolygon.addPoint(x - sizeInPixels - 2, y);
-            routePolygon.addPoint(x, y - sizeInPixels - 2);
-            routePolygon.addPoint(x + sizeInPixels + 2, y);
-            g.fillPolygon(routePolygon);
+            getRoutePolygon().reset();
+            getRoutePolygon().addPoint(x, y + sizeInPixels + 2);
+            getRoutePolygon().addPoint(x - sizeInPixels - 2, y);
+            getRoutePolygon().addPoint(x, y - sizeInPixels - 2);
+            getRoutePolygon().addPoint(x + sizeInPixels + 2, y);
+            g.fillPolygon(getRoutePolygon());
         }
         g.setColor(color);
-        routePolygon.reset();
-        routePolygon.addPoint(x, y + sizeInPixels);
-        routePolygon.addPoint(x - sizeInPixels, y);
-        routePolygon.addPoint(x, y - sizeInPixels);
-        routePolygon.addPoint(x + sizeInPixels, y);
-        g.fillPolygon(routePolygon);
+        getRoutePolygon().reset();
+        getRoutePolygon().addPoint(x, y + sizeInPixels);
+        getRoutePolygon().addPoint(x - sizeInPixels, y);
+        getRoutePolygon().addPoint(x, y - sizeInPixels);
+        getRoutePolygon().addPoint(x + sizeInPixels, y);
+        g.fillPolygon(getRoutePolygon());
 
         g.setColor(backupColor);
     }
@@ -864,7 +861,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      *           of this edge.
      */
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-        this.drawToPostscriptAsSquare(pw, pt, this.drawingSizeInPixels, this.getColor());
+        this.drawToPostscriptAsSquare(pw, pt, this.getDrawingSizeInPixels(), this.getColor());
     }
 
     /**
@@ -933,7 +930,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
     public final void step() throws WrongConfigurationException {
 
         // update the message buffer
-        this.packetBuffer.updateMessageBuffer();
+        this.getPacketBuffer().updateMessageBuffer();
 
         this.preStep();
 
@@ -948,7 +945,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
             Iterator<Timer> it = this.timers.iterator();
             while (it.hasNext()) {
                 Timer timer = it.next();
-                if (timer.getFireTime() <= Global.currentTime) {
+                if (timer.getFireTime() <= Global.getCurrentTime()) {
                     it.remove();
                     // we may not call fire() while iterating over the list of timers of this node,
                     // as the timer could reschedule itself and require to be added again to the
@@ -968,28 +965,28 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         // Handle dropped messages (messages that were sent by this node, but that do
         // not arrive.
         if (Configuration.isGenerateNAckMessages()) {
-            PacketCollection pc = Global.isEvenRound ? this.nAckBufferEvenRound : this.nAckBufferOddRound;
-            if (this.nackBox == null) {
-                this.nackBox = new NackBox(pc);
+            PacketCollection pc = Global.isEvenRound() ? this.nAckBufferEvenRound : this.nAckBufferOddRound;
+            if (this.getNackBox() == null) {
+                this.setNackBox(new NackBox(pc));
             } else {
-                this.nackBox.resetForList(pc);
+                this.getNackBox().resetForList(pc);
             }
-            this.handleNAckMessages(this.nackBox);
+            this.handleNAckMessages(this.getNackBox());
         }
 
         // call the 'handleMessages' ALWAYS, and pass the appropriate Inbox. This Inbox
         // can also be a an Iterator over an empty list.
-        this.inbox = this.packetBuffer.getInbox();
-        this.handleMessages(this.inbox);
+        this.setInbox(this.getPacketBuffer().getInbox());
+        this.handleMessages(this.getInbox());
 
         // a custom method that may do something at the end of the step
         this.postStep();
 
         // all the packets in the inbox and nackBox are not used anymore and can be
         // freed.
-        this.inbox.freePackets();
+        this.getInbox().freePackets();
         if (Configuration.isGenerateNAckMessages()) {
-            this.nackBox.freePackets(); // this resets the nAckBuffer
+            this.getNackBox().freePackets(); // this resets the nAckBuffer
         }
     }
 
@@ -1024,7 +1021,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
     /**
      * A counter to assign each node a unique ID, at the time when it is generated.
      */
-    private static int idCounter = 0;
+    private static long idCounter = 0;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -1047,7 +1044,9 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * collection utilizes this field, it initializes it when the node is added to
      * the node collection.
      */
-    public NodeCollectionInfoInterface nodeCollectionInfo = null;
+    @Getter
+    @Setter
+    private NodeCollectionInfoInterface nodeCollectionInfo = null;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -1057,7 +1056,9 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * This flag is set to true when this node is added to the node collection and
      * set to false when removed from the node collection.
      */
-    public boolean holdInNodeCollection = false;
+    @Getter
+    @Setter
+    private boolean holdInNodeCollection = false;
 
     /**
      * A node-internal iterator over all outgoing edges of this node.
@@ -1115,7 +1116,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     protected Node() {
         try {
-            this.defaultDrawingSizeInPixels = Configuration.getIntegerParameter("Node/defaultSize");
+            this.setDefaultDrawingSizeInPixels(Configuration.getIntegerParameter("Node/defaultSize"));
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException(e.getMessage());
         }
@@ -1139,7 +1140,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @return The list of packets that are being sent to this node.
      */
     public PacketBuffer getInboxPacketBuffer() {
-        return this.packetBuffer;
+        return this.getPacketBuffer();
     }
 
     /**
@@ -1153,7 +1154,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         if (p.getType() != PacketType.UNICAST) {
             return; // only nacknowledge unicast messages
         }
-        if (Global.isEvenRound) { // add to the buffer of the next round
+        if (Global.isEvenRound()) { // add to the buffer of the next round
             this.nAckBufferOddRound.add(p);
         } else {
             this.nAckBufferEvenRound.add(p);
@@ -1200,7 +1201,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     public final boolean isInside(int x, int y, PositionTransformation pt) {
         pt.translateToGUIPosition(this.position);
-        int delta = (int) (0.5 * this.drawingSizeInPixels); // half the side-length in pixels of the square
+        int delta = (int) (0.5 * this.getDrawingSizeInPixels()); // half the side-length in pixels of the square
         return Math.abs(x - pt.getGuiX()) <= delta && Math.abs(y - pt.getGuiY()) <= delta;
     }
 
@@ -1249,11 +1250,11 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
                 SinalgoRuntime.addNode(this);
             }
         } catch (NullPointerException nPE) {
-            Global.log.logln(LogL.ERROR_DETAIL,
+            Global.getLog().logln(LogL.ERROR_DETAIL,
                     "There was an Exception during the generation of a node" + nPE.getMessage());
             throw nPE;
         } catch (WrongConfigurationException wCE) {
-            Global.log.logln(LogL.ERROR_DETAIL,
+            Global.getLog().logln(LogL.ERROR_DETAIL,
                     "There was an Exception during the generation of a node: " + wCE.getMessage());
             throw wCE;
         }
@@ -1271,7 +1272,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     private void broadcastMessage(Message m, double intensity) {
         // check whether the simulation is currently running or not.
-        if (!Global.isRunning && !Global.isAsynchronousMode) {
+        if (!Global.isRunning() && !Global.isAsynchronousMode()) {
             // The simulation is not running and the broadcast is called. The node is not
             // allowed to
             // send messages outside of their simulation cycle due to synchronisazion
@@ -1339,7 +1340,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      * @return The packet that has been transmitted.
      */
     private Packet sendMessage(Message msg, Edge edge, Node sender, Node target, double intensity) {
-        if (Global.isAsynchronousMode) {
+        if (Global.isAsynchronousMode()) {
             return this.asynchronousSending(msg, edge, sender, target, intensity);
         } else {
             return this.synchronousSending(msg, edge, sender, target, intensity);
@@ -1365,11 +1366,11 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
                     + "instead of a copy of the message.");
         }
         Packet packet = Packet.fabricatePacket(clonedMsg);
-        double transmissionTime = Global.messageTransmissionModel.timeToReach(sender, target, msg);
+        double transmissionTime = Global.getMessageTransmissionModel().timeToReach(sender, target, msg);
 
         // fill in the data of the header
-        packet.setArrivingTime(Global.currentTime + transmissionTime);
-        packet.setSendingTime(Global.currentTime);
+        packet.setArrivingTime(Global.getCurrentTime() + transmissionTime);
+        packet.setSendingTime(Global.getCurrentTime());
         packet.setOrigin(sender);
         packet.setDestination(target);
         packet.setEdge(edge);
@@ -1383,10 +1384,10 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
             packet.setPositiveDelivery(false); // when there is no edge, the packet is immediately dropped
         }
 
-        Global.numberOfMessagesOverAll++; // statistics (don't increment the counter that counts the number of sent
+        Global.setNumberOfMessagesOverAll(Global.getNumberOfMessagesOverAll() + 1); // statistics (don't increment the counter that counts the number of sent
         // messages per round. This counter has no meaning in the async mode.)
 
-        SinalgoRuntime.eventQueue.insert(PacketEvent.getNewPacketEvent(packet, Global.currentTime + transmissionTime));
+        SinalgoRuntime.eventQueue.insert(PacketEvent.getNewPacketEvent(packet, Global.getCurrentTime() + transmissionTime));
 
         return packet;
     }
@@ -1404,7 +1405,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     private Packet synchronousSending(Message msg, Edge edge, Node sender, Node target, double intensity) {
         // check whether the simulation is currently running or not.
-        if (!Global.isRunning) {
+        if (!Global.isRunning()) {
             // The simulation is not running and the send is called. The node is not allowed
             // to
             // send messages outside of their simulation cycle due to synchronisazion
@@ -1421,11 +1422,11 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
                         + "instead of a copy of the message.");
             }
             Packet packet = Packet.fabricatePacket(clonedMsg);
-            double transmissionTime = Global.messageTransmissionModel.timeToReach(sender, target, msg);
+            double transmissionTime = Global.getMessageTransmissionModel().timeToReach(sender, target, msg);
 
             // fill in the data of the header
-            packet.setArrivingTime(Global.currentTime + transmissionTime);
-            packet.setSendingTime(Global.currentTime);
+            packet.setArrivingTime(Global.getCurrentTime() + transmissionTime);
+            packet.setSendingTime(Global.getCurrentTime());
             packet.setOrigin(sender);
             packet.setDestination(target);
             packet.setEdge(edge);
@@ -1439,9 +1440,9 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
                 packet.setPositiveDelivery(false); // when there is no edge, the packet is immediately dropped
             }
 
-            target.packetBuffer.addPacket(packet); // place the packet in the targets receive buffer
+            target.getPacketBuffer().addPacket(packet); // place the packet in the targets receive buffer
 
-            Global.numberOfMessagesInThisRound++; // statistics (At the end of the round, this member is added to
+            Global.setNumberOfMessagesInThisRound(Global.getNumberOfMessagesInThisRound() + 1); // statistics (At the end of the round, this member is added to
             // Global.numberOfMessagesOverAll.)
 
             return packet;

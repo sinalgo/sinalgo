@@ -227,9 +227,9 @@ public class S4Node extends Node {
             super.draw(g, pt, highlight);
         } else {
             if (this.isDrawRound()) {
-                super.drawNodeAsDiskWithText(g, pt, highlight, Integer.toString(this.getID()), 16, Color.WHITE);
+                super.drawNodeAsDiskWithText(g, pt, highlight, Long.toString(this.getID()), 16, Color.WHITE);
             } else {
-                super.drawNodeAsSquareWithText(g, pt, highlight, Integer.toString(this.getID()), 16, Color.WHITE);
+                super.drawNodeAsSquareWithText(g, pt, highlight, Long.toString(this.getID()), 16, Color.WHITE);
             }
         }
     }
@@ -237,9 +237,9 @@ public class S4Node extends Node {
     @Override
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
         if (this.isDrawRound()) {
-            super.drawToPostScriptAsDisk(pw, pt, this.drawingSizeInPixels / 2, this.getColor());
+            super.drawToPostScriptAsDisk(pw, pt, this.getDrawingSizeInPixels() / 2, this.getColor());
         } else {
-            super.drawToPostscriptAsSquare(pw, pt, this.drawingSizeInPixels, this.getColor());
+            super.drawToPostscriptAsSquare(pw, pt, this.getDrawingSizeInPixels(), this.getColor());
         }
     }
 }

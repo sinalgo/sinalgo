@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.controlPanel;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.GUI;
@@ -201,7 +204,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         this.simulationPane.removeAll(); // restart from scratch
         boolean isMax = this.appConfig.isGuiControlPanelExpandSimulation();
 
-        if (Global.isAsynchronousMode) { // the minimization button is only needed in async mode.
+        if (Global.isAsynchronousMode()) { // the minimization button is only needed in async mode.
             JButton simulationPanelMinimizeButton;
             if (isMax) {
                 simulationPanelMinimizeButton = this.createFrameworkIconButton("minimizeSimControl", "minimize.gif",
@@ -226,10 +229,10 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         Font labelFont = this.info.getFont();
         JLabel passedTimeLabel;
         JLabel eventNumberLabel;
-        if (Global.isAsynchronousMode) {
+        if (Global.isAsynchronousMode()) {
             passedTimeLabel = new JLabel("Time: ");
             passedTimeLabel.setFont(labelFont);
-            this.timePerformed.setText(String.valueOf(this.round(sinalgo.runtime.Global.currentTime, 4)));
+            this.timePerformed.setText(String.valueOf(this.round(Global.getCurrentTime(), 4)));
             this.timePerformed.setEditable(false);
             this.timePerformed.setBorder(BorderFactory.createEmptyBorder());
             this.info.add(passedTimeLabel);
@@ -238,7 +241,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
             if (isMax) {
                 eventNumberLabel = new JLabel("Events: ");
                 eventNumberLabel.setFont(labelFont);
-                this.roundsPerformed.setText(String.valueOf(EventQueue.eventNumber));
+                this.roundsPerformed.setText(String.valueOf(EventQueue.getEventNumber()));
                 this.roundsPerformed.setEditable(false);
                 this.roundsPerformed.setBorder(BorderFactory.createEmptyBorder());
                 this.info.add(eventNumberLabel);
@@ -257,7 +260,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         } else { // Synchronous mode
             passedTimeLabel = new JLabel("Round: ");
             passedTimeLabel.setFont(labelFont);
-            this.timePerformed.setText(String.valueOf((int) this.round(sinalgo.runtime.Global.currentTime, 4)));
+            this.timePerformed.setText(String.valueOf((int) this.round(Global.getCurrentTime(), 4)));
 
             this.timePerformed.setEditable(false);
             this.timePerformed.setBorder(BorderFactory.createEmptyBorder());
@@ -333,7 +336,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         // Async mode - list of events
         // ------------------------------------------------------------------------
         // if there is an actual Event: add the panel.
-        if (Global.isAsynchronousMode) {
+        if (Global.isAsynchronousMode()) {
             this.events.setLayout(new BorderLayout());
 
             String[] elements = {currentEventString};
@@ -591,13 +594,13 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
     }
 
     @Override
-    public void setRoundsPerformed(double time, int eventNumber) {
+    public void setRoundsPerformed(double time, long eventNumber) {
         this.timePerformed.setText(String.valueOf(this.round(time, 4)));
         this.roundsPerformed.setText(String.valueOf(eventNumber));
     }
 
     @Override
-    public void setRoundsPerformed(int i) {
+    public void setRoundsPerformed(long i) {
         this.timePerformed.setText(String.valueOf(i));
     }
 
@@ -616,7 +619,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
     @Override
     public void eventQueueChanged() {
-        if (!Global.isRunning) {
+        if (!Global.isRunning()) {
             this.composeEventList();
             this.eventList.setListData(this.queueElements);
             // remove the focus from the list, for cases when the wrong one is installed
@@ -655,17 +658,26 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         }
     }
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private class EventQueueElement extends JComponent {
 
         private static final long serialVersionUID = 2348221129614192757L;
 
-        private String displayableText = "";
+        private String displayableText;
         private String tooltip = "";
+
+        /**
+         * The event associated w/ this element, null if there is no event
+         * assoc. w/ this element
+         */
+        @Getter
+        @Setter
         private Event event = null;
 
         private EventQueueElement(String displayableText, String tooltip) {
-            this.displayableText = displayableText;
-            this.tooltip = tooltip;
+            this.setDisplayableText(displayableText);
+            this.setTooltip(tooltip);
         }
 
         /**
@@ -674,34 +686,22 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
          * @param displayableText The text to be set for this element.
          */
         public void setText(String displayableText) {
-            this.displayableText = displayableText;
+            this.setDisplayableText(displayableText);
         }
 
         @Override
         public void setToolTipText(String tooltip) {
-            this.tooltip = tooltip;
-        }
-
-        public void setEvent(Event e) {
-            this.event = e;
-        }
-
-        /**
-         * @return the event associated w/ this element, null if there is no event
-         * assoc. w/ this element
-         */
-        public Event getEvent() {
-            return this.event;
+            this.setTooltip(tooltip);
         }
 
         @Override
         public String toString() {
-            return this.displayableText;
+            return this.getDisplayableText();
         }
 
         @Override
         public String getToolTipText() {
-            return this.tooltip;
+            return this.getTooltip();
         }
     }
 
@@ -758,7 +758,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
                 EventQueueElement element = (EventQueueElement) this.getModel().getElementAt(index);
                 return element.getToolTipText();
             } else {
-                if (((EventQueueElement) this.getModel().getElementAt(0)).displayableText == null) {
+                if (((EventQueueElement) this.getModel().getElementAt(0)).getDisplayableText() == null) {
                     return "No event scheduled";
                 } else {
                     return null;

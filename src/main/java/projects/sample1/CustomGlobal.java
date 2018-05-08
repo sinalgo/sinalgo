@@ -76,7 +76,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     // The user can optionally specify exitAfter in the config file to indicate
     // after how many rounds the simulation should stop.
-    private boolean exitAfterFixedRounds = false;
+    private boolean exitAfterFixedRounds;
     private int exitAfterNumRounds;
 
     {
@@ -102,13 +102,13 @@ public class CustomGlobal extends AbstractCustomGlobal {
     @Override
     public boolean hasTerminated() {
         if (this.exitAfterFixedRounds) {
-            return this.exitAfterNumRounds <= Global.currentTime;
+            return this.exitAfterNumRounds <= Global.getCurrentTime();
         }
 
         if (Tools.isSimulationInGuiMode()) {
             return false; // in GUI mode, have the user decide when to stop.
         } else {
-            return Global.currentTime > 100000; // stop after x rounds
+            return Global.getCurrentTime() > 100000; // stop after x rounds
         }
     }
 
@@ -141,9 +141,9 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     @Override
     public void postRound() {
-        double dt = System.currentTimeMillis() - Global.startTimeOfRound.getTime();
-        this.log.logln("Round " + (int) (Global.currentTime) + " time: " + dt + " Msg/Round: "
-                + Global.numberOfMessagesInThisRound);
+        double dt = System.currentTimeMillis() - Global.getStartTimeOfRound().getTime();
+        this.log.logln("Round " + (int) (Global.getCurrentTime()) + " time: " + dt + " Msg/Round: "
+                + Global.getNumberOfMessagesInThisRound());
     }
 
     /**
@@ -164,10 +164,10 @@ public class CustomGlobal extends AbstractCustomGlobal {
                 }
             }
         }
-        if (Global.isGuiMode) {
+        if (Global.isGuiMode()) {
             if (max != null) {
                 JOptionPane.showMessageDialog(((GUIRuntime) Main.getRuntime()).getGUI(),
-                        "The node with the maximum sent number of messages is the node with id " + max.getID()
+                        "The node with the maximum sent number of messages is the node with ID " + max.getID()
                                 + ". \nIt sent " + max.getMsgSent() + " messages until now.");
             } else {
                 JOptionPane.showMessageDialog(((GUIRuntime) Main.getRuntime()).getGUI(), "There is no node.");
@@ -202,7 +202,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     @Override
     public void checkProjectRequirements() {
-        if (Global.isAsynchronousMode) {
+        if (Global.isAsynchronousMode()) {
             throw new SinalgoFatalException(
                     "SampleProject1 is written to be executed in synchronous mode. It doesn't work in asynchronous mode.");
         }

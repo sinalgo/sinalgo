@@ -194,7 +194,7 @@ public class FNode extends Node {
      * entry, a search is started, and the message is put in a buffer of messages on
      * hold.
      *
-     * @param msg
+     * @param msg The message to be sent.
      */
     public void sendPayloadMessage(PayloadMsg msg) {
         RoutingEntry re = this.routingTable.get(msg.destination);
@@ -209,7 +209,6 @@ public class FNode extends Node {
                 msg.ackTimer = rpmt;
             }
             this.send(msg, re.nextHop);
-            return;
         } else {
             this.lookForNode(msg.destination, 4);
             this.messagesOnHold.add(msg);
@@ -219,11 +218,11 @@ public class FNode extends Node {
     /**
      * Starts a search for a given node with the given TTL
      *
-     * @param destination
-     * @param ttl
+     * @param destination The destination node.
+     * @param ttl         The time-to-live.
      */
     public void lookForNode(Node destination, int ttl) {
-        if (ttl > 10000000) { // this limits to graphs of diameter 10^7 ....
+        if (ttl > 10_000_000) { // this limits to graphs of diameter 10^7 ....
             return; // we've already searched too far - there is probably no connection!
         }
 

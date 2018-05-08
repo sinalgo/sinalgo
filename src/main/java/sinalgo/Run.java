@@ -230,13 +230,13 @@ public class Run {
         Tools.parseProject(args);
 
         // start the project selector GUI if no project was selected.
-        if (!Global.useProject) {
+        if (!Global.isUseProject()) {
             if (guiBatch == 2) { // in batch mode
                 throw new SinalgoFatalException(
                         "Missing project: In batch mode, you need to specify a project on the command line using the -project flag.");
             }
 
-            Global.isGuiMode = true;
+            Global.setGuiMode(true);
             // we are in gui mode, but no project was selected
             ProjectSelector pane = new ProjectSelector(this);
             pane.populate();
@@ -250,7 +250,7 @@ public class Run {
                 throw new SinalgoWrappedException(e);
             }
         }
-        return Global.projectName;
+        return Global.getProjectName();
     }
 
     private static Process mainProcess = null; // the simulation process, may be null
