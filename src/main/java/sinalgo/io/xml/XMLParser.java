@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.io.xml;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -68,7 +70,9 @@ public class XMLParser {
      * This means: When the project Selector has already provided all settings, the
      * config file won't be parsed again in the main method.
      */
-    public static boolean blockParse = false;
+    @Getter
+    @Setter
+    private static boolean blockParse = false;
 
     /**
      * This method parses the framework node of the xml configuration file. All
@@ -133,7 +137,7 @@ public class XMLParser {
      * @param reader The input reader of the xml-file.
      */
     public static void parse(Reader reader) {
-        if (!blockParse) {
+        if (!isBlockParse()) {
             try {
                 Document doc = new SAXBuilder().build(reader);
                 Element root = doc.getRootElement();
@@ -156,4 +160,5 @@ public class XMLParser {
             }
         }
     }
+
 }

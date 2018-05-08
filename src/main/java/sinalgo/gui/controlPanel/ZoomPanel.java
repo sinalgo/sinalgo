@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.controlPanel;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.gui.GUI;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.gui.transformation.Transformation3D;
@@ -53,7 +56,8 @@ import java.awt.event.MouseWheelListener;
  * helps the user to display which part of the graph is shwon on the screen and
  * also to quickly move the view.
  */
-
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelListener {
 
     private static final long serialVersionUID = -8525553690793845242L;
@@ -85,19 +89,19 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
      * @return the preferred height of this panel, given its width
      */
     int getPreferredHeight(int width) {
-        if (this.pt instanceof Transformation3D) {
+        if (this.getPt() instanceof Transformation3D) {
             return width;
         } else {
-            return (int) ((1 - 2 * this.borderFactor) * width);
+            return (int) ((1 - 2 * this.getBorderFactor()) * width);
         }
     }
 
     @Override
     public void paint(Graphics g) {
-        synchronized (this.pt) {
+        synchronized (this.getPt()) {
             // allow some border around
-            int border = (int) (this.getWidth() * this.borderFactor);
-            if (this.pt instanceof Transformation3D) {
+            int border = (int) (this.getWidth() * this.getBorderFactor());
+            if (this.getPt() instanceof Transformation3D) {
                 // but not in 3D
                 border = 0;
             }
@@ -105,7 +109,7 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
             int dim = Math.min(this.getWidth() - 2 * border, this.getHeight());
             g.setColor(this.getBackground());
             g.fillRect(0, 0, this.getWidth(), this.getHeight());
-            this.pt.drawZoomPanel(g, dim, border, 0, this.getWidth(), this.getHeight());
+            this.getPt().drawZoomPanel(g, dim, border, 0, this.getWidth(), this.getHeight());
         }
     }
 
@@ -117,12 +121,12 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
         // on double click, zoom to fit or default view
         if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() >= 2) {
             // fit, but do not rotate
-            this.pt.zoomToFit(this.gui.getGraphPanel().getWidth(), this.gui.getGraphPanel().getHeight());
-            this.gui.setZoomFactor(this.pt.getZoomFactor());
+            this.getPt().zoomToFit(this.getGui().getGraphPanel().getWidth(), this.getGui().getGraphPanel().getHeight());
+            this.getGui().setZoomFactor(this.getPt().getZoomFactor());
         } else if (e.getButton() == MouseEvent.BUTTON3 && e.getClickCount() >= 2) {
             // rotate to default view
-            this.pt.defaultView(this.gui.getGraphPanel().getWidth(), this.gui.getGraphPanel().getHeight());
-            this.gui.setZoomFactor(this.pt.getZoomFactor());
+            this.getPt().defaultView(this.getGui().getGraphPanel().getWidth(), this.getGui().getGraphPanel().getHeight());
+            this.getGui().setZoomFactor(this.getPt().getZoomFactor());
         }
     }
 
@@ -135,12 +139,12 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
             return;
         } // block mouse input while simulating
         if (e.getButton() == MouseEvent.BUTTON1) { // translate the view
-            this.shiftStartPoint = e.getPoint();
+            this.setShiftStartPoint(e.getPoint());
             this.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             // rotate if 3D
-            if (this.pt instanceof Transformation3D) {
-                this.rotateStartPoint = e.getPoint();
+            if (this.getPt() instanceof Transformation3D) {
+                this.setRotateStartPoint(e.getPoint());
             }
         }
     }
@@ -150,11 +154,11 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
         if (Global.isRunning()) {
             return;
         } // block mouse input while simulating
-        if (this.shiftStartPoint != null || this.rotateStartPoint != null) {
-            this.gui.redrawGUI();
+        if (this.getShiftStartPoint() != null || this.getRotateStartPoint() != null) {
+            this.getGui().redrawGUI();
         }
-        this.shiftStartPoint = null;
-        this.rotateStartPoint = null;
+        this.setShiftStartPoint(null);
+        this.setRotateStartPoint(null);
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
@@ -176,16 +180,16 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
         if (Global.isRunning()) {
             return;
         } // block mouse input while simulating
-        if (this.shiftStartPoint != null) {
+        if (this.getShiftStartPoint() != null) {
             // shift the view
-            this.pt.moveView((int) ((this.shiftStartPoint.x - e.getX()) / this.pt.getZoomPanelZoomFactor() * this.pt.getZoomFactor()),
-                    (int) ((this.shiftStartPoint.y - e.getY()) / this.pt.getZoomPanelZoomFactor() * this.pt.getZoomFactor()));
-            this.shiftStartPoint = e.getPoint();
-            this.gui.redrawControl();
-        } else if (this.rotateStartPoint != null) {
-            if (this.pt instanceof Transformation3D) {
-                Transformation3D t3d = (Transformation3D) this.pt;
-                t3d.rotate(e.getX() - this.rotateStartPoint.x, e.getY() - this.rotateStartPoint.y, !e.isControlDown(), true); // read
+            this.getPt().moveView((int) ((this.getShiftStartPoint().x - e.getX()) / this.getPt().getZoomPanelZoomFactor() * this.getPt().getZoomFactor()),
+                    (int) ((this.getShiftStartPoint().y - e.getY()) / this.getPt().getZoomPanelZoomFactor() * this.getPt().getZoomFactor()));
+            this.setShiftStartPoint(e.getPoint());
+            this.getGui().redrawControl();
+        } else if (this.getRotateStartPoint() != null) {
+            if (this.getPt() instanceof Transformation3D) {
+                Transformation3D t3d = (Transformation3D) this.getPt();
+                t3d.rotate(e.getX() - this.getRotateStartPoint().x, e.getY() - this.getRotateStartPoint().y, !e.isControlDown(), true); // read
                 // keyboard
                 // -
                 // ctrl
@@ -193,8 +197,8 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
                 // to
                 // freely
                 // rotate
-                this.rotateStartPoint = e.getPoint();
-                this.gui.redrawControl();
+                this.setRotateStartPoint(e.getPoint());
+                this.getGui().redrawControl();
             }
         }
     }
@@ -213,9 +217,9 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
         } // block mouse input while simulating
         int clicks = e.getWheelRotation();
         if (clicks < 0) {
-            this.gui.zoom(1.08); // zoom In
+            this.getGui().zoom(1.08); // zoom In
         } else {
-            this.gui.zoom(1.0 / 1.08); // zoom out
+            this.getGui().zoom(1.0 / 1.08); // zoom out
         }
     }
 }

@@ -66,11 +66,11 @@ import java.util.Vector;
 /**
  * The maximized version of the control panel.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class MaximizedControlPanel extends ControlPanel implements EventQueueListener {
 
     private static final long serialVersionUID = -4478176658450671857L;
-
-    private AppConfig appConfig = AppConfig.getAppConfig();
 
     private EventQueueElement[] queueElements = new EventQueueElement[Configuration.getShownEventQueueSize()];
 
@@ -93,7 +93,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
         @Override
         public Dimension getPreferredScrollableViewportSize() {
-            return new Dimension(MaximizedControlPanel.this.controlPanelWidth, MaximizedControlPanel.this.parent.getHeight() - 60); // hand-crafted :(
+            return new Dimension(MaximizedControlPanel.this.getControlPanelWidth(), MaximizedControlPanel.this.getParent().getHeight() - 60); // hand-crafted :(
         }
 
         @Override
@@ -124,34 +124,34 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
             // ------------------------------------------------------------------------
             JPanel mPanel = new JPanel();
             JButton minimize = MaximizedControlPanel.this.createFrameworkIconButton("minimizedPanel", "minimize.gif", "Minimize");
-            minimize.setPreferredSize(new Dimension(MaximizedControlPanel.this.controlPanelWidth, 11));
+            minimize.setPreferredSize(new Dimension(MaximizedControlPanel.this.getControlPanelWidth(), 11));
             MaximizedControlPanel.this.addToDisabledButtonList(minimize);
             mPanel.add(minimize);
             this.add(mPanel);
 
             // Simulation Control
             // ------------------------------------------------------------------------
-            MaximizedControlPanel.this.simulationPane = new JLayeredPane();
+            MaximizedControlPanel.this.setSimulationPane(new JLayeredPane());
             MaximizedControlPanel.this.createSimulationPanel();
-            this.add(MaximizedControlPanel.this.simulationPane);
+            this.add(MaximizedControlPanel.this.getSimulationPane());
 
             // Customized Buttons
             // ------------------------------------------------------------------------
-            MaximizedControlPanel.this.projectControlContent = new JLayeredPane(); // a layered panel for the minimize button
+            MaximizedControlPanel.this.setProjectControlContent(new JLayeredPane()); // a layered panel for the minimize button
             MaximizedControlPanel.this.createProjectControlPanel();
-            this.add(MaximizedControlPanel.this.projectControlContent);
+            this.add(MaximizedControlPanel.this.getProjectControlContent());
 
             // VIEW Panel
             // ------------------------------------------------------------------------
-            MaximizedControlPanel.this.viewContent = new JLayeredPane(); // a layered panel for the minimize button
+            MaximizedControlPanel.this.setViewContent(new JLayeredPane()); // a layered panel for the minimize button
             MaximizedControlPanel.this.createViewPanel();
-            this.add(MaximizedControlPanel.this.viewContent);
+            this.add(MaximizedControlPanel.this.getViewContent());
 
             // TEXT Panel
             // ------------------------------------------------------------------------
-            MaximizedControlPanel.this.textContent = new JLayeredPane();
+            MaximizedControlPanel.this.setTextContent(new JLayeredPane());
             MaximizedControlPanel.this.createTextPanel();
-            this.add(MaximizedControlPanel.this.textContent);
+            this.add(MaximizedControlPanel.this.getTextContent());
         }
     } // end of class MyScrollPane
 
@@ -159,30 +159,30 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
      * Creates the content of the text panel
      */
     private void createTextPanel() {
-        this.textContent.removeAll();
+        this.getTextContent().removeAll();
 
         JButton textPanelMinimizeButton;
-        if (this.appConfig.isGuiControlPanelShowTextPanel()) {
+        if (AppConfig.getAppConfig().isGuiControlPanelShowTextPanel()) {
             textPanelMinimizeButton = this.createFrameworkIconButton("minimizeText", "minimize.gif", "Minimize");
         } else {
             textPanelMinimizeButton = this.createFrameworkIconButton("maximizeText", "maximize.gif", "Maximize");
         }
         textPanelMinimizeButton.setPreferredSize(new Dimension(21, 11));
-        this.textContent.add(textPanelMinimizeButton, JLayeredPane.PALETTE_LAYER);
-        textPanelMinimizeButton.setBounds(this.controlPanelWidth - 26, 3, 21, 11);
+        this.getTextContent().add(textPanelMinimizeButton, JLayeredPane.PALETTE_LAYER);
+        textPanelMinimizeButton.setBounds(this.getControlPanelWidth() - 26, 3, 21, 11);
         this.addToDisabledButtonList(textPanelMinimizeButton); // disable while simulating
 
         JPanel textPanel = new JPanel();
         textPanel.setBorder(BorderFactory.createTitledBorder("Output"));
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
-        this.textContent.add(textPanel, JLayeredPane.DEFAULT_LAYER);
+        this.getTextContent().add(textPanel, JLayeredPane.DEFAULT_LAYER);
 
-        if (this.appConfig.isGuiControlPanelShowTextPanel()) {
-            JScrollPane sp = new JScrollPane(textField, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        if (AppConfig.getAppConfig().isGuiControlPanelShowTextPanel()) {
+            JScrollPane sp = new JScrollPane(getTextField(), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                     ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            sp.setPreferredSize(new Dimension(this.controlPanelWidth, Configuration.getOutputTextFieldHeight()));
-            textField.setEditable(false);
-            textField.setLineWrap(true);
+            sp.setPreferredSize(new Dimension(this.getControlPanelWidth(), Configuration.getOutputTextFieldHeight()));
+            getTextField().setEditable(false);
+            getTextField().setLineWrap(true);
             textPanel.add(sp);
             JButton clearText = super.createTextButton("ClearOutputText", "Clear", "Remove all output");
             clearText.setPreferredSize(new Dimension(60, 12));
@@ -196,13 +196,13 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
         // Finally set the size of the textPanel
         Dimension dim = textPanel.getPreferredSize();
-        textPanel.setBounds(0, 0, this.controlPanelWidth, dim.height);
-        this.textContent.setPreferredSize(dim);
+        textPanel.setBounds(0, 0, this.getControlPanelWidth(), dim.height);
+        this.getTextContent().setPreferredSize(dim);
     }
 
     private void createSimulationPanel() {
-        this.simulationPane.removeAll(); // restart from scratch
-        boolean isMax = this.appConfig.isGuiControlPanelExpandSimulation();
+        this.getSimulationPane().removeAll(); // restart from scratch
+        boolean isMax = AppConfig.getAppConfig().isGuiControlPanelExpandSimulation();
 
         if (Global.isAsynchronousMode()) { // the minimization button is only needed in async mode.
             JButton simulationPanelMinimizeButton;
@@ -214,90 +214,90 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
                         "Maximize");
             }
             simulationPanelMinimizeButton.setPreferredSize(new Dimension(21, 11));
-            this.simulationPane.add(simulationPanelMinimizeButton, JLayeredPane.PALETTE_LAYER);
-            simulationPanelMinimizeButton.setBounds(this.controlPanelWidth - 26, 3, 21, 11);
+            this.getSimulationPane().add(simulationPanelMinimizeButton, JLayeredPane.PALETTE_LAYER);
+            simulationPanelMinimizeButton.setBounds(this.getControlPanelWidth() - 26, 3, 21, 11);
             this.addToDisabledButtonList(simulationPanelMinimizeButton); // disable while simulating
         }
 
         JPanel roundControl = new JPanel();
         roundControl.setBorder(BorderFactory.createTitledBorder("Simulation Control"));
         roundControl.setLayout(new BoxLayout(roundControl, BoxLayout.Y_AXIS));
-        this.simulationPane.add(roundControl, JLayeredPane.DEFAULT_LAYER);
+        this.getSimulationPane().add(roundControl, JLayeredPane.DEFAULT_LAYER);
 
-        this.info = new JPanel();
+        this.setInfo(new JPanel());
 
-        Font labelFont = this.info.getFont();
+        Font labelFont = this.getInfo().getFont();
         JLabel passedTimeLabel;
         JLabel eventNumberLabel;
         if (Global.isAsynchronousMode()) {
             passedTimeLabel = new JLabel("Time: ");
             passedTimeLabel.setFont(labelFont);
-            this.timePerformed.setText(String.valueOf(this.round(Global.getCurrentTime(), 4)));
-            this.timePerformed.setEditable(false);
-            this.timePerformed.setBorder(BorderFactory.createEmptyBorder());
-            this.info.add(passedTimeLabel);
-            this.info.add(this.timePerformed);
+            this.getTimePerformed().setText(String.valueOf(this.round(Global.getCurrentTime(), 4)));
+            this.getTimePerformed().setEditable(false);
+            this.getTimePerformed().setBorder(BorderFactory.createEmptyBorder());
+            this.getInfo().add(passedTimeLabel);
+            this.getInfo().add(this.getTimePerformed());
 
             if (isMax) {
                 eventNumberLabel = new JLabel("Events: ");
                 eventNumberLabel.setFont(labelFont);
-                this.roundsPerformed.setText(String.valueOf(EventQueue.getEventNumber()));
-                this.roundsPerformed.setEditable(false);
-                this.roundsPerformed.setBorder(BorderFactory.createEmptyBorder());
-                this.info.add(eventNumberLabel);
-                this.info.add(this.roundsPerformed);
+                this.getRoundsPerformed().setText(String.valueOf(EventQueue.getEventNumber()));
+                this.getRoundsPerformed().setEditable(false);
+                this.getRoundsPerformed().setBorder(BorderFactory.createEmptyBorder());
+                this.getInfo().add(eventNumberLabel);
+                this.getInfo().add(this.getRoundsPerformed());
 
-                this.info.add(new JPanel()); // add some space between the 'performed rounds' and the 'rounds to perform'
-                this.info.add(new JPanel());
+                this.getInfo().add(new JPanel()); // add some space between the 'performed rounds' and the 'rounds to perform'
+                this.getInfo().add(new JPanel());
             }
 
             // roundNumber.setText(String.valueOf(Configuration.defaultRoundNumber));
-            roundsToPerformLabel.setText("Events to do:    ");
-            roundsToPerformLabel.setFont(labelFont);
-            this.info.add(roundsToPerformLabel);
-            this.info.add(roundsToPerform);
+            getRoundsToPerformLabel().setText("Events to do:    ");
+            getRoundsToPerformLabel().setFont(labelFont);
+            this.getInfo().add(getRoundsToPerformLabel());
+            this.getInfo().add(getRoundsToPerform());
 
         } else { // Synchronous mode
             passedTimeLabel = new JLabel("Round: ");
             passedTimeLabel.setFont(labelFont);
-            this.timePerformed.setText(String.valueOf((int) this.round(Global.getCurrentTime(), 4)));
+            this.getTimePerformed().setText(String.valueOf((int) this.round(Global.getCurrentTime(), 4)));
 
-            this.timePerformed.setEditable(false);
-            this.timePerformed.setBorder(BorderFactory.createEmptyBorder());
+            this.getTimePerformed().setEditable(false);
+            this.getTimePerformed().setBorder(BorderFactory.createEmptyBorder());
 
-            this.info.add(passedTimeLabel);
-            this.info.add(this.timePerformed);
+            this.getInfo().add(passedTimeLabel);
+            this.getInfo().add(this.getTimePerformed());
 
-            this.info.add(new JPanel()); // add some space between the 'performed rounds' and the 'rounds to perform'
-            this.info.add(new JPanel());
+            this.getInfo().add(new JPanel()); // add some space between the 'performed rounds' and the 'rounds to perform'
+            this.getInfo().add(new JPanel());
 
-            roundsToPerformLabel.setText("Rounds to do:  ");
-            roundsToPerformLabel.setFont(labelFont);
-            this.info.add(roundsToPerformLabel);
-            this.info.add(roundsToPerform);
+            getRoundsToPerformLabel().setText("Rounds to do:  ");
+            getRoundsToPerformLabel().setFont(labelFont);
+            this.getInfo().add(getRoundsToPerformLabel());
+            this.getInfo().add(getRoundsToPerform());
         }
 
-        refreshRate.setText(String.valueOf(Configuration.getRefreshRate()));
+        getRefreshRate().setText(String.valueOf(Configuration.getRefreshRate()));
         JLabel refreshLabel = new JLabel("Refresh rate: ");
         refreshLabel.setFont(labelFont);
-        this.info.add(refreshLabel);
-        this.info.add(refreshRate);
+        this.getInfo().add(refreshLabel);
+        this.getInfo().add(getRefreshRate());
 
-        NonRegularGridLayout nrgl = new NonRegularGridLayout(this.info.getComponentCount() / 2, 2, 1, 2);
+        NonRegularGridLayout nrgl = new NonRegularGridLayout(this.getInfo().getComponentCount() / 2, 2, 1, 2);
         nrgl.setAlignToLeft(true);
-        this.info.setLayout(nrgl);
-        roundControl.add(this.info);
+        this.getInfo().setLayout(nrgl);
+        roundControl.add(this.getInfo());
 
         JPanel buttons = new JPanel();
         buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 5));
-        buttons.add(start);
+        buttons.add(getStart());
 
         // the run-selection button
-        this.runMenuButton = this.createFrameworkIconButton("RunMenu", "maximize.gif", "Run Options");
-        this.runMenuButton.setPreferredSize(new Dimension(13, 29));
-        buttons.add(this.runMenuButton);
+        this.setRunMenuButton(this.createFrameworkIconButton("RunMenu", "maximize.gif", "Run Options"));
+        this.getRunMenuButton().setPreferredSize(new Dimension(13, 29));
+        buttons.add(this.getRunMenuButton());
         // raise the 'run' menu whenever the mouse idles over this button
-        this.runMenuButton.addMouseListener(new MouseListener() {
+        this.getRunMenuButton().addMouseListener(new MouseListener() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -305,15 +305,15 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (MaximizedControlPanel.this.runMenuButton.isEnabled()) {
-                    start.setBorderPainted(true);
+                if (MaximizedControlPanel.this.getRunMenuButton().isEnabled()) {
+                    getStart().setBorderPainted(true);
                 }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (MaximizedControlPanel.this.runMenuButton.isEnabled()) {
-                    start.setBorderPainted(false);
+                if (MaximizedControlPanel.this.getRunMenuButton().isEnabled()) {
+                    getStart().setBorderPainted(false);
                 }
             }
 
@@ -325,11 +325,11 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
             public void mouseReleased(MouseEvent e) {
             }
         });
-        this.addToDisabledButtonList(this.runMenuButton); // disable while running
+        this.addToDisabledButtonList(this.getRunMenuButton()); // disable while running
 
-        this.abort = this.createFrameworkIconButton("Abort", "abort.gif", "Abort Simulation");
-        this.abort.setEnabled(false);
-        buttons.add(this.abort);
+        this.setAbort(this.createFrameworkIconButton("Abort", "abort.gif", "Abort Simulation"));
+        this.getAbort().setEnabled(false);
+        buttons.add(this.getAbort());
 
         roundControl.add(buttons);
 
@@ -337,65 +337,65 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         // ------------------------------------------------------------------------
         // if there is an actual Event: add the panel.
         if (Global.isAsynchronousMode()) {
-            this.events.setLayout(new BorderLayout());
+            this.getEvents().setLayout(new BorderLayout());
 
-            String[] elements = {currentEventString};
-            this.eventJList = new MultiLineToolTipJList();
-            this.eventJList.setListData(elements);
-            this.eventJList.setToolTipText(
+            String[] elements = {getCurrentEventString()};
+            this.setEventJList(new MultiLineToolTipJList());
+            this.getEventJList().setListData(elements);
+            this.getEventJList().setToolTipText(
                     "The last Event that has been executed.\nDouble click the event to get more information.");
-            this.eventJList.setCellRenderer(new NonColoringNonBorderingCellRenderer());
+            this.getEventJList().setCellRenderer(new NonColoringNonBorderingCellRenderer());
             MouseListener mouseListener = new MouseAdapter() {
 
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getButton() == MouseEvent.BUTTON1) {
                         if (e.getClickCount() == 2) {
-                            MaximizedControlPanel.this.eventJList.setCellRenderer(MaximizedControlPanel.this.dLCR);
-                            JOptionPane.showMessageDialog(null, currentEventString + "\n" + currentEventToolTip,
+                            MaximizedControlPanel.this.getEventJList().setCellRenderer(MaximizedControlPanel.this.getDLCR());
+                            JOptionPane.showMessageDialog(null, getCurrentEventString() + "\n" + getCurrentEventToolTip(),
                                     "Information about an Event", JOptionPane.INFORMATION_MESSAGE);
-                            MaximizedControlPanel.this.eventJList.setCellRenderer(MaximizedControlPanel.this.nCNBCR);
+                            MaximizedControlPanel.this.getEventJList().setCellRenderer(MaximizedControlPanel.this.getNCNBCR());
                         }
                     }
                 }
             };
-            this.eventJList.addMouseListener(mouseListener);
+            this.getEventJList().addMouseListener(mouseListener);
             int fixedCellHeight = 12;
-            this.eventJList.setFixedCellHeight(fixedCellHeight);
+            this.getEventJList().setFixedCellHeight(fixedCellHeight);
             int fixedCellWidth = 180;
-            this.eventJList.setFixedCellWidth(fixedCellWidth);
-            this.eventJList.setPreferredSize(new Dimension(this.controlPanelWidth, fixedCellHeight + 6));
-            this.eventJList.setBorder(javax.swing.plaf.metal.MetalBorders.getTextFieldBorder());
-            this.eventJList.setFont(this.eventJList.getFont().deriveFont(Font.PLAIN));
+            this.getEventJList().setFixedCellWidth(fixedCellWidth);
+            this.getEventJList().setPreferredSize(new Dimension(this.getControlPanelWidth(), fixedCellHeight + 6));
+            this.getEventJList().setBorder(javax.swing.plaf.metal.MetalBorders.getTextFieldBorder());
+            this.getEventJList().setFont(this.getEventJList().getFont().deriveFont(Font.PLAIN));
 
-            this.events.add(BorderLayout.NORTH, this.eventJList);
+            this.getEvents().add(BorderLayout.NORTH, this.getEventJList());
 
-            for (int i = 0; i < this.queueElements.length; i++) {
-                this.queueElements[i] = new EventQueueElement(null, null);
+            for (int i = 0; i < this.getQueueElements().length; i++) {
+                this.getQueueElements()[i] = new EventQueueElement(null, null);
             }
 
             this.composeEventList();
-            this.eventList = new EventQueueList(this.queueElements);
+            this.setEventList(new EventQueueList(this.getQueueElements()));
             SinalgoRuntime.eventQueue.addEventQueueListener(MaximizedControlPanel.this);
-            this.eventList.setCellRenderer(new NonColoringNonBorderingCellRenderer());
-            this.eventList.setFixedCellHeight(fixedCellHeight);
-            this.eventList.setFixedCellWidth(fixedCellWidth);
-            this.eventList.setFont(this.eventList.getFont().deriveFont(Font.PLAIN));
-            JScrollPane scrollableEventList = new JScrollPane(this.eventList);
+            this.getEventList().setCellRenderer(new NonColoringNonBorderingCellRenderer());
+            this.getEventList().setFixedCellHeight(fixedCellHeight);
+            this.getEventList().setFixedCellWidth(fixedCellWidth);
+            this.getEventList().setFont(this.getEventList().getFont().deriveFont(Font.PLAIN));
+            JScrollPane scrollableEventList = new JScrollPane(this.getEventList());
 
             int height = Configuration.getShownEventQueueSize() * fixedCellHeight + 4;
-            scrollableEventList.setPreferredSize(new Dimension(this.controlPanelWidth, height));
+            scrollableEventList.setPreferredSize(new Dimension(this.getControlPanelWidth(), height));
 
-            this.events.add(BorderLayout.SOUTH, scrollableEventList);
+            this.getEvents().add(BorderLayout.SOUTH, scrollableEventList);
             if (isMax) {
-                roundControl.add(this.events);
+                roundControl.add(this.getEvents());
             }
         }
 
         // Finally set the size of the viewPanel
         Dimension dim = roundControl.getPreferredSize();
-        roundControl.setBounds(0, 0, this.controlPanelWidth, dim.height);
-        this.simulationPane.setPreferredSize(dim);
+        roundControl.setBounds(0, 0, this.getControlPanelWidth(), dim.height);
+        this.getSimulationPane().setPreferredSize(dim);
     }
 
     /**
@@ -407,25 +407,25 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         if (cb.size() == 0) {
             return; // no buttons to be displayed
         }
-        this.projectControlContent.removeAll();
+        this.getProjectControlContent().removeAll();
 
         JButton minimizeButton;
-        if (this.appConfig.isGuiControlPanelShowProjectControl()) {
+        if (AppConfig.getAppConfig().isGuiControlPanelShowProjectControl()) {
             minimizeButton = this.createFrameworkIconButton("minimizeProjectControl", "minimize.gif", "Minimize");
         } else {
             minimizeButton = this.createFrameworkIconButton("maximizeProjectControl", "maximize.gif", "Maximize");
         }
         minimizeButton.setPreferredSize(new Dimension(21, 11));
-        this.projectControlContent.add(minimizeButton, JLayeredPane.PALETTE_LAYER);
-        minimizeButton.setBounds(this.controlPanelWidth - 26, 3, 21, 11);
+        this.getProjectControlContent().add(minimizeButton, JLayeredPane.PALETTE_LAYER);
+        minimizeButton.setBounds(this.getControlPanelWidth() - 26, 3, 21, 11);
         this.addToDisabledButtonList(minimizeButton); // disable while simulating
 
         JPanel customButtons = new JPanel();
         customButtons.setBorder(BorderFactory.createTitledBorder("Project Control"));
 
-        if (this.appConfig.isGuiControlPanelShowProjectControl()) {
-            customButtons.setPreferredSize(new Dimension(this.controlPanelWidth, 3000));
-            customButtons.setLayout(new MultiLineFlowLayout(this.controlPanelWidth, 0, 0));
+        if (AppConfig.getAppConfig().isGuiControlPanelShowProjectControl()) {
+            customButtons.setPreferredSize(new Dimension(this.getControlPanelWidth(), 3000));
+            customButtons.setLayout(new MultiLineFlowLayout(this.getControlPanelWidth(), 0, 0));
 
             for (JButton b : cb) {
                 customButtons.add(b);
@@ -434,62 +434,62 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
             customButtons.doLayout();
             // adjust the size of the
             Dimension d = customButtons.getLayout().preferredLayoutSize(customButtons);
-            d.width = this.controlPanelWidth; // enforce the width
+            d.width = this.getControlPanelWidth(); // enforce the width
             customButtons.setPreferredSize(d);
         } else {
             customButtons.setLayout(new BoxLayout(customButtons, BoxLayout.Y_AXIS));
         }
 
-        this.projectControlContent.add(customButtons);
+        this.getProjectControlContent().add(customButtons);
 
         // Finally set the size of the viewPanel
         Dimension dim = customButtons.getPreferredSize();
-        customButtons.setBounds(0, 0, this.controlPanelWidth, dim.height);
-        this.projectControlContent.setPreferredSize(dim);
-        this.projectControlContent.invalidate();
+        customButtons.setBounds(0, 0, this.getControlPanelWidth(), dim.height);
+        this.getProjectControlContent().setPreferredSize(dim);
+        this.getProjectControlContent().invalidate();
     }
 
     /**
      * Creates the content of the view panel
      */
     private void createViewPanel() {
-        this.viewContent.removeAll();
+        this.getViewContent().removeAll();
         JPanel viewPanel = new JPanel();
         viewPanel.setBorder(BorderFactory.createTitledBorder("View"));
         viewPanel.setLayout(new BoxLayout(viewPanel, BoxLayout.Y_AXIS));
-        this.viewContent.add(viewPanel, JLayeredPane.DEFAULT_LAYER);
+        this.getViewContent().add(viewPanel, JLayeredPane.DEFAULT_LAYER);
 
         JButton viewPanelMinimizeButton;
-        if (this.appConfig.isGuiControlPanelShowFullViewPanel()) {
+        if (AppConfig.getAppConfig().isGuiControlPanelShowFullViewPanel()) {
             viewPanelMinimizeButton = this.createFrameworkIconButton("minimizeView", "minimize.gif", "Minimize");
         } else {
             viewPanelMinimizeButton = this.createFrameworkIconButton("maximizeView", "maximize.gif", "Maximize");
         }
         viewPanelMinimizeButton.setPreferredSize(new Dimension(21, 11));
-        this.viewContent.add(viewPanelMinimizeButton, JLayeredPane.PALETTE_LAYER);
-        viewPanelMinimizeButton.setBounds(this.controlPanelWidth - 26, 3, 21, 11);
+        this.getViewContent().add(viewPanelMinimizeButton, JLayeredPane.PALETTE_LAYER);
+        viewPanelMinimizeButton.setBounds(this.getControlPanelWidth() - 26, 3, 21, 11);
         this.addToDisabledButtonList(viewPanelMinimizeButton); // disable while simulating
 
         // .... add zoom view
-        if (this.appConfig.isGuiControlPanelShowFullViewPanel()) {
-            if (this.parent.getTransformator().supportReverseTranslation()) {
+        if (AppConfig.getAppConfig().isGuiControlPanelShowFullViewPanel()) {
+            if (this.getParent().getTransformator().supportReverseTranslation()) {
                 // only show the coordinate if it can be mapped from GUI to logic coordinates
                 JPanel mousePos = new JPanel();
                 JLabel mousePosLabel = new JLabel("Mouse Position:");
-                mousePosLabel.setFont(this.mousePositionField.getFont());
+                mousePosLabel.setFont(this.getMousePositionField().getFont());
                 mousePos.add(mousePosLabel);
-                mousePos.add(this.mousePositionField);
-                this.mousePositionField.setText("");
-                this.mousePositionField.setEditable(false);
-                this.mousePositionField.setBorder(BorderFactory.createEmptyBorder());
+                mousePos.add(this.getMousePositionField());
+                this.getMousePositionField().setText("");
+                this.getMousePositionField().setEditable(false);
+                this.getMousePositionField().setBorder(BorderFactory.createEmptyBorder());
 
                 viewPanel.add(mousePos);
             }
 
-            this.zoomPanel = new ZoomPanel(this.parent, this.parent.getTransformator());
-            this.zoomPanel.setPreferredSize(
-                    new Dimension(this.controlPanelWidth, this.zoomPanel.getPreferredHeight(this.controlPanelWidth)));
-            viewPanel.add(this.zoomPanel);
+            this.setZoomPanel(new ZoomPanel(this.getParent(), this.getParent().getTransformator()));
+            this.getZoomPanel().setPreferredSize(
+                    new Dimension(this.getControlPanelWidth(), this.getZoomPanel().getPreferredHeight(this.getControlPanelWidth())));
+            viewPanel.add(this.getZoomPanel());
         }
 
         JPanel buttonPanel = new JPanel();
@@ -509,7 +509,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         buttonPanel.add(button);
         this.addToDisabledButtonList(button);
 
-        if (this.parent.getTransformator() instanceof Transformation3D) {
+        if (this.getParent().getTransformator() instanceof Transformation3D) {
             button = this.createFrameworkIconButton("zoomToFit3D", "zoomtofit3d.gif", "Default View");
             buttonPanel.add(button);
             this.addToDisabledButtonList(button);
@@ -519,8 +519,8 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
         // Finally set the size of the viewPanel
         Dimension dim = viewPanel.getPreferredSize();
-        viewPanel.setBounds(0, 0, this.controlPanelWidth, dim.height);
-        this.viewContent.setPreferredSize(dim);
+        viewPanel.setBounds(0, 0, this.getControlPanelWidth(), dim.height);
+        this.getViewContent().setPreferredSize(dim);
     }
 
     /**
@@ -532,35 +532,35 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "minimizeView":
-                this.appConfig.setGuiControlPanelShowFullViewPanel(false);
+                AppConfig.getAppConfig().setGuiControlPanelShowFullViewPanel(false);
                 this.createViewPanel();
                 break;
             case "maximizeView":
-                this.appConfig.setGuiControlPanelShowFullViewPanel(true);
+                AppConfig.getAppConfig().setGuiControlPanelShowFullViewPanel(true);
                 this.createViewPanel();
                 break;
             case "minimizeText":
-                this.appConfig.setGuiControlPanelShowTextPanel(false);
+                AppConfig.getAppConfig().setGuiControlPanelShowTextPanel(false);
                 this.createTextPanel();
                 break;
             case "maximizeText":
-                this.appConfig.setGuiControlPanelShowTextPanel(true);
+                AppConfig.getAppConfig().setGuiControlPanelShowTextPanel(true);
                 this.createTextPanel();
                 break;
             case "minimizeProjectControl":
-                this.appConfig.setGuiControlPanelShowProjectControl(false);
+                AppConfig.getAppConfig().setGuiControlPanelShowProjectControl(false);
                 this.createProjectControlPanel();
                 break;
             case "maximizeProjectControl":
-                this.appConfig.setGuiControlPanelShowProjectControl(true);
+                AppConfig.getAppConfig().setGuiControlPanelShowProjectControl(true);
                 this.createProjectControlPanel();
                 break;
             case "maximizeSimControl":
-                this.appConfig.setGuiControlPanelExpandSimulation(true);
+                AppConfig.getAppConfig().setGuiControlPanelExpandSimulation(true);
                 this.createSimulationPanel();
                 break;
             case "minimizeSimControl":
-                this.appConfig.setGuiControlPanelExpandSimulation(false);
+                AppConfig.getAppConfig().setGuiControlPanelExpandSimulation(false);
                 this.createSimulationPanel();
                 break;
             case "ClearOutputText":
@@ -578,7 +578,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
      * @param p The Gui instance to create the MaximizedControlPanel for.
      */
     public MaximizedControlPanel(GUI p) {
-        this.parent = p;
+        this.setParent(p);
         this.setBorder(BorderFactory.createRaisedBevelBorder());
         this.setLayout(new BorderLayout());
 
@@ -586,8 +586,8 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         JScrollPane scrollPane = new JScrollPane(msp);
         scrollPane.setBorder(null);
 
-        this.setMaximumSize(new Dimension(this.controlPanelWidth, 2000));
-        this.setMinimumSize(new Dimension(this.controlPanelWidth, 2000));
+        this.setMaximumSize(new Dimension(this.getControlPanelWidth(), 2000));
+        this.setMinimumSize(new Dimension(this.getControlPanelWidth(), 2000));
 
         this.add(BorderLayout.CENTER, scrollPane);
         this.setVisible(true);
@@ -595,42 +595,42 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
     @Override
     public void setRoundsPerformed(double time, long eventNumber) {
-        this.timePerformed.setText(String.valueOf(this.round(time, 4)));
-        this.roundsPerformed.setText(String.valueOf(eventNumber));
+        this.getTimePerformed().setText(String.valueOf(this.round(time, 4)));
+        this.getRoundsPerformed().setText(String.valueOf(eventNumber));
     }
 
     @Override
     public void setRoundsPerformed(long i) {
-        this.timePerformed.setText(String.valueOf(i));
+        this.getTimePerformed().setText(String.valueOf(i));
     }
 
     @Override
     public void setCurrentEvent(Event e) {
         this.setStringsForCurrentEvent(e);
-        String[] v = {currentEventString};
-        this.eventJList.setListData(v);
+        String[] v = {getCurrentEventString()};
+        this.getEventJList().setListData(v);
 
         this.composeEventList();
-        this.eventList.setListData(this.queueElements);
+        this.getEventList().setListData(this.getQueueElements());
         // remove the focus from the list, for cases when the wrong one is installed
         // (which happens if one presses the ESC button)
-        this.eventList.setCellRenderer(this.nCNBCR);
+        this.getEventList().setCellRenderer(this.getNCNBCR());
     }
 
     @Override
     public void eventQueueChanged() {
         if (!Global.isRunning()) {
             this.composeEventList();
-            this.eventList.setListData(this.queueElements);
+            this.getEventList().setListData(this.getQueueElements());
             // remove the focus from the list, for cases when the wrong one is installed
             // (which happens if one presses the ESC button)
-            this.eventList.setCellRenderer(this.nCNBCR);
+            this.getEventList().setCellRenderer(this.getNCNBCR());
         }
     }
 
     private void composeEventList() {
         Iterator<Event> eventIter = SinalgoRuntime.eventQueue.iterator();
-        for (EventQueueElement queueElement : this.queueElements) {
+        for (EventQueueElement queueElement : this.getQueueElements()) {
             if (eventIter.hasNext()) {
                 Event e = eventIter.next();
                 queueElement.setText(e.getEventListText(false));
@@ -722,22 +722,24 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
                 public void mouseClicked(MouseEvent e) {
                     if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
                         int index = EventQueueList.this.locationToIndex(e.getPoint());
-                        if (MaximizedControlPanel.this.queueElements[index] != null && MaximizedControlPanel.this.queueElements[index].toString() != null) {
-                            EventQueueElement selElem = MaximizedControlPanel.this.queueElements[index];
+                        if (MaximizedControlPanel.this.getQueueElements()[index] != null
+                                && MaximizedControlPanel.this.getQueueElements()[index].toString() != null) {
+                            EventQueueElement selElem = MaximizedControlPanel.this.getQueueElements()[index];
                             EventQueueList.this.setSelectedIndex(index);
-                            EventQueueList.this.setCellRenderer(MaximizedControlPanel.this.dLCR); // mark the element
+                            EventQueueList.this.setCellRenderer(MaximizedControlPanel.this.getDLCR()); // mark the element
                             JOptionPane.showMessageDialog(null, selElem.toString() + "\n" + selElem.getToolTipText(),
                                     "Information about an Event", JOptionPane.INFORMATION_MESSAGE);
-                            EventQueueList.this.setCellRenderer(MaximizedControlPanel.this.nCNBCR); // unmark it
+                            EventQueueList.this.setCellRenderer(MaximizedControlPanel.this.getNCNBCR()); // unmark it
                         }
                     }
                     if (e.getButton() == MouseEvent.BUTTON3) {
                         int index = EventQueueList.this.locationToIndex(e.getPoint());
-                        if (index >= 0 && MaximizedControlPanel.this.queueElements[index] != null && MaximizedControlPanel.this.queueElements[index].getEvent() != null) {
-                            Event event = MaximizedControlPanel.this.queueElements[index].getEvent();
+                        if (index >= 0 && MaximizedControlPanel.this.getQueueElements()[index] != null
+                                && MaximizedControlPanel.this.getQueueElements()[index].getEvent() != null) {
+                            Event event = MaximizedControlPanel.this.getQueueElements()[index].getEvent();
                             EventQueueList.this.setSelectedIndex(index);
-                            EventQueueList.this.setCellRenderer(MaximizedControlPanel.this.dLCR); // mark the element
-                            EventPopupMenu epm = new EventPopupMenu(event, EventQueueList.this, MaximizedControlPanel.this.nCNBCR);
+                            EventQueueList.this.setCellRenderer(MaximizedControlPanel.this.getDLCR()); // mark the element
+                            EventPopupMenu epm = new EventPopupMenu(event, EventQueueList.this, MaximizedControlPanel.this.getNCNBCR());
                             epm.show(e.getComponent(), e.getX(), e.getY());
                         }
                     }

@@ -36,6 +36,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.storage;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.util.Vector;
 
 /**
@@ -88,7 +92,7 @@ public interface DoublyLinkedListEntry {
         public Finger getFinger(DoublyLinkedList<?> dll) {
             for (int i = 0; i < this.numberOfUsedFingers; i++) {
                 Finger f = this.list.elementAt(i);
-                if (f != null && f.list == dll) {
+                if (f != null && f.getList() == dll) {
                     return f;
                 }
             }
@@ -114,8 +118,8 @@ public interface DoublyLinkedListEntry {
                 f = new Finger();
                 this.list.add(f);
             }
-            f.list = dll;
-            f.object = entry;
+            f.setList(dll);
+            f.setObject(entry);
             this.numberOfUsedFingers++;
             return f;
         }
@@ -154,7 +158,7 @@ public interface DoublyLinkedListEntry {
         public void releaseFinger(DoublyLinkedList<?> dll, boolean keep) {
             for (int i = 0; i < this.numberOfUsedFingers; i++) {
                 Finger f = this.list.elementAt(i);
-                if (f != null && f.list == dll) {
+                if (f != null && f.getList() == dll) {
                     if (keep) {
                         this.releaseFingerAt(i);
                     } else {
@@ -211,32 +215,36 @@ public interface DoublyLinkedListEntry {
      * information along with implementation specific info for the doubly linked
      * list.
      */
+    @Data
+    @NoArgsConstructor
+    @EqualsAndHashCode(exclude = {"list"})
     class Finger {
 
         /**
          * the next entry in the list
          */
-        public Finger next;
+        private Finger next;
         /**
          * the previous entry in the list
          */
-        public Finger previous;
+        private Finger previous;
         /**
          * the entry-object
          */
-        public DoublyLinkedListEntry object;
+        private DoublyLinkedListEntry object;
         /**
          * the list this object belongs to.
          */
-        public DoublyLinkedList<?> list;
+        private DoublyLinkedList<?> list;
 
         /**
          * Sets all pointers of this finger to null.
          */
         public void reset() {
-            this.next = this.previous = null;
-            this.object = null;
-            this.list = null;
+            this.setPrevious(null);
+            this.setNext(null);
+            this.setObject(null);
+            this.setList(null);
         }
 
         /**
@@ -246,15 +254,10 @@ public interface DoublyLinkedListEntry {
          * @param entry the entry this finger is for.
          */
         public Finger(DoublyLinkedList<?> list, DoublyLinkedListEntry entry) {
-            this.list = list;
-            this.object = entry;
+            this.setList(list);
+            this.setObject(entry);
         }
 
-        /**
-         * Default constructor.
-         */
-        public Finger() {
-        }
     }
 
 }

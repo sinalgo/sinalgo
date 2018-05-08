@@ -133,13 +133,18 @@ public class Edge implements DoublyLinkedListEntry {
     // -----------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
 
-    public static Color defaultEdgeColorPassive = Color.BLACK;
-    public static Color defaultEdgeColorActive = Color.RED;
+    @Getter
+    @Setter
+    private static Color defaultEdgeColorPassive = Color.BLACK;
+
+    @Getter
+    @Setter
+    private static Color defaultEdgeColorActive = Color.RED;
 
     static {
         try {
             String s = Configuration.getStringParameter("Edge/PassiveColor");
-            defaultEdgeColorPassive = Color.decode(s);
+            setDefaultEdgeColorPassive(Color.decode(s));
         } catch (CorruptConfigurationEntryException ignored) { // there is no config entry -> take default
         } catch (NumberFormatException e) {
             throw new SinalgoFatalException(
@@ -147,7 +152,7 @@ public class Edge implements DoublyLinkedListEntry {
         }
         try {
             String s = Configuration.getStringParameter("Edge/ActiveColor");
-            defaultEdgeColorActive = Color.decode(s);
+            setDefaultEdgeColorActive(Color.decode(s));
         } catch (CorruptConfigurationEntryException ignored) { // there is no config entry -> take default
         } catch (NumberFormatException e) {
             throw new SinalgoFatalException(
@@ -161,7 +166,7 @@ public class Edge implements DoublyLinkedListEntry {
      */
     @Getter
     @Setter
-    private Color defaultColor = defaultEdgeColorPassive;
+    private Color defaultColor = getDefaultEdgeColorPassive();
 
     /**
      * The color of this edge to be used when at least one message is sent over this
@@ -169,7 +174,7 @@ public class Edge implements DoublyLinkedListEntry {
      */
     @Getter
     @Setter
-    private Color sendingColor = defaultEdgeColorActive;
+    private Color sendingColor = getDefaultEdgeColorActive();
 
     /**
      * Returns the edge color to be used to draw this edge.
@@ -362,18 +367,29 @@ public class Edge implements DoublyLinkedListEntry {
      * Packet pool. When a new instance is requested, the system only creates a new
      * instance, when the stack is empty.
      */
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static EdgePool freeEdges = new EdgePool();
 
     /**
      * The ID that is given to the next edge that is returned by the
      * fabricateEdge-method. Is increased so that no two edges have the same ID.
      */
-    private static long nextId = 1;
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static long curID = 1;
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static Constructor<?> constructor = null;
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static String nameOfSearchedEdge = "";
 
-    public static long numEdgesOnTheFly = 0;
+    @Getter
+    @Setter
+    private static long numEdgesOnTheFly = 0;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -439,8 +455,8 @@ public class Edge implements DoublyLinkedListEntry {
         edge.setEndNode(to);
         edge.setOppositeEdge(null);
 
-        edge.setSendingColor(defaultEdgeColorActive);
-        edge.setDefaultColor(defaultEdgeColorPassive);
+        edge.setSendingColor(getDefaultEdgeColorActive());
+        edge.setDefaultColor(getDefaultEdgeColorPassive());
         edge.setValid(false);
 
         edge.setNumberOfMessagesOnThisEdge(0);
@@ -448,7 +464,7 @@ public class Edge implements DoublyLinkedListEntry {
 
         edge.findOppositeEdge(); // if there is an edge in the opposite direction, set the oppositeEdge field
         edge.initializeEdge(); // Finally, call a custom initialization method
-        numEdgesOnTheFly++;
+        setNumEdgesOnTheFly(getNumEdgesOnTheFly() + 1);
         return edge;
     }
 
@@ -497,7 +513,7 @@ public class Edge implements DoublyLinkedListEntry {
         this.setEndNode(null);
         this.setDefaultColor(null);
         this.setSendingColor(null);
-        numEdgesOnTheFly--;
+        setNumEdgesOnTheFly(getNumEdgesOnTheFly() - 1);
         freeEdges.add(this);
     }
 
@@ -517,9 +533,11 @@ public class Edge implements DoublyLinkedListEntry {
      * @return The next ID to be used for an edge.
      */
     private static long getNextFreeID() {
-        if (nextId == 0) {
+        if (getCurID() == 0) {
             throw new SinalgoFatalException("The Edge ID counter overflowed.");
         }
-        return Edge.nextId++;// implicit post-increment
+        long curID = getCurID();
+        setCurID(curID + 1);
+        return curID;
     }
 }

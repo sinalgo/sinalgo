@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui.controlPanel;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.GUI;
 import sinalgo.gui.transformation.Transformation3D;
@@ -55,6 +58,8 @@ public class MinimizedControlPanel extends ControlPanel {
 
     private static final long serialVersionUID = 6500416722163812886L;
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private JPanel buttonPanel;
 
     /**
@@ -63,76 +68,76 @@ public class MinimizedControlPanel extends ControlPanel {
      * @param p The Gui instance to create the MinimizedControlPanel for.
      */
     public MinimizedControlPanel(GUI p) {
-        this.parent = p;
+        this.setParent(p);
         int controlPanelHeight = 25;
         this.setMaximumSize(new Dimension(20000, controlPanelHeight));
         this.setMinimumSize(new Dimension(20000, controlPanelHeight));
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createRaisedBevelBorder());
 
-        this.buttonPanel = new JPanel();
+        this.setButtonPanel(new JPanel());
         FlowLayout buttonLayout = new FlowLayout(FlowLayout.LEFT, 2, 0);
-        this.buttonPanel.setLayout(buttonLayout);
+        this.getButtonPanel().setLayout(buttonLayout);
 
         JButton button = this.createFrameworkIconButton("clearGraph", "cleargraph.gif", "Clear Graph");
-        this.buttonPanel.add(button);
+        this.getButtonPanel().add(button);
         this.addToDisabledButtonList(button);
 
         button = this.createFrameworkIconButton("addNodes", "addnodes.gif", "Add Nodes");
-        this.buttonPanel.add(button);
+        this.getButtonPanel().add(button);
         this.addToDisabledButtonList(button);
 
         button = this.createFrameworkIconButton("connectNodes", "connectnodes.gif", "Reevaluate Connections");
-        this.buttonPanel.add(button);
+        this.getButtonPanel().add(button);
         this.addToDisabledButtonList(button);
 
-        this.addSeparator(this.buttonPanel);
+        this.addSeparator(this.getButtonPanel());
 
         button = this.createFrameworkIconButton("zoomIn", "zoominimage.png", "Zoom In");
-        this.buttonPanel.add(button);
+        this.getButtonPanel().add(button);
         this.addToDisabledButtonList(button);
 
         button = this.createFrameworkIconButton("zoomOut", "zoomoutimage.png", "Zoom Out");
-        this.buttonPanel.add(button);
+        this.getButtonPanel().add(button);
         this.addToDisabledButtonList(button);
 
         button = this.createFrameworkIconButton("zoomToFit", "zoomtofit.gif", "Zoom To Fit");
-        this.buttonPanel.add(button);
+        this.getButtonPanel().add(button);
         this.addToDisabledButtonList(button);
 
-        if (this.parent.getTransformator() instanceof Transformation3D) {
+        if (this.getParent().getTransformator() instanceof Transformation3D) {
             button = this.createFrameworkIconButton("zoomToFit3D", "zoomtofit3d.gif", "Default View");
-            this.buttonPanel.add(button);
+            this.getButtonPanel().add(button);
             this.addToDisabledButtonList(button);
         }
 
-        this.addSeparator(this.buttonPanel);
-        this.addSpacer(this.buttonPanel, 5);
+        this.addSeparator(this.getButtonPanel());
+        this.addSpacer(this.getButtonPanel(), 5);
 
         // The two text fields to enter number of rounds and refresh rate
         // roundNumber.setText(String.valueOf(Configuration.defaultRoundNumber));
         if (Configuration.isAsynchronousMode()) {
-            roundsToPerform.setToolTipText("Number of Events to perform");
+            getRoundsToPerform().setToolTipText("Number of Events to perform");
         } else {
-            roundsToPerform.setToolTipText("Number of Rounds to perform");
+            getRoundsToPerform().setToolTipText("Number of Rounds to perform");
         }
-        this.buttonPanel.add(roundsToPerform);
+        this.getButtonPanel().add(getRoundsToPerform());
 
-        refreshRate.setText(String.valueOf(Configuration.getRefreshRate()));
-        refreshRate.setToolTipText("Refresh Rate");
-        this.buttonPanel.add(refreshRate);
+        getRefreshRate().setText(String.valueOf(Configuration.getRefreshRate()));
+        getRefreshRate().setToolTipText("Refresh Rate");
+        this.getButtonPanel().add(getRefreshRate());
 
         JPanel startButtonPanel = new JPanel();
         startButtonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        startButtonPanel.add(start);
+        startButtonPanel.add(getStart());
 
         // the run-selection button
-        this.runMenuButton = this.createFrameworkIconButton("RunMenu", "maximize.gif", "Run Options");
-        this.runMenuButton.setPreferredSize(new Dimension(13, 29));
-        this.addToDisabledButtonList(this.runMenuButton);
-        startButtonPanel.add(this.runMenuButton);
+        this.setRunMenuButton(this.createFrameworkIconButton("RunMenu", "maximize.gif", "Run Options"));
+        this.getRunMenuButton().setPreferredSize(new Dimension(13, 29));
+        this.addToDisabledButtonList(this.getRunMenuButton());
+        startButtonPanel.add(this.getRunMenuButton());
         // raise the 'run' menu whenever the mouse idles over this button
-        this.runMenuButton.addMouseListener(new MouseListener() {
+        this.getRunMenuButton().addMouseListener(new MouseListener() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -140,15 +145,15 @@ public class MinimizedControlPanel extends ControlPanel {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (MinimizedControlPanel.this.runMenuButton.isEnabled()) {
-                    start.setBorderPainted(true);
+                if (MinimizedControlPanel.this.getRunMenuButton().isEnabled()) {
+                    getStart().setBorderPainted(true);
                 }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (MinimizedControlPanel.this.runMenuButton.isEnabled()) {
-                    start.setBorderPainted(false);
+                if (MinimizedControlPanel.this.getRunMenuButton().isEnabled()) {
+                    getStart().setBorderPainted(false);
                 }
             }
 
@@ -160,69 +165,69 @@ public class MinimizedControlPanel extends ControlPanel {
             public void mouseReleased(MouseEvent e) {
             }
         });
-        this.buttonPanel.add(startButtonPanel);
+        this.getButtonPanel().add(startButtonPanel);
 
-        this.abort = this.createFrameworkIconButton("Abort", "abort.gif", "Abort Simulation");
-        this.abort.setEnabled(false);
-        this.buttonPanel.add(this.abort);
+        this.setAbort(this.createFrameworkIconButton("Abort", "abort.gif", "Abort Simulation"));
+        this.getAbort().setEnabled(false);
+        this.getButtonPanel().add(this.getAbort());
 
-        this.addSpacer(this.buttonPanel, 5);
+        this.addSpacer(this.getButtonPanel(), 5);
 
         JLabel doneRoundsLabel;
         if (Global.isAsynchronousMode()) {
             doneRoundsLabel = new JLabel("Time: ");
-            this.roundsPerformed.setText(String.valueOf(this.round(Global.getCurrentTime(), 2)));
+            this.getRoundsPerformed().setText(String.valueOf(this.round(Global.getCurrentTime(), 2)));
         } else {
             doneRoundsLabel = new JLabel("Round: ");
-            this.roundsPerformed.setText(String.valueOf((int) this.round(Global.getCurrentTime(), 2)));
+            this.getRoundsPerformed().setText(String.valueOf((int) this.round(Global.getCurrentTime(), 2)));
         }
-        this.buttonPanel.add(doneRoundsLabel);
-        this.roundsPerformed.setEditable(false);
-        this.roundsPerformed.setBorder(BorderFactory.createEmptyBorder());
-        this.roundsPerformed.setToolTipText("Number of rounds performed so far");
-        this.buttonPanel.add(this.roundsPerformed);
+        this.getButtonPanel().add(doneRoundsLabel);
+        this.getRoundsPerformed().setEditable(false);
+        this.getRoundsPerformed().setBorder(BorderFactory.createEmptyBorder());
+        this.getRoundsPerformed().setToolTipText("Number of rounds performed so far");
+        this.getButtonPanel().add(this.getRoundsPerformed());
 
         // Add the user-defined buttons
         Vector<JButton> customButtons = super.createCustomButtons();
         if (customButtons.size() > 0) {
-            this.addSpacer(this.buttonPanel, 5);
-            this.addSeparator(this.buttonPanel);
-            this.addSpacer(this.buttonPanel, 5);
+            this.addSpacer(this.getButtonPanel(), 5);
+            this.addSeparator(this.getButtonPanel());
+            this.addSpacer(this.getButtonPanel(), 5);
 
             for (JButton b : customButtons) {
-                this.buttonPanel.add(b);
+                this.getButtonPanel().add(b);
                 this.addToDisabledButtonList(b);
             }
-            this.addSpacer(this.buttonPanel, 4); // strange, but the last button is sometimes not painted...
+            this.addSpacer(this.getButtonPanel(), 4); // strange, but the last button is sometimes not painted...
         }
 
         JButton changeButton = this.createFrameworkIconButton("extendPanel", "maximize.gif", "Extend");
         changeButton.setPreferredSize(new Dimension(13, 29));
         this.addToDisabledButtonList(changeButton);
         this.add(BorderLayout.EAST, changeButton);
-        this.add(BorderLayout.WEST, this.buttonPanel);
+        this.add(BorderLayout.WEST, this.getButtonPanel());
 
         this.setVisible(true);
     }
 
     @Override
     public void setRoundsPerformed(double time, long eventNumber) {
-        this.roundsPerformed.setText(String.valueOf(this.round(time, 2)));
-        this.buttonPanel.doLayout();
+        this.getRoundsPerformed().setText(String.valueOf(this.round(time, 2)));
+        this.getButtonPanel().doLayout();
     }
 
     @Override
     public void setRoundsPerformed(long i) {
-        this.roundsPerformed.setText(String.valueOf(i));
-        this.buttonPanel.doLayout();
+        this.getRoundsPerformed().setText(String.valueOf(i));
+        this.getButtonPanel().doLayout();
     }
 
     @Override
     public void setCurrentEvent(Event e) {
         this.setStringsForCurrentEvent(e);
         Vector<String> v = new Vector<>(1);
-        v.add(currentEventString);
-        this.eventJList.setListData(v);
+        v.add(getCurrentEventString());
+        this.getEventJList().setListData(v);
     }
 
     private void addSeparator(JPanel buttonPanel) {
@@ -237,5 +242,4 @@ public class MinimizedControlPanel extends ControlPanel {
         spacer.setPreferredSize(new Dimension(width, 20));
         buttonPanel.add(spacer);
     }
-
 }
