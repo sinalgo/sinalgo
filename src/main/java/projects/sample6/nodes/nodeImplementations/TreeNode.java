@@ -16,7 +16,7 @@ import java.awt.*;
  */
 public class TreeNode extends Node {
 
-    public TreeNode parent = null; // the parent in the tree, null if this node is the root
+    public TreeNode parent = null; // the parentGUI in the tree, null if this node is the root
 
     @Override
     public void checkRequirements() throws WrongConfigurationException {
@@ -33,7 +33,7 @@ public class TreeNode extends Node {
                 this.setColor(Color.RED);
                 // forward the message to all children
                 for (Edge e : this.getOutgoingConnections()) {
-                    if (!e.getEndNode().equals(this.parent)) { // don't send it to the parent
+                    if (!e.getEndNode().equals(this.parent)) { // don't send it to the parentGUI
                         this.send(m, e.getEndNode());
                     }
                 }

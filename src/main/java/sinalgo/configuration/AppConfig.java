@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.configuration;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.jdom2.Document;
@@ -56,6 +57,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * A config file that stores application wide settings for the user, such as the
@@ -103,16 +105,23 @@ public class AppConfig {
 
     private String previousRunCmdLineArgs = ""; // cmd line args of the previous call to 'Run'
 
-    private static AppConfig singletonInstance = null; // the singleton instance
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static AppConfig singletonInstance = null;
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static Supplier<AppConfig> appConfigProvider = () -> {
+        AppConfig.setSingletonInstance(new AppConfig());
+        AppConfig.setAppConfigProvider(AppConfig::getSingletonInstance);
+        return AppConfig.getAppConfig();
+    };
 
     /**
      * @return The singleton instance of AppConfig.
      */
     public static AppConfig getAppConfig() {
-        if (singletonInstance == null) {
-            singletonInstance = new AppConfig();
-        }
-        return singletonInstance;
+        return AppConfig.getAppConfigProvider().get();
     }
 
     /**

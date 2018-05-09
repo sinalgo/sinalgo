@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
+import lombok.Getter;
+import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoWrappedException;
 import sinalgo.gui.GUI;
@@ -48,16 +50,13 @@ import sinalgo.gui.dialogs.ProgressBarUser;
  */
 public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
 
-    private GUI gui = new GUI(this);
-
     /**
-     * This method returns the gui instance.
+     * The gui instance.
      *
      * @return The one and only instance of the gui.
      */
-    public GUI getGUI() {
-        return this.gui;
-    }
+    @Getter
+    private final GUI GUI = new GUI(this);
 
     private PercentualProgressDialog pf = new PercentualProgressDialog(this, "Initialising the Nodes");
 
@@ -89,10 +88,10 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
         }
 
         // init the gui
-        this.gui.init();
+        this.getGUI().init();
 
         if (this.getNumberOfRounds() != 0) {
-            this.gui.setStartButtonEnabled(false);
+            this.getGUI().setStartButtonEnabled(false);
         }
 
         // wait until the the GUI has been painted at least once
@@ -117,7 +116,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
         if (rounds <= 0) {
             return;// nothing to do
         }
-        if (considerInfiniteRunFlag && !appConfig.isGuiRunOperationIsLimited()) {
+        if (considerInfiniteRunFlag && !AppConfig.getAppConfig().isGuiRunOperationIsLimited()) {
             rounds = Long.MAX_VALUE;
         }
         if (Configuration.isAsynchronousMode()) {

@@ -62,7 +62,7 @@ public class GraphInfoDialog extends JDialog implements ActionListener {
     /**
      * The constructor for the GraphInfoDialog class.
      *
-     * @param parent The parent frame to attach the Dialog to.
+     * @param parent The parentGUI frame to attach the Dialog to.
      */
     public GraphInfoDialog(JFrame parent) {
         super(parent, "Info about the current network", true);

@@ -78,18 +78,17 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
 
     private JButton ok = new JButton("Ok");
 
-    @Getter
-    private GUI parent;
+    private GUI parentGUI;
 
     /**
      * Generates a dialog that shows information about the current graph.
      *
-     * @param parent The Gui instance that created the dialog.
+     * @param parentGUI The Gui instance that created the dialog.
      */
-    public GraphPreferencesDialog(GUI parent) {
-        super(parent, "Preferences", true);
+    public GraphPreferencesDialog(GUI parentGUI) {
+        super(parentGUI, "Preferences", true);
         GuiHelper.setWindowIcon(this);
-        this.setParent(parent);
+        this.setParentGUI(parentGUI);
 
         JPanel cp = new JPanel();
         cp.setLayout(new BorderLayout());
@@ -184,7 +183,7 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
 
         this.getRootPane().setDefaultButton(this.getOk());
         this.pack();
-        this.setLocationRelativeTo(parent);
+        this.setLocationRelativeTo(parentGUI);
         this.setVisible(true);
     }
 
@@ -232,23 +231,23 @@ public class GraphPreferencesDialog extends JDialog implements ActionListener {
 
                 if (this.getDrawRulerCB().isSelected() != Configuration.isDrawRulers()) {
                     Configuration.setDrawRulers(this.getDrawRulerCB().isSelected());
-                    this.getParent().getGraphPanel().forceDrawInNextPaint();
+                    this.getParentGUI().getGraphPanel().forceDrawInNextPaint();
                 }
                 if (this.getDrawArrowsCB().isSelected() != Configuration.isDrawArrows()) {
                     Configuration.setDrawArrows(this.getDrawArrowsCB().isSelected());
-                    this.getParent().getGraphPanel().forceDrawInNextPaint();
+                    this.getParentGUI().getGraphPanel().forceDrawInNextPaint();
                 }
                 if (this.getDrawEdgesCB().isSelected() != Configuration.isDrawEdges()) {
                     Configuration.setDrawEdges(this.getDrawEdgesCB().isSelected());
-                    this.getParent().getGraphPanel().forceDrawInNextPaint();
+                    this.getParentGUI().getGraphPanel().forceDrawInNextPaint();
                 }
                 if (this.getDrawNodesCB().isSelected() != Configuration.isDrawNodes()) {
                     Configuration.setDrawNodes(this.getDrawNodesCB().isSelected());
-                    this.getParent().getGraphPanel().forceDrawInNextPaint();
+                    this.getParentGUI().getGraphPanel().forceDrawInNextPaint();
                 }
                 if (this.getUsePerspectiveCB().isSelected() != Configuration.isUsePerspectiveView()) {
                     Configuration.setUsePerspectiveView(!Configuration.isUsePerspectiveView());
-                    this.getParent().getGraphPanel().forceDrawInNextPaint();
+                    this.getParentGUI().getGraphPanel().forceDrawInNextPaint();
                 }
 
             } catch (WrongConfigurationException ex) {

@@ -49,11 +49,7 @@ import sinalgo.runtime.SinalgoRuntime;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.Random;
 
@@ -66,10 +62,10 @@ public class Exporter {
     private JFrame parent = null;
 
     /**
-     * Creates a new Exporter instance with a given JFrame as parent. The parent
+     * Creates a new Exporter instance with a given JFrame as parentGUI. The parentGUI
      * frame is used to attach the save-dialog to.
      *
-     * @param p The parent frame to attach the save-dialog to.
+     * @param p The parentGUI frame to attach the save-dialog to.
      */
     public Exporter(JFrame p) {
         this.parent = p;
@@ -77,7 +73,7 @@ public class Exporter {
 
     /**
      * The default constructor for the Exporter class. It generates an instance of
-     * the exporter class that isn't attached to a parent frame. This is absolutely
+     * the exporter class that isn't attached to a parentGUI frame. This is absolutely
      * the same as calling the constructor Exporter(null).
      */
     public Exporter() {

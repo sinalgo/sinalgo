@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.gui;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -68,26 +69,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.StringReader;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -100,6 +85,8 @@ import java.util.Vector;
 /**
  * This class provides a dialog to let the user select a project.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class ProjectSelector extends JFrame implements ActionListener, ListSelectionListener {
 
     private static final long serialVersionUID = -6312902319966899446L;
@@ -118,12 +105,11 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
     private JPanel customConfigurationPanel = new JPanel();
     private JButton saveConfig = new JButton("Save Config");
     private JButton saveConfig2 = new JButton("Save Config");
-    private JButton expand, collapse;
+    private JButton expand;
+    private JButton collapse;
     private JTextArea customParameters = new JTextArea();
 
     private JTabbedPane right = new JTabbedPane();
-
-    private AppConfig appConfig = AppConfig.getAppConfig();
 
     private boolean showOptionalFields = false;
 
@@ -147,7 +133,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         super("Select a Project");
         GuiHelper.setWindowIcon(this);
         // show all the tooltips for 15000 mili-seconds
-        this.defaultTooltipDismissDelay = ToolTipManager.sharedInstance().getDismissDelay();
+        this.setDefaultTooltipDismissDelay(ToolTipManager.sharedInstance().getDismissDelay());
         int myTooltipDismissDelay = 15000;
         ToolTipManager.sharedInstance().setDismissDelay(myTooltipDismissDelay);
         this.main = main;
@@ -162,29 +148,29 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         this.addComponentListener(new ComponentListener() {
 
-            int oldX = ProjectSelector.this.appConfig.getProjectSelectorWindowPosX(), oldY = ProjectSelector.this.appConfig.getProjectSelectorWindowPosY();
+            int oldX = AppConfig.getAppConfig().getProjectSelectorWindowPosX(), oldY = AppConfig.getAppConfig().getProjectSelectorWindowPosY();
 
             @Override
             public void componentResized(ComponentEvent e) {
                 if (ProjectSelector.this.getExtendedState() == Frame.MAXIMIZED_BOTH) {
-                    ProjectSelector.this.appConfig.setProjectSelectorIsMaximized(true);
-                    ProjectSelector.this.appConfig.setProjectSelectorWindowPosX(this.oldX);
-                    ProjectSelector.this.appConfig.setProjectSelectorWindowPosY(this.oldY);
+                    AppConfig.getAppConfig().setProjectSelectorIsMaximized(true);
+                    AppConfig.getAppConfig().setProjectSelectorWindowPosX(this.oldX);
+                    AppConfig.getAppConfig().setProjectSelectorWindowPosY(this.oldY);
                 } else {
-                    ProjectSelector.this.appConfig.setProjectSelectorIsMaximized(false);
-                    ProjectSelector.this.appConfig.setProjectSelectorWindowWidth(ProjectSelector.this.getWidth());
-                    ProjectSelector.this.appConfig.setProjectSelectorWindowHeight(ProjectSelector.this.getHeight());
+                    AppConfig.getAppConfig().setProjectSelectorIsMaximized(false);
+                    AppConfig.getAppConfig().setProjectSelectorWindowWidth(ProjectSelector.this.getWidth());
+                    AppConfig.getAppConfig().setProjectSelectorWindowHeight(ProjectSelector.this.getHeight());
                 }
-                ProjectSelector.this.customParameters.setSize(100, ProjectSelector.this.customParameters.getHeight());
+                ProjectSelector.this.getCustomParameters().setSize(100, ProjectSelector.this.getCustomParameters().getHeight());
                 // needed to ensure that the text field shrinks as well
             }
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                this.oldX = ProjectSelector.this.appConfig.getProjectSelectorWindowPosX();
-                this.oldY = ProjectSelector.this.appConfig.getProjectSelectorWindowPosY();
-                ProjectSelector.this.appConfig.setProjectSelectorWindowPosX(ProjectSelector.this.getX());
-                ProjectSelector.this.appConfig.setProjectSelectorWindowPosY(ProjectSelector.this.getY());
+                this.oldX = AppConfig.getAppConfig().getProjectSelectorWindowPosX();
+                this.oldY = AppConfig.getAppConfig().getProjectSelectorWindowPosY();
+                AppConfig.getAppConfig().setProjectSelectorWindowPosX(ProjectSelector.this.getX());
+                AppConfig.getAppConfig().setProjectSelectorWindowPosY(ProjectSelector.this.getY());
             }
 
             @Override
@@ -205,8 +191,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
             @Override
             public void windowClosing(WindowEvent e) {
-                ProjectSelector.this.appConfig.setProjectSelectorSelectedTab(1 + ProjectSelector.this.right.getSelectedIndex());
-                ProjectSelector.this.appConfig.writeConfig();
+                AppConfig.getAppConfig().setProjectSelectorSelectedTab(1 + ProjectSelector.this.getRight().getSelectedIndex());
+                AppConfig.getAppConfig().writeConfig();
             }
 
             @Override
@@ -232,40 +218,40 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         this.setLayout(new BorderLayout());
         this.setResizable(true);
-        if (this.appConfig.isProjectSelectorIsMaximized()) {
+        if (AppConfig.getAppConfig().isProjectSelectorIsMaximized()) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         }
-        this.setSize(new Dimension(this.appConfig.getProjectSelectorWindowWidth(), this.appConfig.getProjectSelectorWindowHeight()));
-        this.setLocation(this.appConfig.getProjectSelectorWindowPosX(), this.appConfig.getProjectSelectorWindowPosY());
+        this.setSize(new Dimension(AppConfig.getAppConfig().getProjectSelectorWindowWidth(), AppConfig.getAppConfig().getProjectSelectorWindowHeight()));
+        this.setLocation(AppConfig.getAppConfig().getProjectSelectorWindowPosX(), AppConfig.getAppConfig().getProjectSelectorWindowPosY());
 
         JPanel left = new JPanel();
         left.setLayout(new BorderLayout());
         // List of all projects
-        this.selection.setListData(projects);
-        this.selection.setSelectedValue(this.appConfig.getLastChosenProject(), true);
-        if (!this.selection.isSelectionEmpty()) {
-            this.selectedProjectName = (String) this.selection.getSelectedValue();
+        this.getSelection().setListData(projects);
+        this.getSelection().setSelectedValue(AppConfig.getAppConfig().getLastChosenProject(), true);
+        if (!this.getSelection().isSelectionEmpty()) {
+            this.setSelectedProjectName((String) this.getSelection().getSelectedValue());
         } else {
-            this.selectedProjectName = "";
+            this.setSelectedProjectName("");
         }
-        this.selection.addListSelectionListener(this);
-        this.selection.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 0));
-        this.selection.setBackground(this.listPanel.getBackground());
-        JScrollPane listScroller = new JScrollPane(this.selection);
-        this.listPanel.setLayout(new BorderLayout());
+        this.getSelection().addListSelectionListener(this);
+        this.getSelection().setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 0));
+        this.getSelection().setBackground(this.getListPanel().getBackground());
+        JScrollPane listScroller = new JScrollPane(this.getSelection());
+        this.getListPanel().setLayout(new BorderLayout());
         listScroller.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        this.listPanel.add(listScroller, BorderLayout.CENTER);
-        this.listPanel.setBorder(BorderFactory.createTitledBorder("Available Projects"));
-        left.add(this.listPanel, BorderLayout.CENTER);
+        this.getListPanel().add(listScroller, BorderLayout.CENTER);
+        this.getListPanel().setBorder(BorderFactory.createTitledBorder("Available Projects"));
+        left.add(this.getListPanel(), BorderLayout.CENTER);
 
         // OK / Cancel buttons
-        this.buttonPanel.add(this.ok);
-        this.buttonPanel.add(this.cancel);
-        this.ok.addActionListener(this);
-        this.cancel.addActionListener(this);
+        this.getButtonPanel().add(this.getOk());
+        this.getButtonPanel().add(this.getCancel());
+        this.getOk().addActionListener(this);
+        this.getCancel().addActionListener(this);
         int projectListWidth = 160;
-        this.buttonPanel.setPreferredSize(new Dimension(projectListWidth, 40));
-        left.add(this.buttonPanel, BorderLayout.SOUTH);
+        this.getButtonPanel().setPreferredSize(new Dimension(projectListWidth, 40));
+        left.add(this.getButtonPanel(), BorderLayout.SOUTH);
 
         this.add(left, BorderLayout.WEST);
 
@@ -275,72 +261,72 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         // The tab containing the description of the selected project
         JPanel description = new JPanel();
         description.setLayout(new BorderLayout());
-        JScrollPane scrollableDescriptionPane = new JScrollPane(this.descriptionText);
+        JScrollPane scrollableDescriptionPane = new JScrollPane(this.getDescriptionText());
         description.add(scrollableDescriptionPane);
-        this.descriptionText.setEditable(false);
-        this.descriptionText.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+        this.getDescriptionText().setEditable(false);
+        this.getDescriptionText().setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 
-        int i = this.selection.getSelectedIndex();
+        int i = this.getSelection().getSelectedIndex();
         if (i == -1) {
             // there was no defaultProject
-            this.descriptionText.setText("Please select a project.");
+            this.getDescriptionText().setText("Please select a project.");
         } else {
-            this.generateGUIDescription(this.selectedProjectName);
+            this.generateGUIDescription(this.getSelectedProjectName());
         }
-        this.right.addTab("Description", description);
+        this.getRight().addTab("Description", description);
 
         // The tab containing the config-file entries
-        this.configuration.setLayout(new BoxLayout(this.configuration, BoxLayout.Y_AXIS));
+        this.getConfiguration().setLayout(new BoxLayout(this.getConfiguration(), BoxLayout.Y_AXIS));
 
-        JScrollPane scrollableConfigurationPane = new JScrollPane(this.frameworkConfigurationPanel);
+        JScrollPane scrollableConfigurationPane = new JScrollPane(this.getFrameworkConfigurationPanel());
         // increment the scroll speed (for some reason the speed for the
         // scrollableConfigurationPane is very low)
         scrollableConfigurationPane.getVerticalScrollBar().setUnitIncrement(15);
 
-        this.frameworkConfigurationPanel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+        this.getFrameworkConfigurationPanel().setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 
-        this.configuration.add(scrollableConfigurationPane);
+        this.getConfiguration().add(scrollableConfigurationPane);
         JPanel bp = new JPanel();
-        bp.add(this.saveConfig);
-        this.saveConfig.addActionListener(this);
-        this.saveConfig.setMnemonic(java.awt.event.KeyEvent.VK_S);
-        this.configuration.add(bp);
+        bp.add(this.getSaveConfig());
+        this.getSaveConfig().addActionListener(this);
+        this.getSaveConfig().setMnemonic(java.awt.event.KeyEvent.VK_S);
+        this.getConfiguration().add(bp);
 
-        this.expand = this.createFrameworkIconButton("expand", "expand.gif", "Show advanced settings");
-        this.collapse = this.createFrameworkIconButton("collapse", "collapse.gif", "Hide advanced settings");
+        this.setExpand(this.createFrameworkIconButton("expand", "expand.gif", "Show advanced settings"));
+        this.setCollapse(this.createFrameworkIconButton("collapse", "collapse.gif", "Hide advanced settings"));
 
-        this.customConfigurationPanel.setLayout(new BorderLayout());
+        this.getCustomConfigurationPanel().setLayout(new BorderLayout());
 
         JPanel mainCustomConfigurationPanel = new JPanel();
         mainCustomConfigurationPanel.setLayout(new BoxLayout(mainCustomConfigurationPanel, BoxLayout.Y_AXIS));
-        mainCustomConfigurationPanel.add(this.customConfigurationPanel);
+        mainCustomConfigurationPanel.add(this.getCustomConfigurationPanel());
         // and the save button
         JPanel bp2 = new JPanel();
-        bp2.add(this.saveConfig2);
-        this.saveConfig2.addActionListener(this);
-        this.saveConfig2.setMnemonic(java.awt.event.KeyEvent.VK_S);
+        bp2.add(this.getSaveConfig2());
+        this.getSaveConfig2().addActionListener(this);
+        this.getSaveConfig2().setMnemonic(java.awt.event.KeyEvent.VK_S);
         mainCustomConfigurationPanel.add(bp2);
 
-        this.right.addTab("Framework Config", this.configuration);
-        this.right.addTab("Project Config", mainCustomConfigurationPanel);
-        this.right.setMnemonicAt(0, java.awt.event.KeyEvent.VK_D);
-        this.right.setMnemonicAt(1, java.awt.event.KeyEvent.VK_F);
-        this.right.setMnemonicAt(2, java.awt.event.KeyEvent.VK_P);
-        this.right.setSelectedIndex(this.appConfig.getProjectSelectorSelectedTab() - 1);
+        this.getRight().addTab("Framework Config", this.getConfiguration());
+        this.getRight().addTab("Project Config", mainCustomConfigurationPanel);
+        this.getRight().setMnemonicAt(0, java.awt.event.KeyEvent.VK_D);
+        this.getRight().setMnemonicAt(1, java.awt.event.KeyEvent.VK_F);
+        this.getRight().setMnemonicAt(2, java.awt.event.KeyEvent.VK_P);
+        this.getRight().setSelectedIndex(AppConfig.getAppConfig().getProjectSelectorSelectedTab() - 1);
 
         if (i == -1) {
             JTextField msg = new JTextField("Please select a project.");
             msg.setEditable(false);
-            this.frameworkConfigurationPanel.add(msg);
+            this.getFrameworkConfigurationPanel().add(msg);
         } else {
-            this.generateGUIGonfiguration(this.selectedProjectName);
+            this.generateGUIGonfiguration(this.getSelectedProjectName());
         }
 
-        this.add(this.right, BorderLayout.CENTER);
+        this.add(this.getRight(), BorderLayout.CENTER);
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        this.getRootPane().setDefaultButton(this.ok);
+        this.getRootPane().setDefaultButton(this.getOk());
 
         this.setVisible(true);
 
@@ -391,7 +377,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         InputStream proj = cldr.getResourceAsStream(IOUtils.getAsPath(Configuration.getProjectResourceDirPrefix(), projectName, Configuration.getDescriptionFileName()));
         try {
             if (proj == null) {
-                this.descriptionText.setText("There is no description-file in the currently selected project.");
+                this.getDescriptionText().setText("There is no description-file in the currently selected project.");
             } else {
                 LineNumberReader r = new LineNumberReader(new InputStreamReader(proj));
                 StringBuilder description = new StringBuilder();
@@ -399,14 +385,14 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 while ((tmp = r.readLine()) != null) {
                     description.append(tmp).append("\n");
                 }
-                this.descriptionText.setText(description.toString());
-                this.descriptionText.setCaretPosition(0);
+                this.getDescriptionText().setText(description.toString());
+                this.getDescriptionText().setCaretPosition(0);
             }
         } catch (FileNotFoundException e) {
-            this.descriptionText.setText("There is no description-file in the currently selected project.");
+            this.getDescriptionText().setText("There is no description-file in the currently selected project.");
         } catch (IOException e) {
             Main.minorError(e);
-            this.descriptionText.setText("There is no description-file in the currently selected project.");
+            this.getDescriptionText().setText("There is no description-file in the currently selected project.");
         }
     }
 
@@ -491,7 +477,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
             }
         }
 
-        this.projectEntries = new Vector<>();
+        this.setProjectEntries(new Vector<>());
 
         Class<?> configClass = Configuration.class;
         // We assume here that the fields are returned in the order they are listed in
@@ -518,7 +504,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 if (dan != null || oan != null) {
                     if (san != null) { // get the title
                         sectionName = san.value();
-                        this.projectEntries.add(new ConfigEntry(sectionName, "", Configuration.SectionInConfigFile.class, "",
+                        this.getProjectEntries().add(new ConfigEntry(sectionName, "", Configuration.SectionInConfigFile.class, "",
                                 false, field));
                     }
                     String description = dan != null ? dan.value() : oan.value(); // the description text
@@ -533,11 +519,11 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     if (value == null) {
                         Object fieldValue = useGetter ? getter.invoke(null) : field.get(null);
                         // there was no entry in the config-file. Take the default value.
-                        this.projectEntries.add(
+                        this.getProjectEntries().add(
                                 new ConfigEntry(field.getName(), Configuration.getConfigurationText(fieldValue),
                                         field.getType(), description, oan != null, field));
                     } else { // there is an entry in the XML file
-                        this.projectEntries.add(new ConfigEntry(field.getName(), value, field.getType(), description,
+                        this.getProjectEntries().add(new ConfigEntry(field.getName(), value, field.getType(), description,
                                 oan != null, field)); // elem.comment
                     }
                 } else if (field.getName().equals("edgeType")) {
@@ -552,10 +538,10 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     }
                     if (value == null) {
                         // there was no entry in the config-file. Take the default value.
-                        this.projectEntries.add(new ConfigEntry(field.getName(), Configuration.getEdgeType(),
+                        this.getProjectEntries().add(new ConfigEntry(field.getName(), Configuration.getEdgeType(),
                                 field.getType(), comment, oan != null, field));
                     } else {
-                        this.projectEntries.add(new ConfigEntry(field.getName(), value,
+                        this.getProjectEntries().add(new ConfigEntry(field.getName(), value,
                                 field.getType(), comment, oan != null, field));
                     }
                 }
@@ -567,9 +553,9 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         // for each entry, create the corresponding GUI components
 
-        this.asynchronousSimulationCB = null;
-        this.mobilityCB = null;
-        for (ConfigEntry e : this.projectEntries) {
+        this.setAsynchronousSimulationCB(null);
+        this.setMobilityCB(null);
+        for (ConfigEntry e : this.getProjectEntries()) {
             String ttt = e.getComment().equals("") ? null : e.getComment(); // the tool tip text, don't show at all, if no text to
             // display
 
@@ -591,22 +577,22 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 } else {
                     booleanChoice.setSelectedItem("true");
                 }
-                booleanChoice.addActionListener(this.userInputListener); // ! add this listener AFTER setting the value!
+                booleanChoice.addActionListener(this.getUserInputListener()); // ! add this listener AFTER setting the value!
                 booleanChoice.setToolTipText(ttt);
                 e.setValueComponent(booleanChoice);
                 // special case: mobility can only be changed if simulation is in sync mode.
                 if (e.getKey().equals("asynchronousMode")) {
-                    this.asynchronousSimulationCB = booleanChoice;
-                    if (this.mobilityCB != null && (e.getValue()).equals("true")) {
-                        this.mobilityCB.setSelectedItem("false");
-                        this.mobilityCB.setEnabled(false);
+                    this.setAsynchronousSimulationCB(booleanChoice);
+                    if (this.getMobilityCB() != null && (e.getValue()).equals("true")) {
+                        this.getMobilityCB().setSelectedItem("false");
+                        this.getMobilityCB().setEnabled(false);
                     }
                 }
                 if (e.getKey().equals("mobility")) {
-                    this.mobilityCB = booleanChoice;
-                    if (this.asynchronousSimulationCB != null && "true".equals(this.asynchronousSimulationCB.getSelectedItem())) {
-                        this.mobilityCB.setSelectedItem("false");
-                        this.mobilityCB.setEnabled(false);
+                    this.setMobilityCB(booleanChoice);
+                    if (this.getAsynchronousSimulationCB() != null && "true".equals(this.getAsynchronousSimulationCB().getSelectedItem())) {
+                        this.getMobilityCB().setSelectedItem("false");
+                        this.getMobilityCB().setEnabled(false);
                     }
                 }
             } else if (e.getEntryClass() == Configuration.SectionInConfigFile.class) {
@@ -621,7 +607,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     choice.setEditable(true); // let the user the freedom to enter other stuff (which is likely to be
                     // wrong...)
                     choice.setSelectedItem(e.getValue());
-                    choice.addActionListener(this.userInputListener); // ! add this listener AFTER setting the value!
+                    choice.addActionListener(this.getUserInputListener()); // ! add this listener AFTER setting the value!
                     choice.setToolTipText(ttt);
                     e.setValueComponent(choice);
                 } else {
@@ -631,12 +617,12 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                         textArea.setBorder((new JTextField()).getBorder()); // copy the border
                         textArea.setLineWrap(true);
                         // textArea.setPreferredSize(new Dimension(50, 30));
-                        textArea.addKeyListener(this.userInputListener);
+                        textArea.addKeyListener(this.getUserInputListener());
                         e.setValueComponent(textArea);
                     } else {
                         MultiLineToolTipJTextField textField = new MultiLineToolTipJTextField(e.getValue());
                         textField.setToolTipText(ttt);
-                        textField.addKeyListener(this.userInputListener);
+                        textField.addKeyListener(this.getUserInputListener());
                         e.setValueComponent(textField);
                     }
                 }
@@ -645,7 +631,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         // and finally add all the entries
         this.insertProjectEntries();
 
-        this.customConfigurationPanel.removeAll();
+        this.getCustomConfigurationPanel().removeAll();
 
         // And add the custom entries
 
@@ -660,24 +646,24 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         // customParameters.addMouseWheelListener(new
         // MouseWheelForwarder(scrollableConfigurationPane.getMouseWheelListeners()));
 
-        this.customParameters.setTabSize(3);
-        this.customParameters.setLineWrap(true);
-        this.customParameters.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+        this.getCustomParameters().setTabSize(3);
+        this.getCustomParameters().setLineWrap(true);
+        this.getCustomParameters().setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 
         if (configExists) {
-            this.customParameters.setText(this.getCustomText(IOUtils.getProjectConfigurationAsReader(projectName)));
+            this.getCustomParameters().setText(this.getCustomText(IOUtils.getProjectConfigurationAsReader(projectName)));
         } else {
-            this.customParameters.setText("");
+            this.getCustomParameters().setText("");
         }
 
-        this.customParameters.addKeyListener(this.userInputListener); // ! add this listener AFTER setting the text !
+        this.getCustomParameters().addKeyListener(this.getUserInputListener()); // ! add this listener AFTER setting the text !
 
-        JScrollPane customScroll = new JScrollPane(this.customParameters, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane customScroll = new JScrollPane(this.getCustomParameters(), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         customScroll.setWheelScrollingEnabled(true);
-        this.customConfigurationPanel.add(customScroll);
+        this.getCustomConfigurationPanel().add(customScroll);
 
-        this.userInputListener.reset();
+        this.getUserInputListener().reset();
 
         super.repaint();
     }
@@ -689,14 +675,14 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      * keep what he has already entered.
      */
     private void insertProjectEntries() {
-        this.frameworkConfigurationPanel.removeAll();
-        this.frameworkConfigurationPanel.setLayout(new BorderLayout());
+        this.getFrameworkConfigurationPanel().removeAll();
+        this.getFrameworkConfigurationPanel().setLayout(new BorderLayout());
         JPanel entryTable = new JPanel();
-        this.frameworkConfigurationPanel.add(entryTable, BorderLayout.CENTER);
-        if (this.showOptionalFields) {
-            this.frameworkConfigurationPanel.add(this.collapse, BorderLayout.SOUTH); // add the 'expand' button
+        this.getFrameworkConfigurationPanel().add(entryTable, BorderLayout.CENTER);
+        if (this.isShowOptionalFields()) {
+            this.getFrameworkConfigurationPanel().add(this.getCollapse(), BorderLayout.SOUTH); // add the 'expand' button
         } else {
-            this.frameworkConfigurationPanel.add(this.expand, BorderLayout.SOUTH); // add the 'expand' button
+            this.getFrameworkConfigurationPanel().add(this.getExpand(), BorderLayout.SOUTH); // add the 'expand' button
         }
 
         entryTable.removeAll();
@@ -704,12 +690,12 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         int numEntryTableLines = 0; // count number of rows added to entryTable
 
-        for (ConfigEntry e : this.projectEntries) {
+        for (ConfigEntry e : this.getProjectEntries()) {
             if (e.getValueComponent() == null) { // it's a title
                 title = e;
                 continue;
             }
-            if (e.isOptional() && !this.showOptionalFields) {
+            if (e.isOptional() && !this.isShowOptionalFields()) {
                 continue;
             }
             if (title != null) { // first print the title
@@ -739,7 +725,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
     private Document validateCustomFields() {
         Document doc;
         try {
-            String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Document><Custom>" + this.customParameters.getText()
+            String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Document><Custom>" + this.getCustomParameters().getText()
                     + "</Custom></Document>";
             doc = new SAXBuilder().build(new StringReader(xml));
         } catch (JDOMException e) {
@@ -769,7 +755,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         root.addContent(custom);
         custom.addContent(new Element("_xml_custom_")); // this tag will be replaced by the config text in a second step
 
-        for (ConfigEntry e : this.projectEntries) {
+        for (ConfigEntry e : this.getProjectEntries()) {
             if (e.getValueComponent() != null) { // there is a value field in the GUI
                 if (!Objects.equals("", e.getComment())) { // the comment is not "", add it
                     framework.addContent(new Comment(e.getComment().replace("\n", " "))); // without the newline chars
@@ -804,7 +790,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
         String outputPath = IOUtils.getAsPath(
                 (isTemporary ? Configuration.getAppTmpFolder() : Configuration.getAppConfigDir()),
-                Configuration.getUserProjectsPackage(), this.selectedProjectName);
+                Configuration.getUserProjectsPackage(), this.getSelectedProjectName());
         IOUtils.createDir(outputPath);
         File outputFile = new File(IOUtils.getAsPath(outputPath, Configuration.getConfigfileFileName() + (isTemporary ? ".run" : "")));
 
@@ -814,7 +800,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         f.setIndent("\t");
         outputter.setFormat(f);
         String tempOutputFolder = IOUtils.getAsPath(Configuration.getAppTmpFolder(),
-                Configuration.getUserProjectsPackage(), this.selectedProjectName);
+                Configuration.getUserProjectsPackage(), this.getSelectedProjectName());
         IOUtils.createDir(tempOutputFolder);
         File tempOutputFile = new File(IOUtils.getAsPath(tempOutputFolder, Configuration.getConfigfileFileName() + ".temp"));
 
@@ -835,7 +821,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 if (line.contains("<_xml_NL_")) {
                     output.newLine();
                 } else if (line.contains("<_xml_custom_")) {
-                    output.write(this.customParameters.getText());
+                    output.write(this.getCustomParameters().getText());
                 } else {
                     output.write(line);
                     output.newLine();
@@ -847,7 +833,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
             Main.minorError("Could not write the configuration file!\n\n" + e1.getMessage());
         }
 
-        this.userInputListener.reset(); // finally reset the 'modified' flag
+        this.getUserInputListener().reset(); // finally reset the 'modified' flag
     }
 
     /*-**********************************************************************************/
@@ -859,7 +845,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      * project selector configuration.
      */
     private void setFrameworkConfig() {
-        for (ConfigEntry e : this.projectEntries) {
+        for (ConfigEntry e : this.getProjectEntries()) {
             if (e.getValueComponent() == null) {
                 continue; // this entry does not have a value - its probably a section header
             }
@@ -875,8 +861,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource().equals(this.saveConfig) || e.getSource().equals(this.saveConfig2)) { // --------------------------------------------------------------------
-            if (this.selection.getSelectedValue() == null) {
+        if (e.getSource().equals(this.getSaveConfig()) || e.getSource().equals(this.getSaveConfig2())) { // --------------------------------------------------------------------
+            if (this.getSelection().getSelectedValue() == null) {
                 JOptionPane.showMessageDialog(this, "Please select a project from the selection.",
                         "No project selected.", JOptionPane.ERROR_MESSAGE);
             } else {
@@ -886,12 +872,12 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     throw new SinalgoWrappedException(ex);
                 }
             }
-        } else if (e.getSource().equals(this.ok)) { // --------------------------------------------------------------------
-            if (this.selection.getSelectedValue() == null) {
+        } else if (e.getSource().equals(this.getOk())) { // --------------------------------------------------------------------
+            if (this.getSelection().getSelectedValue() == null) {
                 JOptionPane.showMessageDialog(this, "Please select a project from the selection.",
                         "No project selected.", JOptionPane.ERROR_MESSAGE);
             } else {
-                if (this.userInputListener.isModified()) {
+                if (this.getUserInputListener().isModified()) {
                     // the user has modified the config, but not stored it
                     int decision = JOptionPane.showConfirmDialog(this,
                             "The modifications to this configuration have not yet been saved.\n\nDo you want to store this configuration, such that it is also available for subsequent runs?",
@@ -913,10 +899,10 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     return;
                 }
 
-                if (!this.selectedProjectName.equals("defaultProject")) {
-                    Global.setProjectName(this.selectedProjectName);
+                if (!this.getSelectedProjectName().equals("defaultProject")) {
+                    Global.setProjectName(this.getSelectedProjectName());
                     Global.setUseProject(true);
-                    this.appConfig.setLastChosenProject(Global.getProjectName());
+                    AppConfig.getAppConfig().setLastChosenProject(Global.getProjectName());
                 }
 
                 Element customEle = customDoc.getRootElement().getChild("Custom");
@@ -930,23 +916,23 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                 this.setVisible(false);
 
                 // reset the tooltip dismiss delay to the default value
-                ToolTipManager.sharedInstance().setDismissDelay(this.defaultTooltipDismissDelay);
+                ToolTipManager.sharedInstance().setDismissDelay(this.getDefaultTooltipDismissDelay());
 
-                this.appConfig.setProjectSelectorSelectedTab(1 + this.right.getSelectedIndex());
-                this.appConfig.writeConfig(); // write the config, s.t. when the main application crashes, at least the
+                AppConfig.getAppConfig().setProjectSelectorSelectedTab(1 + this.getRight().getSelectedIndex());
+                AppConfig.getAppConfig().writeConfig(); // write the config, s.t. when the main application crashes, at least the
                 // project selector config is preserved
                 this.storeConfig(true); // store the config to a file s.t. the simulation process can read it
 
                 // wake up the waiting object.
-                synchronized (this.main) {
-                    this.main.notify();
+                synchronized (this.getMain()) {
+                    this.getMain().notify();
                 }
             }
-        } else if (e.getSource().equals(this.cancel)) { // --------------------------------------------------------------------
-            if (this.userInputListener.isModified()) {
+        } else if (e.getSource().equals(this.getCancel())) { // --------------------------------------------------------------------
+            if (this.getUserInputListener().isModified()) {
                 // the user has modified the config, but not stored it
                 int decision = JOptionPane.showConfirmDialog(this,
-                        "The configuration for project '" + this.selectedProjectName
+                        "The configuration for project '" + this.getSelectedProjectName()
                                 + "' has unsaved changes. Do you wish to save them?",
                         "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
                 if (decision == JOptionPane.YES_OPTION) { // store
@@ -960,15 +946,15 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     return;
                 }
             }
-            this.appConfig.setProjectSelectorSelectedTab(1 + this.right.getSelectedIndex());
-            this.appConfig.writeConfig();
+            AppConfig.getAppConfig().setProjectSelectorSelectedTab(1 + this.getRight().getSelectedIndex());
+            AppConfig.getAppConfig().writeConfig();
             System.exit(1);
-        } else if (e.getSource().equals(this.collapse)) { // --------------------------------------------------------------------
-            this.showOptionalFields = false;
+        } else if (e.getSource().equals(this.getCollapse())) { // --------------------------------------------------------------------
+            this.setShowOptionalFields(false);
             this.insertProjectEntries();
             this.repaint();
-        } else if (e.getSource().equals(this.expand)) { // --------------------------------------------------------------------
-            this.showOptionalFields = true;
+        } else if (e.getSource().equals(this.getExpand())) { // --------------------------------------------------------------------
+            this.setShowOptionalFields(true);
             this.insertProjectEntries();
             this.repaint();
         }
@@ -977,10 +963,10 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            if (this.userInputListener.isModified()) {
+            if (this.getUserInputListener().isModified()) {
                 // the user has modified the config, but not stored it
                 int decision = JOptionPane.showConfirmDialog(this,
-                        "The configuration for project '" + this.selectedProjectName
+                        "The configuration for project '" + this.getSelectedProjectName()
                                 + "' has unsaved changes. Do you wish to save them?",
                         "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
                 if (decision == JOptionPane.YES_OPTION) { // store
@@ -991,15 +977,15 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
                     }
                 }
                 if (decision == JOptionPane.CANCEL_OPTION) {
-                    this.selection.removeListSelectionListener(this);
-                    this.selection.setSelectedValue(this.selectedProjectName, true);
-                    this.selection.addListSelectionListener(this);
+                    this.getSelection().removeListSelectionListener(this);
+                    this.getSelection().setSelectedValue(this.getSelectedProjectName(), true);
+                    this.getSelection().addListSelectionListener(this);
                     return;
                 }
             }
-            this.selectedProjectName = (String) this.selection.getSelectedValue();
-            this.generateGUIGonfiguration(this.selectedProjectName);
-            this.generateGUIDescription(this.selectedProjectName);
+            this.setSelectedProjectName((String) this.getSelection().getSelectedValue());
+            this.generateGUIGonfiguration(this.getSelectedProjectName());
+            this.generateGUIDescription(this.getSelectedProjectName());
         }
     }
 
@@ -1009,21 +995,18 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
      */
     private class UserInputListener implements KeyListener, ActionListener {
 
+        @Getter
         private boolean isModified = false;
 
-        public boolean isModified() {
-            return this.isModified;
-        }
-
         public void reset() {
-            ProjectSelector.this.saveConfig.setEnabled(false);
-            ProjectSelector.this.saveConfig2.setEnabled(false);
+            ProjectSelector.this.getSaveConfig().setEnabled(false);
+            ProjectSelector.this.getSaveConfig2().setEnabled(false);
             this.isModified = false;
         }
 
         public void setModified() {
-            ProjectSelector.this.saveConfig.setEnabled(true);
-            ProjectSelector.this.saveConfig2.setEnabled(true);
+            ProjectSelector.this.getSaveConfig().setEnabled(true);
+            ProjectSelector.this.getSaveConfig2().setEnabled(true);
             this.isModified = true;
         }
 
@@ -1047,13 +1030,13 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         }
 
         private void test(ActionEvent e) {
-            if (e.getSource() == ProjectSelector.this.asynchronousSimulationCB) {
-                if (ProjectSelector.this.mobilityCB != null) {
-                    if ("true".equals(ProjectSelector.this.asynchronousSimulationCB.getSelectedItem())) {
-                        ProjectSelector.this.mobilityCB.setSelectedItem("false");
-                        ProjectSelector.this.mobilityCB.setEnabled(false);
+            if (e.getSource() == ProjectSelector.this.getAsynchronousSimulationCB()) {
+                if (ProjectSelector.this.getMobilityCB() != null) {
+                    if ("true".equals(ProjectSelector.this.getAsynchronousSimulationCB().getSelectedItem())) {
+                        ProjectSelector.this.getMobilityCB().setSelectedItem("false");
+                        ProjectSelector.this.getMobilityCB().setEnabled(false);
                     } else {
-                        ProjectSelector.this.mobilityCB.setEnabled(true);
+                        ProjectSelector.this.getMobilityCB().setEnabled(true);
                     }
                 }
             }

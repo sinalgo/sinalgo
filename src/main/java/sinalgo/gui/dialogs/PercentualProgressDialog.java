@@ -87,11 +87,11 @@ public class PercentualProgressDialog extends JDialog {
     // }
 
     /**
-     * Constructs a progress bar that is attached to a parent and is modal (blocks
-     * the parent until the progressbar is closed).
+     * Constructs a progress bar that is attached to a parentGUI and is modal (blocks
+     * the parentGUI until the progressbar is closed).
      *
      * @param pbu    The ProgressBarUser using this progress bar.
-     * @param parent The parent JDialog to attach the ProgressBar to.
+     * @param parent The parentGUI JDialog to attach the ProgressBar to.
      * @param title  The title of the Dialog.
      */
     public PercentualProgressDialog(ProgressBarUser pbu, JDialog parent, String title) {
@@ -100,17 +100,17 @@ public class PercentualProgressDialog extends JDialog {
     }
 
     // /**
-    // * Constructs a progress bar that is attached to a parent and is modal (blocks
-    // * the parent until the progressbar is closed).
+    // * Constructs a progress bar that is attached to a parentGUI and is modal (blocks
+    // * the parentGUI until the progressbar is closed).
     // *
     // * @param pbu The ProgressBarUser using this progress bar.
-    // * @param parent The parent JDialog to attach the ProgressBar to.
+    // * @param parentGUI The parentGUI JDialog to attach the ProgressBar to.
     // * @param title The title of the Dialog.
     // * @param cancelEnabled whether the cancelButton is enabled or not
     // */
-    // public PercentualProgressDialog(ProgressBarUser pbu, JDialog parent, String
+    // public PercentualProgressDialog(ProgressBarUser pbu, JDialog parentGUI, String
     // title, boolean cancelEnabled){
-    // super(parent, title, true);
+    // super(parentGUI, title, true);
     // blocking = true;
     // cancel.setEnabled(cancelEnabled);
     // create(pbu);
@@ -152,8 +152,7 @@ public class PercentualProgressDialog extends JDialog {
      * This method initializes the ProgressBar and starts the update Thread.
      */
     public void init() {
-        UpdateThread updateThread = new UpdateThread();
-        updateThread.start();
+        new UpdateThread().start();
         this.setVisible(true); // blocking if this dialog was started with the modal bit set to true.
     }
 

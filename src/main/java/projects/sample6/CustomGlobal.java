@@ -104,7 +104,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
      * nodes in the framework that were added prior to this method call.
      * <p>
      * The method places all leaves on a line at the bottom of the screen and builds
-     * a balanced tree on top (bottom up), such that each tree-node is is parent of
+     * a balanced tree on top (bottom up), such that each tree-node is is parentGUI of
      * fanOut children.
      *
      * @param fanOut    The max. fan-out of tree-nodes. E.g. 2 results in a binary tree
@@ -157,11 +157,11 @@ public class CustomGlobal extends AbstractCustomGlobal {
             TreeNode currentNode = null;
 
             // loop over all nodes in the list, and group fanOut nodes, attach them
-            // to a new parent (tn), which will be placed in the center of the
+            // to a new parentGUI (tn), which will be placed in the center of the
             // associated nodes.
             for (TreeNode toProces : toProcess) {
                 currentNode = toProces;
-                if (tn == null) { // start new parent
+                if (tn == null) { // start new parentGUI
                     tn = new TreeNode();
                     tn.finishInitializationWithDefaultModels(true);
                     this.treeNodes.add(tn);
@@ -179,7 +179,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             }
             // Cleanup-code. If at the right-side of the tree, the we don't have enough
             // children
-            // for the parent, we need to finish the parent's placement outside the loop.
+            // for the parentGUI, we need to finish the parentGUI's placement outside the loop.
             if (tn != null) {
                 tn.setPosition((leftMostXOffset + currentNode.getPosition().getXCoord()) / 2, posY, 0);
             }

@@ -69,7 +69,7 @@ public class GlobalSettingsDialog extends JDialog implements ActionListener {
     /**
      * The constructor for the GlobalSettingsDialog class.
      *
-     * @param parent The parent Frame to attach the dialog to.
+     * @param parent The parentGUI Frame to attach the dialog to.
      */
     public GlobalSettingsDialog(JFrame parent) {
         super(parent, "Global Settings", true);

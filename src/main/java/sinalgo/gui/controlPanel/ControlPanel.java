@@ -122,8 +122,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     @Setter
     private Color bgColor = new Color(this.getBackground().getRed(), this.getBackground().getGreen(), this.getBackground().getBlue());
 
-    @Getter // public getter for overriding that of JPanel's
-    private GUI parent = null;
+    private GUI parentGUI = null;
 
     private JTextField roundsPerformed = new JTextField(0);
     private JTextField timePerformed = new JTextField(0);
@@ -250,11 +249,11 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * happens when called on a 2D graph.
      */
     public void defaultViewXY() {
-        PositionTransformation pt = this.getParent().getTransformator();
+        PositionTransformation pt = this.getParentGUI().getTransformator();
         if (pt instanceof Transformation3D) {
-            ((Transformation3D) pt).defaultViewXY(this.getParent().getGraphPanel().getWidth(),
-                    this.getParent().getGraphPanel().getHeight());
-            this.getParent().setZoomFactor(pt.getZoomFactor());
+            ((Transformation3D) pt).defaultViewXY(this.getParentGUI().getGraphPanel().getWidth(),
+                    this.getParentGUI().getGraphPanel().getHeight());
+            this.getParentGUI().setZoomFactor(pt.getZoomFactor());
         }
     }
 
@@ -263,11 +262,11 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * happens when called on a 2D graph.
      */
     public void defaultViewXZ() {
-        PositionTransformation pt = this.getParent().getTransformator();
+        PositionTransformation pt = this.getParentGUI().getTransformator();
         if (pt instanceof Transformation3D) {
-            ((Transformation3D) pt).defaultViewXZ(this.getParent().getGraphPanel().getWidth(),
-                    this.getParent().getGraphPanel().getHeight());
-            this.getParent().setZoomFactor(pt.getZoomFactor());
+            ((Transformation3D) pt).defaultViewXZ(this.getParentGUI().getGraphPanel().getWidth(),
+                    this.getParentGUI().getGraphPanel().getHeight());
+            this.getParentGUI().setZoomFactor(pt.getZoomFactor());
         }
     }
 
@@ -276,11 +275,11 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * happens when called on a 2D graph.
      */
     public void defaultViewYZ() {
-        PositionTransformation pt = this.getParent().getTransformator();
+        PositionTransformation pt = this.getParentGUI().getTransformator();
         if (pt instanceof Transformation3D) {
-            ((Transformation3D) pt).defaultViewYZ(this.getParent().getGraphPanel().getWidth(),
-                    this.getParent().getGraphPanel().getHeight());
-            this.getParent().setZoomFactor(pt.getZoomFactor());
+            ((Transformation3D) pt).defaultViewYZ(this.getParentGUI().getGraphPanel().getWidth(),
+                    this.getParentGUI().getGraphPanel().getHeight());
+            this.getParentGUI().setZoomFactor(pt.getZoomFactor());
         }
     }
 
@@ -404,8 +403,8 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
                         + "' is not a positive integer.\nThe number of rounds has to be a positive integer.");
                 return;
             }
-            this.getParent().setStartButtonEnabled(false);
-            this.getParent().getRuntime().run(rounds, true);
+            this.getParentGUI().setStartButtonEnabled(false);
+            this.getParentGUI().getRuntime().run(rounds, true);
         } catch (java.lang.NumberFormatException nFE) {
             Main.minorError("Invalid input: '" + getRoundsToPerform().getText() + "' is not a valid integer.");
         }
@@ -415,7 +414,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
      * Stops a running simulation.
      */
     public void stopSimulation() {
-        this.getParent().getRuntime().abort();
+        this.getParentGUI().getRuntime().abort();
     }
 
     @Override
@@ -433,33 +432,33 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
             Point guiP = this.getLocationOnScreen();
             rp.show(this, p.x - guiP.x - 29, p.y - guiP.y + 29);
         } else if (e.getActionCommand().equals("zoomIn")) {
-            this.getParent().zoomIn();
+            this.getParentGUI().zoomIn();
         } else if (e.getActionCommand().equals("zoomOut")) {
-            this.getParent().zoomOut();
+            this.getParentGUI().zoomOut();
         } else if (e.getActionCommand().equals("zoomToFit")) {
-            this.getParent().getTransformator().zoomToFit(this.getParent().getGraphPanel().getWidth(), this.getParent().getGraphPanel().getHeight());
-            this.getParent().setZoomFactor(this.getParent().getTransformator().getZoomFactor());
+            this.getParentGUI().getTransformator().zoomToFit(this.getParentGUI().getGraphPanel().getWidth(), this.getParentGUI().getGraphPanel().getHeight());
+            this.getParentGUI().setZoomFactor(this.getParentGUI().getTransformator().getZoomFactor());
         } else if (e.getActionCommand().equals("zoomToFit3D")) {
-            this.getParent().getTransformator().defaultView(this.getParent().getGraphPanel().getWidth(),
-                    this.getParent().getGraphPanel().getHeight());
-            this.getParent().setZoomFactor(this.getParent().getTransformator().getZoomFactor());
+            this.getParentGUI().getTransformator().defaultView(this.getParentGUI().getGraphPanel().getWidth(),
+                    this.getParentGUI().getGraphPanel().getHeight());
+            this.getParentGUI().setZoomFactor(this.getParentGUI().getTransformator().getZoomFactor());
         } else if (e.getActionCommand().equals("extendPanel")) {
-            this.getParent().changePanel(true);
+            this.getParentGUI().changePanel(true);
         } else if (e.getActionCommand().equals("minimizedPanel")) {
-            this.getParent().changePanel(false);
+            this.getParentGUI().changePanel(false);
         } else if (e.getActionCommand().equals("clearGraph")) {
-            this.getParent().clearAllNodes();
+            this.getParentGUI().clearAllNodes();
         } else if (e.getActionCommand().equals("addNodes")) {
-            this.getParent().addNodes();
+            this.getParentGUI().addNodes();
         } else if (e.getActionCommand().equals("connectNodes")) {
             SinalgoRuntime.reevaluateConnections(); // could ask...
-            this.getParent().redrawGUI();
+            this.getParentGUI().redrawGUI();
         } else {
             // test whether its a custom button
             for (Tuple<JButton, Method> t : this.getCustomButtons()) {
                 if (t.getFirst() == e.getSource()) {
                     try {
-                        synchronized (this.getParent().getTransformator()) {
+                        synchronized (this.getParentGUI().getTransformator()) {
                             // synchronize it on the transformator to grant not to be concurrent with
                             // any drawing or modifying action
                             t.getSecond().invoke(Global.getCustomGlobal());

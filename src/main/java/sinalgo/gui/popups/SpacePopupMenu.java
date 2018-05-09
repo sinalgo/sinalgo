@@ -68,7 +68,7 @@ public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener 
      * @param p The Frame to add the AddNodeDialog to if the user clicked AddNode.
      */
     public SpacePopupMenu(GUI p) {
-        this.setParent(p);
+        this.setParentGUI(p);
         this.getAdd().addActionListener(this);
     }
 
@@ -82,7 +82,7 @@ public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener 
 
         this.removeAll();
 
-        if (this.getParent().getTransformator().supportReverseTranslation()) {
+        if (this.getParentGUI().getTransformator().supportReverseTranslation()) {
             this.add(this.getAdd());
             this.addSeparator();
         }
@@ -94,10 +94,10 @@ public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(this.getAdd().getActionCommand())) {
-            PositionTransformation pt = this.getParent().getTransformator();
+            PositionTransformation pt = this.getParentGUI().getTransformator();
             if (pt.supportReverseTranslation()) {
                 pt.translateToLogicPosition(this.getPos().x, this.getPos().y);
-                this.getParent().addSingleNode(new Position(pt.getLogicX(), pt.getLogicY(), pt.getLogicZ()));
+                this.getParentGUI().addSingleNode(new Position(pt.getLogicX(), pt.getLogicY(), pt.getLogicZ()));
             }
         }
     }

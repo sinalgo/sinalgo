@@ -93,7 +93,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
         @Override
         public Dimension getPreferredScrollableViewportSize() {
-            return new Dimension(MaximizedControlPanel.this.getControlPanelWidth(), MaximizedControlPanel.this.getParent().getHeight() - 60); // hand-crafted :(
+            return new Dimension(MaximizedControlPanel.this.getControlPanelWidth(), MaximizedControlPanel.this.getParentGUI().getHeight() - 60); // hand-crafted :(
         }
 
         @Override
@@ -472,7 +472,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
         // .... add zoom view
         if (AppConfig.getAppConfig().isGuiControlPanelShowFullViewPanel()) {
-            if (this.getParent().getTransformator().supportReverseTranslation()) {
+            if (this.getParentGUI().getTransformator().supportReverseTranslation()) {
                 // only show the coordinate if it can be mapped from GUI to logic coordinates
                 JPanel mousePos = new JPanel();
                 JLabel mousePosLabel = new JLabel("Mouse Position:");
@@ -486,7 +486,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
                 viewPanel.add(mousePos);
             }
 
-            this.setZoomPanel(new ZoomPanel(this.getParent(), this.getParent().getTransformator()));
+            this.setZoomPanel(new ZoomPanel(this.getParentGUI(), this.getParentGUI().getTransformator()));
             this.getZoomPanel().setPreferredSize(
                     new Dimension(this.getControlPanelWidth(), this.getZoomPanel().getPreferredHeight(this.getControlPanelWidth())));
             viewPanel.add(this.getZoomPanel());
@@ -509,7 +509,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
         buttonPanel.add(button);
         this.addToDisabledButtonList(button);
 
-        if (this.getParent().getTransformator() instanceof Transformation3D) {
+        if (this.getParentGUI().getTransformator() instanceof Transformation3D) {
             button = this.createFrameworkIconButton("zoomToFit3D", "zoomtofit3d.gif", "Default View");
             buttonPanel.add(button);
             this.addToDisabledButtonList(button);
@@ -578,7 +578,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
      * @param p The Gui instance to create the MaximizedControlPanel for.
      */
     public MaximizedControlPanel(GUI p) {
-        this.setParent(p);
+        this.setParentGUI(p);
         this.setBorder(BorderFactory.createRaisedBevelBorder());
         this.setLayout(new BorderLayout());
 

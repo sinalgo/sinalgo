@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.models;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.nodes.messages.Packet;
 import sinalgo.runtime.Main;
@@ -49,6 +52,8 @@ import sinalgo.runtime.Main;
  */
 public abstract class InterferenceModel extends Model {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static boolean firstTime = true;
 
     /**
@@ -76,10 +81,10 @@ public abstract class InterferenceModel extends Model {
      * The default constructor tests that interference is enabled.
      */
     protected InterferenceModel() {
-        if (firstTime && !Configuration.isInterference()) {
+        if (isFirstTime() && !Configuration.isInterference()) {
             Main.warning(
                     "Some nodes are using an interference model even though interference is explicitly turned off in the XML Configuration file.");
-            firstTime = false; // important to only have one message.
+            setFirstTime(false); // important to only have one message.
         }
     }
 
@@ -91,10 +96,10 @@ public abstract class InterferenceModel extends Model {
      *              performed if false.
      */
     protected InterferenceModel(boolean check) {
-        if (check && firstTime && !Configuration.isInterference()) {
+        if (check && isFirstTime() && !Configuration.isInterference()) {
             Main.warning(
                     "Some nodes are using an interference model even though interference is explicitly turned off in the XML Configuration file.");
-            firstTime = false;
+            setFirstTime(false);
         }
     }
 }

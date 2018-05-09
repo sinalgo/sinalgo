@@ -49,11 +49,7 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.net.URL;
 
@@ -168,8 +164,7 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 
         private static final long serialVersionUID = -950395591867596455L;
 
-        @Getter
-        private JFrame parent;
+        private JFrame parentFrame;
 
         private JButton closeButton = new JButton("Close");
         private JButton resetButton = new JButton("Reset");
@@ -178,7 +173,7 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
 
         MenuDialog(JFrame owner, Point pos) {
             super(owner);
-            this.setParent(owner);
+            this.setParentFrame(owner);
             this.setLayout(new BorderLayout());
 
             this.setEPane(new JEditorPane());
@@ -230,12 +225,12 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
         public void actionPerformed(ActionEvent e) {
             if (e.getSource().equals(this.getCloseButton())) {
                 this.setVisible(false);
-                this.getParent().setEnabled(true);
+                this.getParentFrame().setEnabled(true);
                 HelpDialog.this.setMenuDlg(null);
             }
             if (e.getSource().equals(this.getResetButton())) {
                 this.setVisible(false);
-                this.getParent().setEnabled(true);
+                this.getParentFrame().setEnabled(true);
                 HelpDialog.this.setMenuDlg(null);
                 try {
                     HelpDialog.this.setCurrentURL(HelpDialog.this.getDefaultURL());
@@ -249,20 +244,19 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
     }
 
     private void saveWindowState() {
-        AppConfig ac = AppConfig.getAppConfig();
-        ac.setHelpWindowHeight(this.getHeight());
-        ac.setHelpWindowWidth(this.getWidth());
-        ac.setHelpWindowPosX(this.getLocation().x);
-        ac.setHelpWindowPosY(this.getLocation().y);
-        ac.setHelpWindowIsMaximized((this.getExtendedState() == Frame.MAXIMIZED_BOTH));
-        ac.writeConfig();
+        AppConfig.getAppConfig().setHelpWindowHeight(this.getHeight());
+        AppConfig.getAppConfig().setHelpWindowWidth(this.getWidth());
+        AppConfig.getAppConfig().setHelpWindowPosX(this.getLocation().x);
+        AppConfig.getAppConfig().setHelpWindowPosY(this.getLocation().y);
+        AppConfig.getAppConfig().setHelpWindowIsMaximized((this.getExtendedState() == Frame.MAXIMIZED_BOTH));
+        AppConfig.getAppConfig().writeConfig();
     }
 
     private void restoreWindowState() {
-        AppConfig ac = AppConfig.getAppConfig();
-        this.setPreferredSize(new Dimension(ac.getHelpWindowWidth(), ac.getHelpWindowHeight()));
-        this.setLocation(new Point(ac.getHelpWindowPosX(), ac.getHelpWindowPosY()));
-        if (ac.isHelpWindowIsMaximized()) {
+
+        this.setPreferredSize(new Dimension(AppConfig.getAppConfig().getHelpWindowWidth(), AppConfig.getAppConfig().getHelpWindowHeight()));
+        this.setLocation(new Point(AppConfig.getAppConfig().getHelpWindowPosX(), AppConfig.getAppConfig().getHelpWindowPosY()));
+        if (AppConfig.getAppConfig().isHelpWindowIsMaximized()) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         }
     }

@@ -68,7 +68,7 @@ public class MinimizedControlPanel extends ControlPanel {
      * @param p The Gui instance to create the MinimizedControlPanel for.
      */
     public MinimizedControlPanel(GUI p) {
-        this.setParent(p);
+        this.setParentGUI(p);
         int controlPanelHeight = 25;
         this.setMaximumSize(new Dimension(20000, controlPanelHeight));
         this.setMinimumSize(new Dimension(20000, controlPanelHeight));
@@ -105,7 +105,7 @@ public class MinimizedControlPanel extends ControlPanel {
         this.getButtonPanel().add(button);
         this.addToDisabledButtonList(button);
 
-        if (this.getParent().getTransformator() instanceof Transformation3D) {
+        if (this.getParentGUI().getTransformator() instanceof Transformation3D) {
             button = this.createFrameworkIconButton("zoomToFit3D", "zoomtofit3d.gif", "Default View");
             this.getButtonPanel().add(button);
             this.addToDisabledButtonList(button);

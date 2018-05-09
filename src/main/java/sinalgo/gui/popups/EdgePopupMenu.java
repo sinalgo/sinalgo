@@ -64,10 +64,10 @@ public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
     /**
      * The constructor for the EdgePopupMenu class.
      *
-     * @param p The parent GUI used to trigger the zooming.
+     * @param p The parentGUI GUI used to trigger the zooming.
      */
     public EdgePopupMenu(GUI p) {
-        this.setParent(p);
+        this.setParentGUI(p);
         this.getInfo().addActionListener(this);
         this.getDelete().addActionListener(this);
     }
@@ -93,10 +93,10 @@ public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(this.getInfo().getActionCommand())) {
-            new EdgeInfoDialog(this.getParent(), this.getEdge());
+            new EdgeInfoDialog(this.getParentGUI(), this.getEdge());
         } else if (e.getActionCommand().equals(this.getDelete().getActionCommand())) {
             SinalgoRuntime.removeEdge(this.getEdge());
-            this.getParent().redrawGUINow();
+            this.getParentGUI().redrawGUINow();
         }
     }
 }

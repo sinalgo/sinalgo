@@ -55,7 +55,7 @@ public abstract class AbstractPopupMenu extends JPopupMenu {
     private static final long serialVersionUID = 6108642977345194041L;
 
     @Getter
-    private GUI parent = null;
+    private GUI parentGUI = null;
 
     private JMenuItem zoomIn = new JMenuItem("Zoom In");
     private JMenuItem zoomOut = new JMenuItem("Zoom Out");
@@ -71,9 +71,9 @@ public abstract class AbstractPopupMenu extends JPopupMenu {
         @Override
         public void actionPerformed(ActionEvent event) {
             if (event.getActionCommand().equals(AbstractPopupMenu.this.getZoomIn().getActionCommand())) {
-                AbstractPopupMenu.this.getParent().zoomIn();
+                AbstractPopupMenu.this.getParentGUI().zoomIn();
             } else if (event.getActionCommand().equals(AbstractPopupMenu.this.getZoomOut().getActionCommand())) {
-                AbstractPopupMenu.this.getParent().zoomOut();
+                AbstractPopupMenu.this.getParentGUI().zoomOut();
             }
         }
     }

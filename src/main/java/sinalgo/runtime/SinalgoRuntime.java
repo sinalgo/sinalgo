@@ -39,7 +39,6 @@ package sinalgo.runtime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.NotInGUIModeException;
 import sinalgo.exception.SinalgoFatalException;
@@ -99,7 +98,6 @@ public abstract class SinalgoRuntime {
      */
     public static Map map = null;
 
-    static AppConfig appConfig = AppConfig.getAppConfig();
 
     // some information on the rounds
 

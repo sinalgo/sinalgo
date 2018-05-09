@@ -52,12 +52,7 @@ import sinalgo.runtime.SinalgoRuntime;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
@@ -71,8 +66,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
 
     private static final long serialVersionUID = 5403782066445725367L;
 
-    @Getter
-    private GUI parent;
+    private GUI parentGUI;
     private Node node;
 
     private JFormattedTextField nodeNumber = new JFormattedTextField();
@@ -95,13 +89,13 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
     /**
      * The constructor for the NodeInfoDialog class.
      *
-     * @param p The parent gui where this dialog is attached to.
+     * @param p The parentGUI gui where this dialog is attached to.
      * @param n The node the information is about.
      */
     public NodeInfoDialog(GUI p, Node n) {
         super(p, "Edit Node " + n.getID(), true);
         GuiHelper.setWindowIcon(this);
-        this.setParent(p);
+        this.setParentGUI(p);
         this.setNode(n);
 
         this.getNode().highlight(true);
@@ -227,7 +221,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
             @Override
             public void windowClosing(WindowEvent event) {
                 NodeInfoDialog.this.getNode().highlight(false);
-                NodeInfoDialog.this.getParent().redrawGUI();
+                NodeInfoDialog.this.getParentGUI().redrawGUI();
             }
         };
         this.addWindowListener(listener);
@@ -241,13 +235,13 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
             if (!e.isConsumed() && e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 this.getNode().highlight(false);
                 NodeInfoDialog.this.setVisible(false);
-                this.getParent().redrawGUINow(); // needs blocking redrawing
+                this.getParentGUI().redrawGUINow(); // needs blocking redrawing
             }
             return false;
         });
 
         // Redraw the graph to have the selected node painted in the right color.
-        this.getParent().redrawGUI();
+        this.getParentGUI().redrawGUI();
         this.pack();
         this.setLocationRelativeTo(p);
         this.setVisible(true);
@@ -279,7 +273,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         this.getReliabilityText().setText(Global.toShortName(this.getNode().getReliabilityModel().getClass().getName()));
 
         this.getInfoText().setText(this.getNode().toString());
-        this.getParent().redrawGUI();
+        this.getParentGUI().redrawGUI();
     }
 
     @Override
@@ -288,7 +282,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
             case "Cancel":
                 this.getNode().highlight(false);
                 this.setVisible(false);
-                this.getParent().redrawGUINow(); // needs blocking redrawing
+                this.getParentGUI().redrawGUINow(); // needs blocking redrawing
                 break;
             case "OK":
                 try {
@@ -299,7 +293,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
                 }
                 this.getNode().highlight(false);
                 this.setVisible(false);
-                this.getParent().redrawGUINow(); // needs blocking redrawing
+                this.getParentGUI().redrawGUINow(); // needs blocking redrawing
                 break;
             case "Next Node": {
                 Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
