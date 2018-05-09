@@ -36,17 +36,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.nodes.messages;
 
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.nodes.messages.Message;
 
 /**
  * A standard message type consisting only of a integer as payload.
  */
+@Getter
+@Setter
 public class IntMessage extends Message {
 
     /**
      * The payload of the Message: an integer.
      */
-    public int value;
+    private int value;
 
     /**
      * The constructor for the IntMessage class.
@@ -54,11 +58,12 @@ public class IntMessage extends Message {
      * @param i The integer the payload has to be set to.
      */
     public IntMessage(int i) {
-        this.value = i;
+        this.setValue(i);
     }
 
     @Override
     public Message clone() {
-        return new IntMessage(this.value);
+        return new IntMessage(this.getValue());
     }
+
 }

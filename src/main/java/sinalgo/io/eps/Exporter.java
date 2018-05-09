@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.io.eps;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.ExportException;
@@ -59,7 +62,9 @@ import java.util.Random;
  */
 public class Exporter {
 
-    private JFrame parent = null;
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private JFrame parentFrame = null;
 
     /**
      * Creates a new Exporter instance with a given JFrame as parentGUI. The parentGUI
@@ -68,7 +73,7 @@ public class Exporter {
      * @param p The parentGUI frame to attach the save-dialog to.
      */
     public Exporter(JFrame p) {
-        this.parent = p;
+        this.setParentFrame(p);
     }
 
     /**
@@ -107,7 +112,7 @@ public class Exporter {
 
         fc.setAcceptAllFileFilterUsed(false); // only allow the above file types
 
-        if (fc.showSaveDialog(this.parent) == JFileChooser.APPROVE_OPTION) {
+        if (fc.showSaveDialog(this.getParentFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
 
             if (file.exists()) {
@@ -155,7 +160,7 @@ public class Exporter {
             // print the map prior to the background (such that the border is on top of the
             // map
             if (Configuration.isUseMap()) {
-                SinalgoRuntime.map.drawToPostScript(pw, pt);
+                SinalgoRuntime.getMap().drawToPostScript(pw, pt);
             }
 
             // draw the background
@@ -165,7 +170,7 @@ public class Exporter {
 
             // draw the edges
             if (Configuration.isDrawEdges()) {
-                Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
+                Enumeration<Node> nodeEnumer = SinalgoRuntime.getNodes().getSortedNodeEnumeration(true);
                 while (nodeEnumer.hasMoreElements()) {
                     Node n = nodeEnumer.nextElement();
                     for (Edge e : n.getOutgoingConnections()) {
@@ -176,7 +181,7 @@ public class Exporter {
 
             if (Configuration.isDrawNodes()) {
                 // draw the nodes
-                for (Node n : SinalgoRuntime.nodes) {
+                for (Node n : SinalgoRuntime.getNodes()) {
                     n.drawToPostScript(pw, pt);
                 }
             }
@@ -260,37 +265,24 @@ public class Exporter {
     /**
      * A single File Filter allowing only one file-type and directories.
      */
+    @Getter
+    @Setter
     public static abstract class SingleFileFilter extends FileFilter {
 
         /**
          * The only file-extension this filter allows.
-         */
-        private String extension = "";
-
-        /**
-         * Sets the only file-extension this filter allows.
          *
-         * @param ext the only file-extension this filter allows.
-         */
-        public void setExtension(String ext) {
-            this.extension = ext;
-        }
-
-        /**
-         * Returns the only file-extension this filter allows.
-         *
+         * @param extension the only file-extension this filter allows.
          * @return only file-extension this filter allows.
          */
-        public String getExtension() {
-            return this.extension;
-        }
+        private String extension = "";
 
         @Override
         public boolean accept(File pathname) {
             if (pathname.isDirectory()) {
                 return true;
             }
-            return pathname.getName().toLowerCase().endsWith(this.extension);
+            return pathname.getName().toLowerCase().endsWith(this.getExtension());
         }
     }
 

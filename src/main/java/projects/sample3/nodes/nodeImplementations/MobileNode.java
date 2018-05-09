@@ -58,7 +58,7 @@ public class MobileNode extends Node {
                         this.currentAntenna = (Antenna) inbox.getSender();
                         needSubscription = true;
                     } else {
-                        if (im.requireSubscription) {
+                        if (im.isRequireSubscription()) {
                             needSubscription = true; // subscirbe again
                         }
                     }
@@ -168,10 +168,10 @@ public class MobileNode extends Node {
         for (Timer t : this.getTimers()) {
             if (t instanceof SmsTimer) {
                 SmsTimer st = (SmsTimer) t;
-                if (st.enabled) {
+                if (st.isEnabled()) {
                     pt.translateToGUIPosition(this.getPosition());
                     int fromX = pt.getGuiX(), fromY = pt.getGuiY();
-                    pt.translateToGUIPosition(st.destination.getPosition());
+                    pt.translateToGUIPosition(st.getDestination().getPosition());
                     Arrow.drawArrow(fromX, fromY, pt.getGuiX(), pt.getGuiY(), g, pt, Color.RED);
                 }
             }

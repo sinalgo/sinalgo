@@ -68,7 +68,7 @@ public abstract class ConnectivityModelHelper extends ConnectivityModel {
         // is possible because of the rMax filed of the GeometricNodeCollection, which
         // indicates the maximum
         // distance between any two connected points.
-        Enumeration<Node> pNE = SinalgoRuntime.nodes.getPossibleNeighborsEnumeration(n);
+        Enumeration<Node> pNE = SinalgoRuntime.getNodes().getPossibleNeighborsEnumeration(n);
         while (pNE.hasMoreElements()) {
             Node possibleNeighbor = pNE.nextElement();
             if (n.getID() != possibleNeighbor.getID()) {

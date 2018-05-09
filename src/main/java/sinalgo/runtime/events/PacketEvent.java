@@ -59,7 +59,10 @@ import java.util.Stack;
 public class PacketEvent extends Event {
 
     private static Stack<PacketEvent> unusedPacketEvents = new Stack<>();
-    public static int numPacketEventsOnTheFly = 0;
+
+    @Getter
+    @Setter
+    private static int numPacketEventsOnTheFly = 0;
 
     public static int getNumFreedPacketEvents() {
         return unusedPacketEvents.size();
@@ -109,7 +112,7 @@ public class PacketEvent extends Event {
         } else {
             pe = new PacketEvent(packet, time);
         }
-        numPacketEventsOnTheFly++;
+        setNumPacketEventsOnTheFly(getNumPacketEventsOnTheFly() + 1);
         return pe;
     }
 
@@ -124,7 +127,7 @@ public class PacketEvent extends Event {
             this.packet = null;
         }
         unusedPacketEvents.push(this);
-        numPacketEventsOnTheFly--;
+        setNumPacketEventsOnTheFly(getNumPacketEventsOnTheFly() - 1);
     }
 
     // Two static objects to prevent from allocating them all over again
@@ -135,8 +138,8 @@ public class PacketEvent extends Event {
     public void handle() {
         // the arrival of a packet in the asynchronous case
         if (Configuration.isInterference()) {
-            SinalgoRuntime.packetsInTheAir.performInterferenceTestBeforeRemove();
-            SinalgoRuntime.packetsInTheAir.remove(this.packet);
+            SinalgoRuntime.getPacketsInTheAir().performInterferenceTestBeforeRemove();
+            SinalgoRuntime.getPacketsInTheAir().remove(this.packet);
         }
         if (this.getPacket().getEdge() != null) {
             this.getPacket().getEdge().removeMessageForThisEdge(this.getPacket().getMessage());
@@ -154,7 +157,7 @@ public class PacketEvent extends Event {
     public void drop() {
         // similar to the arrival of a packet in the asynchronous case
         if (Configuration.isInterference()) {
-            SinalgoRuntime.packetsInTheAir.remove(this.getPacket());
+            SinalgoRuntime.getPacketsInTheAir().remove(this.getPacket());
         }
         if (this.getPacket().getEdge() != null) {
             this.getPacket().getEdge().removeMessageForThisEdge(this.getPacket().getMessage());

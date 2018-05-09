@@ -1,5 +1,7 @@
 package projects.sample6.nodes.nodeImplementations;
 
+import lombok.Getter;
+import lombok.Setter;
 import projects.defaultProject.nodes.timers.MessageTimer;
 import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.exception.WrongConfigurationException;
@@ -16,7 +18,9 @@ import java.awt.*;
  */
 public class TreeNode extends Node {
 
-    public TreeNode parent = null; // the parentGUI in the tree, null if this node is the root
+    @Getter
+    @Setter
+    private TreeNode parent = null; // the parentGUI in the tree, null if this node is the root
 
     @Override
     public void checkRequirements() throws WrongConfigurationException {
@@ -27,13 +31,13 @@ public class TreeNode extends Node {
         while (inbox.hasNext()) {
             Message m = inbox.next();
             if (m instanceof MarkMessage) {
-                if (this.parent == null || !inbox.getSender().equals(this.parent)) {
+                if (this.getParent() == null || !inbox.getSender().equals(this.getParent())) {
                     continue;// don't consider mark messages sent by children
                 }
                 this.setColor(Color.RED);
                 // forward the message to all children
                 for (Edge e : this.getOutgoingConnections()) {
-                    if (!e.getEndNode().equals(this.parent)) { // don't send it to the parentGUI
+                    if (!e.getEndNode().equals(this.getParent())) { // don't send it to the parentGUI
                         this.send(m, e.getEndNode());
                     }
                 }

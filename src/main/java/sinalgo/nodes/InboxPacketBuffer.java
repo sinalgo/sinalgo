@@ -103,7 +103,7 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
                 // only if added
                 if (Configuration.isInterference()) {
                     // remove it from the global queue
-                    SinalgoRuntime.packetsInTheAir.remove(p);
+                    SinalgoRuntime.getPacketsInTheAir().remove(p);
                 }
 
                 this.bufferIterator.remove();

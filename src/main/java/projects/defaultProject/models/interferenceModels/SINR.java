@@ -100,7 +100,7 @@ public class SINR extends InterferenceModel {
 
         double noise = this.ambientNoise;
 
-        for (Packet pack : SinalgoRuntime.packetsInTheAir) { // iterate over all active packets
+        for (Packet pack : SinalgoRuntime.getPacketsInTheAir()) { // iterate over all active packets
             if (pack == p) {
                 continue; // that's the packet we want
             }

@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.nodes.messages;
 
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.nodes.messages.Message;
 
 /**
@@ -46,7 +48,9 @@ public class StringMessage extends Message {
     /**
      * The text of this message.
      */
-    public String text;
+    @Getter
+    @Setter
+    private String text;
 
     /**
      * Constructing a Message having the given string as message.
@@ -54,12 +58,12 @@ public class StringMessage extends Message {
      * @param txt The test of the Message to construct.
      */
     public StringMessage(String txt) {
-        this.text = txt;
+        this.setText(txt);
     }
 
     @Override
     public Message clone() {
-        return new StringMessage(this.text);
+        return new StringMessage(this.getText());
     }
 
 }

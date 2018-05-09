@@ -1270,8 +1270,8 @@ public class Configuration {
                 + "------------------------------------------------------");
         // Command Line Args
         ps.print("Command Line arguments: ");
-        if (Main.cmdLineArgs != null) {
-            for (String entry : Main.cmdLineArgs) {
+        if (Main.getCmdLineArgs() != null) {
+            for (String entry : Main.getCmdLineArgs()) {
                 ps.print(entry + " ");
             }
         }

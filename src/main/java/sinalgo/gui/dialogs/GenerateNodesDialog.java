@@ -414,7 +414,7 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 
                 if (this.isCanceled()) {
                     for (Node n : addedNodes) {
-                        SinalgoRuntime.nodes.removeNode(n);
+                        SinalgoRuntime.getNodes().removeNode(n);
                         i--;
                         this.getPf().setPercentage(100.0d * ((double) i / (double) this.getNumberOfNodes()));
                     }

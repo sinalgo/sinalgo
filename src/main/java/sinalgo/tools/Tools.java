@@ -37,35 +37,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package sinalgo.tools;
 
 import sinalgo.configuration.Configuration;
-import sinalgo.exception.NotInBatchModeException;
-import sinalgo.exception.NotInGUIModeException;
-import sinalgo.exception.SinalgoFatalException;
-import sinalgo.exception.SinalgoWrappedException;
-import sinalgo.exception.WrongConfigurationException;
+import sinalgo.exception.*;
 import sinalgo.gui.GUI;
 import sinalgo.gui.GraphPanel;
 import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.mapIO.Map;
-import sinalgo.models.ConnectivityModel;
-import sinalgo.models.DistributionModel;
-import sinalgo.models.InterferenceModel;
-import sinalgo.models.MessageTransmissionModel;
-import sinalgo.models.MobilityModel;
-import sinalgo.models.Model;
-import sinalgo.models.ModelType;
-import sinalgo.models.ReliabilityModel;
+import sinalgo.models.*;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.edges.EdgePool;
 import sinalgo.nodes.messages.Packet;
-import sinalgo.runtime.AbstractCustomGlobal;
-import sinalgo.runtime.BatchRuntime;
-import sinalgo.runtime.GUIRuntime;
-import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
-import sinalgo.runtime.SinalgoRuntime;
+import sinalgo.runtime.*;
 import sinalgo.runtime.events.EventQueue;
 import sinalgo.runtime.events.PacketEvent;
 import sinalgo.runtime.events.TimerEvent;
@@ -296,7 +280,7 @@ public class Tools {
      * information about the sender, the intensity...
      */
     public static PacketsInTheAirBuffer getPacketsInTheAir() {
-        return SinalgoRuntime.packetsInTheAir;
+        return SinalgoRuntime.getPacketsInTheAir();
     }
 
     /**
@@ -360,7 +344,7 @@ public class Tools {
      * simulation mode.
      */
     public static EventQueue getEventQueue() {
-        return SinalgoRuntime.eventQueue;
+        return SinalgoRuntime.getEventQueue();
     }
 
     /**
@@ -368,14 +352,14 @@ public class Tools {
      * is set.
      */
     public static Map getBackgroundMap() {
-        return SinalgoRuntime.map;
+        return SinalgoRuntime.getMap();
     }
 
     /**
      * @return A list of all nodes currently added to the framework.
      */
     public static AbstractNodeCollection getNodeList() {
-        return SinalgoRuntime.nodes;
+        return SinalgoRuntime.getNodes();
     }
 
     /**
@@ -387,7 +371,7 @@ public class Tools {
      * @return The node with the given ID, null if there is no such node.
      */
     public static Node getNodeByID(int id) {
-        for (Node n : SinalgoRuntime.nodes) {
+        for (Node n : SinalgoRuntime.getNodes()) {
             if (n.getID() == id) {
                 return n;
             }
@@ -400,7 +384,7 @@ public class Tools {
      * framework.
      */
     public static Node getRandomNode() {
-        return SinalgoRuntime.nodes.getRandomNode();
+        return SinalgoRuntime.getNodes().getRandomNode();
     }
 
     /**
@@ -886,9 +870,9 @@ public class Tools {
         ps.print("\nSinalgo Memory Stats:\nRecycling:  (used / recycled)\n");
         ps.print("  Packets \t(" + Packet.getNumPacketsOnTheFly() + " / " + Packet.getNumFreedPackets() + ")\n");
         if (Global.isAsynchronousMode()) {
-            ps.print("  PacketEvents \t(" + PacketEvent.numPacketEventsOnTheFly + " / "
+            ps.print("  PacketEvents \t(" + PacketEvent.getNumPacketEventsOnTheFly() + " / "
                     + PacketEvent.getNumFreedPacketEvents() + ")\n");
-            ps.print("  TimerEvents \t(" + TimerEvent.numTimerEventsOnTheFly + " / "
+            ps.print("  TimerEvents \t(" + TimerEvent.getNumTimerEventsOnTheFly() + " / "
                     + TimerEvent.getNumFreedTimerEvents() + ")\n");
         }
         ps.print("  Edges \t(" + Edge.getNumEdgesOnTheFly() + " / " + EdgePool.getNumFreedEdges() + ")\n");

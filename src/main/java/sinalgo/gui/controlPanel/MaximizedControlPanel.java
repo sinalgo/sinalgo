@@ -376,7 +376,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
 
             this.composeEventList();
             this.setEventList(new EventQueueList(this.getQueueElements()));
-            SinalgoRuntime.eventQueue.addEventQueueListener(MaximizedControlPanel.this);
+            SinalgoRuntime.getEventQueue().addEventQueueListener(MaximizedControlPanel.this);
             this.getEventList().setCellRenderer(new NonColoringNonBorderingCellRenderer());
             this.getEventList().setFixedCellHeight(fixedCellHeight);
             this.getEventList().setFixedCellWidth(fixedCellWidth);
@@ -629,7 +629,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
     }
 
     private void composeEventList() {
-        Iterator<Event> eventIter = SinalgoRuntime.eventQueue.iterator();
+        Iterator<Event> eventIter = SinalgoRuntime.getEventQueue().iterator();
         for (EventQueueElement queueElement : this.getQueueElements()) {
             if (eventIter.hasNext()) {
                 Event e = eventIter.next();

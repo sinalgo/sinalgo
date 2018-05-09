@@ -52,7 +52,10 @@ import java.util.Stack;
 public class TimerEvent extends Event {
 
     private static Stack<TimerEvent> unusedTimerEvents = new Stack<>();
-    public static int numTimerEventsOnTheFly = 0;
+
+    @Getter
+    @Setter
+    private static int numTimerEventsOnTheFly = 0;
 
     public static int getNumFreedTimerEvents() {
         return unusedTimerEvents.size();
@@ -104,7 +107,7 @@ public class TimerEvent extends Event {
         } else {
             te = new TimerEvent(timer, time);
         }
-        numTimerEventsOnTheFly++;
+        setNumTimerEventsOnTheFly(getNumTimerEventsOnTheFly() + 1);
         return te;
     }
 
@@ -115,7 +118,7 @@ public class TimerEvent extends Event {
     public void free() {
         this.setTimer(null);
         unusedTimerEvents.push(this);
-        numTimerEventsOnTheFly--;
+        setNumTimerEventsOnTheFly(getNumTimerEventsOnTheFly() - 1);
     }
 
     @Override

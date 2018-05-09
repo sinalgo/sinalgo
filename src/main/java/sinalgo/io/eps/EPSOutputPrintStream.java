@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.io.eps;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.exception.SinalgoFatalException;
 
 import java.io.File;
@@ -61,14 +64,36 @@ import java.util.HashMap;
  * direct output to the file use the mirror-method to mirror the y coordinates
  * correctly.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class EPSOutputPrintStream extends PrintStream {
 
-    private int boundingBoxX = 0, boundingBoxY = 0, boundingBoxWidth = 0, boundingBoxHeight = 0;
+    private int boundingBoxX = 0;
+    private int boundingBoxY = 0;
+    private int boundingBoxWidth = 0;
+    private int boundingBoxHeight = 0;
     private HashMap<String, String> macros = new HashMap<>();
-    private double colorR = 0, colorG = 0, colorB = 0;
+    private double colorR = 0;
+    private double colorG = 0;
+    private double colorB = 0;
     private double lineWidth = 1.0;
 
+    /**
+     * The length of the arrows for all the successive arrows until the next
+     * call of setArrowLength.
+     *
+     * @param arrowLength The length of the Arrows.
+     */
+    @Setter
     private double arrowLength = 10;
+
+    /**
+     * The width of the arrows for all the successive arrows until the next
+     * call of setArrowWidth.
+     *
+     * @param width The width of the Arrows.
+     */
+    @Setter
     private double arrowWidth = 2;
 
     private int fontSize = 12;
@@ -97,10 +122,10 @@ public class EPSOutputPrintStream extends PrintStream {
      *              setLineWidth.
      */
     public void setLineWidth(double width) {
-        if (this.lineWidth != width) {
+        if (this.getLineWidth() != width) {
             // only print it if the width changed.
             this.lineWidth = width;
-            this.println("0 " + this.lineWidth + " dtransform truncate idtransform setlinewidth pop");
+            this.println("0 " + this.getLineWidth() + " dtransform truncate idtransform setlinewidth pop");
         }
     }
 
@@ -115,12 +140,12 @@ public class EPSOutputPrintStream extends PrintStream {
      */
     public void setColor(int r, int g, int b) {
         double dR = this.mapIntColToDoubleCol(r), dG = this.mapIntColToDoubleCol(g), dB = this.mapIntColToDoubleCol(b);
-        if ((this.colorR != dR) || (this.colorG != dG) || (this.colorB != dB)) {
+        if ((this.getColorR() != dR) || (this.getColorG() != dG) || (this.getColorB() != dB)) {
             // only print the statement, if the color changed
-            this.colorR = dR;
-            this.colorG = dG;
-            this.colorB = dB;
-            this.println(this.colorR + " " + this.colorG + " " + this.colorB + " setrgbcolor");
+            this.setColorR(dR);
+            this.setColorG(dG);
+            this.setColorB(dB);
+            this.println(this.getColorR() + " " + this.getColorG() + " " + this.getColorB() + " setrgbcolor");
         }
     }
 
@@ -141,30 +166,10 @@ public class EPSOutputPrintStream extends PrintStream {
      * @param height The height of the bounding box.
      */
     public void setBoundingBox(int x, int y, int width, int height) {
-        this.boundingBoxX = x;
-        this.boundingBoxY = y;
-        this.boundingBoxWidth = width;
-        this.boundingBoxHeight = height;
-    }
-
-    /**
-     * Sets the length of the arrows for all the successive arrows until the next
-     * call of setArrowLength.
-     *
-     * @param length The length of the Arrows.
-     */
-    public void setArrowLength(double length) {
-        this.arrowLength = length;
-    }
-
-    /**
-     * Sets the width of the arrows for all the successive arrows until the next
-     * call of setArrowWidth.
-     *
-     * @param width The width of the Arrows.
-     */
-    public void setArrowWidth(double width) {
-        this.arrowWidth = width;
+        this.setBoundingBoxX(x);
+        this.setBoundingBoxY(y);
+        this.setBoundingBoxWidth(width);
+        this.setBoundingBoxHeight(height);
     }
 
     // helpers
@@ -282,9 +287,9 @@ public class EPSOutputPrintStream extends PrintStream {
         if (x1 != x2 || y1 != y2) {
             double lineLength = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
             double factor = 1.0 / lineLength;
-            double aLen = this.arrowLength;
+            double aLen = this.getArrowLength();
             // shorten the arrow if the two nodes are very close
-            if (2 * this.arrowLength >= lineLength) {
+            if (2 * this.getArrowLength() >= lineLength) {
                 aLen = lineLength / 3;
             }
 
@@ -302,10 +307,10 @@ public class EPSOutputPrintStream extends PrintStream {
 
             // one end-point of the triangle is (x2,y2), the second end-point (ex1, ey1) and
             // the third (ex2, ey2)
-            double ex1 = ix + this.arrowWidth * uy;
-            double ey1 = iy - this.arrowWidth * ux;
-            double ex2 = ix - this.arrowWidth * uy;
-            double ey2 = iy + this.arrowWidth * ux;
+            double ex1 = ix + this.getArrowWidth() * uy;
+            double ey1 = iy - this.getArrowWidth() * ux;
+            double ex2 = ix - this.getArrowWidth() * uy;
+            double ey2 = iy + this.getArrowWidth() * ux;
 
             this.println(x2 + " " + this.mirrorCoords(y2) + " " + ex1 + " " + this.mirrorCoords(ey1) + " " + ex2 + " "
                     + this.mirrorCoords(ey2) + " filledArrowHead");
@@ -330,7 +335,7 @@ public class EPSOutputPrintStream extends PrintStream {
      * @param size The size of the font to print successive texts with.
      */
     public void setFontSize(int size) {
-        if (size != this.fontSize) {
+        if (size != this.getFontSize()) {
             this.println(size + " scalefont setfont");
             this.fontSize = size;
         }
@@ -342,7 +347,7 @@ public class EPSOutputPrintStream extends PrintStream {
      * @param font The font to print successive texts with.
      */
     public void setFont(String font) {
-        if (!font.equals(this.font)) {
+        if (!font.equals(this.getFont())) {
             this.println("/" + font + " findfont\n");
             this.font = font;
         }
@@ -361,15 +366,15 @@ public class EPSOutputPrintStream extends PrintStream {
      * @param command The commands of the macro.
      */
     public void addMacro(String name, String command) {
-        if (!this.macros.containsKey(name)) { // we have a new macro
+        if (!this.getMacros().containsKey(name)) { // we have a new macro
             this.println("/" + name + " {" + command + "} def");
-            this.macros.put(name, command);
+            this.getMacros().put(name, command);
         } else {
-            if (!this.macros.get(name).equals(command)) {
+            if (!this.getMacros().get(name).equals(command)) {
                 // print it as it is different to the one specified before with the same name
                 this.println("/" + name + " {" + command + "} def");
                 // replace the one in the map by this one.
-                this.macros.put(name, command);
+                this.getMacros().put(name, command);
             }
         }
     }
@@ -387,12 +392,12 @@ public class EPSOutputPrintStream extends PrintStream {
      * @return The mirrored y component of the eps coordinate.
      */
     public double mirrorCoords(double original) {
-        if (this.boundingBoxHeight == 0) {
+        if (this.getBoundingBoxHeight() == 0) {
             throw new SinalgoFatalException(
                     "The height of the bounding box is 0 and thus the coordinates can not be mirrored correctly. Please "
                             + "set the bounding box of the graph prior to drawing items.");
         }
-        return this.boundingBoxHeight - original;
+        return this.getBoundingBoxHeight() - original;
     }
 
     /**
@@ -401,15 +406,15 @@ public class EPSOutputPrintStream extends PrintStream {
      */
     public void writeHeader() {
         this.println("%!PS-Adobe-3.0 EPSF-3.0");
-        this.println("%%BoundingBox: " + this.boundingBoxX + " " + this.boundingBoxY + " " + this.boundingBoxWidth + " "
-                + this.boundingBoxHeight);
+        this.println("%%BoundingBox: " + this.getBoundingBoxX() + " " + this.getBoundingBoxY() + " " + this.getBoundingBoxWidth() + " "
+                + this.getBoundingBoxHeight());
         this.println("%%Creator: Sinalgo");
         this.println("%%Pages: 1");
         this.println("%%EndComments");
         this.println("%%Page: 1 1");
         this.println();
-        this.println("/" + this.font + " findfont");
-        this.println(this.fontSize + " scalefont setfont");
+        this.println("/" + this.getFont() + " findfont");
+        this.println(this.getFontSize() + " scalefont setfont");
         this.println();
     }
 

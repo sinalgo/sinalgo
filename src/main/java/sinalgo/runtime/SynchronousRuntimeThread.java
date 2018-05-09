@@ -112,25 +112,25 @@ public class SynchronousRuntimeThread extends Thread {
             // Mobility is performed in a separate iteration over all nodes to avoid
             // inconsistencies.
             if (Configuration.isMobility()) {
-                for (Node n : SinalgoRuntime.nodes) {
+                for (Node n : SinalgoRuntime.getNodes()) {
                     n.setPosition(n.getMobilityModel().getNextPos(n));
                 }
             }
 
             // Before the nodes perform their step, the entire network graph is updated
             // such that all nodes see the same network when they perform their step.
-            for (Node n : SinalgoRuntime.nodes) {
+            for (Node n : SinalgoRuntime.getNodes()) {
                 n.updateConnections();
             }
 
             // Test all messages still being sent for interference
             if (Configuration.isInterference()) {
-                SinalgoRuntime.packetsInTheAir.testForInterference();
+                SinalgoRuntime.getPacketsInTheAir().testForInterference();
             }
 
             // Perform the step for each node
             try {
-                for (Node n : SinalgoRuntime.nodes) {
+                for (Node n : SinalgoRuntime.getNodes()) {
                     n.step();
                 }
             } catch (WrongConfigurationException wCE) {

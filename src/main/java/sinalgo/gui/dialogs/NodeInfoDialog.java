@@ -111,7 +111,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         // has no
         // previous respective next element.
         boolean hasPrev = false;
-        Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
+        Enumeration<Node> nodesEnumer = SinalgoRuntime.getNodes().getNodeEnumeration();
         while (nodesEnumer.hasMoreElements()) {
             Node nd = nodesEnumer.nextElement();
             if (nd.getID() == n.getID()) {
@@ -296,7 +296,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
                 this.getParentGUI().redrawGUINow(); // needs blocking redrawing
                 break;
             case "Next Node": {
-                Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
+                Enumeration<Node> nodesEnumer = SinalgoRuntime.getNodes().getNodeEnumeration();
                 while (nodesEnumer.hasMoreElements()) {
                     Node nd = nodesEnumer.nextElement();
                     if (nd.getID() == this.getNode().getID() + 1) {
@@ -308,7 +308,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
                 break;
             }
             case "Previous Node": {
-                Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
+                Enumeration<Node> nodesEnumer = SinalgoRuntime.getNodes().getNodeEnumeration();
                 while (nodesEnumer.hasMoreElements()) {
                     Node nd = nodesEnumer.nextElement();
                     if (nd.getID() == this.getNode().getID() - 1) {
@@ -328,7 +328,7 @@ public class NodeInfoDialog extends JDialog implements ActionListener, PropertyC
         int newId = (Integer) evt.getNewValue();
 
         boolean hasPrev = false;
-        Enumeration<Node> nodesEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
+        Enumeration<Node> nodesEnumer = SinalgoRuntime.getNodes().getNodeEnumeration();
         while (nodesEnumer.hasMoreElements()) {
             Node nd = nodesEnumer.nextElement();
             if (nd.getID() == newId) {

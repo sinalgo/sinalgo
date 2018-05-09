@@ -36,13 +36,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.sample4.nodes.messages;
 
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.nodes.messages.Message;
 
 import java.awt.*;
 
 public class S4Message extends Message {
 
-    public Color color; // the color the receiver should take
+    @Getter
+    @Setter
+    private Color color; // the color the receiver should take
 
     @Override
     public Message clone() {

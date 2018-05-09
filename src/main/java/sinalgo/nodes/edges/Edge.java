@@ -480,7 +480,7 @@ public class Edge implements DoublyLinkedListEntry {
             // This is quite slow as it iterates over all pending events. However,
             // synchronous simulations are not mobile, therefore this method is not called
             // often.
-            SinalgoRuntime.eventQueue.invalidatePacketEventsForThisEdge(this);
+            SinalgoRuntime.getEventQueue().invalidatePacketEventsForThisEdge(this);
         } else {
             this.getEndNode().getInboxPacketBuffer().invalidatePacketsSentOverThisEdge(this);
         }

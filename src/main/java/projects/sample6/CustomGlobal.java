@@ -125,7 +125,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.treeNodes.clear();
         this.leaves.clear();
         // Reset ID counter of leaf-nodes
-        LeafNode.smallIdCounter = 0;
+        LeafNode.setSmallIdCounter(0);
 
         // some vectors to store the nodes that we still need to process
         Vector<TreeNode> toProcess = new Vector<>();
@@ -170,7 +170,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
                     numAdded = 0;
                 }
                 currentNode.addConnectionTo(tn);
-                currentNode.parent = tn;
+                currentNode.setParent(tn);
                 numAdded++;
                 if (numAdded >= fanOut) {
                     tn.setPosition((leftMostXOffset + currentNode.getPosition().getXCoord()) / 2, posY, 0);

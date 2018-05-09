@@ -1,5 +1,7 @@
 package projects.sample6.nodes.nodeImplementations;
 
+import lombok.Getter;
+import lombok.Setter;
 import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -11,14 +13,20 @@ import java.awt.*;
 /**
  * A node on the bottom of the tree
  */
+@Getter
+@Setter
 public class LeafNode extends TreeNode {
 
     // A counter that may be reset by the user
-    public static int smallIdCounter = 0;
-    public int smallID;
+    @Getter
+    @Setter
+    private static int smallIdCounter = 0;
+
+    private int smallID;
 
     public LeafNode() {
-        this.smallID = ++smallIdCounter;
+        setSmallIdCounter(getSmallIdCounter() + 1);
+        this.setSmallID(getSmallIdCounter());
     }
 
     @Override
@@ -53,12 +61,12 @@ public class LeafNode extends TreeNode {
 
     @Override
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-        super.drawNodeAsDiskWithText(g, pt, highlight, Integer.toString(this.smallID), 15, Color.YELLOW);
+        super.drawNodeAsDiskWithText(g, pt, highlight, Integer.toString(this.getSmallID()), 15, Color.YELLOW);
     }
 
     @Override
     public String toString() {
-        return this.smallID + " (" + this.getID() + ")";
+        return this.getSmallID() + " (" + this.getID() + ")";
     }
 
 }

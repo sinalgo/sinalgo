@@ -103,7 +103,7 @@ public class AsynchronousRuntimeThread extends Thread {
      */
     static void initializeConnectivity() {
         connectivityInitialized = true;
-        for (Node n : SinalgoRuntime.nodes) {
+        for (Node n : SinalgoRuntime.getNodes()) {
             n.getConnectivityModel().updateConnections(n);
         }
     }
@@ -127,12 +127,12 @@ public class AsynchronousRuntimeThread extends Thread {
             if (event != null) {
                 event.free(); // free the previous event
             }
-            event = SinalgoRuntime.eventQueue.getNextEvent(); // returns null if there is no further event
+            event = SinalgoRuntime.getEventQueue().getNextEvent(); // returns null if there is no further event
 
             if (event == null && Configuration.isHandleEmptyEventQueue()) {
                 Global.getCustomGlobal().handleEmptyEventQueue();
                 // and try again
-                event = SinalgoRuntime.eventQueue.getNextEvent(); // returns null if there is no further event
+                event = SinalgoRuntime.getEventQueue().getNextEvent(); // returns null if there is no further event
             }
             if (event == null) {
                 Global.getLog().logln(LogL.EVENT_QUEUE_DETAILS,

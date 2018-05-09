@@ -80,7 +80,7 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
         // In async mode, the user may specify to evaluate the connections immediately
         // at startup
         if (Global.isAsynchronousMode() && Configuration.isInitializeConnectionsOnStartup()) {
-            if (SinalgoRuntime.nodes.size() > 0) {
+            if (SinalgoRuntime.getNodes().size() > 0) {
                 // when there are no nodes created yet, perform the initialization
                 // only during the first step.
                 AsynchronousRuntimeThread.initializeConnectivity();

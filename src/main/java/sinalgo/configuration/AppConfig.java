@@ -112,16 +112,16 @@ public class AppConfig {
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
     private static Supplier<AppConfig> appConfigProvider = () -> {
-        AppConfig.setSingletonInstance(new AppConfig());
-        AppConfig.setAppConfigProvider(AppConfig::getSingletonInstance);
-        return AppConfig.getAppConfig();
+        setSingletonInstance(new AppConfig());
+        setAppConfigProvider(AppConfig::getSingletonInstance);
+        return getAppConfig();
     };
 
     /**
      * @return The singleton instance of AppConfig.
      */
     public static AppConfig getAppConfig() {
-        return AppConfig.getAppConfigProvider().get();
+        return getAppConfigProvider().get();
     }
 
     /**

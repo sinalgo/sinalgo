@@ -338,7 +338,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
     public final void setPosition(double x, double y, double z) {
         this.getPosition().assign(x, y, z);
         this.cropPos(this.position);
-        SinalgoRuntime.nodes.updateNodeCollection(this); // note that this method tests whether the node is already added to
+        SinalgoRuntime.getNodes().updateNodeCollection(this); // note that this method tests whether the node is already added to
         // the node collection
         this.onChangePosition();
     }
@@ -413,7 +413,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         Packet sentP = this.sendMessage(m, connection, this, target, intensity);
         if (Configuration.isInterference()) { // only add the message in the packetsInTheAirBuffer, if interference is
             // turned on
-            SinalgoRuntime.packetsInTheAir.add(sentP);
+            SinalgoRuntime.getPacketsInTheAir().add(sentP);
         }
     }
 
@@ -469,7 +469,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
 
         if (Global.isAsynchronousMode()) {
             // add a packet event to the event list
-            SinalgoRuntime.eventQueue.insert(PacketEvent.getNewPacketEvent(packet, Global.getCurrentTime() + transmissionTime));
+            SinalgoRuntime.getEventQueue().insert(PacketEvent.getNewPacketEvent(packet, Global.getCurrentTime() + transmissionTime));
         } else { // Synchronous
             // check whether the simulation is currently running or not.
             if (!Global.isRunning()) {
@@ -1171,17 +1171,17 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         if (p.getXCoord() < 0) {
             p.setXCoord(0);
         } else if (p.getXCoord() >= Configuration.getDimX()) {
-            p.setXCoord(Configuration.getDimX() - Position.epsilonPosition);
+            p.setXCoord(Configuration.getDimX() - Position.getEpsilonPosition());
         }
         if (p.getYCoord() < 0) {
             p.setYCoord(0);
         } else if (p.getYCoord() >= Configuration.getDimY()) {
-            p.setYCoord(Configuration.getDimY() - Position.epsilonPosition);
+            p.setYCoord(Configuration.getDimY() - Position.getEpsilonPosition());
         }
         if (p.getZCoord() < 0) {
             p.setZCoord(0);
         } else if (p.getZCoord() >= Configuration.getDimZ()) {
-            p.setZCoord(Configuration.getDimZ() - Position.epsilonPosition);
+            p.setZCoord(Configuration.getDimZ() - Position.getEpsilonPosition());
         }
     }
 
@@ -1294,7 +1294,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
                 Edge e = this.edgeIteratorInstance.next();
                 Packet sentP = this.sendMessage(m, e, e.getStartNode(), e.getEndNode(), intensity);
                 sentP.setType(PacketType.MULTICAST);
-                SinalgoRuntime.packetsInTheAir.addPassivePacket(sentP);
+                SinalgoRuntime.getPacketsInTheAir().addPassivePacket(sentP);
                 if (longestPacket == null || longestPacket.compareTo(sentP) < 0) {
                     // NOTE that the second
                     // statement is not
@@ -1304,14 +1304,14 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
                 }
             }
             if (longestPacket != null) {
-                SinalgoRuntime.packetsInTheAir.upgradeToActivePacket(longestPacket);
+                SinalgoRuntime.getPacketsInTheAir().upgradeToActivePacket(longestPacket);
             } else { // there was no neighbor
                 // For the interference, we need to send a packet anyways. Send it to this
                 // node itself.
                 Packet sentP = this.sendMessage(m, null, this, this, intensity);
                 sentP.setType(PacketType.MULTICAST);
                 sentP.denyDelivery(); // ensure that the packet never arrives at this node
-                SinalgoRuntime.packetsInTheAir.add(sentP);
+                SinalgoRuntime.getPacketsInTheAir().add(sentP);
             }
         } else { // no interference
             this.edgeIteratorInstance.reset();
@@ -1387,7 +1387,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
         Global.setNumberOfMessagesOverAll(Global.getNumberOfMessagesOverAll() + 1); // statistics (don't increment the counter that counts the number of sent
         // messages per round. This counter has no meaning in the async mode.)
 
-        SinalgoRuntime.eventQueue.insert(PacketEvent.getNewPacketEvent(packet, Global.getCurrentTime() + transmissionTime));
+        SinalgoRuntime.getEventQueue().insert(PacketEvent.getNewPacketEvent(packet, Global.getCurrentTime() + transmissionTime));
 
         return packet;
     }

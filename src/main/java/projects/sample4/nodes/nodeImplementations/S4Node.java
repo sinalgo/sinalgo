@@ -67,12 +67,12 @@ public class S4Node extends Node {
             if (msg instanceof S4Message) {
                 S4Message m = (S4Message) msg;
                 // green and yellow messages are forwarded to all neighbors
-                if (m.color == Color.GREEN && !this.getColor().equals(m.color)) {
+                if (m.getColor() == Color.GREEN && !this.getColor().equals(m.getColor())) {
                     this.broadcast(m);
-                } else if (m.color == Color.YELLOW && !this.getColor().equals(m.color)) {
+                } else if (m.getColor() == Color.YELLOW && !this.getColor().equals(m.getColor())) {
                     this.broadcast(m);
                 }
-                this.setColor(m.color); // set this node's color
+                this.setColor(m.getColor()); // set this node's color
             }
         }
     }
@@ -107,7 +107,7 @@ public class S4Node extends Node {
      */
     private void sendColorMessage(Color c, Node to) {
         S4Message msg = new S4Message();
-        msg.color = c;
+        msg.setColor(c);
         if (Tools.isSimulationInAsynchroneMode()) {
             // sending the messages directly is OK in async mode
             if (to != null) {
@@ -162,7 +162,7 @@ public class S4Node extends Node {
                 return; // the user aborted
             }
             S4Message msg = new S4Message();
-            msg.color = Color.pink;
+            msg.setColor(Color.pink);
             if (Tools.isSimulationInAsynchroneMode()) {
                 this.sendDirect(msg, n);
             } else {

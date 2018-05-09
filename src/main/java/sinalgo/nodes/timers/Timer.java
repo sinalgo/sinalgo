@@ -95,7 +95,7 @@ public abstract class Timer implements Comparable<Timer> {
         this.setTargetNode(null);
         this.setFireTime(Global.getCurrentTime() + relativeTime);
         if (Global.isAsynchronousMode()) {
-            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
+            SinalgoRuntime.getEventQueue().insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
         } else {
             Global.getCustomGlobal().getGlobalTimers().add(this);
         }
@@ -120,7 +120,7 @@ public abstract class Timer implements Comparable<Timer> {
         this.setTargetNode(n);
         this.setFireTime(Global.getCurrentTime() + relativeTime);
         if (Global.isAsynchronousMode()) {
-            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
+            SinalgoRuntime.getEventQueue().insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
         } else {
             this.getTargetNode().getTimers().add(this);
         }
@@ -142,7 +142,7 @@ public abstract class Timer implements Comparable<Timer> {
         this.setTargetNode(n);
         this.setFireTime(absoluteTime);
         if (Global.isAsynchronousMode()) {
-            SinalgoRuntime.eventQueue.insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
+            SinalgoRuntime.getEventQueue().insert(TimerEvent.getNewTimerEvent(this, this.fireTime));
         } else {
             this.getTargetNode().getTimers().add(this);
         }

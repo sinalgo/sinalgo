@@ -36,9 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.nodes;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * A simple vector implementation that describes the position of the nodes on
@@ -56,7 +54,9 @@ public class Position {
      * Do always use this variable for such purposes, such that backtracking where
      * such rounding error corrections were made is possible.
      */
-    public static double epsilonPosition = 10e-8;
+    @Getter
+    @Setter
+    private static double epsilonPosition = 10e-8;
 
     /**
      * The x coordinate of the position.

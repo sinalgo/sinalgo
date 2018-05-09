@@ -179,7 +179,7 @@ public class EventQueue extends TreeSet<Event> {
             }
         }
         super.clear(); // kill this set
-        SinalgoRuntime.eventQueue = eq; // replace the event queue
+        SinalgoRuntime.setEventQueue(eq); // replace the event queue
         this.notifyListeners();
     }
 

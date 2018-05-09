@@ -36,28 +36,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.io.mapIO;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The class for the maprectangles to draw the map with. The whole field is
  * partitioned into rectangles according to the size of the map. Each rectangle
  * corresponds to a value in the map-file.
  */
+@Getter
+@Setter
 public class Rectangle {
 
     /**
      * The x position of top left corner of the rectangle.
      */
-    public int x;
+    private int x;
     /**
      * The y position of top left corner of the rectangle.
      */
-    public int y;
+    private int y;
 
     /**
      * The height of the rectangle.
      */
-    public int height;
+    private int height;
     /**
      * The width of the rectangle.
      */
-    public int width;
+    private int width;
 }

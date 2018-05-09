@@ -78,66 +78,66 @@ public class FNode extends Node {
             if (msg instanceof FloodFindMsg) { // This node received a flooding message.
                 // ---------------------------------------------------------------
                 FloodFindMsg m = (FloodFindMsg) msg;
-                if (m.isFindMessage) {
+                if (m.isFindMessage()) {
                     // forward the message, it's a find-message that has to be
                     // forwarded if the TTL allows. At the same time, update this node's routing
                     // table s.t. it knows how to route to the sender of the flooding-msg.
                     boolean forward = true;
-                    if (m.sender.equals(this)) { // the message bounced back - discard the msg
+                    if (m.getSender().equals(this)) { // the message bounced back - discard the msg
                         forward = false;
                     } else { // update routing table to the sender of this node
-                        RoutingEntry re = this.routingTable.get(m.sender);
+                        RoutingEntry re = this.routingTable.get(m.getSender());
                         if (re == null) { // add a new routing entry
-                            this.routingTable.put(m.sender,
-                                    new RoutingEntry(m.sequenceID, m.hopsToSender, inbox.getSender()));
-                            this.useNewRoutingInfo(m.destination, inbox.getSender());
-                        } else if (re.sequenceNumber < m.sequenceID) { // update the existing entry
-                            re.numHops = m.hopsToSender;
-                            re.sequenceNumber = m.sequenceID;
+                            this.routingTable.put(m.getSender(),
+                                    new RoutingEntry(m.getSequenceID(), m.getHopsToSender(), inbox.getSender()));
+                            this.useNewRoutingInfo(m.getDestination(), inbox.getSender());
+                        } else if (re.sequenceNumber < m.getSequenceID()) { // update the existing entry
+                            re.numHops = m.getHopsToSender();
+                            re.sequenceNumber = m.getSequenceID();
                             re.nextHop = inbox.getSender();
                         } else {
                             forward = false; // we've already seen this message once - don't forward it a 2nd time
                         }
                     }
-                    if (m.destination.equals(this)) { // the lookup has succeeded, this is the node that was searched
+                    if (m.getDestination().equals(this)) { // the lookup has succeeded, this is the node that was searched
                         this.setColor(Color.BLUE);
                         FloodFindMsg copy = m.getRealClone();
-                        copy.hopsToSender = 1; // now, this field contains the hops to the destination
-                        copy.isFindMessage = false;
-                        copy.sequenceID = ++this.seqID;
+                        copy.setHopsToSender(1); // now, this field contains the hops to the destination
+                        copy.setFindMessage(false);
+                        copy.setSequenceID(++this.seqID);
                         this.send(copy, inbox.getSender()); // send back the echo message
                         forward = false;
                     }
 
-                    if (forward && m.ttl > 1) { // forward the flooding request
+                    if (forward && m.getTtl() > 1) { // forward the flooding request
                         FloodFindMsg copy = m.getRealClone();
-                        copy.ttl--;
-                        copy.hopsToSender++;
+                        copy.setTtl(copy.getTtl() - 1);
+                        copy.setHopsToSender(copy.getHopsToSender() + 1);
                         this.broadcast(copy);
                     }
                 } else { // return the message back to the sender
                     // update the routing table
                     boolean forward = true;
                     this.setColor(Color.GREEN);
-                    RoutingEntry re = this.routingTable.get(m.destination);
+                    RoutingEntry re = this.routingTable.get(m.getDestination());
                     if (re == null) { // add a new routing entry
-                        this.routingTable.put(m.destination,
-                                new RoutingEntry(m.sequenceID, m.hopsToSender, inbox.getSender()));
-                        this.useNewRoutingInfo(m.destination, inbox.getSender());
-                    } else if (re.sequenceNumber < m.sequenceID) { // update the existing entry
-                        re.numHops = m.hopsToSender;
-                        re.sequenceNumber = m.sequenceID;
+                        this.routingTable.put(m.getDestination(),
+                                new RoutingEntry(m.getSequenceID(), m.getHopsToSender(), inbox.getSender()));
+                        this.useNewRoutingInfo(m.getDestination(), inbox.getSender());
+                    } else if (re.sequenceNumber < m.getSequenceID()) { // update the existing entry
+                        re.numHops = m.getHopsToSender();
+                        re.sequenceNumber = m.getSequenceID();
                         re.nextHop = inbox.getSender();
                     } else {
                         forward = false;
                     }
-                    if (m.sender.equals(this)) {
+                    if (m.getSender().equals(this)) {
                         // this node sent the request - remove timers
-                        m.retryTimer.deactivate();
+                        m.getRetryTimer().deactivate();
                     } else if (forward) {
-                        re = this.routingTable.get(m.sender);
+                        re = this.routingTable.get(m.getSender());
                         if (re != null) {
-                            m.hopsToSender++; // we can modify the message, its a unicast
+                            m.setHopsToSender(m.getHopsToSender() + 1); // we can modify the message, its a unicast
                             this.send(m, re.nextHop);
                         }
                     }
@@ -146,17 +146,17 @@ public class FNode extends Node {
             // ---------------------------------------------------------------
             if (msg instanceof PayloadMsg) {
                 PayloadMsg m = (PayloadMsg) msg;
-                if (m.destination.equals(this)) { // the message was for this node
+                if (m.getDestination().equals(this)) { // the message was for this node
                     if (msg instanceof AckPayload) { // it is an ACK message
-                        m.ackTimer.deactivate();
+                        m.getAckTimer().deactivate();
                         this.setColor(Color.ORANGE);
                     } else { // it is a Payload Msg
                         // handle the payload
                         this.setColor(Color.YELLOW);
                         // send back an ACK
-                        AckPayload ack = new AckPayload(m.sender, this);
-                        ack.sequenceNumber = m.sequenceNumber;
-                        ack.ackTimer = m.ackTimer;
+                        AckPayload ack = new AckPayload(m.getSender(), this);
+                        ack.setSequenceNumber(m.getSequenceNumber());
+                        ack.setAckTimer(m.getAckTimer());
                         this.sendPayloadMessage(ack);
                     }
                 } else { // the message was not for this node -> forward
@@ -182,8 +182,8 @@ public class FNode extends Node {
                 return; // aborted
             }
             PayloadMsg msg = new PayloadMsg(n, FNode.this);
-            msg.requireACK = true;
-            msg.sequenceNumber = ++FNode.this.seqID;
+            msg.setRequireACK(true);
+            msg.setSequenceNumber(++FNode.this.seqID);
             PayloadMessageTimer t = new PayloadMessageTimer(msg);
             t.startRelative(1, FNode.this);
         }, "Select a node to send a message to...");
@@ -197,20 +197,20 @@ public class FNode extends Node {
      * @param msg The message to be sent.
      */
     public void sendPayloadMessage(PayloadMsg msg) {
-        RoutingEntry re = this.routingTable.get(msg.destination);
+        RoutingEntry re = this.routingTable.get(msg.getDestination());
         if (re != null) {
-            if (msg.sender.equals(this) && msg.requireACK) { // this node wants to have the message sent - it waits for
+            if (msg.getSender().equals(this) && msg.isRequireACK()) { // this node wants to have the message sent - it waits for
                 // an ack
                 RetryPayloadMessageTimer rpmt = new RetryPayloadMessageTimer(msg);
                 rpmt.startRelative(re.numHops * 3, this); // We wait a bit longer than necessary
-                if (msg.ackTimer != null) {
-                    msg.ackTimer.deactivate();
+                if (msg.getAckTimer() != null) {
+                    msg.getAckTimer().deactivate();
                 }
-                msg.ackTimer = rpmt;
+                msg.setAckTimer(rpmt);
             }
             this.send(msg, re.nextHop);
         } else {
-            this.lookForNode(msg.destination, 4);
+            this.lookForNode(msg.getDestination(), 4);
             this.messagesOnHold.add(msg);
         }
     }
@@ -227,12 +227,12 @@ public class FNode extends Node {
         }
 
         FloodFindMsg m = new FloodFindMsg(++this.seqID, this, destination);
-        m.ttl = ttl;
-        RetryFloodingTimer rft = new RetryFloodingTimer(destination, m.ttl);
+        m.setTtl(ttl);
+        RetryFloodingTimer rft = new RetryFloodingTimer(destination, m.getTtl());
         // The TTL must depend on the message transmission time. We assume here a
         // constant msg. transm. time of 1 unit.
-        rft.startRelative(m.ttl * 2 + 1, this);
-        m.retryTimer = rft;
+        rft.startRelative(m.getTtl() * 2 + 1, this);
+        m.setRetryTimer(rft);
         this.broadcast(m);
     }
 
@@ -240,7 +240,7 @@ public class FNode extends Node {
         Iterator<PayloadMsg> it = this.messagesOnHold.iterator();
         while (it.hasNext()) {
             PayloadMsg m = it.next();
-            if (m.destination.equals(destination)) {
+            if (m.getDestination().equals(destination)) {
                 this.sendPayloadMessage(m);
                 it.remove();
             }

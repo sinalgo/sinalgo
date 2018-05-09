@@ -135,7 +135,7 @@ public class S2Node extends Node {
     @NodePopupMethod(menuText = "Undo Coloring")
     public void UndoColoring() { // NOTE: Do not change method name!
         // undo the coloring for all nodes
-        for (Node n : SinalgoRuntime.nodes) {
+        for (Node n : SinalgoRuntime.getNodes()) {
             ((S2Node) n).setDrawAsNeighbor(false);
         }
         setColored(false);

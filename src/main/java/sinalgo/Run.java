@@ -126,7 +126,7 @@ public class Run {
                             // Setting it to server mode
                             s = s.replaceFirst("server=n", "server=y");
                             // Do NOT block until the debugger has attached
-                            s = s.replaceFirst("suspend=y", "suspend=y");
+                            s = s.replaceFirst("suspend=y", "suspend=n");
                         }
                         return s;
                     })

@@ -79,25 +79,32 @@ public abstract class SinalgoRuntime {
      * The collection of nodes stored in a slever way to fast retrieve the possible
      * neighbors.
      */
-    public static AbstractNodeCollection nodes = createNewNodeCollection();
+    @Getter
+    @Setter
+    private static AbstractNodeCollection nodes = createNewNodeCollection();
 
     /**
      * The datastructure for all the messages, that are in the air in this moment.
      * This is important for the interference.
      */
-    public static PacketsInTheAirBuffer packetsInTheAir = new PacketsInTheAirBuffer();
+    @Getter
+    @Setter
+    private static PacketsInTheAirBuffer packetsInTheAir = new PacketsInTheAirBuffer();
 
     /**
      * The global event queue that stores the events scheduled. This queue is always
      * empty in the synchronous mode.
      */
-    public static EventQueue eventQueue = new EventQueue();
+    @Getter
+    @Setter
+    private static EventQueue eventQueue = new EventQueue();
 
     /**
      * The instance of the background map.
      */
-    public static Map map = null;
-
+    @Getter
+    @Setter
+    private static Map map = null;
 
     // some information on the rounds
 
@@ -141,7 +148,7 @@ public abstract class SinalgoRuntime {
     public SinalgoRuntime() {
         if (Configuration.isUseMap()) {
             try {
-                map = new Map(IOUtils.getAsPath(Configuration.getUserProjectsPackage(), Global.getProjectName(), Configuration.getMap()));
+                setMap(new Map(IOUtils.getAsPath(Configuration.getUserProjectsPackage(), Global.getProjectName(), Configuration.getMap())));
             } catch (FileNotFoundException e) {
                 throw new SinalgoWrappedException(e);
             }
@@ -375,7 +382,7 @@ public abstract class SinalgoRuntime {
      * @param n The node to add.
      */
     public static void addNode(Node n) {
-        nodes.addNode(n);
+        getNodes().addNode(n);
         Global.getCustomGlobal().nodeAddedEvent(n);
         if (Global.isGuiMode()) {
             try {
@@ -404,7 +411,7 @@ public abstract class SinalgoRuntime {
         // remove the outgoing connections from neighbor to this nodes
         // TODO: This is really expensive! Can't we have a better data structure?
         // The problem so far is the 'getRandomNode' method
-        Enumeration<Node> nodeEnumer = nodes.getNodeEnumeration();
+        Enumeration<Node> nodeEnumer = getNodes().getNodeEnumeration();
         while (nodeEnumer.hasMoreElements()) {
             Node node = nodeEnumer.nextElement();
             Edge e = node.getOutgoingConnections().remove(node, n); // does only remove it it really exists
@@ -414,8 +421,8 @@ public abstract class SinalgoRuntime {
         }
         n.getOutgoingConnections().removeAndFreeAllEdges();
 
-        nodes.removeNode(n);
-        eventQueue.removeAllEventsForThisNode(n);
+        getNodes().removeNode(n);
+        getEventQueue().removeAllEventsForThisNode(n);
         if (Global.isGuiMode()) {
             // un highlight this node
             Tools.getGUI().getGraphPanel().setNodeHighlighted(n, false);
@@ -443,7 +450,7 @@ public abstract class SinalgoRuntime {
      * In asynchronous mode, removes all events from the event queue
      */
     public static void removeAllAsynchronousEvents() {
-        eventQueue.dropAllEvents();
+        getEventQueue().dropAllEvents();
     }
 
     /**
@@ -452,7 +459,7 @@ public abstract class SinalgoRuntime {
      * @param e The event to remove
      */
     public static void removeEvent(Event e) {
-        eventQueue.dropEvent(e);
+        getEventQueue().dropEvent(e);
     }
 
     /**
@@ -502,7 +509,7 @@ public abstract class SinalgoRuntime {
      * the graph.
      */
     public static void reevaluateConnections() {
-        for (Node n : nodes) {
+        for (Node n : getNodes()) {
             n.getConnectivityModel().updateConnections(n);
         }
     }
@@ -514,13 +521,13 @@ public abstract class SinalgoRuntime {
      * This method may be used to empty the node collection.
      */
     public static void clearAllNodes() {
-        eventQueue.pruneAllNodeEvents();
+        getEventQueue().pruneAllNodeEvents();
 
-        packetsInTheAir = new PacketsInTheAirBuffer();
-        for (Node n : nodes) {
+        setPacketsInTheAir(new PacketsInTheAirBuffer());
+        for (Node n : getNodes()) {
             n.getOutgoingConnections().removeAndFreeAllEdges();
         }
-        nodes = createNewNodeCollection();
+        setNodes(createNewNodeCollection());
         Node.resetIDCounter(); // new nodes restart their ID with 1
         if (Global.isGuiMode()) {
             GUI gui = Tools.getGUI();

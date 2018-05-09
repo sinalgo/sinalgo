@@ -1,5 +1,7 @@
 package projects.sample3.nodes.timers;
 
+import lombok.Getter;
+import lombok.Setter;
 import projects.sample3.nodes.messages.InviteMessage;
 import projects.sample3.nodes.nodeImplementations.Antenna;
 import sinalgo.configuration.Configuration;
@@ -14,13 +16,15 @@ import sinalgo.tools.statistics.Distribution;
  */
 public class InviteMsgTimer extends Timer {
 
-    private Distribution dist = null;
+    private Distribution dist;
     private int refreshRate;
     private int refreshCounter = 0;
 
     // If set to true, the antenna requires the nodes to register again
     // such that it can drop old mobileNodes
-    public boolean requireSubscription = false;
+    @Getter
+    @Setter
+    private boolean requireSubscription = false;
 
     public InviteMsgTimer() {
         try {
@@ -37,7 +41,7 @@ public class InviteMsgTimer extends Timer {
         this.refreshCounter--;
         if (this.refreshCounter <= 0) {
             ((Antenna) this.getTargetNode()).resetNeighborhood();
-            msg.requireSubscription = true;
+            msg.setRequireSubscription(true);
             this.refreshCounter = this.refreshRate; // reset the counter
         }
 
@@ -48,4 +52,5 @@ public class InviteMsgTimer extends Timer {
         }
         this.startRelative(time, this.getTargetNode());
     }
+
 }

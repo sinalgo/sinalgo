@@ -69,7 +69,7 @@ public class GraphInfoDialog extends JDialog implements ActionListener {
         GuiHelper.setWindowIcon(this);
 
         // determine the number of nodes and edges
-        Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getNodeEnumeration();
+        Enumeration<Node> nodeEnumer = SinalgoRuntime.getNodes().getNodeEnumeration();
         int numNodes = 0;
         int numEdges = 0;
 

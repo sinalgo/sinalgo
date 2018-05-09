@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.*;
@@ -61,8 +64,12 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class Main {
 
-    static SinalgoRuntime runtime;
-    public static String[] cmdLineArgs; // the command line arguments
+    @Setter(AccessLevel.PACKAGE)
+    private static SinalgoRuntime runtime;
+
+    @Getter
+    @Setter
+    private static String[] cmdLineArgs; // the command line arguments
 
     /**
      * This method is the one to start with. It starts the whole simulation.
@@ -70,7 +77,7 @@ public class Main {
      * @param args The parameters to start the simulation with.
      */
     public static void main(String[] args) {
-        cmdLineArgs = args; // store for later use
+        setCmdLineArgs(args); // store for later use
         Main main = new Main();
         main.go(args);
     }
@@ -128,11 +135,11 @@ public class Main {
             Global.setGuiMode(true);
             Global.getLog().logln(LogL.ALWAYS, "> Starting " + Configuration.getAppName() + " in GUI-Mode"
                     + (Global.isUseProject() ? " for project " + Global.getProjectName() + "." : "."));
-            runtime = new GUIRuntime();
+            setRuntime(new GUIRuntime());
         } else { // BATCH MODE
             Global.getLog().log(LogL.ALWAYS, "> Starting " + Configuration.getAppName() + " in BATCH-Mode"
                     + (Global.isUseProject() ? " for project " + Global.getProjectName() + "." : "."));
-            runtime = new BatchRuntime();
+            setRuntime(new BatchRuntime());
         }
 
         // initialize the DefaultMessageTransmissionModel (only after the runtime

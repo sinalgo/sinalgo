@@ -186,7 +186,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     @GlobalMethod(menuText = "...", subMenu = "Node Control", order = 2)
     public void stopSending() {
-        S1Node.isSending = !S1Node.isSending;
+        S1Node.setSending(!S1Node.isSending());
     }
 
     @Override
@@ -195,7 +195,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             if (Tools.getNodeList().size() == 0) {
                 return null; // don't display this menu option
             }
-            return S1Node.isSending ? "Stop Sending" : "Continue Sending";
+            return S1Node.isSending() ? "Stop Sending" : "Continue Sending";
         }
         return defaultText;
     }

@@ -86,11 +86,13 @@ public class S1Node extends Node {
     Logging log = Logging.getLogger("s1_log");
 
     // a flag to prevent all nodes from sending messages
-    public static boolean isSending = true;
+    @Getter
+    @Setter
+    private static boolean isSending = true;
 
     @Override
     public void handleMessages(Inbox inbox) {
-        if (!isSending) { // don't even look at incoming messages
+        if (!isSending()) { // don't even look at incoming messages
             return;
         }
         if (inbox.hasNext()) {

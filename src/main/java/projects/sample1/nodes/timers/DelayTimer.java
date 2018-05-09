@@ -75,7 +75,7 @@ public class DelayTimer extends Timer {
 
     @Override
     public void fire() {
-        if (!S1Node.isSending) {
+        if (!S1Node.isSending()) {
             return;
         }
         if (this.sender.getNext() != null) {

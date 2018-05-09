@@ -61,7 +61,7 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
         } else if (e instanceof SinalgoWrappedException) {
             fatalError(e.getCause());
         } else if (e instanceof OutOfMemoryError) {
-            SinalgoRuntime.nodes = null;
+            SinalgoRuntime.setNodes(null);
             Tools.disposeRecycledObjects(Logging.getLogger().getOutputStream());
             System.gc();
             Runtime r = Runtime.getRuntime();
@@ -122,8 +122,8 @@ public class SinalgoUncaughtExceptionHandler implements UncaughtExceptionHandler
      */
     private static void fatalError(String message, Throwable cause) {
         if (Global.isGuiMode()) {
-            if (Main.runtime != null) {
-                JOptionPane.showMessageDialog(((GUIRuntime) Main.runtime).getGUI(),
+            if (Main.getRuntime() != null) {
+                JOptionPane.showMessageDialog(((GUIRuntime) Main.getRuntime()).getGUI(),
                         Tools.wrapAndCutToLines(message, 30), "Fatal Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(null, Tools.wrapAndCutToLines(message, 30), "Fatal Error",

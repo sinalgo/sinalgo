@@ -319,7 +319,7 @@ public class GraphPanel extends JPanel {
             this.pt.drawBackground(g);
 
             if (Configuration.isUseMap()) {
-                SinalgoRuntime.map.paintMap(g, this.getPt());
+                SinalgoRuntime.getMap().paintMap(g, this.getPt());
             }
 
             g.setColor(Color.BLACK);
@@ -329,7 +329,7 @@ public class GraphPanel extends JPanel {
                 // First draw all edges, only then the nodes
                 Enumeration<Node> nodeEnumer;
                 if (Configuration.isDrawEdges()) {
-                    nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
+                    nodeEnumer = SinalgoRuntime.getNodes().getSortedNodeEnumeration(true);
                     while (nodeEnumer.hasMoreElements()) {
                         Node node = nodeEnumer.nextElement();
                         // first draw all outgoing edges of this node
@@ -341,7 +341,7 @@ public class GraphPanel extends JPanel {
                 // Draw the nodes in a separate loop
                 if (Configuration.isDrawNodes()) {
                     // Draw the nodes in a separate loop
-                    nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(true);
+                    nodeEnumer = SinalgoRuntime.getNodes().getSortedNodeEnumeration(true);
                     while (nodeEnumer.hasMoreElements()) {
                         Node node = nodeEnumer.nextElement();
                         node.draw(g, this.getPt(), false);
@@ -530,7 +530,7 @@ public class GraphPanel extends JPanel {
 
         Edge edgeUnderPos = null;
 
-        Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(false);
+        Enumeration<Node> nodeEnumer = SinalgoRuntime.getNodes().getSortedNodeEnumeration(false);
         while (nodeEnumer.hasMoreElements()) {
             Node node = nodeEnumer.nextElement();
             if (node.isInside(event.getX(), event.getY(), this.getPt())) {
@@ -641,7 +641,7 @@ public class GraphPanel extends JPanel {
      * no node covers this position.
      */
     public Node getFirstNodeAtPosition(int x, int y) {
-        Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(false);
+        Enumeration<Node> nodeEnumer = SinalgoRuntime.getNodes().getSortedNodeEnumeration(false);
         while (nodeEnumer.hasMoreElements()) {
             Node node = nodeEnumer.nextElement();
             if (node.isInside(x, y, this.getPt())) {
@@ -835,7 +835,7 @@ public class GraphPanel extends JPanel {
                 Edge clickedEdge = null;
                 // go throught all the nodes and their edges to find out, if one is under the
                 // cursor
-                Enumeration<Node> nodeEnumer = SinalgoRuntime.nodes.getSortedNodeEnumeration(false);
+                Enumeration<Node> nodeEnumer = SinalgoRuntime.getNodes().getSortedNodeEnumeration(false);
                 while (nodeEnumer.hasMoreElements()) {
                     Node node = nodeEnumer.nextElement();
                     if (node.isInside(event.getX(), event.getY(), GraphPanel.this.getPt())) {
