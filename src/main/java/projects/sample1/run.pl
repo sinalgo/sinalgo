@@ -28,7 +28,7 @@ for($speed=2; $speed<9; $speed+=3) {
 	print "Simulation $SimCount - Speed mean=$speed var=$speedVariance, NumNodes = $numNodes\n";
 
 	die "Terminated prematurely" unless
-	  system("java -Xmx1000m -cp \"binaries/bin;binaries/jdom.jar\" sinalgo.Main " .
+	  system("java -Xmx1000m sinalgo.Main " .
 			 "-project sample1 " .             # choose the project
 			 "-gen $numNodes sample1:S1Node Random RandomDirection " . # generate nodes
 			 "-overwrite randomDirection/NodeSpeed/Mean=$speed " .  # Node speed
