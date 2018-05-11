@@ -143,12 +143,5 @@ public class UDG extends ConnectivityModelHelper {
         }
         this.setSquareRadius(getRMaxSquare());
     }
-
-    private double getSquareRadius() {
-        return squareRadius;
-    }
-
-    private void setSquareRadius(double squareRadius) {
-        this.squareRadius = squareRadius;
-    }
+    
 }
