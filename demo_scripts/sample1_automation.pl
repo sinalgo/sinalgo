@@ -1,7 +1,5 @@
 #!/usr/bin/perl
 
-# THIS SCRIPT IS CURRENTLY BROKEN, SINCE SINALGO WAS PORTED TO GRADLE.
-
 # Demo script to automatically start project sample1 several times with
 # a different set of node speeds and node densities. Note that this script
 # needs severe adaptations to be used for any real-life Sinalgo project. 
