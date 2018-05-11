@@ -130,8 +130,8 @@ public class ZoomPanel extends JPanel implements MouseInputListener, MouseWheelL
         }
     }
 
-    private Point shiftStartPoint = null;
-    private Point rotateStartPoint = null;
+    private Point shiftStartPoint;
+    private Point rotateStartPoint;
 
     @Override
     public void mousePressed(MouseEvent e) {

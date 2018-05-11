@@ -36,12 +36,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.reliabilityModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.models.ReliabilityModel;
 import sinalgo.nodes.messages.Packet;
 import sinalgo.tools.statistics.Distribution;
+
+import java.util.Random;
 
 /**
  * A loossy reliability model that drops messages with a constant probability.
@@ -51,15 +56,17 @@ import sinalgo.tools.statistics.Distribution;
  * <p>
  * &lt;LossyDelivery dropRate="..."/&gt;
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class LossyDelivery extends ReliabilityModel {
 
-    private java.util.Random rand = Distribution.getRandom();
+    private Random rand = Distribution.getRandom();
     private double dropRate; // default is 0
 
     @Override
     public boolean reachesDestination(Packet p) {
-        double r = this.rand.nextDouble();
-        return (r > this.dropRate);
+        double r = this.getRand().nextDouble();
+        return (r > this.getDropRate());
     }
 
     /**
@@ -67,9 +74,10 @@ public class LossyDelivery extends ReliabilityModel {
      */
     public LossyDelivery() {
         try {
-            this.dropRate = Configuration.getDoubleParameter("LossyDelivery/dropRate");
+            this.setDropRate(Configuration.getDoubleParameter("LossyDelivery/dropRate"));
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException("Missing configuration entry for the Message Transmission Model:\n" + e.getMessage());
         }
     }
+
 }

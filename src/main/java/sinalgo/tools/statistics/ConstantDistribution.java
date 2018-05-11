@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.statistics;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 
@@ -52,6 +55,8 @@ import sinalgo.exception.CorruptConfigurationEntryException;
  */
 public class ConstantDistribution extends Distribution {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private double value; // the value of this distribution
 
     /**
@@ -60,7 +65,7 @@ public class ConstantDistribution extends Distribution {
      * @param value The value to be returned by this distribution.
      */
     public ConstantDistribution(double value) {
-        this.value = value;
+        this.setValue(value);
     }
 
     /**
@@ -72,11 +77,12 @@ public class ConstantDistribution extends Distribution {
      * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
      */
     public ConstantDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
-        this.value = Configuration.getDoubleParameter(mainTagPath + "/constant");
+        this.setValue(Configuration.getDoubleParameter(mainTagPath + "/constant"));
     }
 
     @Override
     public double nextSample() {
-        return this.value;
+        return this.getValue();
     }
+
 }

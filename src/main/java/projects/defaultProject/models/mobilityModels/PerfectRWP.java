@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.mobilityModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
@@ -74,19 +77,21 @@ import sinalgo.nodes.Position;
  */
 public class PerfectRWP extends RandomWayPoint {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private boolean initialize = true; // smooth start
 
     @Override
     public Position getNextPos(Node n) {
-        if (this.initialize) {
-            this.initialize = false;
+        if (this.isInitialize()) {
+            this.setInitialize(false);
 
-            double speed = Math.abs(speedDistribution.nextSample()); // units per round
-            double wt = Math.ceil(waitingTimeDistribution.nextSample()); // potential waiting time
+            double speed = Math.abs(getSpeedDistribution().nextSample()); // units per round
+            double wt = Math.ceil(getWaitingTimeDistribution().nextSample()); // potential waiting time
             Position startPos = this.getNextWayPoint();
             this.setNextDestination(this.getNextWayPoint());
             double mt = startPos.distanceTo(this.getNextDestination()) / speed; // time of the move
-            double fraction = (wt + mt) * random.nextDouble();
+            double fraction = (wt + mt) * getRandom().nextDouble();
             double dx = this.getNextDestination().getXCoord() - startPos.getXCoord();
             double dy = this.getNextDestination().getYCoord() - startPos.getYCoord();
             if (fraction < wt) {
@@ -94,7 +99,7 @@ public class PerfectRWP extends RandomWayPoint {
                 this.setRemaining_waitingTime((int) Math.ceil(wt - fraction));
                 this.setRemaining_hops(0);
 
-                double movedFraction = random.nextDouble();
+                double movedFraction = getRandom().nextDouble();
                 startPos.setXCoord(startPos.getXCoord() + dx * movedFraction);
                 startPos.setYCoord(startPos.getYCoord() + dy * movedFraction);
                 return startPos; // don't consider initial distribution

@@ -11,7 +11,7 @@ import sinalgo.nodes.messages.Message;
 @Setter
 public class InviteMessage extends Message {
 
-    private boolean requireSubscription = false; // if true, the receiver needs to subscribe even if it is already
+    private boolean requireSubscription; // if true, the receiver needs to subscribe even if it is already
     // subscribed
 
     @Override

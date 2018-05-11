@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.statistics;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 
@@ -52,6 +55,8 @@ import java.util.Random;
  * <p>
  * is expected.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class GaussianDistribution extends Distribution {
 
     private double mean; // the mean of the distribution
@@ -64,8 +69,8 @@ public class GaussianDistribution extends Distribution {
      * @param var  The variance of the distribution.
      */
     public GaussianDistribution(double mean, double var) {
-        this.mean = mean;
-        this.var = var;
+        this.setMean(mean);
+        this.setVar(var);
     }
 
     /**
@@ -77,13 +82,13 @@ public class GaussianDistribution extends Distribution {
      * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
      */
     public GaussianDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
-        this.mean = Configuration.getDoubleParameter(mainTagPath + "/mean");
-        this.var = Configuration.getDoubleParameter(mainTagPath + "/variance");
+        this.setMean(Configuration.getDoubleParameter(mainTagPath + "/mean"));
+        this.setVar(Configuration.getDoubleParameter(mainTagPath + "/variance"));
     }
 
     @Override
     public double nextSample() {
-        return this.mean + randomGenerator.nextGaussian() * Math.sqrt(this.var);
+        return this.getMean() + getRandomGenerator().nextGaussian() * Math.sqrt(this.getVar());
     }
 
     /**
@@ -99,4 +104,5 @@ public class GaussianDistribution extends Distribution {
         Random r = Distribution.getRandom();
         return mean + r.nextGaussian() * Math.sqrt(variance);
     }
+
 }

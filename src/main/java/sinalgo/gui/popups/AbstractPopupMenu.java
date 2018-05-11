@@ -55,7 +55,7 @@ public abstract class AbstractPopupMenu extends JPopupMenu {
     private static final long serialVersionUID = 6108642977345194041L;
 
     @Getter
-    private GUI parentGUI = null;
+    private GUI parentGUI;
 
     private JMenuItem zoomIn = new JMenuItem("Zoom In");
     private JMenuItem zoomOut = new JMenuItem("Zoom Out");

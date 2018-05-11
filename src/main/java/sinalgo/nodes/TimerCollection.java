@@ -56,11 +56,11 @@ public class TimerCollection implements Iterable<Timer> {
     private Vector<Timer> timers = new Vector<>(0);
 
     // the instance of the reusable iterator
-    private ReusableIter iter = null;
+    private ReusableIter iter;
 
     // the number of modifications (addings in our case) that are done on this
     // collection.
-    private int modCount = 0;
+    private int modCount;
 
     /**
      * This method returns the number of timers in this collection. This doesn't

@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.sample1;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import projects.sample1.nodes.nodeImplementations.S1Node;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
@@ -70,6 +73,8 @@ import java.util.Enumeration;
  * framework with custom methods that can be called either through the menu
  * or via a button that is added to the GUI.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class CustomGlobal extends AbstractCustomGlobal {
 
     private Logging log = Logging.getLogger("s1_log.txt");
@@ -82,27 +87,27 @@ public class CustomGlobal extends AbstractCustomGlobal {
     {
         if (Configuration.hasParameter("exitAfter")) {
             try {
-                this.exitAfterFixedRounds = Configuration.getBooleanParameter("exitAfter");
+                this.setExitAfterFixedRounds(Configuration.getBooleanParameter("exitAfter"));
             } catch (CorruptConfigurationEntryException e1) {
                 throw new SinalgoFatalException("The 'exitAfter' needs to be a valid boolean.");
             }
-            if (this.exitAfterFixedRounds) {
+            if (this.isExitAfterFixedRounds()) {
                 try {
-                    this.exitAfterNumRounds = Configuration.getIntegerParameter("exitAfter/rounds");
+                    this.setExitAfterNumRounds(Configuration.getIntegerParameter("exitAfter/rounds"));
                 } catch (CorruptConfigurationEntryException e) {
                     throw new SinalgoFatalException(
                             "The 'exitAfter/rounds' parameter specifies the maximum time the simulation runs. It needs to be a valid integer.");
                 }
             }
         } else {
-            this.exitAfterFixedRounds = false;
+            this.setExitAfterFixedRounds(false);
         }
     }
 
     @Override
     public boolean hasTerminated() {
-        if (this.exitAfterFixedRounds) {
-            return this.exitAfterNumRounds <= Global.getCurrentTime();
+        if (this.isExitAfterFixedRounds()) {
+            return this.getExitAfterNumRounds() <= Global.getCurrentTime();
         }
 
         if (Tools.isSimulationInGuiMode()) {
@@ -142,7 +147,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     @Override
     public void postRound() {
         double dt = System.currentTimeMillis() - Global.getStartTimeOfRound().getTime();
-        this.log.logln("Round " + (int) (Global.getCurrentTime()) + " time: " + dt + " Msg/Round: "
+        this.getLog().logln("Round " + (int) (Global.getCurrentTime()) + " time: " + dt + " Msg/Round: "
                 + Global.getNumberOfMessagesInThisRound());
     }
 
@@ -212,5 +217,4 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public void onExit() {
         // perform some cleanup operations here
     }
-
 }

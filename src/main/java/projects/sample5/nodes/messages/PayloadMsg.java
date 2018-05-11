@@ -18,7 +18,7 @@ public class PayloadMsg extends Message {
     private int sequenceNumber; // a number to identify this msg, set by the sender
     private RetryPayloadMessageTimer ackTimer; // The timer set on the sender that will fire if there is no ACK returning
     // from the destination
-    private boolean requireACK = false; // Indicates whether this msg needs to be ACKed
+    private boolean requireACK; // Indicates whether this msg needs to be ACKed
 
     /**
      * Constructor

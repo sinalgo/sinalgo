@@ -103,7 +103,7 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
 
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PROTECTED)
-    private static JButton start = null; // reused to keep the picture
+    private static JButton start; // reused to keep the picture
 
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PROTECTED)
@@ -122,17 +122,17 @@ public abstract class ControlPanel extends JPanel implements ActionListener, Mou
     @Setter
     private Color bgColor = new Color(this.getBackground().getRed(), this.getBackground().getGreen(), this.getBackground().getBlue());
 
-    private GUI parentGUI = null;
+    private GUI parentGUI;
 
     private JTextField roundsPerformed = new JTextField(0);
     private JTextField timePerformed = new JTextField(0);
     private JTextField mousePositionField = new JTextField(8);
     private JPanel info = new JPanel();
     private MultiLineToolTipJList eventJList = new MultiLineToolTipJList();
-    private JButton abort = null;
-    private JButton runMenuButton = null;
+    private JButton abort;
+    private JButton runMenuButton;
     private JButton exit = new JButton("Exit");
-    private ZoomPanel zoomPanel = null;
+    private ZoomPanel zoomPanel;
 
     // A list of all buttons that are disabled while a simulation runs
     @Getter(AccessLevel.PRIVATE)

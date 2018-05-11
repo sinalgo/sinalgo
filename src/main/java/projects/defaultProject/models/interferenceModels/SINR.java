@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.interferenceModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.exception.SinalgoFatalException;
@@ -63,6 +66,8 @@ import sinalgo.tools.logging.LogL;
  * &lt;SINR alpha="..." beta="..." noise="..."/&gt; <br>
  * where alpha, beta, and noise are three floating point values.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class SINR extends InterferenceModel {
 
     private int alpha;// the path-loss exponent, good fefault value would be 2
@@ -74,17 +79,17 @@ public class SINR extends InterferenceModel {
      */
     public SINR() {
         try {
-            this.alpha = Configuration.getIntegerParameter("SINR/alpha");
+            this.setAlpha(Configuration.getIntegerParameter("SINR/alpha"));
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException("The configuration entry SINR/alpha is not a valid double:\n\n" + e.getMessage());
         }
         try {
-            this.beta = Configuration.getDoubleParameter("SINR/beta");
+            this.setBeta(Configuration.getDoubleParameter("SINR/beta"));
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException("The configuration entry SINR/beta is not a valid double:\n\n" + e.getMessage());
         }
         try {
-            this.ambientNoise = Configuration.getDoubleParameter("SINR/noise");
+            this.setAmbientNoise(Configuration.getDoubleParameter("SINR/noise"));
         } catch (CorruptConfigurationEntryException e) {
             throw new SinalgoFatalException("The configuration entry SINR/noise is not a valid double:\n\n" + e.getMessage());
         }
@@ -94,11 +99,11 @@ public class SINR extends InterferenceModel {
     public boolean isDisturbed(Packet p) {
         Position receiverPos = p.getDestination().getPosition();
         double distanceFromSource = p.getOrigin().getPosition().distanceTo(receiverPos);
-        double poweredDistanceFromSource = Math.pow(distanceFromSource, this.alpha);
+        double poweredDistanceFromSource = Math.pow(distanceFromSource, this.getAlpha());
 
         double signal = p.getIntensity() / poweredDistanceFromSource;
 
-        double noise = this.ambientNoise;
+        double noise = this.getAmbientNoise();
 
         for (Packet pack : SinalgoRuntime.getPacketsInTheAir()) { // iterate over all active packets
             if (pack == p) {
@@ -119,11 +124,11 @@ public class SINR extends InterferenceModel {
 
             Position pos = pack.getOrigin().getPosition();
             double distance = pos.distanceTo(receiverPos);
-            double poweredDistance = Math.pow(distance, this.alpha);
+            double poweredDistance = Math.pow(distance, this.getAlpha());
             noise += pack.getIntensity() / poweredDistance;
         }
 
-        boolean disturbed = signal < this.beta * noise;
+        boolean disturbed = signal < this.getBeta() * noise;
 
         if (LogL.INTERFERENCE_DETAIL) {
             Global.getLog().logln("Node " + p.getDestination().getID() + " is checking a packet from " + p.getOrigin().getID());
@@ -134,4 +139,5 @@ public class SINR extends InterferenceModel {
 
         return disturbed;
     }
+
 }

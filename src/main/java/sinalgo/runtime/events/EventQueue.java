@@ -43,7 +43,11 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.runtime.SinalgoRuntime;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.TreeSet;
+import java.util.Vector;
 
 /**
  * The queue that stores the events of the asynchronous mode. The entries
@@ -64,7 +68,7 @@ public class EventQueue extends TreeSet<Event> {
      */
     @Getter
     @Setter
-    private static long eventNumber = 0;
+    private static long eventNumber;
 
     /**
      * The constructor for the EventQueue. Constructs a TreeSet with the correct

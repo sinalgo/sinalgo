@@ -104,7 +104,7 @@ public abstract class SinalgoRuntime {
      */
     @Getter
     @Setter
-    private static Map map = null;
+    private static Map map;
 
     // some information on the rounds
 
@@ -115,7 +115,7 @@ public abstract class SinalgoRuntime {
      */
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    private int numberOfRounds = 0;
+    private int numberOfRounds;
 
     /**
      * true if a running simulation should be stopped at the e
@@ -124,7 +124,7 @@ public abstract class SinalgoRuntime {
      */
     @Getter
     @Setter(AccessLevel.PACKAGE)
-    private boolean abort = false;
+    private boolean abort;
 
     // these are local variables to ensure the 'communication' between the parsing
     // -gen parameters (where these variables are written

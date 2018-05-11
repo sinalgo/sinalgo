@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.distributionModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.exception.SinalgoWrappedException;
@@ -58,6 +61,8 @@ import sinalgo.nodes.Position;
  * where the nodes are placed on a line from (FromX,FromY) to (ToX,ToY). If only
  * one node is placed, it placed in the middle of the line.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class Line2D extends DistributionModel {
 
     private double dx;
@@ -72,34 +77,35 @@ public class Line2D extends DistributionModel {
                 && Configuration.hasParameter("DistributionModel/Line/ToX")
                 && Configuration.hasParameter("DistributionModel/Line/ToY")) {
             try {
-                this.previousPositionX = Configuration.getDoubleParameter("DistributionModel/Line/FromX");
-                this.previousPositionY = Configuration.getDoubleParameter("DistributionModel/Line/FromY");
-                this.dx = Configuration.getDoubleParameter("DistributionModel/Line/ToX") - this.previousPositionX;
-                this.dy = Configuration.getDoubleParameter("DistributionModel/Line/ToY") - this.previousPositionY;
+                this.setPreviousPositionX(Configuration.getDoubleParameter("DistributionModel/Line/FromX"));
+                this.setPreviousPositionY(Configuration.getDoubleParameter("DistributionModel/Line/FromY"));
+                this.setDx(Configuration.getDoubleParameter("DistributionModel/Line/ToX") - this.getPreviousPositionX());
+                this.setDy(Configuration.getDoubleParameter("DistributionModel/Line/ToY") - this.getPreviousPositionY());
             } catch (CorruptConfigurationEntryException e) {
                 throw new SinalgoWrappedException(e);
             }
             if (this.numberOfNodes <= 1) { // place the single node in the middle
-                this.dx /= 2;
-                this.dy /= 2;
+                this.setDx(this.getDx() / 2);
+                this.setDy(this.getDy() / 2);
             } else {
-                this.dx /= (this.numberOfNodes - 1);
-                this.dy /= (this.numberOfNodes - 1);
-                this.previousPositionX -= this.dx;
-                this.previousPositionY -= this.dy;
+                this.setDx(this.getDx() / (this.numberOfNodes - 1));
+                this.setDy(this.getDy() / (this.numberOfNodes - 1));
+                this.setPreviousPositionX(this.getPreviousPositionX() - this.getDx());
+                this.setPreviousPositionY(this.getPreviousPositionY() - this.getDy());
             }
         } else { // default horizontal line
-            this.dy = 0;
-            this.dx = ((double) Configuration.getDimX()) / (this.numberOfNodes + 1);
-            this.previousPositionX = 0;
-            this.previousPositionY = Configuration.getDimY() / 2;
+            this.setDy(0);
+            this.setDx(((double) Configuration.getDimX()) / (this.numberOfNodes + 1));
+            this.setPreviousPositionX(0);
+            this.setPreviousPositionY(Configuration.getDimY() / 2);
         }
     }
 
     @Override
     public Position getNextPosition() {
-        this.previousPositionX += this.dx;
-        this.previousPositionY += this.dy;
-        return new Position(this.previousPositionX, this.previousPositionY, 0);
+        this.setPreviousPositionX(this.getPreviousPositionX() + this.getDx());
+        this.setPreviousPositionY(this.getPreviousPositionY() + this.getDy());
+        return new Position(this.getPreviousPositionX(), this.getPreviousPositionY(), 0);
     }
+
 }

@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.distributionModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.models.DistributionModel;
 import sinalgo.nodes.Position;
@@ -43,36 +46,39 @@ import sinalgo.nodes.Position;
 /**
  * Distributes the nodes regularly on a circle.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class Circle extends DistributionModel {
 
-    private double radius = 0.0;
-    private double oneStep = 0.0;
-    private int number = 0;
+    private double radius;
+    private double oneStep;
+    private int number;
 
     @Override
     public void initialize() {
         String parameter = this.getParamString();
         if (parameter.equals("")) {
             if (Configuration.getDimX() < Configuration.getDimY()) {
-                this.radius = Configuration.getDimX() / 3.0;
+                this.setRadius(Configuration.getDimX() / 3.0);
             } else {
-                this.radius = Configuration.getDimY() / 3.0;
+                this.setRadius(Configuration.getDimY() / 3.0);
             }
         } else {
-            this.radius = Double.parseDouble(parameter);
+            this.setRadius(Double.parseDouble(parameter));
         }
 
-        this.oneStep = 360.0 / this.numberOfNodes;
+        this.setOneStep(360.0 / this.numberOfNodes);
     }
 
     @Override
     public Position getNextPosition() {
         Position pos = new Position();
-        pos.setXCoord((Configuration.getDimX() / 2.0) + (this.radius * Math.cos(Math.toRadians((this.number * this.oneStep)))));
-        pos.setYCoord((Configuration.getDimY() / 2.0) + (this.radius * Math.sin(Math.toRadians((this.number * this.oneStep)))));
+        pos.setXCoord((Configuration.getDimX() / 2.0) + (this.getRadius() * Math.cos(Math.toRadians((this.getNumber() * this.getOneStep())))));
+        pos.setYCoord((Configuration.getDimY() / 2.0) + (this.getRadius() * Math.sin(Math.toRadians((this.getNumber() * this.getOneStep())))));
 
-        this.number++;
+        this.setNumber(this.getNumber() + 1);
 
         return pos;
     }
+
 }

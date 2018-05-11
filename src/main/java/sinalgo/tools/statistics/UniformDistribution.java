@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.statistics;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 
@@ -53,6 +56,8 @@ import java.util.Random;
  * <p>
  * is expected.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class UniformDistribution extends Distribution {
 
     private double min; // the min value of the range to choose a value from
@@ -67,9 +72,9 @@ public class UniformDistribution extends Distribution {
      * @throws NumberFormatException If min > max.
      */
     public UniformDistribution(double min, double max) throws NumberFormatException {
-        this.min = min;
-        this.range = max - min;
-        if (this.range < 0) {
+        this.setMin(min);
+        this.setRange(max - min);
+        if (this.getRange() < 0) {
             throw new NumberFormatException(
                     "Invalid arguments to create a uniform distribution. The upper bound of the range must be at least as big as the lower bound.");
         }
@@ -84,9 +89,9 @@ public class UniformDistribution extends Distribution {
      * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
      */
     public UniformDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
-        this.min = Configuration.getDoubleParameter(mainTagPath + "/min");
-        this.range = Configuration.getDoubleParameter(mainTagPath + "/max") - this.min;
-        if (this.range < 0) {
+        this.setMin(Configuration.getDoubleParameter(mainTagPath + "/min"));
+        this.setRange(Configuration.getDoubleParameter(mainTagPath + "/max") - this.getMin());
+        if (this.getRange() < 0) {
             throw new CorruptConfigurationEntryException(
                     "Invalid arguments to create a uniform distribution. The upper bound of the range must be at least as big as the lower bound.");
         }
@@ -94,7 +99,7 @@ public class UniformDistribution extends Distribution {
 
     @Override
     public double nextSample() {
-        return this.min + this.range * randomGenerator.nextDouble();
+        return this.getMin() + this.getRange() * getRandomGenerator().nextDouble();
     }
 
     /**

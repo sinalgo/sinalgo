@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.messageTransmissionModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Message;
@@ -57,6 +60,8 @@ import sinalgo.tools.statistics.Distribution;
  */
 public class RandomTime extends sinalgo.models.MessageTransmissionModel {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private Distribution dist;
 
     /**
@@ -66,15 +71,16 @@ public class RandomTime extends sinalgo.models.MessageTransmissionModel {
      * @throws CorruptConfigurationEntryException if the configuration is corrupt.
      */
     public RandomTime() throws CorruptConfigurationEntryException {
-        this.dist = Distribution.getDistributionFromConfigFile("RandomMessageTransmission");
+        this.setDist(Distribution.getDistributionFromConfigFile("RandomMessageTransmission"));
     }
 
     @Override
     public double timeToReach(Node startNode, Node endNode, Message msg) {
-        double time = this.dist.nextSample();
+        double time = this.getDist().nextSample();
         if (time <= 0) {
             time = 1e-9;
         }
         return time;
     }
+
 }

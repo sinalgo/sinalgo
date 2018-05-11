@@ -304,9 +304,9 @@ public class Inbox implements ReusableIterator<Message>, Iterable<Message> {
     // -----------------------------------------------------------------------------------
 
     private Iterator<Packet> packetIter; // The iterator over the packet list.
-    private Packet activePacket = null; // The actual packet to return the information for.
+    private Packet activePacket; // The actual packet to return the information for.
     private AbstractList<Packet> packetList; // the packet list
-    private Packet singlePacket = null; // if the inbox is initialized for a single packet, it is stored here.
+    private Packet singlePacket; // if the inbox is initialized for a single packet, it is stored here.
 
     /**
      * <b>This is a framework internal method. Project developers should not need to

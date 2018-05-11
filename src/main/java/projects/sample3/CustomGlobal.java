@@ -80,7 +80,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
         }
     }
 
-    private boolean automaticSMS = false;
+    private boolean automaticSMS;
 
     @AbstractCustomGlobal.GlobalMethod(menuText = "Toggle Automatic SMS")
     public void toggleAutomaticSMS() {

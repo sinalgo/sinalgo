@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.interferenceModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.models.InterferenceModel;
 import sinalgo.nodes.messages.Packet;
@@ -46,6 +49,8 @@ import sinalgo.runtime.Main;
  */
 public class NoInterference extends InterferenceModel {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static boolean firstTime = true;
 
     @Override
@@ -58,12 +63,12 @@ public class NoInterference extends InterferenceModel {
      */
     public NoInterference() {
         super(false);
-        if (firstTime && Configuration.isInterference() && Configuration.isShowOptimizationHints()) {
+        if (isFirstTime() && Configuration.isInterference() && Configuration.isShowOptimizationHints()) {
             Main.warning("At least some nodes use the 'NoInterference' interfernce model. "
                     + "If you do not consider interference at all in your project, you can "
                     + "considerably improve performance by turning off interference in the "
                     + "XML configuration file.");
-            firstTime = false; // important to only have one message.
+            setFirstTime(false); // important to only have one message.
         }
     }
 }

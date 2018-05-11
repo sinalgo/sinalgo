@@ -36,9 +36,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.storage;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Vector;
 
@@ -70,6 +73,8 @@ public interface DoublyLinkedListEntry {
      * linked list. It manages the 'next' and 'previous' pointers to the different
      * lists this entry is stored in.
      */
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     class DLLFingerList {
 
         /**
@@ -77,6 +82,7 @@ public interface DoublyLinkedListEntry {
          * doublyLinkedLists this element is contained in.
          */
         private Vector<Finger> list = new Vector<>(1);
+
         /**
          * THe number of fingers this list.
          */
@@ -90,8 +96,8 @@ public interface DoublyLinkedListEntry {
          * finger is associated with the list.
          */
         public Finger getFinger(DoublyLinkedList<?> dll) {
-            for (int i = 0; i < this.numberOfUsedFingers; i++) {
-                Finger f = this.list.elementAt(i);
+            for (int i = 0; i < this.getNumberOfUsedFingers(); i++) {
+                Finger f = this.getList().elementAt(i);
                 if (f != null && f.getList() == dll) {
                     return f;
                 }
@@ -112,15 +118,15 @@ public interface DoublyLinkedListEntry {
          */
         public Finger getNewFinger(DoublyLinkedList<?> dll, DoublyLinkedListEntry entry) {
             Finger f;
-            if (this.numberOfUsedFingers < this.list.size()) {
-                f = this.list.elementAt(this.numberOfUsedFingers);
+            if (this.getNumberOfUsedFingers() < this.getList().size()) {
+                f = this.getList().elementAt(this.getNumberOfUsedFingers());
             } else {
                 f = new Finger();
-                this.list.add(f);
+                this.getList().add(f);
             }
             f.setList(dll);
             f.setObject(entry);
-            this.numberOfUsedFingers++;
+            this.setNumberOfUsedFingers(this.getNumberOfUsedFingers() + 1);
             return f;
         }
 
@@ -133,13 +139,13 @@ public interface DoublyLinkedListEntry {
          *             otherwise false.
          */
         public void releaseFinger(Finger f, boolean keep) {
-            for (int i = 0; i < this.numberOfUsedFingers; i++) {
-                if (f == this.list.elementAt(i)) {
+            for (int i = 0; i < this.getNumberOfUsedFingers(); i++) {
+                if (f == this.getList().elementAt(i)) {
                     if (keep) {
                         this.releaseFingerAt(i);
                     } else {
-                        this.list.remove(i);
-                        this.numberOfUsedFingers--;
+                        this.getList().remove(i);
+                        this.setNumberOfUsedFingers(this.getNumberOfUsedFingers() - 1);
                     }
                     break;
                 }
@@ -156,14 +162,14 @@ public interface DoublyLinkedListEntry {
          *             otherwise false.
          */
         public void releaseFinger(DoublyLinkedList<?> dll, boolean keep) {
-            for (int i = 0; i < this.numberOfUsedFingers; i++) {
-                Finger f = this.list.elementAt(i);
+            for (int i = 0; i < this.getNumberOfUsedFingers(); i++) {
+                Finger f = this.getList().elementAt(i);
                 if (f != null && f.getList() == dll) {
                     if (keep) {
                         this.releaseFingerAt(i);
                     } else {
-                        this.list.remove(i);
-                        this.numberOfUsedFingers--;
+                        this.getList().remove(i);
+                        this.setNumberOfUsedFingers(this.getNumberOfUsedFingers() - 1);
                     }
                     break; // at most one finger per dll
                 }
@@ -194,14 +200,15 @@ public interface DoublyLinkedListEntry {
          * @param offset The offset for the move operation
          */
         private void releaseFingerAt(int offset) {
-            Finger f = this.list.elementAt(offset);
+            Finger f = this.getList().elementAt(offset);
             f.reset();
-            this.numberOfUsedFingers--; // is now offset that currently points to last used finger
-            if (offset < this.numberOfUsedFingers) {
-                this.list.set(offset, this.list.elementAt(this.numberOfUsedFingers));
-                this.list.set(this.numberOfUsedFingers, f);
+            this.setNumberOfUsedFingers(this.getNumberOfUsedFingers() - 1); // is now offset that currently points to last used finger
+            if (offset < this.getNumberOfUsedFingers()) {
+                this.getList().set(offset, this.getList().elementAt(this.getNumberOfUsedFingers()));
+                this.getList().set(this.getNumberOfUsedFingers(), f);
             } // else: is already last used finger
         }
+
     } // end of class DLLFingerList
 
     /**

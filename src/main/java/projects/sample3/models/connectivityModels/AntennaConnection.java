@@ -50,7 +50,7 @@ import sinalgo.runtime.Main;
  */
 public class AntennaConnection extends ConnectivityModelHelper {
 
-    private static boolean initialized = false; // indicates whether the static fields of this class have already been
+    private static boolean initialized; // indicates whether the static fields of this class have already been
     // initialized
     private static double rMaxSquare; // we reuse the rMax value from the GeometricNodeCollection.
 

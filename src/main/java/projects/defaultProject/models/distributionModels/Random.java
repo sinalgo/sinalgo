@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.distributionModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.models.DistributionModel;
 import sinalgo.nodes.Position;
 import sinalgo.tools.Tools;
@@ -48,10 +51,13 @@ import sinalgo.tools.statistics.Distribution;
 public class Random extends DistributionModel {
 
     // The random-number generator
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private java.util.Random rand = Distribution.getRandom();
 
     @Override
     public Position getNextPosition() {
-        return Tools.getRandomPosition(this.rand);
+        return Tools.getRandomPosition(this.getRand());
     }
+
 }

@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.messageTransmissionModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.models.MessageTransmissionModel;
@@ -52,6 +55,8 @@ import sinalgo.runtime.Main;
  */
 public class ConstantTime extends MessageTransmissionModel {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private double time = 1.0;
 
     /**
@@ -61,7 +66,7 @@ public class ConstantTime extends MessageTransmissionModel {
      */
     public ConstantTime() {
         try {
-            this.time = Configuration.getDoubleParameter("MessageTransmission/ConstantTime");
+            this.setTime(Configuration.getDoubleParameter("MessageTransmission/ConstantTime"));
         } catch (CorruptConfigurationEntryException e) {
             Main.warning(
                     "Missing or wrong entry in the configuration file for the ConstantTime DefaultMessageTransmissionModel:\n"
@@ -71,6 +76,7 @@ public class ConstantTime extends MessageTransmissionModel {
 
     @Override
     public double timeToReach(Node startNode, Node endNode, Message msg) {
-        return this.time;
+        return this.getTime();
     }
+
 }

@@ -72,7 +72,7 @@ public class XMLParser {
      */
     @Getter
     @Setter
-    private static boolean blockParse = false;
+    private static boolean blockParse;
 
     /**
      * This method parses the framework node of the xml configuration file. All

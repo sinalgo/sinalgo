@@ -56,7 +56,7 @@ public class SynchronousRuntimeThread extends Thread {
      */
     @Getter
     @Setter
-    private long numberOfRounds = 0;
+    private long numberOfRounds;
 
     @Getter(AccessLevel.PRIVATE)
     private GUIRuntime runtime; // If in GUI-MODE, this member holds the the GUIRuntime

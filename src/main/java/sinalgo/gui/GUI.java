@@ -46,7 +46,12 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.controlPanel.ControlPanel;
 import sinalgo.gui.controlPanel.MaximizedControlPanel;
 import sinalgo.gui.controlPanel.MinimizedControlPanel;
-import sinalgo.gui.dialogs.*;
+import sinalgo.gui.dialogs.AboutDialog;
+import sinalgo.gui.dialogs.GenerateNodesDialog;
+import sinalgo.gui.dialogs.GlobalSettingsDialog;
+import sinalgo.gui.dialogs.GraphInfoDialog;
+import sinalgo.gui.dialogs.GraphPreferencesDialog;
+import sinalgo.gui.dialogs.HelpDialog;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.Exporter;
 import sinalgo.nodes.Position;
@@ -62,7 +67,13 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -592,7 +603,7 @@ public class GUI extends JFrame implements ActionListener {
         }
     }
 
-    private JPanel guiPanel = null;
+    private JPanel guiPanel;
 
     /**
      * Switches between the two modes for the control panel depending on the boolean
@@ -636,7 +647,7 @@ public class GUI extends JFrame implements ActionListener {
      */
     @Getter
     @Setter
-    private boolean firstTimePainted = false;
+    private boolean firstTimePainted;
 
     @Override
     public void paint(Graphics g) {

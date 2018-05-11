@@ -70,18 +70,18 @@ public class S1Node extends Node {
     /**
      * number of messages sent by this node in the current round
      */
-    private int msgSentInThisRound = 0;
+    private int msgSentInThisRound;
 
     /**
      * total number of messages sent by this node
      */
-    private int msgSent = 0;
+    private int msgSent;
 
     /**
      * The amount to increment the data of the message each time it goes throug a
      * node.
      */
-    private int increment = 0;
+    private int increment;
 
     Logging log = Logging.getLogger("s1_log");
 

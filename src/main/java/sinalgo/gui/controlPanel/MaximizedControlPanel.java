@@ -673,7 +673,7 @@ public class MaximizedControlPanel extends ControlPanel implements EventQueueLis
          */
         @Getter
         @Setter
-        private Event event = null;
+        private Event event;
 
         private EventQueueElement(String displayableText, String tooltip) {
             this.setDisplayableText(displayableText);

@@ -61,7 +61,7 @@ public class PacketCollection extends SortableVector<Packet> {
     }
 
     // the instance of the iterator over the PacketCollection
-    private ReusableIter iter = null;
+    private ReusableIter iter;
 
     @Override
     public Iterator<Packet> iterator() {

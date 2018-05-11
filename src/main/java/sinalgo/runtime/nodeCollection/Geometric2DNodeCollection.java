@@ -94,7 +94,7 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
     // The instance of the GeometricNodeEnumeration. This is the instance that is
     // either created or reset by the
     // getPossibleNeighborsEnumeration method.
-    private GeometricNodeEnumeration geometricNodeEnumeration = null;
+    private GeometricNodeEnumeration geometricNodeEnumeration;
 
     /**
      * The constructor for the GeometricNodeCollection class.
@@ -192,8 +192,8 @@ public class Geometric2DNodeCollection extends AbstractNodeCollection {
 
     class GeometricNodeEnumeration implements Enumeration<Node> {
 
-        private GeometricNodeListEnumeration sNLE = null;
-        private Iterator<Node> nI = null;
+        private GeometricNodeListEnumeration sNLE;
+        private Iterator<Node> nI;
 
         /**
          * The constructor for the GeometricNodeEnumeration class. This Enumeration is

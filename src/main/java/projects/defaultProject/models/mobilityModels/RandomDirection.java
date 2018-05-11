@@ -105,14 +105,26 @@ import java.util.Random;
 public class RandomDirection extends MobilityModel {
 
     // we assume that these distributions are the same for all nodes
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static Distribution speedDistribution; // how fast the nodes move
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static Distribution waitingTimeDistribution; // how long nodes wait before starting the next mobility phase
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static Distribution moveTimeDistribution; // for how long the node moves when it moves
 
     // a flag set to true after initialization of the static vars of this class has been done.
-    protected static boolean initialized = false;
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private static boolean initialized;
 
-    protected static Random random = Distribution.getRandom(); // a random generator of the framework
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private static Random random = Distribution.getRandom(); // a random generator of the framework
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
@@ -121,10 +133,12 @@ public class RandomDirection extends MobilityModel {
 
     // the current position, to detect if the node has been moved
     // by other means than this mobility model between successive calls to getNextPos()
-    private Position currentPosition = null;
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private Position currentPosition;
 
-    private int remaining_hops = 0; // the remaining hops until a new path has to be determined
-    private int remaining_waitingTime = 0;
+    private int remaining_hops; // the remaining hops until a new path has to be determined
+    private int remaining_waitingTime;
 
     private boolean initialize = true; // to detect very first time to start smoothly
 
@@ -138,8 +152,8 @@ public class RandomDirection extends MobilityModel {
      * @param moveTime  The time during which the node is supposed to move
      */
     private void initializeNextMove(double moveSpeed, double moveTime) {
-        double angleXY = 2 * Math.PI * random.nextDouble(); // 0 .. 360
-        double angleZ = Math.PI * (0.5 - random.nextDouble()); // -90 .. 90
+        double angleXY = 2 * Math.PI * getRandom().nextDouble(); // 0 .. 360
+        double angleZ = Math.PI * (0.5 - getRandom().nextDouble()); // -90 .. 90
         if (Main.getRuntime().getTransformator().getNumberOfDimensions() == 2) {
             angleZ = 0; // remain in the XY-plane
         }
@@ -162,9 +176,9 @@ public class RandomDirection extends MobilityModel {
         if (this.initialize) { // called the very first time such that not all nodes start moving in the first
             // round of the simulation.
             // use a sample to determine in which phase we are.
-            double wt = Math.abs(waitingTimeDistribution.nextSample());
-            double mt = Math.abs(moveTimeDistribution.nextSample());
-            double fraction = random.nextDouble() * (wt + mt);
+            double wt = Math.abs(getWaitingTimeDistribution().nextSample());
+            double mt = Math.abs(getMoveTimeDistribution().nextSample());
+            double fraction = getRandom().nextDouble() * (wt + mt);
             if (fraction < wt) {
                 // the node starts waiting, but depending on fraction, may already have waited
                 // some time
@@ -172,7 +186,7 @@ public class RandomDirection extends MobilityModel {
                 this.setRemaining_hops(0);
             } else {
                 // the node starts moving
-                double speed = Math.abs(speedDistribution.nextSample()); // units per round
+                double speed = Math.abs(getSpeedDistribution().nextSample()); // units per round
                 this.initializeNextMove(speed, mt + wt - fraction);
             }
             this.setCurrentPosition(n.getPosition()); // initially, currentPos is null
@@ -198,8 +212,8 @@ public class RandomDirection extends MobilityModel {
         // move
         if (this.remaining_hops == 0) { // we start to move, determine next random target
             // determine the next point to which this node moves to
-            double speed = Math.abs(speedDistribution.nextSample()); // units per round
-            double time = Math.abs(moveTimeDistribution.nextSample()); // rounds
+            double speed = Math.abs(getSpeedDistribution().nextSample()); // units per round
+            double time = Math.abs(getMoveTimeDistribution().nextSample()); // rounds
             this.initializeNextMove(speed, time);
         }
         double newx = n.getPosition().getXCoord() + this.moveVector.getXCoord();
@@ -250,7 +264,7 @@ public class RandomDirection extends MobilityModel {
 
         if (this.remaining_hops <= 1) { // was last round of mobility
             // set the next waiting time that executes after this mobility phase
-            this.remaining_waitingTime = (int) Math.ceil(Math.abs(waitingTimeDistribution.nextSample()));
+            this.remaining_waitingTime = (int) Math.ceil(Math.abs(getWaitingTimeDistribution().nextSample()));
             this.remaining_hops = 0;
         } else {
             this.remaining_hops--;
@@ -267,11 +281,11 @@ public class RandomDirection extends MobilityModel {
      * @see RandomWayPoint
      */
     public RandomDirection() throws CorruptConfigurationEntryException {
-        if (!initialized) {
-            moveTimeDistribution = Distribution.getDistributionFromConfigFile("RandomDirection/MoveTime");
-            speedDistribution = Distribution.getDistributionFromConfigFile("RandomDirection/NodeSpeed");
-            waitingTimeDistribution = Distribution.getDistributionFromConfigFile("RandomDirection/WaitingTime");
-            initialized = true;
+        if (!isInitialized()) {
+            setMoveTimeDistribution(Distribution.getDistributionFromConfigFile("RandomDirection/MoveTime"));
+            setSpeedDistribution(Distribution.getDistributionFromConfigFile("RandomDirection/NodeSpeed"));
+            setWaitingTimeDistribution(Distribution.getDistributionFromConfigFile("RandomDirection/WaitingTime"));
+            setInitialized(true);
         }
     }
 }

@@ -68,14 +68,14 @@ import java.util.HashMap;
 @Setter(AccessLevel.PRIVATE)
 public class EPSOutputPrintStream extends PrintStream {
 
-    private int boundingBoxX = 0;
-    private int boundingBoxY = 0;
-    private int boundingBoxWidth = 0;
-    private int boundingBoxHeight = 0;
+    private int boundingBoxX;
+    private int boundingBoxY;
+    private int boundingBoxWidth;
+    private int boundingBoxHeight;
     private HashMap<String, String> macros = new HashMap<>();
-    private double colorR = 0;
-    private double colorG = 0;
-    private double colorB = 0;
+    private double colorR;
+    private double colorG;
+    private double colorB;
     private double lineWidth = 1.0;
 
     /**

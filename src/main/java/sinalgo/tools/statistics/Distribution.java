@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.statistics;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
@@ -66,8 +69,13 @@ import java.util.Random;
  */
 public abstract class Distribution {
 
-    protected static Random randomGenerator; // the singleton instance of the random object. Be sure to initialize
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private static Random randomGenerator; // the singleton instance of the random object. Be sure to initialize
     // before using the first time!
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static long randomSeed; // the seed used for the random object
 
     /**
@@ -77,7 +85,7 @@ public abstract class Distribution {
      */
     public static long getSeed() {
         getRandom(); // initialize the random generator if it's not already done
-        return randomSeed;
+        return getRandomSeed();
     }
 
     /**
@@ -98,20 +106,20 @@ public abstract class Distribution {
      */
     public static Random getRandom() {
         // construct the singleton random object if it does not yet exist
-        if (randomGenerator == null) {
+        if (getRandomGenerator() == null) {
             if (Configuration.isUseSameSeedAsInPreviousRun()) {
-                randomSeed = AppConfig.getAppConfig().getSeedFromLastRun();
+                setRandomSeed(AppConfig.getAppConfig().getSeedFromLastRun());
             } else {
                 if (Configuration.isUseFixedSeed()) {
-                    randomSeed = Configuration.getFixedSeed();
+                    setRandomSeed(Configuration.getFixedSeed());
                 } else {
-                    randomSeed = (new java.util.Random()).nextLong();
-                    Configuration.setFixedSeed(randomSeed);
+                    setRandomSeed((new Random()).nextLong());
+                    Configuration.setFixedSeed(getRandomSeed());
                 }
             }
-            randomGenerator = new Random(randomSeed); // use a random seed
+            setRandomGenerator(new Random(getRandomSeed())); // use a random seed
         }
-        return randomGenerator;
+        return getRandomGenerator();
     }
 
     /**

@@ -250,7 +250,7 @@ public class Edge implements DoublyLinkedListEntry {
      */
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    private long ID = 0; // The (unique) ID of this edge.
+    private long ID; // The (unique) ID of this edge.
 
     /**
      * A reference to the edge connecting the two end-nodes of this edge in the
@@ -265,7 +265,7 @@ public class Edge implements DoublyLinkedListEntry {
      */
     @Getter
     @Setter
-    private Edge oppositeEdge = null;
+    private Edge oppositeEdge;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -278,7 +278,7 @@ public class Edge implements DoublyLinkedListEntry {
      */
     @Getter
     @Setter
-    private int numberOfMessagesOnThisEdge = 0;
+    private int numberOfMessagesOnThisEdge;
 
     /**
      * Called by the framework whenever a message is sent over this edge. This edge
@@ -314,7 +314,7 @@ public class Edge implements DoublyLinkedListEntry {
      */
     @Getter
     @Setter
-    private boolean valid = false;
+    private boolean valid;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -381,7 +381,7 @@ public class Edge implements DoublyLinkedListEntry {
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
-    private static Constructor<?> constructor = null;
+    private static Constructor<?> constructor;
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
@@ -389,7 +389,7 @@ public class Edge implements DoublyLinkedListEntry {
 
     @Getter
     @Setter
-    private static long numEdgesOnTheFly = 0;
+    private static long numEdgesOnTheFly;
 
     /**
      * <b>This member is framework internal and should not be used by the project

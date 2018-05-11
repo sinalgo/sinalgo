@@ -45,7 +45,11 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * This 3D node collection implementation stores nodes placed in a 3 dimensional
@@ -65,11 +69,11 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
 
     // a flat list for fast iteration over all nodes
     private Vector<Node> flatList = new Vector<>();
-    private boolean flatListChanged = false;
+    private boolean flatListChanged;
 
     private Node[] sortedNodeArray = new Node[1];
-    private int sortedNodeArraySize = 0; // Number of non-null nodes in sortedNodeArray
-    private DepthComparator myDepthComparator = null;
+    private int sortedNodeArraySize; // Number of non-null nodes in sortedNodeArray
+    private DepthComparator myDepthComparator;
 
     // the maximal distance between any two connected nodes
     private double rMax;
@@ -122,7 +126,7 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
         return (int) Math.floor(c / this.rMax);
     }
 
-    private long lastVersionNumber = 0;
+    private long lastVersionNumber;
 
     @Override
     public Enumeration<Node> getSortedNodeEnumeration(boolean backToFront) {
@@ -286,7 +290,7 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
     class Geometric3DNodeEnumeration implements Enumeration<Node> {
 
         int ox, oy, oz; // base position for the 3-dimensional iteration
-        int dx = 0, dy = 0, dz = -1; // the offset from the base position
+        int dx, dy, dz = -1; // the offset from the base position
         Iterator<Node> iterator;
 
         /**
@@ -368,7 +372,7 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
             this.backToFront = backToFront;
         }
 
-        int currentIndex = 0;
+        int currentIndex;
 
         @Override
         public boolean hasMoreElements() {
@@ -392,8 +396,8 @@ public class Geometric3DNodeCollection extends AbstractNodeCollection {
      */
     private class DepthComparator implements Comparator<Node> {
 
-        PositionTransformation pt = null;
-        Transformation3D t3d = null;
+        PositionTransformation pt;
+        Transformation3D t3d;
 
         /**
          * Creates a new DepthComparator instance. Note that the DepthComparator only

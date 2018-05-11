@@ -149,7 +149,7 @@ public final class Packet implements DoublyLinkedListEntry, Comparable<Packet> {
 
     @Getter
     @Setter
-    private static int numPacketsOnTheFly = 0; // number of packets in the system, not yet freed
+    private static int numPacketsOnTheFly; // number of packets in the system, not yet freed
 
     /**
      * Constructor to create new Packet objects. If possible, this method returns a

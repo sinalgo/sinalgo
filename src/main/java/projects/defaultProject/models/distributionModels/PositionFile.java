@@ -1,5 +1,8 @@
 package projects.defaultProject.models.distributionModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.io.positionFile.PositionFileIO;
 import sinalgo.models.DistributionModel;
 import sinalgo.nodes.Position;
@@ -18,17 +21,20 @@ import java.io.LineNumberReader;
  */
 public class PositionFile extends DistributionModel {
 
-    private LineNumberReader reader = null;
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private LineNumberReader reader;
 
     @Override
     public Position getNextPosition() {
-        if (this.reader == null) {
+        if (this.getReader() == null) {
             if (super.getParamString().equals("")) {
-                this.reader = PositionFileIO.getPositionFileReader(null);
+                this.setReader(PositionFileIO.getPositionFileReader(null));
             } else {
-                this.reader = PositionFileIO.getPositionFileReader(super.getParamString());
+                this.setReader(PositionFileIO.getPositionFileReader(super.getParamString()));
             }
         }
-        return PositionFileIO.getNextPosition(this.reader);
+        return PositionFileIO.getNextPosition(this.getReader());
     }
+
 }

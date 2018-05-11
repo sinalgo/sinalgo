@@ -20,7 +20,7 @@ public class TreeNode extends Node {
 
     @Getter
     @Setter
-    private TreeNode parent = null; // the parentGUI in the tree, null if this node is the root
+    private TreeNode parent; // the parentGUI in the tree, null if this node is the root
 
     @Override
     public void checkRequirements() throws WrongConfigurationException {

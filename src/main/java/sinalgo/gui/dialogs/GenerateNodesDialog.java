@@ -47,7 +47,12 @@ import sinalgo.gui.GUI;
 import sinalgo.gui.GuiHelper;
 import sinalgo.gui.helper.NonRegularGridLayout;
 import sinalgo.gui.helper.UnborderedJTextField;
-import sinalgo.models.*;
+import sinalgo.models.ConnectivityModel;
+import sinalgo.models.DistributionModel;
+import sinalgo.models.InterferenceModel;
+import sinalgo.models.MobilityModel;
+import sinalgo.models.Model;
+import sinalgo.models.ReliabilityModel;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Global;
@@ -62,7 +67,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
 
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.*;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_CONNECTIVITY;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_DISTRIBUTION;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_INTERFERENCE;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_MOBILITY;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_RELIABILITY;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.NODES_IMPLEMENTATIONS;
 
 /**
  * The Dialog to generate a number of new Nodes.
@@ -117,8 +127,8 @@ public class GenerateNodesDialog extends JDialog implements ActionListener, Prog
 
     private JCheckBox allModelsCheckBox;
 
-    private PercentualProgressDialog pf = null;
-    private boolean canceled = false;
+    private PercentualProgressDialog pf;
+    private boolean canceled;
 
     private GUI parentGUI;
 

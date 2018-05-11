@@ -75,7 +75,7 @@ public abstract class PositionTransformation {
     // I.e. in each public method call that changes the transformation, increment
     // this member.
     @Getter
-    private long versionNumber = 0;
+    private long versionNumber;
 
     /**
      * The current zoom factor used to draw the elements of the field
