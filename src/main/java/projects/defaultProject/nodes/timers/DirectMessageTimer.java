@@ -1,5 +1,8 @@
 package projects.defaultProject.nodes.timers;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Message;
 import sinalgo.nodes.timers.Timer;
@@ -11,6 +14,8 @@ import sinalgo.nodes.timers.Timer;
  * <p>
  * The message is sent by the node who starts the timer.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class DirectMessageTimer extends Timer {
 
     private Message msg; // the msg to send
@@ -23,12 +28,13 @@ public class DirectMessageTimer extends Timer {
      * @param n The node to send the msg to
      */
     public DirectMessageTimer(Message m, Node n) {
-        this.msg = m;
-        this.target = n;
+        this.setMsg(m);
+        this.setTarget(n);
     }
 
     @Override
     public void fire() {
-        this.getTargetNode().sendDirect(this.msg, this.target);
+        this.getTargetNode().sendDirect(this.getMsg(), this.getTarget());
     }
+
 }

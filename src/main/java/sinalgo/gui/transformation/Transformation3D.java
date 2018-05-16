@@ -55,7 +55,7 @@ public class Transformation3D extends PositionTransformation {
     private double[][] tm = new double[4][4]; // the 4x4 transformation matrix
     private double[][] rotm = new double[4][4]; // the 4x4 transformation matrix
     private double[][] tempm = new double[4][4]; // the 4x4 transformation matrix
-    private double tmAngleX = 0, tmAngleY = 0, tmAngleZ = 0; // the rotation angles of tm around the x, y, and z axis
+    private double tmAngleX, tmAngleY, tmAngleZ; // the rotation angles of tm around the x, y, and z axis
 
     // Two placeholders used to draw polygons
     private int[] polyLineX = new int[5];

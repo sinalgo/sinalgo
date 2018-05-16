@@ -58,26 +58,26 @@ public class AsynchronousRuntimeThread extends Thread {
      */
     @Getter
     @Setter
-    private long numberOfEvents = 0;
+    private long numberOfEvents;
 
     /**
      * Indicates whether the connectivity is initialized or not. In Asynchronous
      * mode the connectivity is generated once at startup and then it does not
      * change anymore.
      */
-    private static boolean connectivityInitialized = false;
+    private static boolean connectivityInitialized;
 
     /**
      * The number events the gui will be redrawn after.
      */
     @Getter
     @Setter
-    private long refreshRate = 0;
+    private long refreshRate;
 
     @Getter(AccessLevel.PRIVATE)
     private GUIRuntime runtime;
 
-    private static Node lastEventNode = null;
+    private static Node lastEventNode;
 
     /**
      * The Condtructor for the AsynchronousRuntimeThread creating an instancs with a

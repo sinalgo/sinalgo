@@ -20,7 +20,7 @@ public class LeafNode extends TreeNode {
     // A counter that may be reset by the user
     @Getter
     @Setter
-    private static int smallIdCounter = 0;
+    private static int smallIdCounter;
 
     private int smallID;
 

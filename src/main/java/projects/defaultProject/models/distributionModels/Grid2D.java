@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.distributionModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.models.DistributionModel;
@@ -45,11 +48,14 @@ import sinalgo.nodes.Position;
  * Aligns the nodes about equally spaced on a gird covering the entire
  * deployment area.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class Grid2D extends DistributionModel {
 
     private double size; // the cell-size of the gird
     private int numNodesPerLine; // number of nodes on the x-axis
-    private int i, j; // loop counters
+    private int i;
+    private int j; // loop counters
 
     @Override
     public void initialize() {
@@ -60,19 +66,20 @@ public class Grid2D extends DistributionModel {
         if (tmp < 0) {
             throw new SinalgoFatalException("negative sqrt");
         }
-        this.size = (-b - Math.sqrt(tmp)) / (2 * a);
-        this.numNodesPerLine = (int) Math.round(Configuration.getDimX() / this.size) - 1;
-        this.i = 0;
-        this.j = 1;
+        this.setSize((-b - Math.sqrt(tmp)) / (2 * a));
+        this.setNumNodesPerLine((int) Math.round(Configuration.getDimX() / this.getSize()) - 1);
+        this.setI(0);
+        this.setJ(1);
     }
 
     @Override
     public Position getNextPosition() {
-        this.i++;
-        if (this.i > this.numNodesPerLine) {
-            this.i = 1;
-            this.j++;
+        this.setI(this.getI() + 1);
+        if (this.getI() > this.getNumNodesPerLine()) {
+            this.setI(1);
+            this.setJ(this.getJ() + 1);
         }
-        return new Position(this.i * this.size, this.j * this.size, 0);
+        return new Position(this.getI() * this.getSize(), this.getJ() * this.getSize(), 0);
     }
+
 }

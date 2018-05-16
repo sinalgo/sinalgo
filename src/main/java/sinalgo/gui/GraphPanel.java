@@ -64,7 +64,13 @@ import sinalgo.tools.logging.Logging;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.Stack;
@@ -79,14 +85,14 @@ public class GraphPanel extends JPanel {
 
     private static final long serialVersionUID = -7446360484673626267L;
 
-    private Image offscreen = null;
+    private Image offscreen;
     // needs to be set to true whenever offscreen has been assigned a new object
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
     private boolean newOffscreen = true;
 
-    private boolean forcedDraw = false;
+    private boolean forcedDraw;
 
     private NodePopupMenu nodePopupMenu;
     private EdgePopupMenu edgePopupMenu;
@@ -103,8 +109,8 @@ public class GraphPanel extends JPanel {
     private Point rotateStartPoint;
     private Vector<Node> nodesToHighlight = new Vector<>(10);
     private Vector<Node> nodesToDrawCoordCube = new Vector<>(10);
-    private Node toolTipDrawCoordCube = null;
-    private Node nodeToDragDrawCoordCube = null;
+    private Node toolTipDrawCoordCube;
+    private Node nodeToDragDrawCoordCube;
     private int minMouseMovementUntilNodeMovement = 10; // threshold (in mouse-pixels) for 3D before moving a node
 
     // this scales the underlying image
@@ -112,7 +118,7 @@ public class GraphPanel extends JPanel {
     private int imageSizeY;
 
     private Point currentCursorPosition = new Point(0, 0); // the position of the cursor
-    private Rectangle zoomRect = null;
+    private Rectangle zoomRect;
     private int zoomRectMinSize = 5;
 
     private Logging log = Logging.getLogger(); // system wide logger
@@ -125,7 +131,7 @@ public class GraphPanel extends JPanel {
      */
     @Getter
     @Setter
-    private static boolean firstTimePainted = false;
+    private static boolean firstTimePainted;
 
     private final PositionTransformation pt;
     private long myLastPtVersionNumber = -1;
@@ -135,10 +141,10 @@ public class GraphPanel extends JPanel {
     private int cancelAreaHeight;
     private int cancelAreaOffsetX; // dimension of the cancel area printed directly
     // onto the graphics
-    private Node userSelectsNodeCurrentFocus = null; // the node over which the mouse currently hovers, if the user is
+    private Node userSelectsNodeCurrentFocus; // the node over which the mouse currently hovers, if the user is
     // to select a node
     // Set to true while the user is asked to select a node
-    private boolean userSelectsNodeMode = false;
+    private boolean userSelectsNodeMode;
     private Stack<Tuple<NodeSelectionHandler, String>> userSelectsNodeHandler = new Stack<>(); // stack
     // of
     // handlers,

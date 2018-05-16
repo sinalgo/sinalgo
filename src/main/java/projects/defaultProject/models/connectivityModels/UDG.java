@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.connectivityModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.models.ConnectivityModelHelper;
@@ -63,6 +66,8 @@ import sinalgo.runtime.Main;
  */
 public class UDG extends ConnectivityModelHelper {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private double squareRadius;
 
     @Override
@@ -71,7 +76,7 @@ public class UDG extends ConnectivityModelHelper {
         Position p2 = to.getPosition();
 
         double distance = p1.squareDistanceTo(p2);
-        return (distance < this.squareRadius);
+        return (distance < this.getSquareRadius());
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -80,15 +85,20 @@ public class UDG extends ConnectivityModelHelper {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // -
 
-    private static boolean initialized = false; // indicates whether the static fields of this class have already been
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static boolean initialized; // indicates whether the static fields of this class have already been
     // initialized
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static double rMaxSquare; // we reuse the rMax value from the GeometricNodeCollection.
 
     /**
      * @return The maximum transmission range of this UDG model.
      */
     public double getMaxTransmissionRange() {
-        return Math.sqrt(this.squareRadius);
+        return Math.sqrt(this.getSquareRadius());
     }
 
     /**
@@ -97,11 +107,11 @@ public class UDG extends ConnectivityModelHelper {
      * @param rMax The new max. transmission range.
      */
     public void setMaxTransmissionRange(double rMax) {
-        this.squareRadius = rMax * rMax;
+        this.setSquareRadius(rMax * rMax);
     }
 
     public UDG(double rMax) {
-        this.squareRadius = rMax * rMax;
+        this.setSquareRadius(rMax * rMax);
     }
 
     /**
@@ -113,24 +123,25 @@ public class UDG extends ConnectivityModelHelper {
      * @throws CorruptConfigurationEntryException If one of the initialization steps fails.
      */
     public UDG() throws CorruptConfigurationEntryException {
-        if (!initialized) {
+        if (!isInitialized()) {
             double geomNodeRMax = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
             try {
-                rMaxSquare = Configuration.getDoubleParameter("UDG/rMax");
+                setRMaxSquare(Configuration.getDoubleParameter("UDG/rMax"));
             } catch (CorruptConfigurationEntryException e) {
                 Global.getLog().logln(
                         "\nWARNING: There is no entry 'UDG/rMax' in the XML configuration file. This entry specifies the max. transmission range for the UDG connectivity model.\nThe simulation now uses GeometricNodeCollection/rMax instead.\n");
-                rMaxSquare = geomNodeRMax;
+                setRMaxSquare(geomNodeRMax);
             }
-            if (rMaxSquare > geomNodeRMax) { // dangerous! This is probably not what the user wants!
+            if (getRMaxSquare() > geomNodeRMax) { // dangerous! This is probably not what the user wants!
                 Main.minorError(
                         "WARNING: The maximum transmission range used for the UDG connectivity model is larger than the maximum transmission range specified for the GeometricNodeCollection.\nAs a result, not all connections will be found! Either fix the problem in the project-specific configuration file or the '-overwrite' command line argument.");
             }
 
-            rMaxSquare = rMaxSquare * rMaxSquare;
+            setRMaxSquare(getRMaxSquare() * getRMaxSquare());
 
-            initialized = true;
+            setInitialized(true);
         }
-        this.squareRadius = rMaxSquare;
+        this.setSquareRadius(getRMaxSquare());
     }
+    
 }

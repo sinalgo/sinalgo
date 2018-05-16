@@ -40,7 +40,7 @@ public class FloodFindMsg extends Message {
      */
     private int sequenceID;
 
-    private RetryFloodingTimer retryTimer = null;
+    private RetryFloodingTimer retryTimer;
 
     /**
      * The node to which a route should be established.

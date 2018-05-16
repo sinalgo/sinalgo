@@ -1,5 +1,8 @@
 package sinalgo.io.versionTest;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.runtime.Main;
@@ -12,8 +15,13 @@ import java.net.URLConnection;
 
 public class VersionTester extends Thread {
 
-    private static boolean isRunning = false;
-    private static boolean displayIfOK = false;
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static boolean isRunning;
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static boolean displayIfOK;
 
     /**
      * Tests whether the installed version of Sinalgo is the most recent one.
@@ -24,8 +32,8 @@ public class VersionTester extends Thread {
      *                              version is up to date.
      */
     public static void testVersion(boolean testIfEnabled, boolean displayIfVersionMatch) {
-        displayIfOK = displayIfVersionMatch;
-        if (isRunning) {
+        setDisplayIfOK(displayIfVersionMatch);
+        if (isRunning()) {
             return;
         }
         if (testIfEnabled) {
@@ -43,7 +51,7 @@ public class VersionTester extends Thread {
 
     @Override
     public void run() {
-        isRunning = true;
+        setRunning(true);
         try {
             URL url = new URL("https://github.com/andrebrait/sinalgo/raw/master/VERSION");
             URLConnection con = url.openConnection();
@@ -60,7 +68,7 @@ public class VersionTester extends Thread {
             String line = in.readLine(); // we're only interested in the very first line
             if (line != null) {
                 if (line.equals(Configuration.VERSION_STRING)) {
-                    if (displayIfOK) {
+                    if (isDisplayIfOK()) {
                         Main.info("You are using the most recent version of Sinalgo.");
                     }
                 } else {
@@ -91,7 +99,7 @@ public class VersionTester extends Thread {
                     + ">---------------------------------------------------------------------\n";
             Main.warning(msg);
         } finally {
-            isRunning = false;
+            setRunning(false);
             AppConfig.getAppConfig().setTimeStampOfLastUpdateCheck(System.currentTimeMillis());
         }
     }

@@ -66,7 +66,7 @@ public class NodePopupMenu extends AbstractPopupMenu implements ActionListener {
 
     private HashMap<String, Method> methodsAndDescriptions = new HashMap<>();
 
-    private Node node = null;
+    private Node node;
     private JMenuItem info = new JMenuItem("Info");
     private JMenuItem delete = new JMenuItem("Delete Node");
     private JMenuItem showCoordinateCube = new JMenuItem("Show coordinate cube");

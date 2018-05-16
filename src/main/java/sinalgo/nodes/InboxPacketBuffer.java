@@ -55,7 +55,7 @@ public class InboxPacketBuffer extends DoublyLinkedList<Packet> implements Packe
     private PacketCollection arrivingPackets = new PacketCollection();
     private ReusableListIterator<Packet> bufferIterator = this.iterator();
 
-    private Inbox inbox = null;
+    private Inbox inbox;
 
     /**
      * The default constructor of the dllPacketBuffer-class.

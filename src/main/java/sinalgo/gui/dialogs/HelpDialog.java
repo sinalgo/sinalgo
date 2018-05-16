@@ -49,7 +49,11 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.net.URL;
 
@@ -62,8 +66,8 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
     private JEditorPane html;
     private JButton menuButton = new JButton("Menu");
 
-    private URL currentURL = null;
-    private URL defaultURL = null;
+    private URL currentURL;
+    private URL defaultURL;
 
     private HelpDialog(JFrame parent) { // is private, use showHelp() to create it in a new thread
         this.setTitle("Sinalgo Help  (source: https://github.com/andrebrait/sinalgo)");
@@ -143,7 +147,7 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
         };
     }
 
-    private MenuDialog menuDlg = null; // The menu dialog if its currently shown, otherwise null
+    private MenuDialog menuDlg; // The menu dialog if its currently shown, otherwise null
 
     private void showMenu() {
         Point p = this.getMenuButton().getLocationOnScreen();

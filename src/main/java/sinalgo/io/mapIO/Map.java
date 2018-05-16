@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.io.mapIO;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -57,12 +60,16 @@ import java.io.InputStream;
  * The bitmap file may have any dimension, the framework scales to fit exactly
  * the deployment area.
  */
+@Getter(AccessLevel.PRIVATE)
+@Setter(AccessLevel.PRIVATE)
 public class Map {
 
     private int[][] grid;
     private ColorModel colorModel = ColorModel.getRGBdefault(); // Color model to undertand RGB
-    private int imgWidth, imgHeight; // width / height of this BG image
-    private double xRatio, yRatio;
+    private int imgWidth;
+    private int imgHeight; // width / height of this BG image
+    private double xRatio;
+    private double yRatio;
 
     /**
      * @param aMapImageFile The name of the BMP file containing the background image. The
@@ -76,13 +83,13 @@ public class Map {
             if ((img = ImageIO.read(in)) == null) {
                 throw new FileNotFoundException("\n'" + aMapImageFile + "' - This image format is not supported.");
             }
-            this.imgWidth = img.getWidth();
-            this.imgHeight = img.getHeight();
-            this.grid = new int[this.imgWidth][this.imgHeight];
+            this.setImgWidth(img.getWidth());
+            this.setImgHeight(img.getHeight());
+            this.setGrid(new int[this.getImgWidth()][this.getImgHeight()]);
             // copy the image data
-            for (int i = 0; i < this.imgWidth; i++) {
-                for (int j = 0; j < this.imgHeight; j++) {
-                    this.grid[i][j] = img.getRGB(i, j);
+            for (int i = 0; i < this.getImgWidth(); i++) {
+                for (int j = 0; j < this.getImgHeight(); j++) {
+                    this.getGrid()[i][j] = img.getRGB(i, j);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -90,8 +97,8 @@ public class Map {
         } catch (IOException e) {
             throw new FileNotFoundException("Background map: Cannot open the image file\n" + e.getMessage());
         }
-        this.xRatio = ((double) this.imgWidth) / Configuration.getDimX();
-        this.yRatio = ((double) this.imgHeight) / Configuration.getDimY();
+        this.setXRatio(((double) this.getImgWidth()) / Configuration.getDimX());
+        this.setYRatio(((double) this.getImgHeight()) / Configuration.getDimY());
     }
 
     /**
@@ -103,21 +110,21 @@ public class Map {
      * @return The color of the specified position on the deployment area.
      */
     private int getColorRGB(double x, double y) {
-        int imgx = (int) Math.floor(this.xRatio * x);
-        int imgy = (int) Math.floor(this.yRatio * y);
+        int imgx = (int) Math.floor(this.getXRatio() * x);
+        int imgy = (int) Math.floor(this.getYRatio() * y);
         if (imgx < 0) {
             imgx = 0;
         }
-        if (imgx >= this.imgWidth) {
-            imgx = this.imgWidth - 1;
+        if (imgx >= this.getImgWidth()) {
+            imgx = this.getImgWidth() - 1;
         }
         if (imgy < 0) {
             imgy = 0;
         }
-        if (imgy >= this.imgHeight) {
-            imgy = this.imgHeight - 1;
+        if (imgy >= this.getImgHeight()) {
+            imgy = this.getImgHeight() - 1;
         }
-        return this.grid[imgx][imgy];
+        return this.getGrid()[imgx][imgy];
     }
 
     /**
@@ -140,9 +147,9 @@ public class Map {
      */
     public boolean isWhite(double x, double y) {
         int color = this.getColorRGB(x, y);
-        int r = this.colorModel.getRed(color); // translate to default RGB values
-        int g = this.colorModel.getGreen(color); // translate to default RGB values
-        int b = this.colorModel.getBlue(color); // translate to default RGB values
+        int r = this.getColorModel().getRed(color); // translate to default RGB values
+        int g = this.getColorModel().getGreen(color); // translate to default RGB values
+        int b = this.getColorModel().getBlue(color); // translate to default RGB values
         return r + g + b == 765; // r,g,b == 255
     }
 
@@ -157,9 +164,9 @@ public class Map {
      */
     public boolean isBlack(double x, double y) {
         int color = this.getColorRGB(x, y);
-        int r = this.colorModel.getRed(color); // translate to default RGB values
-        int g = this.colorModel.getGreen(color); // translate to default RGB values
-        int b = this.colorModel.getBlue(color); // translate to default RGB values
+        int r = this.getColorModel().getRed(color); // translate to default RGB values
+        int g = this.getColorModel().getGreen(color); // translate to default RGB values
+        int b = this.getColorModel().getBlue(color); // translate to default RGB values
         return r + g + b == 0; // r,g,b == 0
     }
 
@@ -172,8 +179,8 @@ public class Map {
      */
     public boolean isColor(double x, double y, Color c) {
         int color = this.getColorRGB(x, y);
-        return c.getRed() == this.colorModel.getRed(color) && c.getBlue() == this.colorModel.getBlue(color)
-                && c.getGreen() == this.colorModel.getGreen(color);
+        return c.getRed() == this.getColorModel().getRed(color) && c.getBlue() == this.getColorModel().getBlue(color)
+                && c.getGreen() == this.getColorModel().getGreen(color);
     }
 
     /**
@@ -184,7 +191,7 @@ public class Map {
      */
     public int getRed(double x, double y) {
         int color = this.getColorRGB(x, y);
-        return this.colorModel.getRed(color); // translate to default RGB values
+        return this.getColorModel().getRed(color); // translate to default RGB values
     }
 
     /**
@@ -195,7 +202,7 @@ public class Map {
      */
     public int getBlue(double x, double y) {
         int color = this.getColorRGB(x, y);
-        return this.colorModel.getBlue(color); // translate to default RGB values
+        return this.getColorModel().getBlue(color); // translate to default RGB values
     }
 
     /**
@@ -206,7 +213,7 @@ public class Map {
      */
     public int getGreen(double x, double y) {
         int color = this.getColorRGB(x, y);
-        return this.colorModel.getGreen(color); // translate to default RGB values
+        return this.getColorModel().getGreen(color); // translate to default RGB values
     }
 
     /**
@@ -221,15 +228,15 @@ public class Map {
             throw new SinalgoFatalException("Background maps are not supported in 3D.\n" + "Do not specify a "
                     + "map while running a simulation in 3D.");
         }
-        double lengthX = 1 / this.xRatio;
-        double lengthY = 1 / this.yRatio;
+        double lengthX = 1 / this.getXRatio();
+        double lengthY = 1 / this.getYRatio();
 
-        for (int i = 0; i < this.imgWidth; i++) {
-            for (int j = 0; j < this.imgHeight; j++) {
+        for (int i = 0; i < this.getImgWidth(); i++) {
+            for (int j = 0; j < this.getImgHeight(); j++) {
                 pt.translateToGUIPosition(i * lengthX, j * lengthY, 0); // top left corner of cell
                 int topLeftX = pt.getGuiX(), topLeftY = pt.getGuiY();
                 pt.translateToGUIPosition((i + 1) * lengthX, (j + 1) * lengthY, 0); // bottom right corner of cell
-                Color col = new Color(this.grid[i][j]);
+                Color col = new Color(this.getGrid()[i][j]);
                 g.setColor(col);
                 g.fillRect(topLeftX, topLeftY, pt.getGuiX() - topLeftX, pt.getGuiY() - topLeftY);
             }
@@ -237,12 +244,12 @@ public class Map {
     }
 
     public void drawToPostScript(EPSOutputPrintStream pw, PositionTransformation pt) {
-        double lengthX = 1 / this.xRatio;
-        double lengthY = 1 / this.yRatio;
+        double lengthX = 1 / this.getXRatio();
+        double lengthY = 1 / this.getYRatio();
 
-        for (int i = 0; i < this.imgWidth; i++) {
-            for (int j = 0; j < this.imgHeight; j++) {
-                Color col = new Color(this.grid[i][j]);
+        for (int i = 0; i < this.getImgWidth(); i++) {
+            for (int j = 0; j < this.getImgHeight(); j++) {
+                Color col = new Color(this.getGrid()[i][j]);
                 if (col == Color.WHITE) {
                     continue; // don't paint white
                 }
@@ -255,5 +262,4 @@ public class Map {
             }
         }
     }
-
 }

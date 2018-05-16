@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.statistics;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 
@@ -55,6 +58,8 @@ import java.util.Random;
  */
 public class ExponentialDistribution extends Distribution {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private double lambda;
 
     /**
@@ -65,7 +70,7 @@ public class ExponentialDistribution extends Distribution {
      *               1/lambda.
      */
     public ExponentialDistribution(double lambda) {
-        this.lambda = lambda;
+        this.setLambda(lambda);
     }
 
     /**
@@ -77,12 +82,12 @@ public class ExponentialDistribution extends Distribution {
      * @throws CorruptConfigurationEntryException If the configuration file is corrupt.
      */
     public ExponentialDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
-        this.lambda = Configuration.getDoubleParameter(mainTagPath + "/lambda");
+        this.setLambda(Configuration.getDoubleParameter(mainTagPath + "/lambda"));
     }
 
     @Override
     public double nextSample() {
-        return -Math.log(randomGenerator.nextDouble()) / this.lambda;
+        return -Math.log(getRandomGenerator().nextDouble()) / this.getLambda();
     }
 
     /**
@@ -106,4 +111,5 @@ public class ExponentialDistribution extends Distribution {
         Random r = Distribution.getRandom();
         return -Math.log(r.nextDouble()) / lambda;
     }
+
 }

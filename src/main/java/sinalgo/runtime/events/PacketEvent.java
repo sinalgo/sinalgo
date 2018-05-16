@@ -62,7 +62,7 @@ public class PacketEvent extends Event {
 
     @Getter
     @Setter
-    private static int numPacketEventsOnTheFly = 0;
+    private static int numPacketEventsOnTheFly;
 
     public static int getNumFreedPacketEvents() {
         return unusedPacketEvents.size();

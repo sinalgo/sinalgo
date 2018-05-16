@@ -91,7 +91,7 @@ public class MultiLineToolTip extends JToolTip {
      * @return The number of columns the tooltip has.
      */
     @Getter
-    private int columns = 0;
+    private int columns;
 
     /**
      * The fixed with of the tooltip.
@@ -99,7 +99,7 @@ public class MultiLineToolTip extends JToolTip {
      * @return The fixed width of the tooltip.
      */
     @Getter
-    private int fixedWidth = 0;
+    private int fixedWidth;
 }
 
 // used such that the tooltip can display several lines of text (e.g. newlines)

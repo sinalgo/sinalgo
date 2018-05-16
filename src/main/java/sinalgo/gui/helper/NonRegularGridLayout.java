@@ -89,7 +89,7 @@ public class NonRegularGridLayout extends GridLayout {
      */
     @Getter(AccessLevel.PRIVATE)
     @Setter
-    private boolean alignToLeft = false;
+    private boolean alignToLeft;
 
     @Override
     public Dimension preferredLayoutSize(Container parent) {

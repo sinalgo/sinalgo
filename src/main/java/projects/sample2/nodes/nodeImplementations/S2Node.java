@@ -61,14 +61,14 @@ public class S2Node extends Node {
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
-    private static int maxNeighbors = 0; // global field containing the max number of neighbors any node ever had
+    private static int maxNeighbors; // global field containing the max number of neighbors any node ever had
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
-    private static boolean isColored = false;
+    private static boolean isColored;
 
-    private boolean isMaxNode = false; // flag set to true when this node has most neighbors
-    private boolean drawAsNeighbor = false; // flag set by a neighbor to color specially
+    private boolean isMaxNode; // flag set to true when this node has most neighbors
+    private boolean drawAsNeighbor; // flag set by a neighbor to color specially
 
     // The set of nodes this node has already seen
     private TreeSet<S2Node> neighbors = new TreeSet<>();

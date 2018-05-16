@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.statistics;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 
@@ -55,6 +58,8 @@ import java.util.Random;
  */
 public class PoissonDistribution extends Distribution {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private double expLambda; // e^-lambda
 
     /**
@@ -63,7 +68,7 @@ public class PoissonDistribution extends Distribution {
      * @param lambda The mean (and also variance) of the distribution.
      */
     public PoissonDistribution(double lambda) {
-        this.expLambda = Math.exp(-lambda);
+        this.setExpLambda(Math.exp(-lambda));
     }
 
     /**
@@ -76,7 +81,7 @@ public class PoissonDistribution extends Distribution {
      */
     public PoissonDistribution(String mainTagPath) throws CorruptConfigurationEntryException {
         double lambda = Configuration.getDoubleParameter(mainTagPath + "/lambda");
-        this.expLambda = Math.exp(-lambda);
+        this.setExpLambda(Math.exp(-lambda));
     }
 
     @Override
@@ -84,8 +89,8 @@ public class PoissonDistribution extends Distribution {
         double product = 1;
         int count = 0;
         int result = 0;
-        while (product >= this.expLambda) {
-            product *= randomGenerator.nextDouble();
+        while (product >= this.getExpLambda()) {
+            product *= getRandomGenerator().nextDouble();
             result = count;
             count++; // keep result one behind
         }
@@ -116,4 +121,5 @@ public class PoissonDistribution extends Distribution {
         }
         return result;
     }
+
 }

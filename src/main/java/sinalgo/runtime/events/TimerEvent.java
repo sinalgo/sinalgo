@@ -55,7 +55,7 @@ public class TimerEvent extends Event {
 
     @Getter
     @Setter
-    private static int numTimerEventsOnTheFly = 0;
+    private static int numTimerEventsOnTheFly;
 
     public static int getNumFreedTimerEvents() {
         return unusedTimerEvents.size();

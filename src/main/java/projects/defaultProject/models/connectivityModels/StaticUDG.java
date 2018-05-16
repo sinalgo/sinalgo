@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.connectivityModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.nodes.Node;
@@ -49,12 +52,14 @@ import sinalgo.nodes.Node;
  */
 public class StaticUDG extends UDG {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private boolean firstTime = true; // detect when the connections are evaluated for the first time
 
     @Override
     public boolean updateConnections(Node n) throws WrongConfigurationException {
-        if (this.firstTime) {
-            this.firstTime = false;
+        if (this.isFirstTime()) {
+            this.setFirstTime(false);
             return super.updateConnections(n); // let UDG do its work
         } else {
             return false; // keep all existing connections
@@ -69,4 +74,5 @@ public class StaticUDG extends UDG {
     public StaticUDG() throws CorruptConfigurationEntryException {
         // all done in UDG.
     }
+
 }

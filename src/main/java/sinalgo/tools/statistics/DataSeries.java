@@ -64,16 +64,16 @@ public class DataSeries implements Externalizable {
      *
      * @return The sum of all samples added to this data series.
      */
-    private double sum = 0; // The sum of all samples
+    private double sum; // The sum of all samples
 
-    private double squaredSum = 0; // the sum of the square of all samples
+    private double squaredSum; // the sum of the square of all samples
 
     /**
      * The number of samples added to this data series.
      *
      * @return the number of samples added to this data series.
      */
-    private int numberOfSamples = 0;
+    private int numberOfSamples;
 
     @Getter(AccessLevel.PRIVATE)
     private double min = Double.MAX_VALUE, max = Double.MIN_VALUE; // the min. and max. values added

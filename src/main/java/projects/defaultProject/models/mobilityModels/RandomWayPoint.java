@@ -101,14 +101,23 @@ import java.util.Random;
 public class RandomWayPoint extends MobilityModel {
 
     // we assume that these distributions are the same for all nodes
-    protected static Distribution speedDistribution;
-    protected static Distribution waitingTimeDistribution;
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private static Distribution speedDistribution;
+
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private static Distribution waitingTimeDistribution;
 
     // a flag set to true after initialization of the static vars of this class has been done.
-    private static boolean initialized = false;
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static boolean initialized;
 
     // a random generator of the framework
-    protected static Random random = Distribution.getRandom();
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private static Random random = Distribution.getRandom();
 
     // The point where this node is moving to
     private Position nextDestination = new Position();
@@ -117,12 +126,12 @@ public class RandomWayPoint extends MobilityModel {
     private Position moveVector = new Position();
 
     // the current position, to detect if the node has been moved by other means than this mobility model between successive calls to getNextPos()
-    private Position currentPosition = null;
+    private Position currentPosition;
 
     // the remaining hops until a new path has to be determined
-    private int remaining_hops = 0;
+    private int remaining_hops;
 
-    private int remaining_waitingTime = 0;
+    private int remaining_waitingTime;
 
     @Override
     public Position getNextPos(Node n) {
@@ -147,7 +156,7 @@ public class RandomWayPoint extends MobilityModel {
 
         if (this.remaining_hops == 0) {
             // determine the speed at which this node moves
-            double speed = Math.abs(speedDistribution.nextSample()); // units per round
+            double speed = Math.abs(getSpeedDistribution().nextSample()); // units per round
 
             // determine the next point where this node moves to
             this.nextDestination = this.getNextWayPoint();
@@ -166,7 +175,7 @@ public class RandomWayPoint extends MobilityModel {
         if (this.remaining_hops <= 1) { // don't add the moveVector, as this may move over the destination.
             nextPosition.assign(this.nextDestination);
             // set the next waiting time that executes after this mobility phase
-            this.remaining_waitingTime = (int) Math.ceil(waitingTimeDistribution.nextSample());
+            this.remaining_waitingTime = (int) Math.ceil(getWaitingTimeDistribution().nextSample());
             this.remaining_hops = 0;
         } else {
             double newx = n.getPosition().getXCoord() + this.moveVector.getXCoord();
@@ -186,7 +195,7 @@ public class RandomWayPoint extends MobilityModel {
      * @return the next waypoint where this node moves after having waited.
      */
     protected Position getNextWayPoint() {
-        return Tools.getRandomPosition(random);
+        return Tools.getRandomPosition(getRandom());
     }
 
     /**
@@ -196,10 +205,10 @@ public class RandomWayPoint extends MobilityModel {
      * @throws CorruptConfigurationEntryException When a needed configuration entry is missing.
      */
     public RandomWayPoint() throws CorruptConfigurationEntryException {
-        if (!initialized) {
-            speedDistribution = Distribution.getDistributionFromConfigFile("RandomWayPoint/Speed");
-            waitingTimeDistribution = Distribution.getDistributionFromConfigFile("RandomWayPoint/WaitingTime");
-            initialized = true;
+        if (!isInitialized()) {
+            setSpeedDistribution(Distribution.getDistributionFromConfigFile("RandomWayPoint/Speed"));
+            setWaitingTimeDistribution(Distribution.getDistributionFromConfigFile("RandomWayPoint/WaitingTime"));
+            setInitialized(true);
         }
     }
 }

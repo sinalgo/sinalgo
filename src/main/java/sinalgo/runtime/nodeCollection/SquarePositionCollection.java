@@ -46,7 +46,7 @@ import java.util.Enumeration;
  */
 public class SquarePositionCollection {
 
-    private SquarePositionCollectionEnumeration enumeration = null;
+    private SquarePositionCollectionEnumeration enumeration;
 
     /**
      * The storage for the SquarePos. This storage is an array and always has the
@@ -54,7 +54,7 @@ public class SquarePositionCollection {
      */
     private SquarePos[] squares = new SquarePos[9];
     private boolean[] used = new boolean[9];
-    private int nextUnused = 0;
+    private int nextUnused;
 
     /**
      * The only constructor for the SquarePositionCollection. It fills the data
@@ -112,7 +112,7 @@ public class SquarePositionCollection {
 
     private class SquarePositionCollectionEnumeration implements ReusableEnumeration<SquarePos> {
 
-        private int position = 0;
+        private int position;
 
         @Override
         public void reset() {

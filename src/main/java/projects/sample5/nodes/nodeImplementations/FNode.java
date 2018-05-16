@@ -44,7 +44,7 @@ public class FNode extends Node {
     }
 
     // counter, incremented and added for each msg sent (not forwarded) by this node
-    private int seqID = 0; // an ID used to distinguish successive msg
+    private int seqID; // an ID used to distinguish successive msg
 
     // The routing table of this node, maps destination node to a routing entry
     private Hashtable<Node, RoutingEntry> routingTable = new Hashtable<>();

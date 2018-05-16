@@ -48,7 +48,13 @@ import sinalgo.runtime.AbstractCustomGlobal.GlobalMethod;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -88,7 +94,7 @@ public class Global {
      */
     @Getter
     @Setter
-    private static boolean isRunning = false;
+    private static boolean isRunning;
 
     /**
      * This is the date of the last start of a simulation. This means this is the
@@ -97,7 +103,7 @@ public class Global {
      */
     @Getter
     @Setter
-    private static Date startTime = null;
+    private static Date startTime;
 
     /**
      * This is the date of the start of the last round started. Only really
@@ -105,7 +111,7 @@ public class Global {
      */
     @Getter
     @Setter
-    private static Date startTimeOfRound = null;
+    private static Date startTimeOfRound;
 
     /**
      * The default log file generated for each run. You may add your own log output,
@@ -117,7 +123,7 @@ public class Global {
      */
     @Getter
     @Setter
-    private static Logging log = null; // only install after logging has been activated.
+    private static Logging log; // only install after logging has been activated.
 
     /*
      * Some Information about the global state of the simulation. You can add other
@@ -129,14 +135,14 @@ public class Global {
      */
     @Getter
     @Setter
-    private static int numberOfMessagesInThisRound = 0;
+    private static int numberOfMessagesInThisRound;
 
     /**
      * Global information about the number of messages sent in all previous rounds.
      */
     @Getter
     @Setter
-    private static int numberOfMessagesOverAll = 0;
+    private static int numberOfMessagesOverAll;
 
     /**
      * The current time of the simulation.
@@ -147,7 +153,7 @@ public class Global {
      */
     @Getter
     @Setter
-    private static double currentTime = 0;
+    private static double currentTime;
 
     /**
      * A boolean whose value changes in every round s.t. in every second round, this
@@ -166,7 +172,7 @@ public class Global {
      */
     @Getter
     @Setter
-    private static MessageTransmissionModel messageTransmissionModel = null;
+    private static MessageTransmissionModel messageTransmissionModel;
 
     /**
      * This is the instance of the custom global class. It is initialized by default
@@ -183,7 +189,7 @@ public class Global {
      */
     @Getter
     @Setter
-    private static boolean useProject = false;
+    private static boolean useProject;
 
     /**
      * The name of the actual Project. It is specified by the command line.
@@ -298,7 +304,7 @@ public class Global {
      */
     @Getter
     @Setter
-    private static boolean isGuiMode = false;
+    private static boolean isGuiMode;
 
     /**
      * True if runing in asynchronousMode, false otherwise.

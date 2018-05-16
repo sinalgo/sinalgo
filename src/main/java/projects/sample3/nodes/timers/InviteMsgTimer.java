@@ -18,13 +18,13 @@ public class InviteMsgTimer extends Timer {
 
     private Distribution dist;
     private int refreshRate;
-    private int refreshCounter = 0;
+    private int refreshCounter;
 
     // If set to true, the antenna requires the nodes to register again
     // such that it can drop old mobileNodes
     @Getter
     @Setter
-    private boolean requireSubscription = false;
+    private boolean requireSubscription;
 
     public InviteMsgTimer() {
         try {

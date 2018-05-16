@@ -58,10 +58,10 @@ public class GridDistribution extends DistributionModel {
 
     private Random rand = Distribution.getRandom();
 
-    private double radius = 0;
+    private double radius;
 
     private Vector<Position> positions = new Vector<>();
-    private int returnNum = 0;
+    private int returnNum;
 
     @Override
     public void initialize() {

@@ -59,7 +59,7 @@ public class SpacePopupMenu extends AbstractPopupMenu implements ActionListener 
 
     private static final long serialVersionUID = 8356598949303688723L;
 
-    private Point pos = null;
+    private Point pos;
     private JMenuItem add = new JMenuItem("Add Node");
 
     /**

@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.logging;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.SinalgoFatalException;
 import sinalgo.io.IOUtils;
@@ -181,10 +184,10 @@ public class Logging {
      * @return The logging instance
      */
     public static Logging getLogger() {
-        if (instance == null) {
+        if (getInstance() == null) {
             if (activated) {
                 if (Configuration.isOutputToConsole()) {
-                    instance = new Logging(System.out);
+                    setInstance(new Logging(System.out));
                 } else {
                     return getLogger(Configuration.getLogFileName());
                 }
@@ -194,7 +197,7 @@ public class Logging {
                         + "before parsing of the 	-overwrite parameters.");
             }
         }
-        return instance;
+        return getInstance();
     }
 
     /**
@@ -256,11 +259,11 @@ public class Logging {
      */
     public static Logging getLogger(String logFileName, boolean append) {
         if (activated) {
-            if (loggers.containsKey(logFileName)) {
-                return loggers.get(logFileName);
+            if (getLoggers().containsKey(logFileName)) {
+                return getLoggers().get(logFileName);
             } else {
                 Logging l = new Logging(logFileName, append);
-                loggers.put(logFileName, l);
+                getLoggers().put(logFileName, l);
                 return l;
             }
         } else {
@@ -278,9 +281,9 @@ public class Logging {
      */
     public void log(boolean logFlag, String txt) {
         if (logFlag) {
-            this.out.print(txt);
+            this.getOut().print(txt);
             if (Configuration.isEagerFlush()) {
-                this.out.flush();
+                this.getOut().flush();
             }
         }
     }
@@ -291,9 +294,9 @@ public class Logging {
      * @param txt The text to log.
      */
     public void log(String txt) {
-        this.out.print(txt);
+        this.getOut().print(txt);
         if (Configuration.isEagerFlush()) {
-            this.out.flush();
+            this.getOut().flush();
         }
     }
 
@@ -305,9 +308,9 @@ public class Logging {
      */
     public void logln(boolean logFlag, String txt) {
         if (logFlag) {
-            this.out.println(txt);
+            this.getOut().println(txt);
             if (Configuration.isEagerFlush()) {
-                this.out.flush();
+                this.getOut().flush();
             }
         }
     }
@@ -318,9 +321,9 @@ public class Logging {
      * @param txt The log message to be printed.
      */
     public void logln(String txt) {
-        this.out.println(txt);
+        this.getOut().println(txt);
         if (Configuration.isEagerFlush()) {
-            this.out.flush();
+            this.getOut().flush();
         }
     }
 
@@ -328,9 +331,9 @@ public class Logging {
      * Adds a line-break to the log-file.
      */
     public void logln() {
-        this.out.println();
+        this.getOut().println();
         if (Configuration.isEagerFlush()) {
-            this.out.flush();
+            this.getOut().flush();
         }
     }
 
@@ -341,11 +344,11 @@ public class Logging {
      * @param txt The log message to be printed.
      */
     public void logPos(String txt) {
-        this.out.print(getCodePosition(1));
-        this.out.print(" ");
-        this.out.print(txt);
+        this.getOut().print(getCodePosition(1));
+        this.getOut().print(" ");
+        this.getOut().print(txt);
         if (Configuration.isEagerFlush()) {
-            this.out.flush();
+            this.getOut().flush();
         }
     }
 
@@ -358,11 +361,11 @@ public class Logging {
      */
     public void logPos(boolean logFlag, String txt) {
         if (logFlag) {
-            this.out.print(getCodePosition(1));
-            this.out.print(" ");
-            this.out.print(txt);
+            this.getOut().print(getCodePosition(1));
+            this.getOut().print(" ");
+            this.getOut().print(txt);
             if (Configuration.isEagerFlush()) {
-                this.out.flush();
+                this.getOut().flush();
             }
         }
     }
@@ -374,11 +377,11 @@ public class Logging {
      * @param txt The log message to be printed.
      */
     public void logPosln(String txt) {
-        this.out.print(getCodePosition(1));
-        this.out.print(" ");
-        this.out.println(txt);
+        this.getOut().print(getCodePosition(1));
+        this.getOut().print(" ");
+        this.getOut().println(txt);
         if (Configuration.isEagerFlush()) {
-            this.out.flush();
+            this.getOut().flush();
         }
     }
 
@@ -391,11 +394,11 @@ public class Logging {
      */
     public void logPosln(boolean logFlag, String txt) {
         if (logFlag) {
-            this.out.print(getCodePosition(1));
-            this.out.print(" ");
-            this.out.println(txt);
+            this.getOut().print(getCodePosition(1));
+            this.getOut().print(" ");
+            this.getOut().println(txt);
             if (Configuration.isEagerFlush()) {
-                this.out.flush();
+                this.getOut().flush();
             }
         }
     }
@@ -406,15 +409,7 @@ public class Logging {
      * @return The print stream where this logger logs to.
      */
     public PrintStream getOutputStream() {
-        return this.out;
-    }
-
-    /**
-     * @return The time-prefix used for the directories when logToTimeDirectory in
-     * the config file is enabled.
-     */
-    public static String getTimePrefix() {
-        return timePrefix;
+        return this.getOut();
     }
 
     public static String getTimeDirectoryName() {
@@ -477,6 +472,7 @@ public class Logging {
         return df.format(new Date());
     }
 
+
     // -----------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
     // Framework specific methods and member variables
@@ -484,18 +480,43 @@ public class Logging {
     // methods
     // -----------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static Logging instance;
 
-    private static Logging instance = null;
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static HashMap<String, Logging> loggers = new HashMap<>();
-    private PrintStream out;
-    private static String timePrefix; // the time when the simulation started - can be prefixed to the log-files to
-    // distringish different rounds.
 
-    // a boolean, indicating whether the logging mechanism is already activated.
-    // This means that the -overwrite
-    // parameters are already processed. (@see runtime.Main#parseOverwriteParameters
-    // for details)
-    private static boolean activated = false;
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private PrintStream out;
+
+    /**
+     * The time when the simulation started - can be prefixed to the log-files to
+     * distringish different rounds.
+     *
+     * @return The time-prefix used for the directories when logToTimeDirectory in
+     * the config file is enabled.
+     */
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private static String timePrefix;
+
+    //
+    /**
+     * <b>This member is framework internal and should not be used by the project
+     * developer.</b> Tests whether the framework has been configured to an extend
+     * that logging may be used. Before this method returns true, logging must not
+     * be used. Indicates whether the logging mechanism is already activated.
+     * This means that the -overwrite parameters are already processed.
+     * (@see runtime.Main#parseOverwriteParameters for details)
+     *
+     * @return Whether the logging has been activated - and therefore may be used.
+     */
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private static boolean activated;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -526,9 +547,9 @@ public class Logging {
             }
 
             if (append) {
-                this.out = new PrintStream(new FileOutputStream(dir + aFileName, true));
+                this.setOut(new PrintStream(new FileOutputStream(dir + aFileName, true)));
             } else {
-                this.out = new PrintStream(dir + aFileName);
+                this.setOut(new PrintStream(dir + aFileName));
             }
         } catch (FileNotFoundException e) {
             throw new SinalgoFatalException("Could not open the logfile " + aFileName);
@@ -542,7 +563,7 @@ public class Logging {
      * @param aStream The stream this logger should print to.
      */
     private Logging(PrintStream aStream) {
-        this.out = aStream;
+        this.setOut(aStream);
     }
 
     /**
@@ -555,21 +576,10 @@ public class Logging {
     public static void activate() {
         if (timePrefix == null) {
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy_HH.mm.ss.SSS");
-            timePrefix = df.format(new Date());
+            setTimePrefix(df.format(new Date()));
         }
-        activated = true;
+        setActivated(true);
         Global.setLog(Logging.getLogger()); // the default logger
     }
 
-    /**
-     * <b>This member is framework internal and should not be used by the project
-     * developer.</b> Tests whether the framework has been configured to an extend
-     * that logging may be used. Before this method returns true, logging must not
-     * be used.
-     *
-     * @return Whether the logging has been activated - and therefore may be used.
-     */
-    public static boolean isActivated() {
-        return activated;
-    }
 }

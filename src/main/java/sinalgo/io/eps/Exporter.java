@@ -52,7 +52,11 @@ import sinalgo.runtime.SinalgoRuntime;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Random;
 
@@ -64,7 +68,7 @@ public class Exporter {
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
-    private JFrame parentFrame = null;
+    private JFrame parentFrame;
 
     /**
      * Creates a new Exporter instance with a given JFrame as parentGUI. The parentGUI

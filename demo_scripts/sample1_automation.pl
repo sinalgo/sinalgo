@@ -1,7 +1,5 @@
 #!/usr/bin/perl
 
-# THIS SCRIPT IS CURRENTLY BROKEN, SINCE SINALGO WAS PORTED TO GRADLE.
-
 # Demo script to automatically start project sample1 several times with
 # a different set of node speeds and node densities. Note that this script
 # needs severe adaptations to be used for any real-life Sinalgo project. 
@@ -28,7 +26,7 @@ for($speed=2; $speed<9; $speed+=3) {
 	print "Simulation $SimCount - Speed mean=$speed var=$speedVariance, NumNodes = $numNodes\n";
 
 	die "Terminated prematurely" unless
-	  system("java -Xmx1000m -cp \"binaries/bin;binaries/jdom.jar\" sinalgo.Main " .
+	  system("java -Xmx1000m sinalgo.Main " .
 			 "-project sample1 " .             # choose the project
 			 "-gen $numNodes sample1:S1Node Random RandomDirection " . # generate nodes
 			 "-overwrite randomDirection/NodeSpeed/Mean=$speed " .  # Node speed

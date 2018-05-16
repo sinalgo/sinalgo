@@ -73,21 +73,21 @@ public class AppConfig {
     private int projectSelectorWindowHeight = 400;
     private int projectSelectorWindowPosX = 50;
     private int projectSelectorWindowPosY = 50;
-    private boolean projectSelectorIsMaximized = false;
+    private boolean projectSelectorIsMaximized;
     private int projectSelectorSelectedTab = 1; // 1 = description, 2 = config
     private String lastChosenProject = "";
     private int guiWindowWidth = 800;
     private int guiWindowHeight = 600;
     private int guiWindowPosX = 50;
     private int guiWindowPosY = 50;
-    private boolean guiIsMaximized = false;
-    private long seedFromLastRun = 0;
+    private boolean guiIsMaximized;
+    private long seedFromLastRun;
 
     private int helpWindowWidth = 500;
     private int helpWindowHeight = 500;
     private int helpWindowPosX = 200;
     private int helpWindowPosY = 200;
-    private boolean helpWindowIsMaximized = false;
+    private boolean helpWindowIsMaximized;
 
     private boolean guiControlPanelExpandSimulation = true;
     private boolean guiControlPanelShowFullViewPanel = true;
@@ -99,7 +99,7 @@ public class AppConfig {
     private String lastSelectedFileDirectory = ""; // where the user pointed last to open a file
 
     private boolean checkForSinalgoUpdate = true; // check for updates
-    private long timeStampOfLastUpdateCheck = 0; // machine time when Sinalgo checked last for an update
+    private long timeStampOfLastUpdateCheck; // machine time when Sinalgo checked last for an update
 
     private int generateNodesDlgNumNodes = 100; // # of nodes to generate
 
@@ -107,7 +107,7 @@ public class AppConfig {
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
-    private static AppConfig singletonInstance = null;
+    private static AppConfig singletonInstance;
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)

@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.connectivityModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
 import sinalgo.exception.NotYetImplementedException;
@@ -44,6 +47,8 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 import sinalgo.runtime.Main;
 import sinalgo.tools.statistics.Distribution;
+
+import java.util.Random;
 
 /**
  * Implementation of a quasi unit disc graph connectivy model. This connectivity
@@ -83,22 +88,38 @@ public class QUDG extends ConnectivityModelHelper {
 
     // the lower threshold of the distance between two nodes below they are always
     // connected
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static double r_min_squared;
 
     // the upper threshold of the distance between two nodes above which to nodes
     // are never connected.
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static double r_max_squared;
 
-    private static double m, q; // for linear probability
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static double m;
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static double q; // for linear probability
 
     // The probability to add an edge if the distance between two nodes is in the
     // range ]r_min, r_max].
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static double probability;
 
     // Instance of the framework intern random number generator.
-    private static java.util.Random rand = Distribution.getRandom();
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static Random rand = Distribution.getRandom();
 
-    private int probabilityType = 0; // 0 = constant probability, 1 = linear, 2 = quadratic
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private int probabilityType; // 0 = constant probability, 1 = linear, 2 = quadratic
 
     /**
      * In the QUDG graph, two nodes are always connected if their mutual distance is
@@ -115,22 +136,22 @@ public class QUDG extends ConnectivityModelHelper {
         Position p2 = to.getPosition();
 
         double d = p1.squareDistanceTo(p2);
-        if (d <= r_min_squared) {
+        if (d <= getR_min_squared()) {
             return true; // the two nodes are always connected
         }
-        if (d > r_max_squared) {
+        if (d > getR_max_squared()) {
             return false; // the two nodes are never connected
         }
         // the distance between the two nodes is between r_min and r_max. Now, we
         // randomly
         // determine whether the edge exists or not.
 
-        if (this.probabilityType == 1) { // linear probability
-            probability = Math.sqrt(d) * m + q;
-        } else if (this.probabilityType == 2) { // quadratic probability
+        if (this.getProbabilityType() == 1) { // linear probability
+            setProbability(Math.sqrt(d) * getM() + getQ());
+        } else if (this.getProbabilityType() == 2) { // quadratic probability
             // ... not yet implemented
         }
-        return rand.nextDouble() <= probability;
+        return getRand().nextDouble() <= getProbability();
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,7 +160,9 @@ public class QUDG extends ConnectivityModelHelper {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // -
 
-    private static boolean initialized = false; // indicates whether the static fields of this class have already been
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static boolean initialized; // indicates whether the static fields of this class have already been
     // initialized
 
     /**
@@ -153,14 +176,14 @@ public class QUDG extends ConnectivityModelHelper {
      */
     public QUDG() throws CorruptConfigurationEntryException {
         // only call the first time a QUDG object is created
-        if (!initialized) {
+        if (!isInitialized()) {
             // speed up by comparing the squared distances (needs not take the square root
             // to get the distance)
             double r_min = Configuration.getDoubleParameter("QUDG/rMin");
-            r_min_squared = r_min * r_min;
+            setR_min_squared(r_min * r_min);
 
             double r_max = Configuration.getDoubleParameter("QUDG/rMax");
-            r_max_squared = r_max * r_max;
+            setR_max_squared(r_max * r_max);
 
             // Sanity check
             double geomNodeRMax = Configuration.getDoubleParameter("GeometricNodeCollection/rMax");
@@ -177,16 +200,16 @@ public class QUDG extends ConnectivityModelHelper {
             String type = Configuration.getStringParameter("QUDG/ProbabilityType");
             switch (type.toLowerCase()) {
                 case "constant":
-                    this.probabilityType = 0;
-                    probability = Configuration.getDoubleParameter("QUDG/connectionProbability");
+                    this.setProbabilityType(0);
+                    setProbability(Configuration.getDoubleParameter("QUDG/connectionProbability"));
                     break;
                 case "linear":
-                    this.probabilityType = 1;
-                    m = 1 / (r_min - r_max);
-                    q = r_max / (r_max - r_min);
+                    this.setProbabilityType(1);
+                    setM(1 / (r_min - r_max));
+                    setQ(r_max / (r_max - r_min));
                     break;
                 case "quadratic":
-                    this.probabilityType = 2;
+                    this.setProbabilityType(2);
                     throw new NotYetImplementedException("QUDG does not yet support quadratic probability distributions.");
                 default:
                     // TODO: rewrite the following exception, rewrite docu as well
@@ -199,8 +222,9 @@ public class QUDG extends ConnectivityModelHelper {
                                     + "'quadratic' applies a quadratic regression that decreases from 1 to 0 from rMin to rMax.\n\n");
             }
 
-            probability = Configuration.getDoubleParameter("QUDG/connectionProbability");
-            initialized = true;
+            setProbability(Configuration.getDoubleParameter("QUDG/connectionProbability"));
+            setInitialized(true);
         }
     }
+
 }

@@ -57,7 +57,7 @@ public class EdgePopupMenu extends AbstractPopupMenu implements ActionListener {
 
     private static final long serialVersionUID = 1879611828353447896L;
 
-    private Edge edge = null;
+    private Edge edge;
     private JMenuItem info = new JMenuItem("Info");
     private JMenuItem delete = new JMenuItem("Delete");
 

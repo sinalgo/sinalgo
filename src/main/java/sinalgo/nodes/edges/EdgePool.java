@@ -48,7 +48,7 @@ import java.util.Stack;
 public class EdgePool {
 
     private static Hashtable<String, Stack<Edge>> stacks = new Hashtable<>();
-    private static Stack<Edge> lastStack = null;
+    private static Stack<Edge> lastStack;
     private static String lastStackTypeName = "";
 
     /**

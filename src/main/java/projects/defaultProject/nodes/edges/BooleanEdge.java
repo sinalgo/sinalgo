@@ -63,7 +63,7 @@ public class BooleanEdge extends Edge {
      */
     @Getter
     @Setter
-    private static boolean onlyUseFlagedEdges = false;
+    private static boolean onlyUseFlagedEdges;
 
     /**
      * @return Whether this edge is drawn on the GUI or to PostScript.

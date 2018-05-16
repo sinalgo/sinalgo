@@ -67,7 +67,7 @@ public abstract class Timer implements Comparable<Timer> {
      */
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    private Node targetNode = null;
+    private Node targetNode;
 
     /**
      * The time this timer goes off.
@@ -76,7 +76,7 @@ public abstract class Timer implements Comparable<Timer> {
      */
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    private double fireTime = 0; // The time when this timer fires.
+    private double fireTime; // The time when this timer fires.
 
     /**
      * Starts this <b>global timer</b> to go off after the indicated time, where the

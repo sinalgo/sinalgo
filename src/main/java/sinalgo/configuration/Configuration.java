@@ -69,7 +69,14 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.*;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_CONNECTIVITY;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_DISTRIBUTION;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_INTERFERENCE;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_MESSAGE_TRANSMISSION;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_MOBILITY;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_RELIABILITY;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.NODES_EDGES;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.NODES_IMPLEMENTATIONS;
 
 /**
  * This class provides globally visible constants and access to the custom
@@ -246,7 +253,7 @@ public class Configuration {
     @Setter
     @SectionInConfigFile("Simulation")
     @DefaultInConfigFile("Switches between synchronous and asynchronous mode.")
-    private static boolean asynchronousMode = false;
+    private static boolean asynchronousMode;
 
     /** */
     @Getter
@@ -314,7 +321,7 @@ public class Configuration {
     @Setter
     @DefaultInConfigFile("If set to true, the application exits as soon as the\n"
             + "termination criteria is met. This flag only affects\n" + "the GUI mode.")
-    private static boolean exitOnTerminationInGUI = false;
+    private static boolean exitOnTerminationInGUI;
 
     /** */
     @Getter
@@ -322,7 +329,7 @@ public class Configuration {
     @DefaultInConfigFile("If set true, in asynchronous mode the connections are initialized\n"
             + "before the first event executes. Note that this flag is useless in synchronous mode\n"
             + "as the connections are updated in every step anyway.")
-    private static boolean initializeConnectionsOnStartup = false;
+    private static boolean initializeConnectionsOnStartup;
 
     /** */
     @Getter
@@ -338,7 +345,7 @@ public class Configuration {
             + "a unicast message is dropped. In synchronous mode, the sender \n"
             + "is informed in the round after the message should have arrived, and \n"
             + "immediately upon arrival in asynchronous mode.")
-    private static boolean generateNAckMessages = false;
+    private static boolean generateNAckMessages;
 
     /** */
     @Getter
@@ -372,13 +379,13 @@ public class Configuration {
     @SectionInConfigFile("Random number generators")
     @DefaultInConfigFile("If set to true, the random number generators of the\n"
             + "framework use the same seed as in the previous run.")
-    private static boolean useSameSeedAsInPreviousRun = false;
+    private static boolean useSameSeedAsInPreviousRun;
 
     @Getter
     @Setter
     @DefaultInConfigFile("If set to true, and useSameSeedAsInPreviousRun is set to false, \n"
             + "the random number generators of the\n" + "framework uses the specified fixed seed.")
-    private static boolean useFixedSeed = false;
+    private static boolean useFixedSeed;
 
     /** */
     @Getter
@@ -424,7 +431,7 @@ public class Configuration {
     @Getter
     @Setter
     @DefaultInConfigFile("If set to true, the log files are flushed every time\n" + "a new log is added.")
-    private static boolean eagerFlush = false;
+    private static boolean eagerFlush;
 
     // -------------------------------------------------------------------------
     // GUI
@@ -441,7 +448,7 @@ public class Configuration {
     @Getter
     @Setter
     @DefaultInConfigFile("If true, the graph edges are drawn as directed arrows,\n otherwise simple lines.")
-    private static boolean drawArrows = false;
+    private static boolean drawArrows;
 
     /** */
     @Getter
@@ -499,7 +506,7 @@ public class Configuration {
     @SectionInConfigFile("Background map in 2D")
     @DefaultInConfigFile("If set to true, the background of a 2D simulation is colored\n"
             + "according to a map, specified in a map-file, specified\n" + "by the field map")
-    private static boolean useMap = false;
+    private static boolean useMap;
 
     /** */
     @Getter
@@ -568,7 +575,7 @@ public class Configuration {
     @OptionalInConfigFile("Show the models implemented by all projects in the drop\n"
             + "down options. When set to false, only the models by the\n"
             + "selected project and the default project are shown.")
-    private static boolean showModelsOfAllProjects = false;
+    private static boolean showModelsOfAllProjects;
 
     // -------------------------------------------------------------------------
     // The default transformation and node collection implementations for the 2D /
@@ -642,7 +649,7 @@ public class Configuration {
     @Setter
     @SectionInConfigFile("Animation Settings")
     @OptionalInConfigFile("Draw an envelope for each message that is being sent")
-    private static boolean showMessageAnimations = false;
+    private static boolean showMessageAnimations;
 
     /** */
     @Getter

@@ -174,7 +174,7 @@ public class S4Node extends Node {
         }, "Select a node to which you want to send a direct 'PINK' message.");
     }
 
-    private boolean simpleDraw = false;
+    private boolean simpleDraw;
 
     @Override
     public void init() {
@@ -205,7 +205,7 @@ public class S4Node extends Node {
         // not called in async mode!
     }
 
-    private boolean drawRound = false;
+    private boolean drawRound;
 
     private boolean isDrawRound() {
         if (this.drawRound) {

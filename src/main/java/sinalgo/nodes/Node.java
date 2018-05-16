@@ -47,10 +47,18 @@ import sinalgo.exception.SinalgoFatalException;
 import sinalgo.exception.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.EPSOutputPrintStream;
-import sinalgo.models.*;
+import sinalgo.models.ConnectivityModel;
+import sinalgo.models.InterferenceModel;
+import sinalgo.models.MobilityModel;
+import sinalgo.models.Model;
+import sinalgo.models.ReliabilityModel;
 import sinalgo.nodes.edges.Edge;
-import sinalgo.nodes.messages.*;
+import sinalgo.nodes.messages.Inbox;
+import sinalgo.nodes.messages.Message;
+import sinalgo.nodes.messages.NackBox;
+import sinalgo.nodes.messages.Packet;
 import sinalgo.nodes.messages.Packet.PacketType;
+import sinalgo.nodes.messages.PacketCollection;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.runtime.GUIRuntime;
 import sinalgo.runtime.Global;
@@ -251,7 +259,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PROTECTED)
-    private Inbox inbox = null;
+    private Inbox inbox;
 
     /**
      * The nackBox that contains the packets that did not arrive in the previous
@@ -268,7 +276,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PROTECTED)
-    private NackBox nackBox = null;
+    private NackBox nackBox;
 
     /**
      * The ID of the node. The system requires two nodes not to have the same ID.
@@ -672,7 +680,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PROTECTED)
-    private static Polygon routePolygon = null;
+    private static Polygon routePolygon;
 
     /**
      * This method draws this node to the specified Graphics. Each node is
@@ -1000,7 +1008,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
 
     // A boolean indicating whether the neighborhood of this node has changed in
     // this round.
-    private boolean neighborhoodChanged = false;
+    private boolean neighborhoodChanged;
 
     // !!! NOTE: this is a static vector used by all nodes!
     // it gets cleared by every node at the begining of the step-method and thus can
@@ -1021,7 +1029,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
     /**
      * A counter to assign each node a unique ID, at the time when it is generated.
      */
-    private static long idCounter = 0;
+    private static long idCounter;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -1046,7 +1054,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     @Getter
     @Setter
-    private NodeCollectionInfoInterface nodeCollectionInfo = null;
+    private NodeCollectionInfoInterface nodeCollectionInfo;
 
     /**
      * <b>This member is framework internal and should not be used by the project
@@ -1058,7 +1066,7 @@ public abstract class Node implements DoublyLinkedListEntry, Comparable<Node> {
      */
     @Getter
     @Setter
-    private boolean holdInNodeCollection = false;
+    private boolean holdInNodeCollection;
 
     /**
      * A node-internal iterator over all outgoing edges of this node.

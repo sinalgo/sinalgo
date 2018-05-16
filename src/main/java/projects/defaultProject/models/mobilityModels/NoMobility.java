@@ -36,6 +36,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package projects.defaultProject.models.mobilityModels;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import sinalgo.configuration.Configuration;
 import sinalgo.models.MobilityModel;
 import sinalgo.nodes.Node;
@@ -47,6 +50,8 @@ import sinalgo.runtime.Main;
  */
 public class NoMobility extends MobilityModel {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private static boolean firstTime = true;
 
     @Override
@@ -59,11 +64,11 @@ public class NoMobility extends MobilityModel {
      */
     public NoMobility() {
         super(false);
-        if (firstTime && Configuration.isMobility() && Configuration.isShowOptimizationHints()) {
+        if (isFirstTime() && Configuration.isMobility() && Configuration.isShowOptimizationHints()) {
             Main.warning("At least some nodes use the '" + this.getClass().getSimpleName() + "' mobility model. "
                     + "If you do not consider mobility at all in your project, you can "
                     + "considerably improve performance by turning off mobility in the " + "XML configuration file.");
-            firstTime = false; // important to only have one message.
+            setFirstTime(false); // important to only have one message.
         }
     }
 }

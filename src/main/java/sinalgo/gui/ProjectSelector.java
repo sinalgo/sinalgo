@@ -69,10 +69,26 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -111,7 +127,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
 
     private JTabbedPane right = new JTabbedPane();
 
-    private boolean showOptionalFields = false;
+    private boolean showOptionalFields;
 
     private Vector<ConfigEntry> projectEntries;
 
@@ -433,8 +449,8 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
         return result.toString();
     }
 
-    private MultiLineToolTipJComboBox asynchronousSimulationCB = null;
-    private MultiLineToolTipJComboBox mobilityCB = null;
+    private MultiLineToolTipJComboBox asynchronousSimulationCB;
+    private MultiLineToolTipJComboBox mobilityCB;
 
     /**
      * Generate the GUI components to show the config for a given project
@@ -996,7 +1012,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
     private class UserInputListener implements KeyListener, ActionListener {
 
         @Getter
-        private boolean isModified = false;
+        private boolean isModified;
 
         public void reset() {
             ProjectSelector.this.getSaveConfig().setEnabled(false);
@@ -1083,13 +1099,13 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
          * member is set only when the GUI is created, and may remain NULL when this
          * entry does not have a value field (e.g. a comment, or section header)
          */
-        private JComponent valueComponent = null;
+        private JComponent valueComponent;
 
         /**
          * The GUI component for this entry that holds the text for this entry. This
          * member is set only when the GUI is created.
          */
-        private JComponent textComponent = null;
+        private JComponent textComponent;
 
     }
 

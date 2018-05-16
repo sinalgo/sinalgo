@@ -36,6 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.tools.storage;
 
+import lombok.NoArgsConstructor;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
@@ -46,6 +48,7 @@ import java.util.Vector;
  *
  * @param <T>
  */
+@NoArgsConstructor
 public class SortableVector<T> extends Vector<T> {
 
     private static final long serialVersionUID = 2685289788493437402L;
@@ -57,13 +60,6 @@ public class SortableVector<T> extends Vector<T> {
      */
     public SortableVector(int size) {
         super(size);
-    }
-
-    /**
-     * Default constructor.
-     */
-    public SortableVector() {
-        super();
     }
 
     /**

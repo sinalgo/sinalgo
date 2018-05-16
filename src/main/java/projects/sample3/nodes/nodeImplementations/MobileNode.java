@@ -1,6 +1,10 @@
 package projects.sample3.nodes.nodeImplementations;
 
-import projects.sample3.nodes.messages.*;
+import projects.sample3.nodes.messages.ByeBye;
+import projects.sample3.nodes.messages.InviteMessage;
+import projects.sample3.nodes.messages.SmsAckMessage;
+import projects.sample3.nodes.messages.SmsMessage;
+import projects.sample3.nodes.messages.SubscirbeMessage;
 import projects.sample3.nodes.timers.SmsTimer;
 import sinalgo.configuration.Configuration;
 import sinalgo.exception.CorruptConfigurationEntryException;
@@ -22,9 +26,9 @@ public class MobileNode extends Node {
 
     private Logging log = Logging.getLogger();// ("smsLog.txt");
 
-    private Antenna currentAntenna = null; // the antenna ths node is connected to, null if this node is not connected to
+    private Antenna currentAntenna; // the antenna ths node is connected to, null if this node is not connected to
     // an antenna
-    private int seqIDCounter = 0;
+    private int seqIDCounter;
 
     public Antenna getCurrentAntenna() {
         return this.currentAntenna;

@@ -253,7 +253,7 @@ public class Run {
         return Global.getProjectName();
     }
 
-    private static Process mainProcess = null; // the simulation process, may be null
+    private static Process mainProcess; // the simulation process, may be null
 
     /**
      * A shutdown hook to kill the simulation process when this process is killed.
