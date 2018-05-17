@@ -110,10 +110,10 @@ run {
 // Delombok Task
 task delombok(type: DelombokTask, dependsOn: compileJava) {
     ext.outputDir = file("$buildDir/delombok")
-    outputs.dir(outputDir)
+    outputs.dir(ext.outputDir)
     sourceSets.main.java.srcDirs.each {
         inputs.dir(it)
-        args(it, "-d", outputDir)
+        args(it, "-d", ext.outputDir)
     }
 }
 
