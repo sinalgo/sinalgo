@@ -69,26 +69,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.StringReader;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -964,7 +948,7 @@ public class ProjectSelector extends JFrame implements ActionListener, ListSelec
             }
             AppConfig.getAppConfig().setProjectSelectorSelectedTab(1 + this.getRight().getSelectedIndex());
             AppConfig.getAppConfig().writeConfig();
-            System.exit(1);
+            System.exit(0);
         } else if (e.getSource().equals(this.getCollapse())) { // --------------------------------------------------------------------
             this.setShowOptionalFields(false);
             this.insertProjectEntries();
