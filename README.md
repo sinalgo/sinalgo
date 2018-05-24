@@ -91,3 +91,12 @@ Right now, the following commands might be useful:
 
 * ```./gradlew javadoc``` will generate a set of HTML documents containing documentation on Sinalgo's classes.
 This also includes projects.
+
+## Tutorial
+
+Sinalgo's original tutorial has been reconstructed [in the GitHub Pages for this repository](https://andrebrait.github.io/sinalgo). 
+While this fork has departed quite a bit from the original,
+most of the things in the tutorial are still valid as for building simulations and the general 
+usage of Sinalgo.
+
+The source code for these pages can be found in the ```docs``` folder under this repository.
