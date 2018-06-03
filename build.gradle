@@ -42,6 +42,11 @@ plugins {
     id 'io.franzbecker.gradle-lombok' version '1.14'
 }
 
+lombok {
+    version = "1.16.20"
+    sha256 = "c5178b18caaa1a15e17b99ba5e4023d2de2ebc18b58cde0f5a04ca4b31c10e6d"
+}
+
 version = rootProject.file('VERSION').text.trim()
 
 apply plugin: 'java'
