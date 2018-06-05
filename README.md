@@ -99,4 +99,4 @@ While this fork has departed quite a bit from the original,
 most of the things in the tutorial are still valid as for building simulations and the general 
 usage of Sinalgo.
 
-The source code for these pages can be found in the ```docs``` folder under this repository.
+The source code for these pages can be found in the ```gh-pages``` branch under this repository.
