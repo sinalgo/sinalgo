@@ -53,7 +53,7 @@ public class VersionTester extends Thread {
     public void run() {
         setRunning(true);
         try {
-            URL url = new URL("https://github.com/andrebrait/sinalgo/raw/master/VERSION");
+            URL url = new URL("https://github.com/Sinalgo/sinalgo/raw/master/VERSION");
             URLConnection con = url.openConnection();
             con.setDoOutput(true);
             con.setDoInput(true);
@@ -77,7 +77,7 @@ public class VersionTester extends Thread {
                             + "| A more recent version of Sinalgo is available (" + line + ")\n"
                             + "+---------------------------------------------------------------------\n"
                             + "| To download the latest version, please visit\n"
-                            + "| https://github.com/andrebrait/sinalgo/\n"
+                            + "| https://github.com/Sinalgo/sinalgo/\n"
                             + "+---------------------------------------------------------------------\n"
                             + "| You may turn off these version checks through the 'Settings' dialog.\n"
                             + "| Note:   Sinalgo automatically tests for updates at most once\n"
@@ -92,7 +92,7 @@ public class VersionTester extends Thread {
                     + Configuration.VERSION_STRING + "\n"
                     + ">---------------------------------------------------------------------\n"
                     + "> To check for more recent versions, please visit\n"
-                    + "> https://github.com/andrebrait/sinalgo/\n"
+                    + "> https://github.com/Sinalgo/sinalgo/\n"
                     + ">---------------------------------------------------------------------\n"
                     + "> You may turn off these version checks through the 'Settings' dialog.\n"
                     + "| Note:   Sinalgo automatically tests for updates at most once\n" + "|         every 24 hours.\n"

@@ -70,7 +70,7 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
     private URL defaultURL;
 
     private HelpDialog(JFrame parent) { // is private, use showHelp() to create it in a new thread
-        this.setTitle("Sinalgo Help  (source: https://github.com/andrebrait/sinalgo)");
+        this.setTitle("Sinalgo Help  (source: https://github.com/Sinalgo/sinalgo)");
         GuiHelper.setWindowIcon(this);
         this.addWindowListener(this);
         this.restoreWindowState();
@@ -92,7 +92,7 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
         this.add(scroller, BorderLayout.CENTER);
 
         try {
-            this.setDefaultURL(new URL("https://github.com/andrebrait/sinalgo/raw/master/MANUAL.pdf"));
+            this.setDefaultURL(new URL("https://sinalgo.github.io"));
             this.setCurrentURL(this.getDefaultURL());
             this.getHtml().setPage(this.getCurrentURL());
             this.getHtml().setEditable(false);
@@ -173,7 +173,7 @@ public class HelpDialog extends JFrame implements ActionListener, WindowListener
         private JButton closeButton = new JButton("Close");
         private JButton resetButton = new JButton("Reset");
         private JEditorPane ePane;
-        private String defaultMenuURL = "https://github.com/andrebrait/sinalgo/";
+        private String defaultMenuURL = "https://github.com/Sinalgo/sinalgo/";
 
         MenuDialog(JFrame owner, Point pos) {
             super(owner);

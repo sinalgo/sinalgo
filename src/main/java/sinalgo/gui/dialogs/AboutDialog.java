@@ -75,8 +75,8 @@ public class AboutDialog extends JDialog implements ActionListener {
                 + "<center><h1><span class='red'>Si</span>mulator for <span class='red'>N</span>etwork <span class='red'>Algo</span>rithms</h1></center>"
                 + "" + "<center>Version " + Configuration.VERSION_STRING
                 + "</center><center><small><a href='TestVersion'>Test for newer version</a></small></center>"
-                + "<p>Visit <a href='https://github.com/andrebrait/sinalgo'>https://github.com/andrebrait/sinalgo</a> to obtain the latest version, report bugs or problems, "
-                + "and visit <a href='https://github.com/andrebrait/sinalgo'>https://github.com/andrebrait/sinalgo</a> for a documentation of Sinalgo"
+                + "<p>Visit <a href='https://github.com/Sinalgo/sinalgo'>https://github.com/Sinalgo/sinalgo</a> to obtain the latest version, report bugs or problems, "
+                + "and visit <a href='https://github.com/Sinalgo/sinalgo'>https://github.com/Sinalgo/sinalgo</a> for a documentation of Sinalgo"
                 + "<p>"
                 + "Sinalgo is brought to you by the Distributed Computing Group of ETH Zurich <a href='http://dcg.ethz.ch'>http://dcg.ethz.ch</a>"
                 + "<p>" + "<small>Hint: Click on a link to copy it to the clip board.</small>" + "</body>" + "</html>");
