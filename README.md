@@ -94,7 +94,7 @@ This also includes projects.
 
 ## Tutorial
 
-Sinalgo's original tutorial has been reconstructed [in the GitHub Pages for this repository](https://andrebrait.github.io/sinalgo). 
+Sinalgo's original tutorial has been reconstructed [in the GitHub Pages for this repository](https://sinalgo.github.io). 
 While this fork has departed quite a bit from the original,
 most of the things in the tutorial are still valid as for building simulations and the general 
 usage of Sinalgo.
