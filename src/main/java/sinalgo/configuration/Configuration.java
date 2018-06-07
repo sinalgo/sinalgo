@@ -69,14 +69,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_CONNECTIVITY;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_DISTRIBUTION;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_INTERFERENCE;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_MESSAGE_TRANSMISSION;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_MOBILITY;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.MODELS_RELIABILITY;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.NODES_EDGES;
-import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.NODES_IMPLEMENTATIONS;
+import static sinalgo.configuration.Configuration.ImplementationChoiceInConfigFile.ImplementationType.*;
 
 /**
  * This class provides globally visible constants and access to the custom
@@ -108,6 +101,34 @@ public class Configuration {
                     StandardCharsets.UTF_8.displayName()).useDelimiter("\\A").next().trim();
         } catch (Exception e) {
             throw new SinalgoFatalException("Could not read version information from the VERSION file.\n\n" + e);
+        }
+    }
+
+    /**
+     * The repository which contains the latest code changes for Sinalgo
+     */
+    public static final String SINALGO_REPO = getRepoString();
+
+    private static String getRepoString() {
+        try {
+            return new Scanner(Thread.currentThread().getContextClassLoader().getResourceAsStream("WEB_REPOSITORY_URL"),
+                    StandardCharsets.UTF_8.displayName()).useDelimiter("\\A").next().trim();
+        } catch (Exception e) {
+            throw new SinalgoFatalException("Could not read version information from the WEB_REPOSITORY_URL file.\n\n" + e);
+        }
+    }
+
+    /**
+     * The webpage that contains Sinalgo's tutorial and help files
+     */
+    public static final String SINALGO_WEB_PAGE = getWebPageString();
+
+    private static String getWebPageString() {
+        try {
+            return new Scanner(Thread.currentThread().getContextClassLoader().getResourceAsStream("WEB_PAGE_URL"),
+                    StandardCharsets.UTF_8.displayName()).useDelimiter("\\A").next().trim();
+        } catch (Exception e) {
+            throw new SinalgoFatalException("Could not read version information from the WEB_PAGE_URL file.\n\n" + e);
         }
     }
 

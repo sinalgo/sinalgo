@@ -89,6 +89,8 @@ task wrapper(type: Wrapper) {
 processResources {
     with copySpec {
         from 'VERSION'
+        from 'WEB_PAGE_URL'
+        from 'WEB_REPOSITORY_URL'
     }
 
     with copySpec {

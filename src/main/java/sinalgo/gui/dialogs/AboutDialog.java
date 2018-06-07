@@ -49,6 +49,9 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public class AboutDialog extends JDialog implements ActionListener {
 
@@ -75,11 +78,11 @@ public class AboutDialog extends JDialog implements ActionListener {
                 + "<center><h1><span class='red'>Si</span>mulator for <span class='red'>N</span>etwork <span class='red'>Algo</span>rithms</h1></center>"
                 + "" + "<center>Version " + Configuration.VERSION_STRING
                 + "</center><center><small><a href='TestVersion'>Test for newer version</a></small></center>"
-                + "<p>Visit <a href='https://github.com/Sinalgo/sinalgo'>https://github.com/Sinalgo/sinalgo</a> to obtain the latest version, report bugs or problems, "
-                + "and visit <a href='https://github.com/Sinalgo/sinalgo'>https://github.com/Sinalgo/sinalgo</a> for a documentation of Sinalgo"
+                + "<p>Visit <a href='" + Configuration.SINALGO_REPO + "'>" + Configuration.SINALGO_REPO + "</a> to obtain the latest version, report bugs or problems, "
+                + "and visit <a href='" + Configuration.SINALGO_WEB_PAGE + "'>" + Configuration.SINALGO_WEB_PAGE + "</a> for a documentation of Sinalgo"
                 + "<p>"
-                + "Sinalgo is brought to you by the Distributed Computing Group of ETH Zurich <a href='http://dcg.ethz.ch'>http://dcg.ethz.ch</a>"
-                + "<p>" + "<small>Hint: Click on a link to copy it to the clip board.</small>" + "</body>" + "</html>");
+                + "Sinalgo is brought to you by the Distributed Computing Group of ETH Zurich <a href='https://dcg.ethz.ch'>https://dcg.ethz.ch</a>"
+                + "<p>" + "</body>" + "</html>");
         html.setEditable(false);
         html.setBackground(this.getBackground());
         this.add(html);
@@ -90,19 +93,14 @@ public class AboutDialog extends JDialog implements ActionListener {
                     VersionTester.testVersion(false, true);
                     return;
                 }
-                Clipboard cp = Toolkit.getDefaultToolkit().getSystemClipboard();
-                cp.setContents(new StringSelection(e.getDescription()), null);
-                // With Java 1.6, we could open the 'default' browser
-                // Desktop dt = Desktop.getDesktop();
-                // try {
-                // dt.browse(url.toURI());
-                // } catch (IOException e1) {
-                // // TODO Auto-generated catch block
-                // e1.printStackTrace();
-                // } catch (URISyntaxException e1) {
-                // // TODO Auto-generated catch block
-                // e1.printStackTrace();
-                // }
+                Desktop dt = Desktop.getDesktop();
+                try {
+                    dt.browse(new URL(e.getDescription()).toURI());
+                } catch (IOException | URISyntaxException ex) {
+                    Clipboard cp = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    cp.setContents(new StringSelection(e.getDescription()), null);
+                    JOptionPane.showMessageDialog(this, "The link was copied to the clipboard!");
+                }
             }
         });
 

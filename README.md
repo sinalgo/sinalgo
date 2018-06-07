@@ -52,7 +52,7 @@ message whether it should arrive or not. E.g. drop one percent of all messages.
 arrives at its destination.
 
 DISCLAIMER:
-Sinalgo was originally developed by the [DCG (Distributed Computing Group)](https://disco.ethz.ch/) at [ETHzürich](http://www.ethz.ch/).
+Sinalgo was originally developed by the [DCG (Distributed Computing Group)](https://disco.ethz.ch/) at [ETHzürich](https://www.ethz.ch/).
 
 ## Installation and usage
 
