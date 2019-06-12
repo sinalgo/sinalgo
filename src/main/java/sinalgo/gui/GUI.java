@@ -51,7 +51,6 @@ import sinalgo.gui.dialogs.GenerateNodesDialog;
 import sinalgo.gui.dialogs.GlobalSettingsDialog;
 import sinalgo.gui.dialogs.GraphInfoDialog;
 import sinalgo.gui.dialogs.GraphPreferencesDialog;
-import sinalgo.gui.dialogs.HelpDialog;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.io.eps.Exporter;
 import sinalgo.nodes.Position;
@@ -63,10 +62,25 @@ import sinalgo.runtime.SinalgoRuntime;
 import sinalgo.runtime.events.Event;
 import sinalgo.tools.storage.SortableVector;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.MenuElement;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import java.awt.*;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
+import java.awt.KeyboardFocusManager;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -74,9 +88,12 @@ import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -861,7 +878,14 @@ public class GUI extends JFrame implements ActionListener {
         } else if (e.getActionCommand().equals(this.getAboutMenuItem().getActionCommand())) {
             new AboutDialog(this);
         } else if (e.getActionCommand().equals(this.getHelpMenuItem().getActionCommand())) {
-            HelpDialog.showHelp(this); // start in a new thread
+            if(0 == JOptionPane.showConfirmDialog(this, "This will open Sinalgo's help page on the default browser. Do you want to continue?",
+                    "Help", JOptionPane.YES_NO_OPTION)) {
+                try {
+                    Desktop.getDesktop().browse(new URI(Configuration.SINALGO_WEB_PAGE));
+                } catch (IOException | URISyntaxException ignore) {
+                    // Do nothing if this is somehow wrong
+                }
+            }
         } else if (e.getActionCommand().equals(this.getExitMenuItem().getActionCommand())) {
             Main.exitApplication();
         } else if (e.getActionCommand().equals(this.getViewFullScreenMenuItem().getActionCommand())) {

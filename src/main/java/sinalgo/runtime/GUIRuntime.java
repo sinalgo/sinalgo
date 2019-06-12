@@ -36,7 +36,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
-import javafx.application.Platform;
 import lombok.Getter;
 import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
@@ -56,7 +55,6 @@ public class GUIRuntime extends SinalgoRuntime implements ProgressBarUser {
      */
     GUIRuntime() {
         super();
-        Platform.setImplicitExit(false);
     }
 
     /**

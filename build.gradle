@@ -35,16 +35,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.franzbecker.gradle.lombok.task.DelombokTask
-
 plugins {
-    id 'com.github.johnrengelman.shadow' version '2.0.4'
-    id 'io.franzbecker.gradle-lombok' version '1.14'
+    id 'com.github.johnrengelman.shadow' version '4.0.2'
+    id 'io.freefair.lombok' version '3.6.6'
 }
 
 lombok {
-    version = "1.18.0"
-    sha256 = ""
+    version = "1.18.8"
 }
 
 version = rootProject.file('VERSION').text.trim()
@@ -56,7 +53,13 @@ apply plugin: 'distribution'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+compileJava {
+    options.compilerArgs = ['--release', '8']
+}
+
 distTar.enabled = false
 distZip.enabled = false
 startScripts.enabled = false
@@ -66,9 +69,8 @@ shadowDistTar.enabled = false
 mainClassName = "sinalgo.Run"
 
 javadoc {
-    source = sourceSets.main.allJava
-    classpath = configurations.compile
     title = "Sinalgo API Documentation Version: ${version}"
+    failOnError = false
 }
 
 repositories {
@@ -78,12 +80,8 @@ repositories {
 dependencies {
     compile group: 'org.jdom', name: 'jdom2', version: '2.0.6'
     compile group: 'com.apple', name: 'AppleJavaExtensions', version: '1.4'
-    compile group: 'io.github.lukehutch', name: 'fast-classpath-scanner', version: '2.21'
+    compile group: 'io.github.classgraph', name: 'classgraph', version: '4.8.39'
     //testCompile group: 'junit', name: 'junit', version: '4.12' // TODO enable tests
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
 }
 
 processResources {
@@ -108,26 +106,12 @@ processResources {
 run {
     if (project.hasProperty("appArgs")) {
         appArgs = project.getProperties().get("appArgs")
-        if(appArgs instanceof String) {
+        if (appArgs instanceof String) {
             args = Eval.me(appArgs)
         }
     }
 }
 
-// Delombok Task
-task delombok(type: DelombokTask, dependsOn: compileJava) {
-    ext.outputDir = file("$buildDir/delombok")
-    outputs.dir(ext.outputDir)
-    sourceSets.main.java.srcDirs.each {
-        inputs.dir(it)
-        args(it, "-d", ext.outputDir)
-    }
-}
-
-// Javadoc Task
-javadoc {
-    includes = ['**/*.java']
-    dependsOn delombok
-    source = delombok.outputDir
-    failOnError = false
+delombok {
+    generateLombokConfig.enabled = false
 }

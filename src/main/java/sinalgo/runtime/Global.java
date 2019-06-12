@@ -36,7 +36,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package sinalgo.runtime;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
 import lombok.Getter;
 import lombok.Setter;
 import sinalgo.configuration.Configuration;
@@ -213,9 +214,13 @@ public class Global {
         try {
             Pattern projectPattern = Pattern.compile("^(" + Configuration.getUserProjectsPackage() + "\\.\\w+).*$");
 
-            Map<String, List<String>> allImplementations = new FastClasspathScanner("-sinalgo", Configuration.getUserProjectsPackage())
+            Map<String, List<String>> allImplementations = new ClassGraph()
+                    .blacklistPackages("sinalgo")
+                    .whitelistPackages(Configuration.getUserProjectsPackage())
                     .scan(Math.min(Math.max(Runtime.getRuntime().availableProcessors(), 4), 1))
-                    .getNamesOfAllStandardClasses().parallelStream()
+                    .getAllClasses()
+                    .parallelStream()
+                    .map(ClassInfo::getName)
                     .map(projectPattern::matcher)
                     .filter(Matcher::matches)
                     .collect(Collectors.groupingBy(m -> m.group(1), Collectors.mapping(Matcher::group, Collectors.toList())));
