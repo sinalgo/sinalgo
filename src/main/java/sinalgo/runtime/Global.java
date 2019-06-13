@@ -217,7 +217,7 @@ public class Global {
             Map<String, List<String>> allImplementations = new ClassGraph()
                     .blacklistPackages("sinalgo")
                     .whitelistPackages(Configuration.getUserProjectsPackage())
-                    .scan(Math.min(Math.max(Runtime.getRuntime().availableProcessors(), 4), 1))
+                    .scan(Math.max(Math.min(Runtime.getRuntime().availableProcessors(), 4), 1))
                     .getAllClasses()
                     .parallelStream()
                     .map(ClassInfo::getName)
